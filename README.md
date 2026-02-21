@@ -4,6 +4,7 @@ fork from https://consumer.huawei.com/en/opensource/detail/?siteCode=worldwide&a
 ##查看源码请切换分支，原始代码包请查看releases。
 
 ##本文档提供 Hongmeng 1.9.3 开源项目的编译指导。
+
 ###1. 如何构建
 	获取工具链：
 		下载地址 https://developer.huawei.com/consumer/cn/download/command-line-tools-for-hmos

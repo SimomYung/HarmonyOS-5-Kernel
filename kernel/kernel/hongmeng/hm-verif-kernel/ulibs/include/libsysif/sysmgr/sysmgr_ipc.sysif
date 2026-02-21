@@ -1,0 +1,93 @@
+/*
+ * Copyright (C) Huawei Technologies Co., Ltd. 2020. All rights reserved.
+ * Author: Huawei OS Kernel Lab
+ * Create: Thu Feb 06 22:00:34 2020
+ */
+
+/*
+ * To support the mixed data model which means the client and the server
+ * may use different data model. See the document for limitation of data type
+ * used in the sysif interfaces in <Documentation/sysif_compat.md>.
+ */
+#ifdef SYSIF_EXPORT_API
+#include <time.h>
+#include <sys/sem.h>
+
+#include <libhmsrv_sys/hm_ipc_sem.h>
+#endif
+
+DEFINE_MANAGER(ipc, 16,
+	DEFINE_LSYSCALL_METHOD(shmget, NATIVE, SYS_shmget,
+		      ARG(3, int, key, unsigned long, size, int, shmflg))
+
+	DEFINE_LSYSCALL_METHOD_LONG(shmat, NATIVE, SYS_shmat,
+		      ARG(3, int, shmid, const void *, shmaddr, int, shmflg))
+
+	DEFINE_LSYSCALL_METHOD(shmdt, NATIVE, SYS_shmdt,
+		      ARG(1, const void *, addr))
+
+	DEFINE_LSYSCALL_METHOD(shmctl, NATIVE, SYS_shmctl,
+		      ARG(3, int, shmid, int, cmd, void *, ds_ptr))
+
+	DEFINE_SIMPLE_METHOD(ipc, shm_setacl,
+		      ARG(3, int, shmid,
+			  const char *, attr,
+			  unsigned long, size),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(ipc, shm_getacl,
+		      ARG(3, int, shmid,
+			  char *, attr,
+			  unsigned long, size),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(ipc, shm_removeacl,
+		      ARG(1, int, shmid),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_LSYSCALL_METHOD(msgget, SYS_msgget,
+		      ARG(2, int, key, int, msgflg))
+
+	DEFINE_LSYSCALL_METHOD(msgsnd, SYS_msgsnd,
+		      ARG(4, int, msqid, void *, buf,
+			  unsigned long, msgsz, int, msgflg))
+
+	DEFINE_LSYSCALL_METHOD_LONG(msgrcv, SYS_msgrcv,
+		      ARG(5, int, msqid, void *, buf,
+			  unsigned long, msgsz,
+			  long, msgtyp, int, msgflg))
+
+	DEFINE_LSYSCALL_METHOD(msgctl, SYS_msgctl,
+		      ARG(3, int, msqid, int, cmd,
+			  void *, buf))
+
+	DEFINE_LSYSCALL_METHOD(semget, SYS_semget,
+		      ARG(3, int, key, int, nsems, int, semflg))
+
+	DEFINE_LSYSCALL_METHOD(semop, SYS_semop,
+		      ARG(3, int, semid,
+			  unsigned long, sops,
+			  unsigned long, nsops))
+	
+	DEFINE_LSYSCALL_METHOD(semtimedop, SYS_semtimedop,
+		      ARG(4, int, semid,
+			  unsigned long, sops,
+			  unsigned long, nsops,
+			  struct timespec *, timeout))
+
+	DEFINE_LSYSCALL_METHOD(semctl, SYS_semctl,
+		      ARG(4, int, semid, int, semnum, int, cmd,
+			  unsigned long, arg))
+
+	DEFINE_SIMPLE_METHOD(ipc, populate_shm,
+			     ARG(5, int, shm_id,
+				 const void *, svaddr,
+				 unsigned long long, offset,
+				 unsigned long long *, dst,
+				 unsigned long, size),
+			     RET_NO,
+			     SLOWDATA_NO)
+)

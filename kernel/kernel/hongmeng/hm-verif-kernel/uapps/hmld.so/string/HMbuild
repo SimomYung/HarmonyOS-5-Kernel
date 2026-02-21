@@ -1,0 +1,28 @@
+# Copyright (c) Huawei Technologies Co., Ltd. 2022-2022. All rights reserved.
+# Description: HMbuild for string
+# Author: Huawei OS Kernel Lab
+# Create: Tue Feb 08 16:24:29 2022
+
+src-y: memcpy.c
+src-y: memset.c
+src-y: strcmp.c
+src-y: strlen.c
+src-y: strncpy.c
+src-y: strnlen.c
+src-y: strrchr.c
+src-y: vsnprintf.c
+src-CONFIG_AARCH64: ../arch/aarch64/safe_copy.S
+src-CONFIG_ARM: ../arch/arm/safe_copy.S
+src-CONFIG_ARM: ../arch/arm/armdiv.c
+include-CONFIG_AARCH64: ../../../arch/aarch64/include
+include-CONFIG_AARCH64: ../../../arch/aarch64/include/mapi
+include-CONFIG_ARM: ../../../arch/arm/include
+include-CONFIG_ARM: ../../../arch/arm/include/mapi
+include-y: ../../../include
+include-y: ../../../kernel/include
+include-y: ../../../klibs/include
+include-y: ../../../kernel/include/mapi
+include-y: ../../../kernel/include/mapi/uapi
+include-y: ../../../klibs/include/lib/stdinc
+
+cflags-.-CONFIG_USE_LIBOPT: -DUSE_LIBOPT

@@ -1,0 +1,41 @@
+From 8b2beb24819a976f575e8cec04e3fe6ca8851017 Mon Sep 17 00:00:00 2001
+From: Lukas Czerner <lczerner@redhat.com>
+Date: Tue, 24 Aug 2021 14:10:19 +0200
+Subject: [PATCH] tests: update expect files for f_mmp_garbage
+
+Update expect file for f_mmp_garbage test to work correctly with the
+new default 256 inode size.
+
+Fixes: d730be5ceeba ("tests: update mke2fs.conf to create 256 byte inodes by default")
+Signed-off-by: Lukas Czerner <lczerner@redhat.com>
+Signed-off-by: Theodore Ts'o <tytso@mit.edu>
+---
+ tests/f_mmp_garbage/expect.1 | 2 +-
+ tests/f_mmp_garbage/expect.2 | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/tests/f_mmp_garbage/expect.1 b/tests/f_mmp_garbage/expect.1
+index a8add10..4134eae 100644
+--- a/tests/f_mmp_garbage/expect.1
++++ b/tests/f_mmp_garbage/expect.1
+@@ -5,5 +5,5 @@ Pass 2: Checking directory structure
+ Pass 3: Checking directory connectivity
+ Pass 4: Checking reference counts
+ Pass 5: Checking group summary information
+-test_filesys: 11/64 files (0.0% non-contiguous), 13/100 blocks
++test_filesys: 11/64 files (0.0% non-contiguous), 15/100 blocks
+ Exit status is 0
+diff --git a/tests/f_mmp_garbage/expect.2 b/tests/f_mmp_garbage/expect.2
+index 6630002..3bca182 100644
+--- a/tests/f_mmp_garbage/expect.2
++++ b/tests/f_mmp_garbage/expect.2
+@@ -3,5 +3,5 @@ Pass 2: Checking directory structure
+ Pass 3: Checking directory connectivity
+ Pass 4: Checking reference counts
+ Pass 5: Checking group summary information
+-test_filesys: 11/64 files (0.0% non-contiguous), 13/100 blocks
++test_filesys: 11/64 files (0.0% non-contiguous), 15/100 blocks
+ Exit status is 0
+-- 
+1.8.3.1
+

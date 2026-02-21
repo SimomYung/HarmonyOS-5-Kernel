@@ -1,0 +1,96 @@
+menuconfig EXT_INPUTHUB_DRIVER_SDIO
+	bool "External InputHub feature support sdio driver"
+	depends on EXT_INPUTHUB
+	default n
+	help
+	Say yes here to support external sensorhub feature.
+
+menuconfig EXT_INPUTHUB_DRIVER_SPI
+	bool "External InputHub feature support sdio driver"
+	depends on EXT_INPUTHUB
+	default n
+	help
+	Say yes here to support external sensorhub feature.
+
+menuconfig EXT_INPUTHUB_DRIVER_UART
+	bool "External InputHub feature support sdio driver"
+	depends on EXT_INPUTHUB
+	default y
+	help
+	Say yes here to support external sensorhub feature.
+
+menuconfig EXT_INPUTHUB_DRIVER_SPI_SLAVE
+	bool "External InputHub feature support sdio driver"
+	depends on EXT_INPUTHUB
+	default y
+	help
+	Say yes here to support external sensorhub feature.
+
+menuconfig EXT_INPUTHUB
+	bool "External InputHub feature support"
+	default n
+	help
+	Say yes here to support external sensorhub feature.
+
+menuconfig EXT_INPUTHUB_IPC_COMMU
+	bool "External InputHub ipc commu feature support"
+	depends on EXT_INPUTHUB
+	default n
+	help
+	Say yes here to support external sensorhub feature.
+
+menuconfig EXT_INPUTHUB_COMMU
+	bool "External InputHub common commu feature support"
+	depends on EXT_INPUTHUB
+	default y
+	help
+	Say yes here to support external sensorhub feature.
+
+menuconfig EXT_INPUTHUB_INNER_CMD
+	bool "External InputHub inner cmd feature support"
+	depends on EXT_INPUTHUB
+	default y
+	help
+	Say yes here to support external sensorhub feature.
+
+menuconfig EXT_INPUTHUB_COMMON_CMD
+	bool "External InputHub common cmd feature support"
+	depends on EXT_INPUTHUB
+	default y
+	help
+	Say yes here to support external sensorhub feature.
+
+menuconfig EXT_INPUTHUB_FILETRANSFER
+	bool "External InputHub feature support"
+	depends on EXT_INPUTHUB
+	default y
+	help
+	Say yes here to support external sensorhub feature.
+
+menuconfig EXT_INPUTHUB_FILETRANSFER_SHAREMEM
+	bool "External InputHub feature support"
+	depends on EXT_INPUTHUB
+	default n
+	help
+	Say yes here to support external sensorhub feature.
+
+menuconfig EXT_INPUTHUB_TIMESYNC
+	bool "External InputHub feature support"
+	depends on EXT_INPUTHUB
+	default y
+	help
+	Say yes here to support external sensorhub feature.
+
+menuconfig EXT_INPUTHUB_MATTING
+	bool "External InputHub feature support"
+	depends on EXT_INPUTHUB
+	default y
+	help
+	Say yes here to support external sensorhub feature.
+
+menuconfig EXT_INPUTHUB_MATTING_ALSC
+	bool "hisi alsc platform support matting algo feature"
+	default n
+	help
+	Say yes here to support matting algo feature for hisi alsc platform.
+

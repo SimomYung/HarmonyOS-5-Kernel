@@ -1,0 +1,41 @@
+{
+    "name": "@ohos/ppp",
+    "description": "ppp for ipsec vpn",
+    "version": "4.0",
+    "license": "Apache License 2.0",
+    "publishAs": "code-segment",
+    "segment": {
+        "destPath": "vendor/open_source/ppp/"
+    },
+    "dirs": {},
+    "scripts": {},
+    "readmePath": {
+        "en": "README"
+    },
+    "component": {
+        "name": "pppd",
+        "subsystem": "open_source",
+        "syscap": [],
+        "features": [],
+        "adapted_system_type": [
+            "standard"
+        ],
+        "rom": "",
+        "ram": "",
+        "deps": {
+            "components": [
+                "ipc",
+                "c_utils",
+                "netmanager_ext"
+            ],
+            "third_party": []
+        },
+        "build": {
+            "sub_component": [
+                "//vendor/open_source/ppp:build_pppd"
+            ],
+            "inner_kits": [],
+            "test": []
+        }
+    }
+}

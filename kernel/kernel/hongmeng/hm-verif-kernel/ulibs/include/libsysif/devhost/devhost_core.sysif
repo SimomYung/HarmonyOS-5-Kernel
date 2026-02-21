@@ -1,0 +1,63 @@
+/*
+ * Copyright (C) Huawei Technologies Co., Ltd. 2019-2020. All rights reserved.
+ * Description: devhost core sysif APIs
+ * Author: Huawei OS Kernel Lab
+ * Create: Fri Jan 11 10:45:12 2019
+ */
+#ifdef SYSIF_EXPORT_API
+
+#define DEVHOST_ENTROPY_DATA_MAX_LEN	64
+struct devhost_entropy_data {
+	unsigned char buf[DEVHOST_ENTROPY_DATA_MAX_LEN];
+	unsigned int len;
+	/* health test fail count */
+	unsigned int fail_count;
+};
+
+#endif
+
+/*
+ * To support the mixed data model which means the client and the server
+ * may use different data model. See the document for limitation of data type
+ * used in the sysif interfaces in <Documentation/sysif_compat.md>.
+ */
+DEFINE_MANAGER(core, 8,
+	DEFINE_METHOD(core, load_driver,
+		      ARG(4,
+			  struct hm_actv_buf, name,
+			  struct hm_actv_buf, args,
+			  unsigned long long, drv_shm_key,
+			  unsigned long, size),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_METHOD(core, create_device,
+		      ARG(4,
+			  struct hm_actv_buf, devname,
+			  struct hm_actv_buf, dev_compat,
+			  int, parent_devid,
+			  unsigned int, resource_count),
+		      RET(1,
+			  int, devid),
+		      SLOWDATA)	/* resources[] */
+
+	DEFINE_METHOD(core, unload_driver,
+		      ARG(1,
+			  struct hm_actv_buf, drvname),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_METHOD(core, bind_device,
+		      ARG(2,
+			  int, devid,
+			  struct hm_actv_buf, dev_compat),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_METHOD(core, entropy_read,
+		      ARG(1,
+			  unsigned int, num),
+		      RET(1,
+			  struct devhost_entropy_data, data),
+		      SLOWDATA_NO)
+)

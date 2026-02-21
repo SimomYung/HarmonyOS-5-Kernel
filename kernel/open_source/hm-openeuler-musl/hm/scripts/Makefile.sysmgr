@@ -1,0 +1,541 @@
+MUSL_SRC_SYS  = src/string
+MUSL_SRC_SYS += src/ctype
+MUSL_SRC_SYS += src/math
+
+ifeq ($(CONFIG_PTR_TO_HASHVAL), yes)
+MUSL_SRC_SYS += src/crypt
+endif
+
+MUSL_SRC_SYS += src/internal/libc.c
+MUSL_SRC_SYS += src/internal/defsysinfo.c
+
+MUSL_SRC_SYS += src/signal/sigaddset.c
+MUSL_SRC_SYS += src/signal/sigdelset.c
+
+ifeq ($(SELINUX), yes)
+MUSL_SRC_SYS += src/stdio/sprintf.c
+endif
+MUSL_SRC_SYS += src/stdio/vsprintf.c
+MUSL_SRC_SYS += src/stdio/vasprintf.c
+MUSL_SRC_SYS += src/stdio/snprintf.c
+MUSL_SRC_SYS += src/stdio/vsnprintf.c
+MUSL_SRC_SYS += src/stdio/vfprintf.c
+MUSL_SRC_SYS += src/stdio/fwrite.c
+MUSL_SRC_SYS += src/stdio/ferror.c
+MUSL_SRC_SYS += src/stdio/clearerr.c
+MUSL_SRC_SYS += src/errno/strerror.c
+MUSL_SRC_SYS += src/stdio/__towrite.c
+MUSL_SRC_SYS += src/locale/__lctrans.c
+MUSL_SRC_SYS += src/locale/locale_map.c
+MUSL_SRC_SYS += src/locale/__mo_lookup.c
+
+MUSL_SRC_SYS += src/errno/__errno_location.c
+
+MUSL_SRC_SYS += src/stdlib/atoi.c
+MUSL_SRC_SYS += src/stdlib/strtol.c
+MUSL_SRC_SYS += src/internal/shgetc.c
+MUSL_SRC_SYS += src/internal/intscan.c
+MUSL_SRC_SYS += src/stdio/__uflow.c
+MUSL_SRC_SYS += src/stdio/__toread.c
+MUSL_SRC_SYS += src/stdio/__stdio_exit.c
+MUSL_SRC_SYS += src/stdio/__lockfile.c
+MUSL_SRC_SYS += src/unistd/lseek.c
+MUSL_SRC_SYS += src/stdio/ofl.c
+MUSL_SRC_SYS += src/thread/__lock.c
+
+MUSL_SRC_SYS += src/env/getenv.c
+MUSL_SRC_SYS += src/env/setenv.c
+MUSL_SRC_SYS += src/env/putenv.c
+MUSL_SRC_SYS += src/env/unsetenv.c
+MUSL_SRC_SYS += src/env/__environ.c
+
+MUSL_SRC_SYS += src/signal/sigrtmax.c
+
+MUSL_SRC_SYS += src/multibyte/wctomb.c
+MUSL_SRC_SYS += src/multibyte/wcrtomb.c
+
+MUSL_SRC_SYS += src/sched/sched_cpucount.c
+
+MUSL_SRC_SYS += src/stdlib/qsort.c
+MUSL_SRC_SYS += src/stdlib/qsort_nr.c
+
+# for time
+MUSL_SRC_SYS += src/time/gmtime.c
+MUSL_SRC_SYS += src/time/gmtime_r.c
+MUSL_SRC_SYS += src/time/mktime.c
+MUSL_SRC_SYS += src/time/__secs_to_tm.c
+
+MUSL_SRC_SYS += src/stdio/fgetc.c
+MUSL_SRC_SYS += src/stdio/fputc.c
+
+MUSL_SRC_SYS += src/stdio/fileno.c
+
+MUSL_SRC_SYS += src/stdio/fread.c
+
+MUSL_SRC_SYS += src/stdio/ftell.c
+
+MUSL_SRC_SYS += src/stdio/stdin.c
+MUSL_SRC_SYS += src/stdio/__stdio_close.c
+MUSL_SRC_SYS += src/stdio/__stdio_read.c
+MUSL_SRC_SYS += src/stdio/__stdio_seek.c
+MUSL_SRC_SYS += src/internal/syscall_ret.c
+
+MUSL_SRC_SYS += src/stdio/fseek.c
+
+MUSL_SRC_SYS += src/multibyte/mbtowc.c
+MUSL_SRC_SYS += src/multibyte/internal.c
+
+MUSL_SRC_SYS += src/stdio/feof.c
+
+MUSL_SRC_SYS += src/stdio/ungetc.c
+
+MUSL_SRC_SYS += src/locale/localeconv.c
+
+MUSL_SRC_SYS += src/stdlib/strtod.c
+MUSL_SRC_SYS += src/internal/floatscan.c
+
+MUSL_SRC_SYS += src/env/__stack_chk_fail.c
+MUSL_SRC_SYS += src/time/timegm.c
+MUSL_SRC_SYS += src/time/__tm_to_secs.c
+MUSL_SRC_SYS += src/time/__year_to_secs.c
+MUSL_SRC_SYS += src/time/__month_to_secs.c
+MUSL_SRC_SYS += src/time/__secs_to_tm.c
+
+MUSL_SRC_SYS += src/internal/vdso.c
+MUSL_SRC_SYS += src/legacy/getpagesize.c
+MUSL_SRC_SYS += src/time/clock_gettime.c
+MUSL_SRC_SYS += src/time/time.c
+
+MUSL_SRC_SYS += crt/crt1.c
+MUSL_SRC_SYS += src/env/__libc_start_main.c
+MUSL_SRC_SYS += src/env/__init_tls.c
+MUSL_SRC_SYS += src/exit/exit.c
+MUSL_SRC_SYS += src/exit/_Exit.c
+
+MUSL_SRC_SYS += src/stdio/stdout.c
+MUSL_SRC_SYS += src/stdio/stderr.c
+MUSL_SRC_SYS += src/thread/default_attr.c
+ifeq ($(ARCH),arm)
+MUSL_SRC_SYS += src/thread/arm/__set_thread_area.c
+else ifeq ($(ARCH),aarch64)
+MUSL_SRC_SYS += src/thread/aarch64/__set_thread_area.s
+endif
+MUSL_SRC_SYS += src/stdio/__stdio_write.c
+MUSL_SRC_SYS += src/stdio/__stdout_write.c
+
+# added file which is not contained by musl
+HM_SRC_SYS  = hm/src/internal
+HM_SRC_SYS += hm/arch/$(ARCH)
+HM_SRC_SYS += hm/src/time/vdso_get_udata.c
+HM_SRC_SYS += hm/src/string/safe_copy.c
+HM_SRC_SYS += hm/src/mcount/mcount.c
+
+# interfaces for dynamic link
+# for __dl_vseterr
+DYN_SRC_SYS = src/ldso/dlerror.c
+# for __tlsdesc_static and __tlsdesc_dynamic
+ifeq ($(ARCH),arm)
+DYN_SRC_SYS += src/ldso/arm/tlsdesc.S
+else ifeq ($(ARCH),aarch64)
+DYN_SRC_SYS += src/ldso/aarch64/tlsdesc.s
+endif
+# for dlclose
+DYN_SRC_SYS += src/ldso/dlclose.c
+# for dlsym
+DYN_SRC_SYS += src/ldso/${ARCH}/dlsym.s
+# for dlinfo
+DYN_SRC_SYS += src/ldso/dlinfo.c
+
+# for __tl_unlock and __tl_lock
+MUSL_SRC_SYS += src/thread/pthread_create.c
+MUSL_SRC_SYS += src/thread/__wait.c
+MUSL_SRC_SYS += src/thread/vmlock.c
+MUSL_SRC_SYS += src/thread/clone.c
+MUSL_SRC_SYS += src/thread/__unmapself.c
+
+# for tty
+MUSL_SRC_SYS += src/unistd/isatty.c
+
+# for pthread_atfork
+MUSL_SRC_SYS += src/thread/pthread_atfork.c
+# for fegetround and fesetround
+MUSL_SRC_SYS += src/fenv/fesetround.c
+ifeq ($(ARCH),arm)
+MUSL_SRC_SYS += src/fenv/arm/fenv-hf.S
+MUSL_SRC_SYS += src/fenv/arm/fenv.c
+else ifeq ($(ARCH),aarch64)
+MUSL_SRC_SYS += src/fenv/aarch64/fenv.s
+endif
+# for malloc, calloc, realloc and free
+ifeq ($(DEFAULT_MALLOC),musl)
+  HM_SRC_SYS += hm/src/malloc/mallopt.c
+  HM_SRC_SYS += hm/src/malloc/memtrace.c
+  MUSL_SRC_SYS += src/malloc
+  MUSL_SRC_SYS += src/unistd/write.c
+  MUSL_SRC_SYS += src/thread/__tls_get_addr.c
+  MUSL_SRC_SYS += src/mman/madvise.c
+  MUSL_SRC_SYS += src/stdio/fprintf.c
+  MUSL_SRC_SYS += src/mman/mremap.c
+else ifeq ($(DEFAULT_MALLOC),heapmgr)
+  HM_SRC_SYS += hm/src/malloc/alloc_fast.c
+  HM_SRC_SYS += hm/src/malloc/alloc_slow.c
+  HM_SRC_SYS += hm/src/malloc/backend_musl.c
+  HM_SRC_SYS += hm/src/malloc/mallinfo.c
+  HM_SRC_SYS += hm/src/malloc/memtrace.c
+  MUSL_SRC_SYS += src/thread/__tls_get_addr.c
+  MUSL_SRC_SYS += src/unistd/write.c
+  MUSL_SRC_SYS += src/mman/madvise.c
+  MUSL_SRC_SYS += src/stdio/fprintf.c
+else #himalloc
+  HM_SRC_SYS += hm/src/himalloc
+  HM_SRC_SYS += hm/src/malloc/memtrace.c
+  HM_SRC_SYS += hm/src/debug/backtracesyms.c
+  HM_SRC_SYS += hm/src/mem/dump.c
+  MUSL_SRC_SYS += src/thread/__tls_get_addr.c
+  MUSL_SRC_SYS += src/unistd/write.c
+  MUSL_SRC_SYS += src/mman/madvise.c
+  MUSL_SRC_SYS += src/stdio/fprintf.c
+  MUSL_SRC_SYS += src/stdio/sprintf.c
+  MUSL_SRC_SYS += src/conf/sysconf.c
+  MUSL_SRC_SYS += src/thread/pthread_mutexattr_init.c
+  MUSL_SRC_SYS += src/thread/pthread_mutexattr_destroy.c
+  MUSL_SRC_SYS += src/thread/pthread_mutexattr_settype.c
+  MUSL_SRC_SYS += src/thread/pthread_setcanceltype.c
+  MUSL_SRC_SYS += src/thread/pthread_setcancelstate.c
+  MUSL_SRC_SYS += src/thread/pthread_mutex_destroy.c
+  MUSL_SRC_SYS += src/misc/getrlimit.c
+  MUSL_SRC_SYS += src/linux/sysinfo.c
+  HM_SRC_SYS += src/fcntl/fcntl.c
+  HM_SRC_SYS += src/unistd/pipe.c
+endif
+
+ifeq ($(CRYPTO_OPENSSL), yes)
+  MUSL_SRC_SYS += src/exit/atexit.c
+  MUSL_SRC_SYS += src/conf/sysconf.c
+  MUSL_SRC_SYS += src/linux/sysinfo.c
+  MUSL_SRC_SYS += src/misc/getrlimit.c
+  MUSL_SRC_SYS += src/unistd/getegid.c
+  MUSL_SRC_SYS += src/unistd/getuid.c
+  MUSL_SRC_SYS += src/unistd/getgid.c
+  MUSL_SRC_SYS += src/unistd/geteuid.c
+  MUSL_SRC_SYS += src/unistd/usleep.c
+  MUSL_SRC_SYS += src/mman/mlock.c
+  MUSL_SRC_SYS += src/stdio/putchar.c
+  MUSL_SRC_SYS += src/signal/siglongjmp.c
+  MUSL_SRC_SYS += src/signal/sigfillset.c
+  MUSL_SRC_SYS += src/signal/sigsetjmp_tail.c
+  MUSL_SRC_SYS += src/signal/$(ARCH)/sigsetjmp.s
+endif
+
+# for dprintf
+MUSL_SRC_SYS += src/stdio/dprintf.c
+MUSL_SRC_SYS += src/stdio/vdprintf.c
+# for longjmp
+ifeq ($(ARCH),arm)
+MUSL_SRC_SYS += src/setjmp/arm/longjmp.S
+else ifeq ($(ARCH),aarch64)
+MUSL_SRC_SYS += src/setjmp/aarch64/longjmp.s
+endif
+# for open
+MUSL_SRC_SYS += src/fcntl/open.c
+# for __block_app_sigs and __restore_sigs
+MUSL_SRC_SYS += src/signal/block.c
+# for __membarrier
+MUSL_SRC_SYS += src/linux/membarrier.c
+MUSL_SRC_SYS += src/thread/sem_post.c
+MUSL_SRC_SYS += src/thread/sem_init.c
+MUSL_SRC_SYS += src/thread/sem_wait.c
+MUSL_SRC_SYS += src/thread/sem_timedwait.c
+MUSL_SRC_SYS += src/thread/sem_trywait.c
+MUSL_SRC_SYS += src/thread/pthread_testcancel.c
+MUSL_SRC_SYS += src/thread/pthread_cancel.c
+MUSL_SRC_SYS += src/thread/pthread_self.c
+MUSL_SRC_SYS += src/thread/pthread_kill.c
+MUSL_SRC_SYS += src/thread/pthread_cleanup_push.c
+MUSL_SRC_SYS += src/thread/__timedwait.c
+MUSL_SRC_SYS += src/thread/sem_destroy.c
+MUSL_SRC_SYS += src/signal/sigaction.c
+MUSL_SRC_SYS += src/signal/${ARCH}/restore.s
+
+# for mmap and munmap
+MUSL_SRC_SYS += src/mman/mmap.c
+MUSL_SRC_SYS += src/mman/munmap.c
+# for read and pread
+MUSL_SRC_SYS += src/unistd/read.c
+MUSL_SRC_SYS += src/thread/__syscall_cp.c
+MUSL_SRC_SYS += src/unistd/pread.c
+# for mprotect
+MUSL_SRC_SYS += src/mman/mprotect.c
+# for pthread_mutex_lock, pthread_mutex_unlock, pthread_cond_wait, pthread_cond_broadcast
+MUSL_SRC_SYS += src/thread/pthread_mutex_lock.c
+MUSL_SRC_SYS += src/thread/pthread_mutex_timedlock.c
+MUSL_SRC_SYS += src/thread/pthread_mutex_trylock.c
+MUSL_SRC_SYS += src/thread/pthread_mutex_unlock.c
+MUSL_SRC_SYS += src/thread/pthread_cond_wait.c
+MUSL_SRC_SYS += src/thread/pthread_cond_timedwait.c
+MUSL_SRC_SYS += src/thread/pthread_cond_broadcast.c
+# for fstat
+MUSL_SRC_SYS += src/stat/fstat.c
+MUSL_SRC_SYS += src/stat/fstatat.c
+MUSL_SRC_SYS += src/internal/procfdname.c
+# for close
+MUSL_SRC_SYS += src/unistd/close.c
+# for readlink
+MUSL_SRC_SYS += src/unistd/readlink.c
+# for fopen and fclose
+MUSL_SRC_SYS += src/stdio/fopen.c
+MUSL_SRC_SYS += src/stdio/__fmodeflags.c
+MUSL_SRC_SYS += src/stdio/__fdopen.c
+MUSL_SRC_SYS += src/stdio/ofl_add.c
+MUSL_SRC_SYS += src/stdio/fclose.c
+MUSL_SRC_SYS += src/stdio/fflush.c
+# for getdelim
+MUSL_SRC_SYS += src/stdio/getdelim.c
+# for pthread_rwlock_wrlock, pthread_rwlock_rdlock, pthread_rwlock_unlock
+MUSL_SRC_SYS += src/thread/pthread_rwlock_init.c
+MUSL_SRC_SYS += src/thread/pthread_rwlock_destroy.c
+MUSL_SRC_SYS += src/thread/pthread_rwlock_wrlock.c
+MUSL_SRC_SYS += src/thread/pthread_rwlock_timedwrlock.c
+MUSL_SRC_SYS += src/thread/pthread_rwlock_trywrlock.c
+MUSL_SRC_SYS += src/thread/pthread_rwlock_rdlock.c
+MUSL_SRC_SYS += src/thread/pthread_rwlock_timedrdlock.c
+MUSL_SRC_SYS += src/thread/pthread_rwlock_tryrdlock.c
+MUSL_SRC_SYS += src/thread/pthread_rwlock_unlock.c
+# for _exit
+MUSL_SRC_SYS += src/unistd/_exit.c
+# for __libc_version
+MUSL_SRC_SYS += src/internal/version.c
+# for pthread_setcancelstate
+MUSL_SRC_SYS += src/thread/pthread_setcancelstate.c
+# for __inhibit_ptc and __release_ptc
+MUSL_SRC_SYS += src/thread/lock_ptc.c
+# for setjmp
+ifeq ($(ARCH),arm)
+MUSL_SRC_SYS += src/setjmp/arm/setjmp.S
+else ifeq ($(ARCH),aarch64)
+MUSL_SRC_SYS += src/setjmp/aarch64/setjmp.s
+endif
+# for raise
+MUSL_SRC_SYS += src/signal/raise.c
+# for abort
+MUSL_SRC_SYS += src/exit/abort.c
+MUSL_SRC_SYS += src/exit/abort_lock.c
+# for __assert_fail
+MUSL_SRC_SYS += src/exit/assert.c
+# for getpid
+MUSL_SRC_SYS += src/unistd/getpid.c
+# for sigemptyset
+MUSL_SRC_SYS += src/signal/sigemptyset.c
+# for sigprocmask
+MUSL_SRC_SYS += src/signal/sigprocmask.c
+MUSL_SRC_SYS += src/thread/pthread_sigmask.c
+# for timer_create and timer_settime
+MUSL_SRC_SYS += src/time/timer_create.c
+MUSL_SRC_SYS += src/thread/pthread_barrier_wait.c
+MUSL_SRC_SYS += src/signal/sigwaitinfo.c
+MUSL_SRC_SYS += src/signal/sigtimedwait.c
+MUSL_SRC_SYS += src/env/__reset_tls.c
+MUSL_SRC_SYS += src/thread/pthread_once.c
+MUSL_SRC_SYS += src/thread/pthread_attr_setdetachstate.c
+MUSL_SRC_SYS += src/thread/pthread_barrier_init.c
+MUSL_SRC_SYS += src/thread/pthread_attr_init.c
+MUSL_SRC_SYS += src/time/timer_settime.c
+# for access
+MUSL_SRC_SYS += src/unistd/access.c
+# for closedir, opendir, readdir, scandir
+MUSL_SRC_SYS += src/dirent/closedir.c
+MUSL_SRC_SYS += src/dirent/opendir.c
+MUSL_SRC_SYS += src/dirent/readdir.c
+MUSL_SRC_SYS += src/dirent/scandir.c
+MUSL_SRC_SYS += src/dirent/alphasort.c
+# for strcoll
+MUSL_SRC_SYS += src/locale/strcoll.c
+# for getopt_long
+MUSL_SRC_SYS += src/misc/getopt_long.c
+MUSL_SRC_SYS += src/misc/getopt.c
+MUSL_SRC_SYS += src/misc/getsubopt.c
+MUSL_SRC_SYS += src/multibyte/mblen.c
+MUSL_SRC_SYS += src/stdio/fputs.c
+MUSL_SRC_SYS += src/stdio/putc.c
+MUSL_SRC_SYS += src/stdio/getc.c
+MUSL_SRC_SYS += src/stdio/__overflow.c
+# for auxv
+MUSL_SRC_SYS += src/misc/getauxval.c
+# for realpath
+MUSL_SRC_SYS += src/misc/realpath.c
+MUSL_SRC_SYS += src/unistd/getcwd.c
+MUSL_SRC_SYS += src/stat/stat.c
+# for waitpid
+MUSL_SRC_SYS += src/process/waitpid.c
+# for timer_delete
+MUSL_SRC_SYS += src/time/timer_delete.c
+# for printf
+MUSL_SRC_SYS += src/stdio/printf.c
+# for fork
+MUSL_SRC_SYS += src/process/fork.c
+MUSL_SRC_SYS += src/process/_Fork.c
+# for fgets
+MUSL_SRC_SYS += src/stdio/fgets.c
+# for wcstombs
+MUSL_SRC_SYS += src/multibyte/wcstombs.c
+MUSL_SRC_SYS += src/multibyte/wcsrtombs.c
+# for ungetwc
+MUSL_SRC_SYS += src/stdio/ungetwc.c
+MUSL_SRC_SYS += src/stdio/fwide.c
+MUSL_SRC_SYS += src/locale/c_locale.c
+# for fgetwc
+MUSL_SRC_SYS += src/stdio/fgetwc.c
+MUSL_SRC_SYS += src/multibyte/mbrtowc.c
+# for getline
+MUSL_SRC_SYS += src/stdio/getline.c
+# for sched_yield
+MUSL_SRC_SYS += src/sched/sched_yield.c
+# for bsearch
+MUSL_SRC_SYS += src/stdlib/bsearch.c
+# for pthread_mutex_init
+MUSL_SRC_SYS += src/thread/pthread_mutex_init.c
+MUSL_SRC_SYS += src/mman/posix_madvise.c
+# for nanosleep
+MUSL_SRC_SYS += src/time/nanosleep.c
+MUSL_SRC_SYS += src/time/clock_nanosleep.c
+# for localtime_r
+MUSL_SRC_SYS += src/time/localtime_r.c
+MUSL_SRC_SYS += src/time/__tz.c
+MUSL_SRC_SYS += src/time/__map_file.c
+# for kill
+MUSL_SRC_SYS += src/signal/kill.c
+# for prctl
+MUSL_SRC_SYS += src/linux/prctl.c
+# for pthread
+MUSL_SRC_SYS += src/thread/pthread_setschedparam.c
+MUSL_SRC_SYS += src/thread/pthread_join.c
+# for sleep
+MUSL_SRC_SYS += src/unistd/sleep.c
+# for sync
+MUSL_SRC_SYS += src/unistd/sync.c
+# for pthread_setcanceltype
+MUSL_SRC_SYS += src/thread/pthread_setcanceltype.c
+# for pthread_setname_np
+MUSL_SRC_SYS += src/linux/prctl.c
+MUSL_SRC_SYS += src/thread/pthread_setname_np.c
+# for pthread_attr_setstacksize, pthread_attr_setinheritsched
+MUSL_SRC_SYS += src/thread/pthread_attr_setstacksize.c
+MUSL_SRC_SYS += src/thread/pthread_attr_setinheritsched.c
+# for pthread_attr_setschedpolicy, pthread_attr_setschedparam
+MUSL_SRC_SYS += src/thread/pthread_attr_setschedpolicy.c
+MUSL_SRC_SYS += src/thread/pthread_attr_setschedparam.c
+MUSL_SRC_SYS += src/sched/sched_get_priority_max.c
+# for sched_getscheduler
+MUSL_SRC_SYS += src/sched/sched_getscheduler.c
+# for dirname
+MUSL_SRC_SYS += src/misc/dirname.c
+#for htonl
+MUSL_SRC_SYS += src/network/htonl.c
+#for htons
+MUSL_SRC_SYS += src/network/htons.c
+#for ntohl
+MUSL_SRC_SYS += src/network/ntohl.c
+#for ntohs
+MUSL_SRC_SYS += src/network/ntohs.c
+#for inet_aton
+MUSL_SRC_SYS += src/network/inet_aton.c
+#for inet_ntop
+MUSL_SRC_SYS += src/network/inet_ntop.c
+MUSL_SRC_SYS += src/network/inet_pton.c
+#for regexec
+MUSL_SRC_SYS += src/regex/regexec.c
+MUSL_SRC_SYS += src/regex/tre-mem.c
+#for regcomp
+MUSL_SRC_SYS += src/regex/regcomp.c
+#for rand
+MUSL_SRC_SYS += src/prng/rand.c
+#for random
+MUSL_SRC_SYS += src/prng/random.c
+#for gettimeofday
+MUSL_SRC_SYS += src/time/gettimeofday.c
+# for ioctl
+MUSL_SRC_SYS += src/misc/ioctl.c
+#for puts
+MUSL_SRC_SYS += src/stdio/puts.c
+#for sscanf
+MUSL_SRC_SYS += src/stdio/sscanf.c
+MUSL_SRC_SYS += src/stdio/vsscanf.c
+MUSL_SRC_SYS += src/stdio/vfscanf.c
+MUSL_SRC_SYS += src/multibyte/mbsinit.c
+#for rewind
+MUSL_SRC_SYS += src/stdio/rewind.c
+#for scandir
+MUSL_SRC_SYS += src/dirent/scandir.c
+#for mincore
+MUSL_SRC_SYS += src/mman/mincore.c
+#for tls
+MUSL_SRC_SYS += src/thread/pthread_key_create.c
+MUSL_SRC_SYS += src/thread/pthread_getspecific.c
+MUSL_SRC_SYS += src/thread/pthread_setspecific.c
+
+# dyn src file
+DYN_SRC_FILES_SYS = $(addprefix $(srcdir)/,$(DYN_SRC_SYS))
+DYN_OBJS_SYS = $(patsubst $(srcdir)/%, $(objdir)/%.lo, $(basename $(DYN_SRC_FILES_SYS)))
+
+# ldso src file
+LDSO_SRC_SYS = $(wildcard $(srcdir)/ldso/*.c)
+LDSO_OBJS-sys = $(patsubst $(srcdir)/%.c, $(objdir)/%-sys.lo, $(LDSO_SRC_SYS))
+
+# no fp src file
+NOFP_SRC_SYS += src/string/strstr.c
+NOFP_SRC_SYS += src/string/strspn.c
+NOFP_SRC_SYS += src/stdio/snprintf.c
+ifeq ($(SELINUX), yes)
+NOFP_SRC_SYS += src/stdio/sprintf.c
+endif
+NOFP_SRC_SYS += src/stdio/printf.c
+NOFP_SRC_SYS += src/stdio/fprintf.c
+NOFP_SRC_SYS += src/network/inet_aton.c
+NOFP_SRC_SYS += src/misc/pty.c
+NOFP_SRC_SYS += src/fcntl/open.c
+NOFP_SRC_SYS += src/string/memset.c
+
+ifeq ($(ARCH),aarch64)
+NOFP_SRC_SYS += src/string/memcpy.c
+endif
+
+NOFP_SRC_FILES_SYS = $(addprefix $(srcdir)/, $(NOFP_SRC_SYS))
+LNOFP_OBJS-sys = $(patsubst $(srcdir)/%.c, $(objdir)/%-sys.lo, $(NOFP_SRC_FILES_SYS))
+ANOFP_OBJS-sys = $(patsubst $(srcdir)/%.c, $(objdir)/%-sys.o, $(NOFP_SRC_FILES_SYS))
+
+# MUSL src file
+MUSL_SRC_FILE_SYS = $(filter %.c %.s %.S, $(MUSL_SRC_SYS))
+MUSL_SRC_DIR_SYS  = $(filter-out $(MUSL_SRC_FILE_SYS), $(MUSL_SRC_SYS))
+MUSL_SRC_FILES_SYS = $(addprefix $(srcdir)/, $(MUSL_SRC_FILE_SYS))
+
+MUSL_SRC_DIRS_SYS = $(addprefix $(srcdir)/,$(MUSL_SRC_DIR_SYS))
+MUSL_BASE_GLOBS_SYS = $(addsuffix /*.c,$(MUSL_SRC_DIRS_SYS))
+MUSL_ARCH_GLOBS_SYS = $(addsuffix /$(ARCH)/*.[csS],$(MUSL_SRC_DIRS_SYS))
+MUSL_BASE_SRCS_SYS = $(sort $(wildcard $(MUSL_BASE_GLOBS_SYS)) $(MUSL_SRC_FILES_SYS))
+MUSL_ARCH_SRCS_SYS = $(sort $(wildcard $(MUSL_ARCH_GLOBS_SYS)))
+MUSL_BASE_SRCS_SYS_FILTER = $(filter-out $(NOFP_SRC_FILES_SYS), $(MUSL_BASE_SRCS_SYS))
+MUSL_BASE_OBJS_SYS = $(patsubst $(srcdir)/%,%.o,$(basename $(MUSL_BASE_SRCS_SYS_FILTER)))
+MUSL_ARCH_OBJS_SYS = $(patsubst $(srcdir)/%,%.o,$(basename $(MUSL_ARCH_SRCS_SYS)))
+MUSL_REPLACED_OBJS_SYS = $(sort $(subst /$(ARCH)/,/,$(MUSL_ARCH_OBJS_SYS)))
+MUSL_OBJS_ORG_SYS = $(addprefix $(objdir)/, $(filter-out $(MUSL_REPLACED_OBJS_SYS), $(sort $(MUSL_BASE_OBJS_SYS) $(MUSL_ARCH_OBJS_SYS))))
+
+# hm src file
+HM_SRC_FILE_SYS = $(filter %.c %.s %.S, $(HM_SRC_SYS))
+HM_SRC_DIR_SYS  = $(filter-out $(HM_SRC_FILE_SYS), $(HM_SRC_SYS))
+HM_SRC_FILES_SYS = $(addprefix $(srcdir)/, $(HM_SRC_FILE_SYS))
+
+HM_SRC_DIRS_SYS = $(addprefix $(srcdir)/, $(HM_SRC_DIR_SYS))
+HM_BASE_GLOBS_SYS = $(addsuffix /*.c,$(HM_SRC_DIRS_SYS))
+HM_ARCH_GLOBS_SYS = $(addsuffix /$(ARCH)/*.[csS],$(HM_SRC_DIRS_SYS))
+
+HM_BASE_SRCS_SYS = $(sort $(wildcard $(HM_BASE_GLOBS_SYS))) $(HM_SRC_FILES_SYS)
+HM_ARCH_SRCS_SYS = $(sort $(wildcard $(HM_ARCH_GLOBS_SYS)))
+HM_BASE_OBJS_SYS = $(patsubst $(srcdir)/%,%.o,$(basename $(HM_BASE_SRCS_SYS)))
+HM_ARCH_OBJS_SYS = $(patsubst $(srcdir)/%,%.o,$(basename $(HM_ARCH_SRCS_SYS)))
+HM_OBJS_SYS = $(addprefix $(objdir)/, $(sort $(HM_BASE_OBJS_SYS) $(HM_ARCH_OBJS_SYS)))
+
+FILTER_OBJS_SYS = $(patsubst $(objdir)/hm/%, $(objdir)/%, $(HM_OBJS_SYS))
+MUSL_OBJS_SYS = $(filter-out $(FILTER_OBJS_SYS), $(MUSL_OBJS_ORG_SYS))
+
+AOBJS-sys = $(MUSL_OBJS_SYS) $(HM_OBJS_SYS)
+LOBJS-sys = $(filter-out %/crt1.lo, $(AOBJS-sys:%.o=%.lo)) $(DYN_OBJS_SYS)

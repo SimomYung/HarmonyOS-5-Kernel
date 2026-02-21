@@ -1,0 +1,7 @@
+# Copyright (c) Huawei Technologies Co., Ltd. 2022-2022. All rights reserved.
+# Description: HMbuild
+# Author: Huawei OS Kernel Lab
+# Create: Fri Sept 22 16:28:39 2023
+
+subdir-y: xvm
+subdir-y: adapter

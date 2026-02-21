@@ -1,0 +1,10 @@
+# Copyright (c) Huawei Technologies Co., Ltd. 2023-2023. All rights reserved.
+# Description: HMbuild for devhost
+# Author: Huawei OS Kernel Lab
+# Create: Sat Feb 11 17:55:12 2023
+
+cflags-y: -D_DH_PLUGIN_NAME=shmec
+
+src-y: shmec_api.c
+
+installinc-plugins: shmec.h

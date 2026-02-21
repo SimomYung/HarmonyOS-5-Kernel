@@ -1,0 +1,70 @@
+From a1530ed61778e99da315cb10cea2c46d215b096f Mon Sep 17 00:00:00 2001
+From: Wenchao Hao <haowenchao2@huawei.com>
+Date: Tue, 19 Dec 2023 17:23:57 +0800
+Subject: [PATCH] debugfs: Fix infinite loop when dump log
+
+There are 2 scenarios which would trigger infinite loop:
+
+1. None log is recorded, then dumplog with "-n", for example:
+   debugfs -R "logdump -O -n 10" /dev/xxx
+   while /dev/xxx has no valid log recorded.
+2. The log area is full and cycle write is triggered, then dumplog with
+   debugfs -R "logdump -aOS" /dev/xxx
+
+This patch add a new flag "reverse_flag" to mark if logdump has reached
+to tail of logarea, it is default false, and set in macro WRAP().
+
+If reverse_flag is true, and we comes to first_transaction_blocknr
+again, just break the logdump loop.
+
+Signed-off-by: Wenchao Hao <haowenchao2@huawei.com>
+---
+ debugfs/logdump.c | 11 +++++++----
+ 1 file changed, 7 insertions(+), 4 deletions(-)
+
+diff --git a/debugfs/logdump.c b/debugfs/logdump.c
+index 853be41..c4686ae 100644
+--- a/debugfs/logdump.c
++++ b/debugfs/logdump.c
+@@ -45,6 +45,7 @@ static int64_t		dump_counts;
+ static blk64_t		block_to_dump, bitmap_to_dump, inode_block_to_dump;
+ static unsigned int	group_to_dump, inode_offset_to_dump;
+ static ext2_ino_t	inode_to_dump;
++static bool		reverse_flag;
+ 
+ struct journal_source
+ {
+@@ -73,8 +74,10 @@ static void dump_fc_block(FILE *out_file, char *buf, int blocksize,
+ static void do_hexdump (FILE *, char *, int);
+ 
+ #define WRAP(jsb, blocknr, maxlen)					\
+-	if (blocknr >= (maxlen))					\
+-	    blocknr -= (maxlen - be32_to_cpu((jsb)->s_first));
++	if (blocknr >= (maxlen)) {					\
++		blocknr -= (maxlen - be32_to_cpu((jsb)->s_first));	\
++		reverse_flag = true;					\
++	}
+ 
+ void do_logdump(int argc, char **argv, int sci_idx EXT2FS_ATTR((unused)),
+ 		    void *infop EXT2FS_ATTR((unused)))
+@@ -108,6 +111,7 @@ void do_logdump(int argc, char **argv, int sci_idx EXT2FS_ATTR((unused)),
+ 	inode_block_to_dump = ANY_BLOCK;
+ 	inode_to_dump = -1;
+ 	dump_counts = -1;
++	reverse_flag = false;
+ 
+ 	reset_getopt();
+ 	while ((c = getopt (argc, argv, "ab:ci:f:OsSn:")) != EOF) {
+@@ -470,8 +474,7 @@ static void dump_journal(char *cmdname, FILE *out_file,
+ 		if (dump_old && (dump_counts != -1) && (cur_counts >= dump_counts))
+ 			break;
+ 
+-		if ((blocknr == first_transaction_blocknr) &&
+-		    (cur_counts != 0) && dump_old && (dump_counts != -1)) {
++		if ((blocknr == first_transaction_blocknr) && dump_old && reverse_flag) {
+ 			fprintf(out_file, "Dump all %lld journal records.\n", cur_counts);
+ 			break;
+ 		}
+-- 
+2.32.0
+

@@ -1,0 +1,359 @@
+/*
+ * Copyright (c) Huawei Technologies Co., Ltd. 2019-2020. All rights reserved.
+ * Description: pm_def.h
+ * Create: 2019-10-29
+ */
+#ifndef __PM_DEF_H__
+#define __PM_DEF_H__
+
+#include <pmic_interface.h>
+#include <m3_interrupts.h>
+#ifdef CONFIG_PM_DEL_PLATFORM_ADDR
+#include <lpm_kernel_map.h>
+#include <lpm_runtime_offset.h>
+#else
+#include <m3_sram_map.h>
+#endif
+
+/*
+ * ap wakeup sys irq source
+ * timer40: sr test
+ * timer50: FLP
+ * timer61: only for modem test
+ */
+#define AP_WAKE_INT_MASK   (BIT(SOC_SCTRL_SCINT_MASK_gpio_22_int_START) | \
+		            BIT(SOC_SCTRL_SCINT_MASK_gpio_23_int_START) | \
+		            BIT(SOC_SCTRL_SCINT_MASK_gpio_24_int_START) | \
+		            BIT(SOC_SCTRL_SCINT_MASK_gpio_25_int_START) | \
+		            BIT(SOC_SCTRL_SCINT_MASK_gpio_26_int_START) | \
+		            BIT(SOC_SCTRL_SCINT_MASK_gpio_27_int_START) | \
+		            BIT(SOC_SCTRL_SCINT_MASK_rtc0_int_START) | \
+		            BIT(SOC_SCTRL_SCINT_MASK_rtc1_int_START) | \
+		            BIT(SOC_SCTRL_SCINT_MASK_timer00_int_START) | \
+		            BIT(SOC_SCTRL_SCINT_MASK_timer11_int_START) | \
+		            BIT(SOC_SCTRL_SCINT_MASK_timer40_int_START) | \
+		            BIT(SOC_SCTRL_SCINT_MASK_timer41_int_START) | \
+		            BIT(SOC_SCTRL_SCINT_MASK_timer50_int_START) | \
+		            BIT(SOC_SCTRL_SCINT_MASK_timer71_int_START) | \
+		            BIT(SOC_SCTRL_SCINT_MASK_timer61_int_START))
+
+/* for SCINT_MASK1 */
+#define AP_WAKE_INT_MASK1       (BIT(SOC_SCTRL_SCINT_MASK1_mad_int_START) | \
+				 BIT(SOC_SCTRL_SCINT_MASK1_se_gpio1_START) | \
+				 BIT(SOC_SCTRL_SCINT_MASK1_gpio_28_int_START) | \
+				 BIT(SOC_SCTRL_SCINT_MASK1_gpio_21_int_START) | \
+				 BIT(SOC_SCTRL_SCINT_MASK1_gpio_20_int_START) | \
+				 BIT(SOC_SCTRL_SCINT_MASK1_int_gpio30_START) | \
+				 BIT(SOC_SCTRL_SCINT_MASK1_int_gpio29_START) | \
+				 BIT(SOC_SCTRL_SCINT_MASK1_int_gpio33_START) | \
+				 BIT(SOC_SCTRL_SCINT_MASK1_int_gpio32_START) | \
+				 BIT(SOC_SCTRL_SCINT_MASK1_int_gpio31_START))
+
+/*
+ * for SCINT_MASK2
+ * IRQ_GIC_IRQ_FIQ_OUT0, IRQ_GIC_IRQ_FIQ_OUT1, IRQ_GIC_IRQ_FIQ_OUT2, IRQ_GIC_IRQ_FIQ_OUT3
+ * IRQ_GIC_IRQ_FIQ_OUT4, IRQ_GIC_IRQ_FIQ_OUT5, IRQ_GIC_IRQ_FIQ_OUT6, IRQ_GIC_IRQ_FIQ_OUT7
+ */
+#define AP_WAKE_INT_MASK2       (BIT(SOC_SCTRL_SCINT_MASK2_gic_irq_int0_START) | \
+				 BIT(SOC_SCTRL_SCINT_MASK2_gic_irq_int1_START))
+
+/*
+ * for SCINT_MASK3: BIT[0-20]:peri_gpio 0x001FFFFF
+ * IRQ_GPIO36_INTR2
+ * IRQ_GPIO35_INTR2
+ * IRQ_GPIO34_INTR2
+ * IRQ_GIC_IRQ_FIQ_OUT0-7
+ */
+#define AP_WAKE_INT_MASK3       (BIT(SOC_SCTRL_SCINT_MASK3_vad_int_START) | \
+				 BIT(SOC_SCTRL_SCINT_MASK3_intr_gpio_36_START) | \
+				 BIT(SOC_SCTRL_SCINT_MASK3_intr_gpio_35_START) | \
+				 BIT(SOC_SCTRL_SCINT_MASK3_intr_gpio_34_START) | \
+				 0x001FFFFF)
+
+/*
+ * for AO IPC SCINT_MASK1
+ * IRQ_IPC_IOMCU_INT_COMB
+ * IRQ_AO_IPC_S_ASP_INT_COMB
+ * IRQ_MDM_IPCM_CCPU_COMB
+ * IRQ_AO_IPC_S_MBX4, IRQ_AO_IPC_S_MBX5, IRQ_AO_IPC_S_INT1
+ * IRQ_IPC_GIC_INT_COMB
+ */
+#define AO_IPC_WAKE_INT_MASK1       (BIT(SOC_SCTRL_SCINT_MASK1_ao_ipc_int0_START)| \
+				     BIT(SOC_SCTRL_SCINT_MASK1_ao_ipc_int7_START) | \
+				     BIT(SOC_SCTRL_SCINT_MASK1_ao_ipc_int8_START) | \
+				     BIT(SOC_SCTRL_SCINT_MASK1_ao_ipc_int5_START) | \
+				     BIT(SOC_SCTRL_SCINT_MASK1_ao_ipc_int1_START))
+
+/*
+ * iomcu wakeup sys irq source mask
+ * IRQ_IOMCU_WDT
+ * IRQ_IOMCU_WAKEUP
+ */
+#define IOMCU_WAKE_INT_MASK     (BIT(SOC_SCTRL_SCINT_MASK_intr_iomcu_wdog_START) | \
+				 BIT(SOC_SCTRL_SCINT_MASK_intr_wakeup_iomcu_START))
+/*
+ * SCINT_STAT
+ * bit 4: gpio_26_int
+ * bit 9: timer01_int
+ * bit 10: timer10_int
+ * bit 12: timer20_int
+ * bit 13: timer21_int
+ * bit 14: timer30_int
+ * bit 15: timer31_int
+ */
+#define MODEM_INT_MASK (BIT(SOC_SCTRL_SCINT_MASK_timer01_int_START) | \
+			BIT(SOC_SCTRL_SCINT_MASK_timer10_int_START) | \
+			BIT(SOC_SCTRL_SCINT_MASK_timer20_int_START) | \
+			BIT(SOC_SCTRL_SCINT_MASK_timer21_int_START) | \
+			BIT(SOC_SCTRL_SCINT_MASK_timer30_int_START) | \
+			BIT(SOC_SCTRL_SCINT_MASK_timer31_int_START))
+
+/*
+ * SCINT_STAT1
+ * bit 0: drx0_int
+ * bit 1: drx1_int
+ * bit 2: drx2_int
+ * bit 3: drx3_int
+ * bit 4: drx4_int
+ * bit 5: drx5_int
+ * bit 6: drx6_int
+ * bit 7: drx7_int
+ * bit 15: drx8_int
+ */
+#define MODEM_DRX_INT_MASK	0x0
+
+#define MODEM_INT_MASK4 (BIT(SOC_SCTRL_SCINT_STAT4_lte_drx_arm_wakeup_int_START) | \
+			    BIT(SOC_SCTRL_SCINT_STAT4_tds_drx_arm_wakeup_int_START) | \
+			    BIT(SOC_SCTRL_SCINT_MASK4_g1_int_gbbp_to_cpu_on_START) | \
+			    BIT(SOC_SCTRL_SCINT_MASK4_g2_int_gbbp_to_cpu_on_START) | \
+			    BIT(SOC_SCTRL_SCINT_STAT4_w_cpu_int02_START) | \
+			    BIT(SOC_SCTRL_SCINT_MASK4_cbbp_cpu_int01_START) | \
+			    BIT(SOC_SCTRL_SCINT_MASK4_g3_int_gbbp_to_cpu_on_START) | \
+			    BIT(SOC_SCTRL_SCINT_MASK4_w_cpu_int02_2_START) | \
+			    BIT(SOC_SCTRL_SCINT_STAT4_lte2_drx_arm_wakeup_int_START) | \
+			    BIT(SOC_SCTRL_SCINT_MASK4_ltev_drx_arm_wakeup_int_START))
+/* hifi wakeup sys irq source mask */
+#define HIFI_WAKE_INT_MASK	(BIT(SOC_SCTRL_SCINT_MASK_intr_asp_ipc_arm_START) | \
+				 BIT(SOC_SCTRL_SCINT_MASK_intr_asp_watchdog_START))
+#define MODEM_NR_INT_MASK4	(BIT(SOC_SCTRL_SCDRX_INT_CFG_nr_drx_arm_wakeup_int_START))
+
+#define MODEM_NR_INT_MASK5	(BIT(SOC_SCTRL_SCINT_STAT5_intr_timer140_START) | \
+				 BIT(SOC_SCTRL_SCINT_STAT5_intr_timer141_START) | \
+				 BIT(SOC_SCTRL_SCINT_STAT5_intr_timer150_START) | \
+				 BIT(SOC_SCTRL_SCINT_STAT5_intr_timer151_START))
+
+#define LPMCU_TICKMARK_FEATURE
+/* TICK_MODEM_EARLY_INIT_ENTRY point should add if define this */
+#define LPMCU_TICKMARK_MODEM_DRX_PROTECT
+
+enum tickmark_point
+{
+	TICK_SYS_WAKEUP			= 6,
+	TICK_SYS_NORMAL			= 8,
+	TICK_DDR_AVAILABLE		= 9,
+	TICK_SRAM_AVAILABLE		= 10,
+	TICK_MODEM_SRAM_START		= 11,
+	TICK_SYS_MAIN_IN		= 12,
+	TICK_MODEM_SRAM_END		= 13,
+	TICK_MODEM_UP_START		= 2,
+	TICK_MODEM_UP_END		= 3,
+	TICK_MODEM_DOWN_START		= 0,
+	TICK_MODEM_DOWN_END		= 1,
+	TICK_SLEEPFLOW_ENTER		= 14,
+	TICK_MODEM_UNAVAILABLE		= 15,
+	TICK_PERI_UNAVAILABLE		= 16,
+	TICK_DDR_UNAVAILABLE		= 17,
+	TICK_SYS_UNAVAILABLE		= 18,
+	TICK_DEEPSLEEP_WFI_ENTER	= 5,
+	TICK_SYS_WAKEUP_END		= 7,
+	TICK_SR_DDR_OP			= 19,
+	TICK_REM_DDR_OP			= 20,
+	TICK_AP_WAKEUP_IRQ		= 21,
+	TICK_AP_WAKEUP_RESUME		= 22,
+	TICK_AP_WAKEUP_UP_BEFORE	= 23,
+	TICK_AP_WAKEUP_UP_AFTER		= 24,
+	TICK_USBPHY_BEFORE		= 25,
+	TICK_USBPHY_AFTER		= 26,
+	TICK_SYS_SUSPEND_ENTRY		= 4,
+	TICK_LATSTAT_STOP_ENTRY		= 28,
+	TICK_LATSTAT_STOP_EXIT		= 29,
+	TICK_MODEM_SUSPEND_ENTRY	= 30,
+	TICK_MODEM_SUSPEND_EXIT		= 31,
+	TICK_DDR_DPM_SUSPEND_ENTRY	= 32,
+	TICK_DDR_DPM_SUSPEND_EXIT	= 33,
+	TICK_DDR_SUSPEND_ENTRY		= 34,
+	TICK_DDR_SUSPEND_EXIT		= 35,
+	TICK_PERI_FIX_DOWN_ENTRY	= 36,
+	TICK_PERI_FIX_DOWN_EXIT		= 37,
+	TICK_AOBUS_SUSPEND_ENTRY	= 38,
+	TICK_AOBUS_SUSPEND_EXIT		= 39,
+	TICK_MODEM_RESUME_PRE_ENTRY	= 40,
+	TICK_MODEM_RESUME_PRE_EXIT	= 41,
+	TICK_PERI_FIX_UP_ENTRY		= 42,
+	TICK_PERI_FIX_UP_EXIT		= 43,
+	TICK_DDR_RESUME_ENTRY		= 44,
+	TICK_DDR_RESUME_EXIT		= 45,
+	TICK_MODEM_SRAM_BAK_START	= 46,
+	TICK_MODEM_SRAM_BAK_END		= 47,
+	TICK_MODEM_RESUME_AFTER_ENTRY	= 48,
+	TICK_MODEM_RESUME_AFTER_EXIT	= 49,
+	TICK_DDR_DPM_RESUME_ENTRY	= 50,
+	TICK_DDR_DPM_RESUME_EXIT	= 51,
+	TICK_AP_SUSPEND_ENTRY		= 52,
+	TICK_AP_SUSPEND_EXIT		= 53,
+	TICK_AP_WAKEUP_RESUME_END	= 54,
+	TICK_MODEM_EARLY_INIT_ENTRY	= 55,
+	TICK_32K_ENTER_ENTRY	= 56,
+	TICK_32K_ENTER_ASP_ENTRY	= 57,
+	TICK_32K_ENTER_ASP_EXIT	= 58,
+	TICK_32K_ENTER_DDR_ENTRY	= 59,
+	TICK_32K_ENTER_DDR_EXIT	= 60,
+	TICK_32K_ENTER_SYSBUS_ENTRY	= 61,
+	TICK_32K_ENTER_SYSBUS_EXIT	= 62,
+	TICK_32K_ENTER_SLOW_ENTRY	= 63,
+	TICK_32K_ENTER_END	= 64,
+	TICK_32K_EXIT_ENTRY	= 65,
+	TICK_32K_EXIT_PREPARE_NORMAL_END	= 66,
+	TICK_32K_EXIT_SLOW_END	= 67,
+	TICK_32K_EXIT_AOBUS_ENTRY	= 68,
+	TICK_32K_EXIT_AOBUS_END	= 69,
+	TICK_32K_EXIT_SYSBUS_END	= 70,
+	TICK_32K_EXIT_DDR_ENTRY	= 71,
+	TICK_32K_EXIT_DDR_END	= 72,
+	TICK_32K_EXIT_ASP_ENTRY	= 73,
+	TICK_32K_EXIT_ASP_END	= 74,
+	TICK_32K_EXIT_END	= 75,
+	TICK_PRE_CHECK                      = 76,
+	TICK_ENABLE_COMBINED_WAKEUP_IRQ     = 77,
+	TICK_PMU_SUSPEND                	= 78,
+	TICK_LOWTEM_SUSPEND                 = 79,
+	TICK_PMU_CORE_SUSPEND           	= 80,
+	TICK_PERI_VOLT_SUSPEND            	= 81,
+	TICK_GPIO_SUSPEND                	= 82,
+	TICK_IOC_SUSPEND                  	= 83,
+	TICK_TZPC_SUSPEND                   = 84,
+	TICK_TEMP                   		= 85,
+	TICK_CLOCK_SUSPEND               	= 86,
+	TICK_UART_WAIT_IDLE					= 87,
+	TICK_SYS_WAKEUP_IRQ_MASK			= 88,
+	TICK_AUTOFS_SUSPEND					= 89,
+	TICK_SYS_MODE_SWITCH				= 90,
+	TICK_AO_VOLT_SUSPEND           		= 91,
+	TICK_SYSIO_RETENTION_ENABLE         = 92,
+	TICK_WATCHDOG_DISABLE               = 93,
+	TICK_FLL_DIV_RESUME					= 94,
+	TICK_LPM3_VOTE_ENABLE_SPMI          = 95,
+	TICK_SYSBUS_EXIT_IDLE               = 96,
+	TICK_AOBUS_RESUME           		= 97,
+	TICK_LPM3_CLKINIT                   = 98,
+	TICK_PERI_VOLT_RESUME               = 99,
+	TICK_IOC_RESUME                 	= 100,
+	TICK_GPIO_RESUME					= 101,
+	TICK_TZPC_RESUME					= 102,
+	TICK_AUTOFS_RESUME        			= 103,
+	TICK_GIC_CLK_INIT         			= 104,
+	TICK_FIPC_GIC_INIT             		= 105,
+	TICK_CRG_RESUME                     = 106,
+	TICK_MEM_REPAIR_RESUME              = 107,
+	TICK_CLOCK_RESUME                   = 108,
+	TICK_TSENSOR_RESUME            		= 109,
+	TICK_HW_VOTE_RESUME                 = 110,
+	TICK_TCTRL_LOWTEM_RESUME            = 111,
+	TICK_NON_AO_LPRAM_COPY_ENTRY        = 112,
+	TICK_NON_AO_LPRAM_COPY_EXIT         = 113,
+	TICK_DS_RESUME_CFG_EXIT            	= 114,
+	TICK_SYS_RESUME                     = 115,
+	TICK_SYS_RESUME_EXIT                = 116,
+	TICK_MODEM_RESUME          			= 117,
+	TICK_DDR_DPM_RESUME_BEGIN           = 118,
+	TICK_REGULATOR_RESUME               = 119,
+	TICK_DS_RESUME_ENTRY_END            = 120,
+	TICK_SYS_MAIN_IN_START              = 121,
+	TICK_SYS_MAIN_IN_END                = 172,	
+
+	TICK_USED_MAX,
+	TICK_MARK_END_FLAG		            = TICK_USED_MAX,
+	/* must be last */
+
+	TICK_MAX = LPMCU_TELE_MNTN_DATA_TICKMARK_SIZE / 4,
+};
+
+enum sr_tick_pos {
+	NO_SR = 0, /* 0 */
+	KERNEL_SUSPEND_PREPARE, /* 1 */
+	KERNEL_SUSPEND_IN, /* 2 */
+	KERNEL_SUSPEND_SETFLAG, /* 3 */
+	BL31_SUSPEND_IPC, /* 4 */
+	LPMCU_AP_SUSPEND_IN, /* 5 */
+	LPMCU_AP_SUSPEND_CPU, /* 6 */
+	LPMCU_AP_SUSPEND_IOMCU, /* 7 */
+	LPMCU_AP_SUSPEND_ASP, /* 8 */
+	LPMCU_AP_SUSPEND_END, /* 9 */
+	LPMCU_SYS_SUSPEND_IN, /* 10 */
+	LPMCU_SYS_SUSPEND_DDRDFS, /* 11 */
+	LPMCU_SYS_SUSPEND_IO, /* 12 */
+	LPMCU_SYS_SUSPEND_CLK, /* 13 */
+	LPMCU_SYS_SUSPEND_DDR, /* 14 */
+	LPMCU_SYS_SUSPEND_UART, /* 15 */
+	LPMCU_SYS_SUSPEND_AUTOFS, /* 16 */
+	LPMCU_SYS_RESUME_IO, /* 17 */
+	LPMCU_SYS_RESUME_AUTOFS, /* 18 */
+	LPMCU_SYS_MAIN_IN, /* 19 */
+	LPMCU_SYS_MAIN_END, /* 20 */
+	LPMCU_AP_RESUME_IN, /* 21 */
+	LPMCU_AP_RESUME_ASP, /* 22 */
+	LPMCU_AP_RESUME_IOMCU, /* 23 */
+	LPMCU_AP_RESUME_CPU, /* 24 */
+	BL31_RESUME_IN, /* 25 */
+	KERNEL_RESUME, /* 26 */
+	KERNEL_RESUME_OUT, /* 27 */
+	SR_ABNORMAL, /* 28 */
+	SR_TICK_MAX, /* 29 */
+};
+
+#define PMUOFFSET_SR_TICK PMIC_HRST_REG11_ADDR(0)
+
+#define COREPWRACK_MASK	\
+		(BIT(SOC_CRGPERIPH_PERPWRACK_fcm_little_core0_pwrack_START) | \
+		 BIT(SOC_CRGPERIPH_PERPWRACK_fcm_little_core1_pwrack_START) | \
+		 BIT(SOC_CRGPERIPH_PERPWRACK_fcm_little_core2_pwrack_START) | \
+		 BIT(SOC_CRGPERIPH_PERPWRACK_fcm_little_core3_pwrack_START) | \
+		 BIT(SOC_CRGPERIPH_PERPWRACK_fcm_little_core4_pwrack_START) | \
+		 BIT(SOC_CRGPERIPH_PERPWRACK_fcm_little_core5_pwrack_START) | \
+		 BIT(SOC_CRGPERIPH_PERPWRACK_fcm_big_core0_pwrack_START) | \
+		 BIT(SOC_CRGPERIPH_PERPWRACK_fcm_big_core1_pwrack_START))
+
+/* ao ipc processor max */
+#define AO_IPC_PROCESSOR_MAX	3
+
+/* ao ipc mailbox max */
+#define AO_NSIPC_MAILBOX_MAX	3
+
+#define AP_IPC_PROC_BIT		1
+
+#define IRQ_COMB_GIC_IPC IRQ_IPC_GIC_INT_COMB
+
+#ifdef CONFIG_SLT_SR
+#define SLT_SR_FLAG     0x7D
+#define SLT_SR_SYS_FLAG     (0xAE << 8)
+#define SLT_SR_REQ_FLAG     (0x5D << 16)
+
+#if defined(__FASTBOOT__)
+#define SLT_SR_BASE_ADDR	SOC_SCTRL_SCBAKDATA23_ADDR(SOC_ACPU_SCTRL_BASE_ADDR)
+#elif defined(__CMSIS_RTOS)
+#define SLT_SR_BASE_ADDR	SOC_SCTRL_SCBAKDATA23_ADDR(SOC_LPMCU_SCTRL_BASE_ADDR)
+#endif
+
+#define SLT_TST_SR_FLG(x)	((readl(SLT_SR_BASE_ADDR) & 0xFF) == (x))
+#define SLT_TST_SR_SYS_FLG(x)	((readl(SLT_SR_BASE_ADDR) & 0xFF00) == (x))
+#define SLT_TST_SR_REQ_FLG(x)	((readl(SLT_SR_BASE_ADDR) & 0xFF0000) == (x))
+
+#define SLT_SET_SUSPENDFLG(x)   \
+	do {writel((readl(SLT_SR_BASE_ADDR) | (x)),	\
+		SLT_SR_BASE_ADDR);} while (0)
+#define SLT_CLR_SUSPENDFLG(x)   \
+	do {writel((readl(SLT_SR_BASE_ADDR) & (~(x))),	\
+		SLT_SR_BASE_ADDR);} while (0)
+
+#endif
+#endif

@@ -1,0 +1,50 @@
+/*
+ * Copyright (C) Huawei Technologies Co., Ltd. 2023. All rights reserved.
+ * Description: iaware notify operation sysif APIs
+ * Author: Huawei OS Kernel Lab
+ * Create: Wed May 24 17:07:40 CST 2023
+ */
+
+/*
+ * To support the mixed data model which means the client and the server
+ * may use different data model. See the comment for limitation of data type
+ * used in the sysif interfaces in <libsysif/base/api.h>.
+ */
+#ifdef SYSIF_EXPORT_API
+
+struct kstate_binder_info {
+	int caller_pid;
+	int callee_pid;
+	unsigned int is_freeze;
+	unsigned int type;
+	unsigned int flags;
+	unsigned int callee_level;
+};
+
+#endif
+
+DEFINE_MANAGER(kstate, 5,
+	DEFINE_METHOD(kstate, binderinfo_notify,
+		      ARG(2,
+			  int, calling_pid,
+			  int, called_pid),
+		      RET_NO,
+		      SLOWDATA_NO)
+	DEFINE_METHOD(kstate, killinfo_notify,
+		      ARG(2,
+			  int, pid,
+			  int, seg),
+		      RET_NO,
+		      SLOWDATA_NO)
+	DEFINE_METHOD(kstate, freeze_binder_info_notify,
+		      ARG(1,
+			  struct kstate_binder_info *, info),
+		      RET_NO,
+		      SLOWDATA_NO)
+	DEFINE_METHOD(kstate, request_anco_thaw,
+		      ARG(2,
+			  char *, reason,
+			  unsigned int, size),
+		      RET_NO,
+		      SLOWDATA_NO)
+)

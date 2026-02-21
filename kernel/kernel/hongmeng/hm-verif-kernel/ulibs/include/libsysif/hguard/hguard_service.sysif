@@ -1,0 +1,91 @@
+/*
+ * Copyright (C) Huawei Technologies Co., Ltd. 2020. All rights reserved.
+ * Description: Generate for hguard service sysif api
+ * Author: Huawei OS Kernel Lab
+ * Create: Fri Feb 28 09:56:21 2020
+ */
+#ifdef SYSIF_EXPORT_API
+#include <unistd.h>
+#include <libbunch/bunch_ipc.h>
+
+#define HGUARD_SERVICE_NAME_MAX 64U /* including ending NULL */
+#define HGUARD_REBOOT_FLAG_SAFE   0
+#define HGUARD_REBOOT_FLAG_FORCE  1
+
+enum hguard_notify_type {
+	HGUARD_NOTIFY_HEARTBEAT,
+	HGUARD_NOTIFY_READY,
+	HGUARD_NOTIFY_INVALID,
+};
+
+enum hguard_action_type {
+	HGUARD_ACTION_START,
+	HGUARD_ACTION_STOP,
+	HGUARD_ACTION_RESTART,
+	HGUARD_ACTION_RELOAD,
+	HGUARD_ACTION_STATUS,
+	HGUARD_ACTION_DUMP_STARTUP_TIME,
+	HGUARD_ACTION_DAEMON_RELOAD,
+	HGUARD_ACTION_REBOOT,
+	HGUARD_ACTION_REBOOT_FORCE,
+	HGUARD_ACTION_ALL_SOCKET_SERVICE_NAMES,
+	HGUARD_ACTION_SERVICE_STATE,
+	HGUARD_ACTION_SERVICE_MEMORY_CURRENT,
+	HGUARD_ACTION_DELIVER_START,
+	HGUARD_ACTION_MAX,
+};
+
+struct hguard_request {
+	enum hguard_action_type action;
+	char name[HGUARD_SERVICE_NAME_MAX];
+	struct {
+		int size;
+		void *ptr;
+	} buf;
+};
+
+enum hguard_subscribe_action_type {
+	HGUARD_SUBSCRIBE_RECORD,
+	HGUARD_SUBSCRIBE_REGISTER,
+	HGUARD_SUBSCRIBE_FETCHALL,
+	HGUARD_SUBSCRIBE_CLEAR,
+};
+
+struct hguard_subscribe_request {
+	enum hguard_subscribe_action_type action;
+	union {
+		int pid;
+		int signum;
+		struct {
+			int size;
+			void *ptr;
+		} buf;
+	} arg;
+};
+
+#endif
+
+/*
+ * To support the mixed data model which means the client and the server
+ * may use different data model. See the document for limitation of data type
+ * used in the sysif interfaces in <Documentation/sysif_compat.md>.
+ */
+DEFINE_MANAGER(service, 4,
+	DEFINE_METHOD(service, notify,
+		      ARG(1, unsigned int, type),
+		      RET_NO,
+		      SLOWDATA_NO)
+	DEFINE_METHOD(service, process_exit,
+		      ARG(2, pid_t, pid, int, status),
+		      RET_NO,
+		      SLOWDATA_NO)
+	DEFINE_METHOD(service, start,
+		      ARG(2, struct hguard_request, arg,
+			     struct bunch_ipc_attr, attr),
+		      RET_NO,
+		      SLOWDATA_NO)
+	DEFINE_METHOD(service, subscribe,
+		      ARG(1, struct hguard_subscribe_request, req),
+		      RET_NO,
+		      SLOWDATA_NO)
+)

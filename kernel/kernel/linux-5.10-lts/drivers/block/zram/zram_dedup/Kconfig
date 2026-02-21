@@ -1,0 +1,9 @@
+# SPDX-License-Identifier: GPL-2.0
+config ZRAM_DEDUP
+	bool "Memory deduplication"
+	depends on ZRAM && CRC32
+	help
+	  With this feature, zram could deduplicate the objects with the same
+	  context. Admin could see the information via
+	  /sys/block/zramX/io_stat.
+

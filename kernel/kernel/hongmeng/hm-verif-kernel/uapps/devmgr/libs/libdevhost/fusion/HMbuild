@@ -1,0 +1,6 @@
+# Copyright (c) Huawei Technologies Co., Ltd. 2023. All rights reserved.
+# Description: HMbuild
+# Author: Huawei OS Kernel Lab
+# Create: Wed Jul 12 15:27:23 2023
+
+src-y: dev.c

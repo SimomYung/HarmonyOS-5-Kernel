@@ -1,0 +1,43 @@
+{
+    "name": "@ohos/libnl",
+    "description": "Providing APIs to netlink protocol based Linux kernel interfaces.",
+    "version": "1.0",
+    "license": "LGPL V2.1",
+    "publishAs": "code-segment",
+    "segment": {
+        "destPath": "third_party/libnl"
+    },
+    "dirs": {},
+    "scripts": {},
+    "licensePath": "thirdparth/libnl-3.7.0/COPYING",
+    "readmePath":{
+        "en": "README.md",
+        "zh": "README_ZH.md"
+    },
+    "component": {
+        "name": "libnl",
+        "subsystem": "thirdparty",
+        "syscap": [],
+        "features": [],
+        "adapted_system_type": [ "standard" ],
+        "rom": "800KB",
+        "ram": "1600KB",
+        "deps": {
+            "components": [],
+            "third_party": []
+        },
+        "build": {
+            "sub_component": [],
+            "inner_kits": [
+                {
+                    "header": {
+                        "header_base": "//third_party/libnl/",
+                        "header_files": []
+                    },
+                    "name": "//third_party/libnl:libnl_share"
+                }
+            ],
+            "test": []
+        }
+    }
+}

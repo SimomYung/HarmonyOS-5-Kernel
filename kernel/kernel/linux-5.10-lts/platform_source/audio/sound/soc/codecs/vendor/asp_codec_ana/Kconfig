@@ -1,0 +1,2 @@
+source "platform_source/audio/sound/soc/codecs/vendor/asp_codec_ana/platform/asp_codec_ana_v7/Kconfig"
+source "platform_source/audio/sound/soc/codecs/vendor/asp_codec_ana/platform/asp_codec_ana_v8/Kconfig"

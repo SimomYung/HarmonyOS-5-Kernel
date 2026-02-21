@@ -1,0 +1,55 @@
+From 7464397a0c5df0416a7ef3436747045b36fb7882 Mon Sep 17 00:00:00 2001
+From: Theodore Ts'o <tytso@mit.edu>
+Date: Tue, 9 Aug 2022 10:52:57 -0400
+Subject: e2fsck: fix potential fencepost error in
+ e2fsck_should_rebuild_extents()
+
+The ext2_extent_info.max_depth is zero-based (e.g., it is zero when
+the entire extent tree fits in the inode).  Hence, if it is equal to
+MAX_EXTENT_DEPTH_COUNT we should always rebuild the extent tree to
+shorten it.
+
+Also, for 1k block file systems, it's possible for the worst-case
+extent tree in its most compact form to have a maximum depth of 6, not
+5.  So set MAX_EXTENT_DEPTH_COUNT to 8 just to be sure we have plenty
+of headroom.  (The kernel supports an extent depth up to 2**16, but
+e2fsck only keeps statistics up to MAX_EXTENT_DEPTH_COUNT, and if it's
+deeper than that, we know that it will be profitable to rebuild the
+extent tree in any case.)
+
+Addresses-Coverity-Bug: 1507761
+Signed-off-by: Theodore Ts'o <tytso@mit.edu>
+---
+ e2fsck/e2fsck.h  | 2 +-
+ e2fsck/extents.c | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/e2fsck/e2fsck.h b/e2fsck/e2fsck.h
+index 00b20919..75baf2cd 100644
+--- a/e2fsck/e2fsck.h
++++ b/e2fsck/e2fsck.h
+@@ -233,7 +233,7 @@ typedef struct ea_refcount *ext2_refcount_t;
+  */
+ typedef struct e2fsck_struct *e2fsck_t;
+ 
+-#define MAX_EXTENT_DEPTH_COUNT 5
++#define MAX_EXTENT_DEPTH_COUNT 8
+ 
+ /*
+  * This strucutre is used to manage the list of extents in a file. Placing
+diff --git a/e2fsck/extents.c b/e2fsck/extents.c
+index 86fe00e7..70798f34 100644
+--- a/e2fsck/extents.c
++++ b/e2fsck/extents.c
+@@ -583,7 +583,7 @@ errcode_t e2fsck_should_rebuild_extents(e2fsck_t ctx,
+ 			    sizeof(struct ext3_extent);
+ 
+ 	/* If the extent tree is too deep, then rebuild it. */
+-	if (info->max_depth > MAX_EXTENT_DEPTH_COUNT) {
++	if (info->max_depth > MAX_EXTENT_DEPTH_COUNT-1) {
+ 		pctx->blk = info->max_depth;
+ 		op = PR_1E_CAN_COLLAPSE_EXTENT_TREE;
+ 		goto rebuild;
+-- 
+cgit 
+

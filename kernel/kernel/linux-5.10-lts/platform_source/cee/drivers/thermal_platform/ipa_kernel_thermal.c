@@ -1,0 +1,1600 @@
+/*
+ * ipa_kernel_thermal.c
+ *
+ * thermal ipa kernel framework
+ *
+ * Copyright (C) 2017-2024 Huawei Technologies Co., Ltd.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 2 and
+ * only version 2 as published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ */
+
+#include <platform_include/cee/linux/lpm_thermal.h>
+#include <linux/cpu_cooling.h>
+#include <linux/debugfs.h>
+#include <linux/cpufreq.h>
+#include <linux/cpumask.h>
+#include <linux/module.h>
+#include <linux/platform_device.h>
+#include <linux/thermal.h>
+#include <linux/topology.h>
+#include <linux/version.h>
+#include <linux/pm_opp.h>
+#include <linux/slab.h>
+#include <linux/cpu.h>
+#include <linux/kthread.h>
+#include <linux/sched/task.h>
+#include <uapi/linux/sched/types.h>
+#include <securec.h>
+#include <linux/of_platform.h>
+#include <linux/string.h>
+#include <trace/events/thermal.h>
+#include <trace/events/thermal_power_allocator.h>
+#include <trace/events/ipa_thermal_trace.h>
+#include <thermal_core.h>
+#ifdef trace_perf
+#include <trace/events/power.h>
+#endif
+#ifdef CONFIG_LIBLINUX
+#include <liblinux/pal.h>
+#endif
+#ifdef CONFIG_ITS_IPA
+#include <platform_include/cee/linux/dpm_hwmon_user.h>
+#endif
+#ifdef CONFIG_FREQ_LIMIT_COUNTER
+#include <platform_include/cee/linux/perfhub.h>
+#endif
+
+#include "ipa_thermal.h"
+#ifdef CONFIG_THERMAL_SOC_SHELL
+#include "soc_shell_thermal.h"
+#endif /* CONFIG_THERMAL_SOC_SHELL */
+#ifdef CONFIG_OPT_IPA_THERMAL
+#include "opt_ipa_thermal.h"
+#endif /* CONFIG_OPT_IPA_THERMAL */
+
+DEFINE_MUTEX(thermal_boost_lock);
+#define MODE_LEN 10
+#define MAX_CPU_CLUSTER 10
+int g_ipa_freq_limit_debug = 0;
+static u32 g_cpu_version = 0;
+#ifdef CONFIG_THERMAL_OPP_TABLE_V2
+#define OPP_TABLE_CLUSTER_LIMIT 2
+#endif 
+
+unsigned int g_ipa_freq_limit[CAPACITY_OF_ARRAY] = {
+	IPA_FREQ_MAX, IPA_FREQ_MAX, IPA_FREQ_MAX, IPA_FREQ_MAX, IPA_FREQ_MAX,
+	IPA_FREQ_MAX, IPA_FREQ_MAX, IPA_FREQ_MAX, IPA_FREQ_MAX, IPA_FREQ_MAX
+};
+unsigned int g_ipa_soc_freq_limit[CAPACITY_OF_ARRAY] = {
+	IPA_FREQ_MAX, IPA_FREQ_MAX, IPA_FREQ_MAX, IPA_FREQ_MAX, IPA_FREQ_MAX,
+	IPA_FREQ_MAX, IPA_FREQ_MAX, IPA_FREQ_MAX, IPA_FREQ_MAX, IPA_FREQ_MAX
+};
+unsigned int g_ipa_board_freq_limit[CAPACITY_OF_ARRAY] = {
+	IPA_FREQ_MAX, IPA_FREQ_MAX, IPA_FREQ_MAX, IPA_FREQ_MAX, IPA_FREQ_MAX,
+	IPA_FREQ_MAX, IPA_FREQ_MAX, IPA_FREQ_MAX, IPA_FREQ_MAX, IPA_FREQ_MAX
+};
+unsigned int g_ipa_soc_state[CAPACITY_OF_ARRAY] = {0};
+unsigned int g_ipa_board_state[CAPACITY_OF_ARRAY] = {0};
+
+unsigned int g_ipa_gpu_boost_weights[CAPACITY_OF_ARRAY] = {0};
+unsigned int g_ipa_normal_weights[CAPACITY_OF_ARRAY] = {0};
+
+void ipa_freq_debug(int onoff)
+{
+	g_ipa_freq_limit_debug = onoff;
+}
+
+void ipa_freq_limit_init(void)
+{
+	unsigned int i;
+	for (i = 0; i < g_ipa_sensor_num; i++)
+		g_ipa_freq_limit[i] = IPA_FREQ_MAX;
+}
+
+void ipa_freq_limit_reset(struct thermal_zone_device *tz)
+{
+	unsigned int i;
+
+	struct thermal_instance *instance = NULL;
+
+	if (tz->is_board_thermal) {
+		for (i = 0; i < g_ipa_sensor_num; i++) {
+			g_ipa_board_freq_limit[i] = IPA_FREQ_MAX;
+			g_ipa_board_state[i] = 0;
+		}
+	} else {
+		for (i = 0; i < g_ipa_sensor_num; i++) {
+			g_ipa_soc_freq_limit[i] = IPA_FREQ_MAX;
+			g_ipa_soc_state[i] = 0;
+		}
+	}
+
+	for (i = 0; i < g_ipa_sensor_num; i++) {
+		if (g_ipa_soc_freq_limit[i] != 0 && g_ipa_board_freq_limit[i] != 0)
+			g_ipa_freq_limit[i] = min(g_ipa_soc_freq_limit[i], g_ipa_board_freq_limit[i]);
+		else if (g_ipa_soc_freq_limit[i] == 0)
+			g_ipa_freq_limit[i] = g_ipa_board_freq_limit[i];
+		else if (g_ipa_board_freq_limit[i] == 0)
+			g_ipa_freq_limit[i] = g_ipa_soc_freq_limit[i];
+		else
+			g_ipa_freq_limit[i] = IPA_FREQ_MAX;
+	}
+
+	list_for_each_entry(instance, &tz->thermal_instances, tz_node) {
+		instance->target = 0;
+		instance->cdev->ops->set_cur_state(instance->cdev, 0UL);
+		mutex_lock(&instance->cdev->lock);
+		instance->cdev->updated = true;
+		mutex_unlock(&instance->cdev->lock);
+	}
+}
+
+unsigned int ipa_freq_limit(int actor, unsigned int target_freq)
+{
+	unsigned int i = 0;
+
+	if (actor >= (int)g_ipa_sensor_num)
+		return target_freq;
+
+	if (g_ipa_freq_limit_debug) {
+		pr_err("actor[%d]target_freq[%u]IPA:", actor, target_freq);
+		for (i = 0; i < g_ipa_sensor_num; i++)
+			pr_err("[%u]", g_ipa_freq_limit[i]);
+		pr_err("min[%u]\n", min(target_freq, g_ipa_freq_limit[actor]));
+	}
+
+#ifdef CONFIG_THERMAL_SPM
+	if (get_spm_target_freq(actor, &target_freq))
+		return target_freq;
+#endif
+
+#ifdef CONFIG_FREQ_LIMIT_COUNTER
+	if (actor == ipa_get_actor_id("gpu"))
+		update_gpu_freq_limit_counter(target_freq, g_ipa_freq_limit[actor]);
+#endif
+	return min(target_freq, g_ipa_freq_limit[actor]);
+}
+EXPORT_SYMBOL(ipa_freq_limit);
+
+#ifdef CONFIG_PERF_CTRL
+int get_ipa_status(struct ipa_stat *status)
+{
+	status->cluster0 = g_ipa_freq_limit[0];
+	status->cluster1 = g_ipa_freq_limit[1];
+	if (ipa_get_actor_id("gpu") == 3) {
+		status->cluster2 = g_ipa_freq_limit[2];
+		status->gpu = g_ipa_freq_limit[3];
+	} else {
+		status->cluster2 = 0;
+		status->gpu = g_ipa_freq_limit[2];
+	}
+
+	return 0;
+}
+#endif
+
+void restore_actor_weights(struct thermal_zone_device *tz)
+{
+	struct thermal_instance *pos = NULL;
+	int actor_id = -1;
+
+	list_for_each_entry(pos, &tz->thermal_instances, tz_node) {
+		actor_id = ipa_get_actor_id_by_weight(pos->weight_attr_name);
+		if (actor_id != -1)
+			pos->weight = g_ipa_normal_weights[actor_id];
+	}
+}
+EXPORT_SYMBOL_GPL(restore_actor_weights);
+
+int thermal_zone_notify_enabled(struct thermal_zone_device *tz)
+{
+	int result;
+
+	restore_actor_weights(tz);
+	result = thermal_zone_device_enable(tz);
+	if (tz->is_board_thermal)
+		trace_perf(clock_set_rate, "brd_tz_boost", 0, raw_smp_processor_id());
+	if (tz->is_soc_thermal)
+		trace_perf(clock_set_rate, "soc_tz_boost", 0, raw_smp_processor_id());
+	pr_err("boost end, enable thermal_zone: %s\n", tz->type);
+
+	return result;
+}
+
+int thermal_zone_notify_disabled(struct thermal_zone_device *tz)
+{
+	int result;
+
+	restore_actor_weights(tz);
+	result = thermal_zone_device_disable(tz);
+	if (strncmp(tz->governor->name, USER_SPACE_GOVERNOR, THERMAL_NAME_LENGTH) != 0) {
+		mutex_lock(&tz->lock);
+		ipa_freq_limit_reset(tz);
+		mutex_unlock(&tz->lock);
+	}
+	if (tz->is_board_thermal)
+		trace_perf(clock_set_rate, "brd_tz_boost", 1, raw_smp_processor_id());
+	if (tz->is_soc_thermal)
+		trace_perf(clock_set_rate, "soc_tz_boost", 1, raw_smp_processor_id());
+	pr_err("boost start, disable thermal_zone: %s\n", tz->type);
+
+	return result;
+}
+
+#ifdef CONFIG_THERMAL_BOOST_BYPASS
+bool boost_bypass_check(struct thermal_zone_device *tz)
+{
+	struct __thermal_zone *data = NULL;
+	if (tz == NULL)
+		return false;
+	
+	if(!tz->is_soc_thermal && !tz->is_board_thermal)
+		return false;
+
+	data = tz->devdata;
+	if (data == NULL)
+		return false;
+
+	return data->boost_bypass;
+}
+EXPORT_SYMBOL_GPL(boost_bypass_check);
+#endif
+
+#ifdef CONFIG_THERMAL_EX_SUSTAIN_POWER
+int get_ipa_ex_sustain_power(void)
+{
+	return get_npu_ex_sustain_power();
+}
+EXPORT_SYMBOL(get_ipa_ex_sustain_power);
+#endif
+
+#ifdef CONFIG_THERMAL_IPA_OTHER_POWER
+int parse_ipa_target_levels(struct device_node *np, struct __thermal_zone *tzp)
+{
+	int trips_num, ret, target_num;
+	if (np == NULL || tzp == NULL) {
+		pr_err("%s cannot find np or tzp empty.\n", __func__);
+		return -EINVAL;
+	}
+	ret = of_property_count_u32_elems(np, "ipa-target-level-trips");
+	if (ret <= 0) {
+		pr_err("%s cannot find ipa-target-level-trips ret:%d.\n", __func__, ret);
+		return -EINVAL;
+	}
+	trips_num = ret;
+
+	tzp->target_trips = kzalloc(sizeof(int) * trips_num, GFP_KERNEL);
+	if (tzp->target_trips == NULL)
+		return -EINVAL;
+
+	ret = of_property_read_u32_array(np, "ipa-target-level-trips", tzp->target_trips, trips_num);
+	if(ret != 0) {
+		pr_err("%s cannot read power_ratios ret:%d .\n", __func__, ret);
+		goto err;
+	}
+
+	ret = of_property_count_u32_elems(np, "ipa-target-levels");
+	if (ret <= 0) {
+		pr_err("%s cannot find ipa-target-levels ret:%d.\n", __func__, ret);
+		goto err;
+	}
+	target_num = ret;
+
+	tzp->target_levels = kzalloc(sizeof(int) * target_num, GFP_KERNEL);
+	if (tzp->target_levels == NULL)
+		goto err;
+
+	ret = of_property_read_u32_array(np, "ipa-target-levels", tzp->target_levels, target_num);
+	if(ret != 0) {
+		pr_err("%s cannot read power_ratios ret:%d .\n", __func__, ret);
+		goto err;
+	}
+
+	tzp->target_trips_num = trips_num;
+	tzp->target_num = target_num;
+	return 0;
+
+err:
+	kfree(tzp->target_trips);
+	kfree(tzp->target_levels);
+	
+	return -EINVAL;
+}
+EXPORT_SYMBOL_GPL(parse_ipa_target_levels);
+#endif
+
+void update_actor_weights(struct thermal_zone_device *tz)
+{
+	struct thermal_instance *pos = NULL;
+	bool b_gpu_bounded = false;
+	struct thermal_cooling_device *cdev = NULL;
+	int actor_id = -1;
+
+	list_for_each_entry(pos, &tz->thermal_instances, tz_node) {
+		cdev = pos->cdev;
+		if (cdev == NULL)
+			return;
+
+		if (!strncmp(pos->weight_attr_name, IPA_GPU_WEIGHT_NAME, sizeof(IPA_GPU_WEIGHT_NAME) - 1) && cdev->bound_event) {
+			b_gpu_bounded = true;
+			break;
+		}
+	}
+
+	list_for_each_entry(pos, &tz->thermal_instances, tz_node) {
+		if (pos->weight_attr_name == NULL)
+			continue;
+
+		actor_id = ipa_get_actor_id_by_weight(pos->weight_attr_name);
+
+		if (b_gpu_bounded) {
+			if (actor_id != -1)
+				pos->weight = g_ipa_gpu_boost_weights[actor_id];
+		} else {
+			if (actor_id != -1)
+				pos->weight = g_ipa_normal_weights[actor_id];
+		}
+	}
+}
+EXPORT_SYMBOL_GPL(update_actor_weights);
+
+ssize_t
+boost_show(struct device *dev, struct device_attribute *attr, char *buf)
+{
+	struct thermal_zone_device *tz = to_thermal_zone(dev);
+	enum thermal_boost_mode mode;
+
+	if (!tz->tzp)
+		return -EIO;
+
+	mutex_lock(&tz->lock);
+	mode = tz->tzp->boost;
+	mutex_unlock(&tz->lock);
+	return snprintf_s(buf, MODE_LEN, MODE_LEN - 1, "%s\n",
+			  mode == THERMAL_BOOST_ENABLED ? "enabled" : "disabled");
+}
+EXPORT_SYMBOL_GPL(boost_show);
+
+ssize_t
+boost_store(struct device *dev, struct device_attribute *attr,
+	   const char *buf, size_t count)
+{
+	struct thermal_zone_device *tz = to_thermal_zone(dev);
+	int result = 0;
+
+	if (!tz->tzp)
+		return -EIO;
+
+	mutex_lock(&thermal_boost_lock);
+
+	if (!strncmp(buf, "enabled", sizeof("enabled") - 1)) {
+		mutex_lock(&tz->lock);
+		if (THERMAL_BOOST_ENABLED == tz->tzp->boost)
+			pr_info("perfhub boost high frequency timeout[%d]\n",
+				tz->tzp->boost_timeout);
+
+		tz->tzp->boost = THERMAL_BOOST_ENABLED;
+		if (0 == tz->tzp->boost_timeout)
+			tz->tzp->boost_timeout = 100;
+
+		thermal_zone_device_set_polling(tz, tz->tzp->boost_timeout);
+		ipa_freq_limit_reset(tz);
+		mutex_unlock(&tz->lock);
+	} else if (!strncmp(buf, "disabled", sizeof("disabled") - 1)) {
+		tz->tzp->boost = THERMAL_BOOST_DISABLED;
+		thermal_zone_device_update(tz, THERMAL_EVENT_UNSPECIFIED);
+	} else {
+		result = -EINVAL;
+	}
+
+	mutex_unlock(&thermal_boost_lock);
+
+	if (result)
+		return result;
+
+	trace_perf(IPA_boost, current->pid, tz, tz->tzp->boost,
+			tz->tzp->boost_timeout);
+
+	return count;
+}
+EXPORT_SYMBOL_GPL(boost_store);
+
+ssize_t
+boost_timeout_show(struct device *dev, struct device_attribute *devattr,
+			char *buf)
+{
+	struct thermal_zone_device *tz = to_thermal_zone(dev);
+
+	if (tz->tzp)
+		return snprintf_s(buf, PAGE_SIZE, PAGE_SIZE - 1,
+				  "%u\n", tz->tzp->boost_timeout);
+	else
+		return -EIO;
+}
+EXPORT_SYMBOL_GPL(boost_timeout_show);
+
+#define BOOST_TIMEOUT_THRES	5000
+ssize_t
+boost_timeout_store(struct device *dev, struct device_attribute *devattr,
+			const char *buf, size_t count)
+{
+	struct thermal_zone_device *tz = to_thermal_zone(dev);
+	u32 boost_timeout;
+
+	if (!tz->tzp)
+		return -EIO;
+
+	if (kstrtou32(buf, 10, &boost_timeout))
+		return -EINVAL;
+
+	if (boost_timeout > BOOST_TIMEOUT_THRES)
+		return -EINVAL;
+
+	if (boost_timeout)
+		tz->tzp->boost_timeout = boost_timeout;
+
+	trace_perf(IPA_boost, current->pid, tz, tz->tzp->boost,
+			tz->tzp->boost_timeout);
+	return count;
+}
+EXPORT_SYMBOL_GPL(boost_timeout_store);
+
+ssize_t cur_power_show(struct device *dev, struct device_attribute *attr, char *buf)
+{
+	struct thermal_zone_device *tz = NULL;
+	struct thermal_instance *instance = NULL;
+	ssize_t buf_len;
+	ssize_t size = PAGE_SIZE;
+	if (dev == NULL || attr == NULL || buf == NULL)
+		return -EIO;
+
+	tz = to_thermal_zone(dev);
+	if (tz == NULL || tz->tzp == NULL)
+		return -EIO;
+
+	mutex_lock(&tz->lock);
+	buf_len = snprintf_s(buf, size, size - 1, "%llu,%u,", tz->tzp->cur_ipa_total_power, tz->tzp->check_cnt);
+	if (buf_len < 0)
+		goto unlock;
+	list_for_each_entry(instance, &tz->thermal_instances, tz_node) {
+		struct thermal_cooling_device *cdev = instance->cdev;
+		ssize_t ret;
+		size = PAGE_SIZE - buf_len;
+		if (size < 0 || size > (ssize_t)PAGE_SIZE)
+			break;
+		ret = snprintf_s(buf + buf_len, size, size - 1, "%llu,", cdev->cdev_cur_power);
+		if (ret < 0)
+			break;
+		buf_len += ret;
+	}
+unlock:
+	mutex_unlock(&tz->lock);
+
+	if (buf_len > 0)
+		buf[buf_len-1] = '\0'; /* set string end with '\0' */
+	return buf_len;
+}
+EXPORT_SYMBOL_GPL(cur_power_show);
+
+ssize_t cur_enable_show(struct device *dev, struct device_attribute *devattr, char *buf)
+{
+	struct thermal_zone_device *tz = to_thermal_zone(dev);
+
+	if (tz != NULL && tz->tzp != NULL)
+		return snprintf_s(buf, PAGE_SIZE, PAGE_SIZE - 1, "%u\n", tz->tzp->cur_enable);
+	else
+		return -EIO;
+}
+EXPORT_SYMBOL_GPL(cur_enable_show);
+
+ssize_t cur_enable_store(struct device *dev, struct device_attribute *devattr,
+	const char *buf, size_t count)
+{
+	struct thermal_zone_device *tz = to_thermal_zone(dev);
+	u32 cur_enable;
+
+	if (tz == NULL || tz->tzp == NULL)
+		return -EIO;
+
+	if (kstrtou32(buf, 10, &cur_enable))
+		return -EINVAL;
+
+	tz->tzp->cur_enable = (cur_enable > 0);
+
+	return count;
+}
+EXPORT_SYMBOL_GPL(cur_enable_store);
+
+void get_cur_power(struct thermal_zone_device *tz)
+{
+	struct thermal_instance *instance = NULL;
+	struct power_allocator_params *params = NULL;
+	u32 total_req_power;
+	int trip_max_temp;
+
+	if (tz == NULL || tz->tzp == NULL)
+		return;
+
+	if (0 == tz->tzp->cur_enable)
+		return;
+
+	mutex_lock(&tz->lock);
+	if (tz->governor_data == NULL) {
+		mutex_unlock(&tz->lock);
+		return;
+	}
+
+	params = tz->governor_data;
+	trip_max_temp = params->trip_max_desired_temperature;
+	total_req_power = 0;
+
+	list_for_each_entry(instance, &tz->thermal_instances, tz_node) {
+		struct thermal_cooling_device *cdev = instance->cdev;
+		u32 req_power;
+
+		if (instance->trip != trip_max_temp)
+			continue;
+
+		if (!cdev_is_power_actor(cdev))
+			continue;
+
+		if (cdev->ops->get_requested_power(cdev, &req_power))
+			continue;
+
+		total_req_power += req_power;
+		cdev->cdev_cur_power += req_power;
+	}
+
+	tz->tzp->cur_ipa_total_power += total_req_power;
+	tz->tzp->check_cnt++;
+
+	mutex_unlock(&tz->lock);
+}
+EXPORT_SYMBOL_GPL(get_cur_power);
+
+int update_freq_table(struct cpufreq_cooling_device *cpufreq_cdev,
+		      u32 capacitance)
+{
+	struct freq_table *freq_table = NULL;
+#ifndef CONFIG_LDK_THERMAL
+	struct dev_pm_opp *opp = NULL;
+	struct device *dev = NULL;
+#endif
+	int num_opps = 0;
+	int cpu, i;
+
+	freq_table = cpufreq_cdev->freq_table;
+#ifndef CONFIG_LDK_THERMAL
+	if (IS_ERR_OR_NULL(cpufreq_cdev->policy))
+		pr_err("%s:%d:cpufreq_cdev policy is NULL or ERR.\n", __func__, __LINE__);
+	cpu = cpufreq_cdev->policy->cpu;
+
+	dev = get_cpu_device(cpu);
+	if (unlikely(!dev)) {
+		pr_warn("No cpu device for cpu %d\n", cpu);
+		return -ENODEV;
+	}
+
+	num_opps = dev_pm_opp_get_opp_count(dev);
+#else
+	cpu = cpufreq_cdev->cpuid_start;
+	num_opps = cpufreq_cdev->max_level + 1;
+#endif
+	
+	if (num_opps < 0)
+		return num_opps;
+
+	/*
+	 * The cpufreq table is also built from the OPP table and so the count
+	 * should match.
+	 */
+	if (num_opps != cpufreq_cdev->max_level + 1) {
+		pr_warn("Number of OPPs not matching with max_levels\n");
+		return -EINVAL;
+	}
+
+	for (i = 0; i <= cpufreq_cdev->max_level; i++) {
+#ifdef CONFIG_IPA_CPU_EM_PWR
+#ifndef CONFIG_LDK_THERMAL
+		freq_table[i].power = cpufreq_cdev->em->table[cpufreq_cdev->max_level - i].power;
+#ifdef CONFIG_SMT_MODE_GOV
+		if (cpumask_weight(cpu_smt_mask(cpufreq_cdev->policy->cpu)) == 2)
+				freq_table[i].power = freq_table[i].power * 65 / 100;
+#endif /* CONFIG_SMT_MODE_GOV */
+#else
+#ifdef CONFIG_THERMAL_SUPPORT_SMT
+		if (cpufreq_cdev->cpuid_start > 0)
+			freq_table[i].power = freq_table[i].power * 65 / 100;
+#endif /* CONFIG_THERMAL_SUPPORT_SMT */
+#endif /* CONFIG_LDK_THERMAL */
+		pr_err("%u KHz:  %u  mW\n", freq_table[i].frequency, freq_table[i].power);
+#else /* CONFIG_IPA_CPU_EM_PWR */
+#ifndef CONFIG_LDK_THERMAL
+		unsigned long freq = freq_table[i].frequency * 1000;
+#endif
+		u32 freq_mhz = freq_table[i].frequency / 1000;
+		u64 power;
+		u32 voltage_mv;
+
+		/*
+		 * Find ceil frequency as 'freq' may be slightly lower than OPP
+		 * freq due to truncation while converting to kHz.
+		 */
+#ifndef CONFIG_LDK_THERMAL
+		opp = dev_pm_opp_find_freq_ceil(dev, &freq);
+		if (IS_ERR(opp)) {
+			dev_err(dev, "failed to get opp for %lu frequency\n",
+				freq);
+			return -EINVAL;
+		}
+
+		voltage_mv = dev_pm_opp_get_voltage(opp) / 1000;
+		dev_pm_opp_put(opp);
+#else
+		voltage_mv = freq_table[i].volt / 1000;
+#endif
+		/*
+		 * Do the multiplication with MHz and millivolt so as
+		 * to not overflow.
+		 */
+		power = (u64)capacitance * freq_mhz * voltage_mv * voltage_mv;
+		do_div(power, 1000000000);
+
+		/* power is stored in mW */
+#ifdef CONFIG_IPA_CPU_EM_PWR
+		freq_table[i].power = cpufreq_cdev->em->table[cpufreq_cdev->max_level - i].power;
+#else
+		freq_table[i].power = power;
+#endif
+		pr_err("  %u MHz @ %u mV :  %u  mW\n", freq_mhz, voltage_mv, freq_table[i].power);
+#endif
+	}
+	return 0;
+}
+
+#ifdef CONFIG_IPA_MNTN_INFO
+int g_temp = -100;
+
+unsigned int g_min_soc_freq_limit[CAPACITY_OF_ARRAY] = {
+	IPA_FREQ_MAX, IPA_FREQ_MAX, IPA_FREQ_MAX, IPA_FREQ_MAX, IPA_FREQ_MAX,
+	IPA_FREQ_MAX, IPA_FREQ_MAX, IPA_FREQ_MAX, IPA_FREQ_MAX, IPA_FREQ_MAX
+};
+unsigned int g_min_board_freq_limit[CAPACITY_OF_ARRAY] = {
+	IPA_FREQ_MAX, IPA_FREQ_MAX, IPA_FREQ_MAX, IPA_FREQ_MAX, IPA_FREQ_MAX,
+	IPA_FREQ_MAX, IPA_FREQ_MAX, IPA_FREQ_MAX, IPA_FREQ_MAX, IPA_FREQ_MAX
+};
+unsigned int g_max_load_inf[CAPACITY_OF_ARRAY] = {
+	0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+};
+
+static void reset_ipa_mntn_para_info(void)
+{
+	int i;
+
+	for (i = 0; i < CAPACITY_OF_ARRAY; i++) {
+		g_min_soc_freq_limit[i] = IPA_FREQ_MAX;
+		g_min_board_freq_limit[i] = IPA_FREQ_MAX;
+	}
+
+	g_temp = -100;
+}
+
+static void print_ipa_mntn_info(void)
+{
+	int gpu_id;
+
+	gpu_id = ipa_get_actor_id("gpu");
+	if (gpu_id < 0)
+		pr_err("ipa mntn info [little to big] max_temp:%d, soc_limit_freq:[%u-%u-%u], \
+			soc_brd_freq:[%u-%u-%u]\n", g_temp,
+			g_min_soc_freq_limit[0], g_min_soc_freq_limit[1], g_min_soc_freq_limit[2],
+			g_min_board_freq_limit[0], g_min_board_freq_limit[1], g_min_board_freq_limit[2]);
+	else
+		pr_err("ipa mntn info [little to big, gpu] max_temp:%d, soc_limit_freq:[%u-%u-%u-%u], \
+			soc_brd_freq:[%u-%u-%u-%u]\n", g_temp, g_min_soc_freq_limit[0],
+			g_min_soc_freq_limit[1], g_min_soc_freq_limit[2], g_min_soc_freq_limit[gpu_id],
+			g_min_board_freq_limit[0], g_min_board_freq_limit[1], g_min_board_freq_limit[2],
+			g_min_board_freq_limit[gpu_id]);
+}
+
+static void ipa_get_mntn_info(unsigned int cur_cluster)
+{
+	int temperature;
+
+	temperature = get_soc_temp();
+	if (temperature > g_temp)
+		g_temp = temperature;
+	if (g_min_soc_freq_limit[cur_cluster] > g_ipa_soc_freq_limit[cur_cluster])
+		g_min_soc_freq_limit[cur_cluster] = g_ipa_soc_freq_limit[cur_cluster];
+	if (g_min_board_freq_limit[cur_cluster] > g_ipa_board_freq_limit[cur_cluster])
+		g_min_board_freq_limit[cur_cluster] = g_ipa_board_freq_limit[cur_cluster];
+}
+
+static void ipa_print_mntn_inf_per_second(struct cpufreq_cooling_device *cpufreq_cdev,
+				 unsigned long state, unsigned int cur_cluster)
+{
+	static u64 pre_jiffies;
+
+	ipa_get_mntn_info(cur_cluster);
+	if (time_after(jiffies, pre_jiffies + HZ)) {
+		print_ipa_mntn_info();
+		reset_ipa_mntn_para_info();
+		pre_jiffies = jiffies;
+	}
+}
+#endif
+
+void cpu_cooling_get_limit_state(struct cpufreq_cooling_device *cpufreq_cdev,
+				 unsigned long state)
+{
+#ifndef CONFIG_LDK_THERMAL
+	unsigned int cpu = cpumask_any(cpufreq_cdev->policy->related_cpus);
+#else
+	unsigned int cpu = cpufreq_cdev->cpuid_start;
+#endif
+	unsigned int cur_cluster, temp;
+	unsigned long limit_state;
+	int ret;
+	struct mask_id_t mask_id;
+	int cpuclustercnt;
+	int oncpucluster[MAX_THERMAL_CLUSTER_NUM] = {0};
+	unsigned int freq;
+#ifdef CONFIG_THERMAL_SPM
+	unsigned int actor;
+#endif
+#ifndef CONFIG_LDK_THERMAL
+	if (policy_is_inactive(cpufreq_cdev->policy))
+		return;
+#endif
+
+	ipa_get_clustermask(mask_id.clustermask, MAX_THERMAL_CLUSTER_NUM, oncpucluster, &cpuclustercnt);
+	temp = (unsigned int)topology_physical_package_id(cpu);
+	cur_cluster = mask_id.clustermask[temp];
+
+	if (g_ipa_soc_state[cur_cluster] <= cpufreq_cdev->max_level)
+		g_ipa_soc_freq_limit[cur_cluster] = cpufreq_cdev->freq_table[g_ipa_soc_state[cur_cluster]].frequency;
+
+	if (g_ipa_board_state[cur_cluster] <= cpufreq_cdev->max_level)
+		g_ipa_board_freq_limit[cur_cluster] = cpufreq_cdev->freq_table[g_ipa_board_state[cur_cluster]].frequency;
+
+	limit_state = max(g_ipa_soc_state[cur_cluster], g_ipa_board_state[cur_cluster]);
+	state = max(state, limit_state);
+	/* Check if the old cooling action is same as new cooling action */
+	if (cpufreq_cdev->cpufreq_state == state)
+		return;
+#ifdef CONFIG_IPA_MNTN_INFO
+	ipa_print_mntn_inf_per_second(cpufreq_cdev, state, cur_cluster);
+#endif
+#ifdef CONFIG_THERMAL_SPM
+	if (is_spm_mode_enabled()) {
+		actor = topology_physical_package_id(cpu);
+		freq = get_powerhal_profile(mask_id.clustermask[actor]);
+	} else {
+		freq = get_state_freq(cpufreq_cdev, state);
+		g_ipa_freq_limit[cur_cluster] = freq;
+	}
+#else
+	freq = get_state_freq(cpufreq_cdev, state);
+	g_ipa_freq_limit[cur_cluster] = freq;
+#endif
+#ifndef CONFIG_LDK_THERMAL
+	ret = freq_qos_update_request(&cpufreq_cdev->qos_req, freq);
+#else
+	ret = hv_set_ipafreq(cpufreq_cdev->cluster, freq); // Require cluster_id = actor_id
+	if (ret >= 0) {
+		ret = liblinux_pal_set_max_cpufreq(cpufreq_cdev->cpuid_start, freq, CONSTRAINT_THERMAL);
+		if (ret != 0)
+			pr_err("set thermal cpufreq failed,cpu:%d, cluster:%d, freq:%u\n",
+				cpufreq_cdev->cpuid_start, cpufreq_cdev->cluster, freq);
+	}
+#endif
+	if (ret >= 0)
+		cpufreq_cdev->cpufreq_state = state;
+	else
+		pr_debug("ipa_cpufreq qos request try again, ret = %d.freq:%d", ret, freq);
+#ifdef CONFIG_FREQ_LIMIT_COUNTER
+	update_cpu_ipa_max_freq(cpufreq_cdev->policy, freq);
+#endif
+}
+
+static unsigned long gpu_get_voltage(struct devfreq *df, unsigned long freq)
+{
+	struct device *dev = df->dev.parent;
+	unsigned long voltage;
+	struct dev_pm_opp *opp = NULL;
+
+	opp = dev_pm_opp_find_freq_exact(dev, freq, true);
+	if (PTR_ERR(opp) == -ERANGE)
+		opp = dev_pm_opp_find_freq_exact(dev, freq, false);
+
+	if (IS_ERR(opp)) {
+		dev_err_ratelimited(dev, "Failed to find OPP for frequency %lu: %ld\n",
+				    freq, PTR_ERR(opp));
+		return 0;
+	}
+
+	voltage = dev_pm_opp_get_voltage(opp) / 1000; /* mV */
+	dev_pm_opp_put(opp);
+
+	if (voltage == 0)
+		dev_err_ratelimited(dev,
+				    "Failed to get voltage for frequency %lu\n",
+				    freq);
+
+	return voltage;
+}
+
+static unsigned long
+gpu_get_static_power(struct devfreq_cooling_device *dfc, unsigned long freq)
+{
+	struct devfreq *df = dfc->devfreq;
+	unsigned long voltage;
+
+	if (!dfc->power_ops->get_static_power)
+		return 0;
+
+	voltage = gpu_get_voltage(df, freq);
+
+	if (voltage == 0)
+		return 0;
+
+	return dfc->power_ops->get_static_power(df, voltage);
+}
+#ifdef CONFIG_ITS_IPA
+int devfreq_normalized_data_to_freq(struct devfreq_cooling_device *devfreq_cdev,
+				    unsigned long power);
+
+struct power_status {
+	unsigned long long leakage;
+	unsigned long busy_time;
+	s32 dyn_power;
+	u32 static_power;
+	s32 est_power;
+	bool its_dpm_enabled;
+};
+void gpu_power_to_state(struct thermal_cooling_device *cdev,
+			u32 power, unsigned long *state)
+{
+	struct devfreq_cooling_device *dfc = cdev->devdata;
+	struct devfreq *df = dfc->devfreq;
+	struct devfreq_dev_status *status = &df->last_status;
+	struct power_status powers = {0, 0, 0, 0, 0, false};
+	int ret, i;
+
+		powers.its_dpm_enabled = check_its_enabled() &&
+				  check_dpm_enabled(DPM_GPU_MODULE);
+		if (strncmp(cdev->type, "thermal-devfreq-0",
+			    strlen("thermal-devfreq-0")) == 0 &&
+		    powers.its_dpm_enabled) {
+			ret = get_gpu_leakage_power(&powers.leakage);
+			if (ret != 0)
+				powers.static_power = 0;
+			else
+				powers.static_power = (u32)powers.leakage;
+			if (power >= powers.static_power)
+				powers.dyn_power = power - powers.static_power;
+			else
+				powers.dyn_power = 0;
+			*state = devfreq_normalized_data_to_freq(dfc, powers.dyn_power);
+		}  else {
+			powers.static_power = gpu_get_static_power(dfc, status->current_frequency);
+			if (power >= powers.static_power)
+				powers.dyn_power = power - powers.static_power;
+			else
+				powers.dyn_power = 0;
+
+			/* Scale dynamic power for utilization */
+			powers.busy_time = status->busy_time ?: 1;
+			powers.est_power = (powers.dyn_power * status->total_time) / powers.busy_time;
+
+			/*
+			 * Find the first cooling state that is within the power
+			 * budget for dynamic power.
+			 */
+			for (i = 0; i < dfc->freq_table_size - 1; i++)
+				if (powers.est_power >= dfc->power_table[i])
+					break;
+
+			*state = i;
+		}
+}
+
+u32 cpu_get_dynamic_power(struct cpufreq_cooling_device *cpufreq_cdev)
+{
+	struct cpufreq_policy *policy = cpufreq_cdev->policy;
+	int cpu, ret;
+	unsigned long long temp_power = 0;
+	unsigned long long total_power = 0;
+
+	for_each_cpu(cpu, policy->related_cpus) {
+		ret = get_its_core_dynamic_power(cpu, &temp_power);
+		if (ret == 0)
+			total_power += temp_power;
+	}
+	return (u32)total_power;
+}
+#endif
+
+#ifndef CONFIG_LDK_THERMAL
+int cpu_get_static_power(struct cpufreq_cooling_device *cpufreq_cdev,
+			    unsigned long freq, u32 *power)
+{
+	struct dev_pm_opp *opp = NULL;
+	unsigned long voltage;
+	struct cpufreq_policy *policy = cpufreq_cdev->policy;
+	struct cpumask *cpumask = policy->related_cpus;
+	unsigned long freq_hz = freq * 1000;
+	struct device *dev = NULL;
+
+#ifdef CONFIG_ITS_IPA
+	int cpu, ret;
+	unsigned long long temp_power = 0;
+
+	if (check_its_enabled()) {
+		*power = 0;
+		for_each_cpu(cpu, policy->related_cpus) { /*lint !e574*/
+			ret = get_its_core_leakage_power(cpu, &temp_power);
+			if (ret == 0)
+				*power += temp_power;
+		}
+		return 0;
+	}
+#endif
+
+	dev = get_cpu_device(policy->cpu);
+		WARN_ON(!dev); /*lint !e146 !e665*/
+
+#ifdef CONFIG_IPA_THERMAL
+	if (dev == NULL) {
+		*power = 0;
+		return 0;
+	}
+
+	device_lock(dev);
+	if (dev->offline == true) {
+		*power = 0;
+		device_unlock(dev);
+		return 0;
+	}
+	device_unlock(dev);
+#endif
+	opp = dev_pm_opp_find_freq_exact(dev, freq_hz, true);
+	if (IS_ERR(opp)) {
+		dev_warn_ratelimited(dev, "Failed to find OPP for frequency %lu: %ld\n",
+				     freq_hz, PTR_ERR(opp));
+		return -EINVAL;
+	}
+
+	voltage = dev_pm_opp_get_voltage(opp);
+	dev_pm_opp_put(opp);
+	if (voltage == 0) {
+		dev_err_ratelimited(dev, "Failed to get voltage for frequency %lu\n",
+				    freq_hz);
+		return -EINVAL;
+	}
+
+	return cluster_get_static_power(cpumask, voltage, power);
+}
+#else
+static unsigned long get_dev_freq_volt(struct cpufreq_cooling_device *cpufreq_cdev, unsigned long freq)
+{
+	int i;
+	for (i = 0; i <= cpufreq_cdev->max_level; i++) {
+		if (cpufreq_cdev->freq_table[i].frequency == freq)
+			return cpufreq_cdev->freq_table[i].volt;
+	}
+	return 0;
+}
+
+int cpu_get_static_power(struct cpufreq_cooling_device *cpufreq_cdev,
+			    unsigned long freq, u32 *power)
+{
+	unsigned long voltage;
+
+	voltage = get_dev_freq_volt(cpufreq_cdev, freq);
+	if (voltage == 0) {
+		pr_err("get_dev_freq_volt: failed. cluster=%d, freq=%u\n", cpufreq_cdev->cluster, freq);
+		return -EINVAL;
+	}
+
+	return cluster_get_static_power_ldk(cpufreq_cdev->cpu_num, cpufreq_cdev->cluster, voltage, power);
+}
+#endif
+
+#ifdef CONFIG_ITS_IPA
+unsigned long cpu_get_voltage(struct cpufreq_cooling_device *cpufreq_cdev,
+			      unsigned long freq)
+{
+	struct device *dev = NULL;
+	struct dev_pm_opp *opp = NULL;
+	struct cpufreq_policy *policy = cpufreq_cdev->policy;
+	unsigned long freq_hz = freq * 1000;
+	unsigned long voltage;
+
+	dev = get_cpu_device(policy->cpu);
+
+	if (dev == NULL)
+		return 0;
+
+	if (dev->offline == true)
+		return 0;
+
+	opp = dev_pm_opp_find_freq_exact(dev, freq_hz, true);
+
+	if (IS_ERR(opp)) {
+		dev_warn_ratelimited(dev,
+				"Failed to find OPP for frequency %lu:%ld\n",
+				freq_hz, PTR_ERR(opp));
+		return 0;
+	}
+
+	voltage = dev_pm_opp_get_voltage(opp);
+	dev_pm_opp_put(opp);
+	if (voltage == 0) {
+		dev_err_ratelimited(dev,
+				"Failed to get voltage for frequency %lu\n",
+				freq_hz);
+		return 0;
+	}
+	return voltage;
+}
+
+unsigned long normalize_its_power(struct cpufreq_cooling_device *cpufreq_cdev,
+				  unsigned int dynamic_power, unsigned long freq)
+{
+	unsigned long voltage, freq_mhz;
+	unsigned long long normalized_data = 0;
+
+	/* get_voltage() will get uV, so div 100 for mV */
+	voltage = cpu_get_voltage(cpufreq_cdev, freq) / 1000;
+	freq_mhz = freq / 1000;
+
+	if (freq_mhz != 0 && voltage != 0)
+		normalized_data = ITS_NORMALIZED_RATIO * dynamic_power /
+					(voltage * voltage * freq_mhz);
+
+	trace_perf(IPA_actor_cpu_normalize_power, normalized_data, dynamic_power,
+					    freq_mhz, voltage);
+	return (unsigned long)normalized_data;
+}
+
+unsigned int
+its_normalized_data_to_freq(struct cpufreq_cooling_device *cpufreq_cdev,
+			    unsigned long power)
+{
+	struct freq_table *freq_table = cpufreq_cdev->freq_table;
+	struct cpufreq_policy *policy = cpufreq_cdev->policy;
+	unsigned long long calc_power = 0;
+	unsigned int freq, freq_mhz, voltage, level;
+	unsigned int ncpus = cpumask_weight(policy->related_cpus);
+
+	for (level = 0; level < cpufreq_cdev->max_level; level++) {
+		freq = freq_table[level].frequency;
+		freq_mhz = freq / 1000;
+		voltage = cpu_get_voltage(cpufreq_cdev, freq) / 1000;
+		if (freq != 0)
+			calc_power = ((unsigned long long)
+				       cpufreq_cdev->normalized_powerdata *
+				       freq_mhz * voltage * voltage) /
+				       ITS_NORMALIZED_RATIO;
+
+		trace_perf(IPA_actor_cpu_pdata_to_freq, level, freq_mhz,
+					voltage, calc_power,
+					freq_table[level].power * ncpus,
+					cpufreq_cdev->normalized_powerdata);
+		if ((unsigned long long)power >= calc_power ||
+		    power >= freq_table[level].power * ncpus)
+			break;
+	}
+	return freq_table[level].frequency;
+};
+
+unsigned long normalize_devfreq_power(unsigned long voltage, unsigned int dynamic_power,
+				      unsigned long freq)
+{
+	unsigned long normalized_data = 0;
+	unsigned long freq_mhz;
+
+	/* freq is hz, div 1000000 for mHz */
+	freq_mhz = freq / HZ_TO_MHZ_DIVISOR;
+
+	if (freq != 0 && voltage != 0)
+		normalized_data = ITS_NORMALIZED_RATIO * dynamic_power /
+				  (voltage * voltage * freq_mhz);
+
+	trace_perf(IPA_actor_gpu_normalize_power, normalized_data, dynamic_power,
+					    freq_mhz, voltage);
+	return normalized_data;
+}
+
+int devfreq_normalized_data_to_freq(struct devfreq_cooling_device *devfreq_cdev,
+				    unsigned long power)
+{
+	struct devfreq *df = devfreq_cdev->devfreq;
+	unsigned long state, freq, voltage, freq_mhz;
+	unsigned long long calc_power = 0;
+
+	for (state = 0; state < devfreq_cdev->freq_table_size - 1; state++) {
+		freq = devfreq_cdev->freq_table[state];
+		freq_mhz = freq / HZ_TO_MHZ_DIVISOR;
+		voltage = gpu_get_voltage(df, freq);
+		if (freq != 0)
+			calc_power = ((unsigned long long)
+				      devfreq_cdev->normalized_powerdata *
+				      freq_mhz * voltage * voltage) /
+				      ITS_NORMALIZED_RATIO;
+
+		trace_perf(IPA_actor_gpu_pdata_to_freq, state, freq_mhz, voltage,
+				calc_power, devfreq_cdev->power_table[state],
+				devfreq_cdev->normalized_powerdata);
+		if ((unsigned long long)power >= calc_power ||
+		    power >= devfreq_cdev->power_table[state])
+			break;
+	}
+	return state;
+};
+#endif
+
+int cpu_power_to_state(struct thermal_cooling_device *cdev, u32 power,
+		       unsigned long *state)
+{
+	unsigned int cur_freq, target_freq;
+	int ret, dyn_power;
+	u32 last_load, normalised_power, static_power;
+	struct cpufreq_cooling_device *cpufreq_cdev = cdev->devdata;
+	int i = 0;
+#ifndef CONFIG_LDK_THERMAL
+	struct cpufreq_policy *policy = cpufreq_cdev->policy;
+	cur_freq = cpufreq_quick_get(policy->cpu);
+#else
+	cur_freq = cpufreq_quick_get(cpufreq_cdev->cpuid_start);
+#endif
+	if (!cur_freq) {
+		pr_err("cpufreq_quick_get failed\n");
+		return -EINVAL;
+	}
+	ret = cpu_get_static_power(cpufreq_cdev, cur_freq, &static_power);
+	if (ret != 0)
+		return ret;
+	if (power >= static_power)
+		dyn_power = power - static_power;
+	else
+		dyn_power = 0;
+
+#ifdef CONFIG_ITS_IPA
+	if (check_its_enabled()) {
+		target_freq = its_normalized_data_to_freq(cpufreq_cdev,
+							  dyn_power);
+	} else {
+#endif
+		last_load = cpufreq_cdev->last_load ?: 1;
+		normalised_power = (dyn_power * 100) / last_load;
+		for (i = 0; i < cpufreq_cdev->max_level; i++)
+			if (normalised_power >= cpufreq_cdev->freq_table[i].power)
+				break;
+		target_freq = cpufreq_cdev->freq_table[i].frequency;
+#ifdef CONFIG_ITS_IPA
+	}
+#endif
+	*state = get_level(cpufreq_cdev, target_freq);
+
+#ifndef CONFIG_LDK_THERMAL
+	trace_perf(thermal_power_cpu_limit, policy->related_cpus, target_freq, *state, power);
+	trace_perf(IPA_actor_cpu_limit, policy->related_cpus, target_freq, *state, power);
+#else
+	trace_perf(thermal_power_cluster_limit, cpufreq_cdev->cluster, target_freq, *state, power);
+#endif
+	return 0;
+}
+
+int gpu_cooling_get_limit_state(struct devfreq_cooling_device *dfc, unsigned long *state)
+{
+	unsigned long limit_state;
+	int gpu_id = -1;
+
+	if (dfc == NULL)
+		return -EINVAL;
+
+	gpu_id = ipa_get_actor_id("gpu");
+	if (gpu_id < 0)
+		return -EINVAL;
+
+	if (g_ipa_soc_state[gpu_id] < dfc->freq_table_size)
+		g_ipa_soc_freq_limit[gpu_id] = dfc->freq_table[g_ipa_soc_state[gpu_id]];
+
+	if (g_ipa_board_state[gpu_id] < dfc->freq_table_size)
+		g_ipa_board_freq_limit[gpu_id] = dfc->freq_table[g_ipa_board_state[gpu_id]];
+
+	limit_state = max(g_ipa_soc_state[gpu_id], g_ipa_board_state[gpu_id]); /*lint !e1058*/
+	if (limit_state < dfc->freq_table_size)
+		*state = max(*state, limit_state);
+#ifdef CONFIG_IPA_MNTN_INFO
+	ipa_get_mntn_info(gpu_id);
+#endif
+	return 0;
+}
+
+extern int update_devfreq(struct devfreq *devfreq);
+#define HZ_PER_KHZ	1000
+#define MW_PER_W	1000
+
+int gpu_update_limit_freq(struct devfreq_cooling_device *dfc,
+	unsigned long state)
+{
+	struct devfreq *df = NULL;
+	struct device *dev = NULL;
+	unsigned long freq = 0;
+	int gpu_id = -1;
+	int ret;
+
+	if (dfc == NULL)
+		return -EINVAL;
+
+	df = dfc->devfreq;
+	dev = df->dev.parent;
+
+	gpu_id = ipa_get_actor_id("gpu");
+	if (gpu_id < 0)
+		return -EINVAL;
+
+	if (state == THERMAL_NO_LIMIT) {
+		freq = 0;
+	} else {
+		if (state >= dfc->freq_table_size)
+			return -EINVAL;
+
+		freq = dfc->freq_table[state];
+	}
+
+#ifdef CONFIG_THERMAL_SPM
+	if (is_spm_mode_enabled())
+		freq = get_powerhal_profile(gpu_id);
+#endif
+	g_ipa_freq_limit[gpu_id] = freq;
+	trace_perf(IPA_actor_gpu_cooling, freq/HZ_PER_KHZ, state);
+
+	ret = dev_pm_qos_update_request(&dfc->req_max_freq,
+					DIV_ROUND_UP(freq, HZ_PER_KHZ));
+	if (ret < 0)
+		dev_info(dev, "update devfreq fail %d\n", ret);
+	return 0;
+}
+
+static unsigned long
+get_dfc_static_power(struct devfreq_cooling_device *dfc, unsigned long freq)
+{
+	struct devfreq *df = dfc->devfreq;
+	unsigned long voltage;
+
+	if (!dfc->power_ops->get_static_power)
+		return 0;
+
+	voltage = gpu_get_voltage(df, freq);
+
+	if (voltage == 0)
+		return 0;
+
+	return dfc->power_ops->get_static_power(df, voltage);
+}
+static unsigned long
+get_dfc_dynamic_power(struct devfreq_cooling_device *dfc, unsigned long freq,
+		      unsigned long voltage)
+{
+	u64 power;
+	u32 freq_mhz;
+	struct devfreq_cooling_power *dfc_power = dfc->power_ops;
+
+	if (dfc_power->get_dynamic_power)
+		return dfc_power->get_dynamic_power(dfc->devfreq, freq,
+						    voltage);
+
+	freq_mhz = freq / 1000000;
+	power = (u64)dfc_power->dyn_power_coeff * freq_mhz * voltage * voltage;
+	do_div(power, 1000000000);
+
+	return power;
+}
+
+void gpu_print_power_table(struct devfreq_cooling_device *dfc,
+	unsigned long freq, unsigned long voltage)
+{
+	unsigned long power_static;
+	unsigned long power_dyn;
+
+	if (dfc == NULL)
+		return;
+
+	power_static = get_dfc_static_power(dfc, freq);
+	power_dyn = get_dfc_dynamic_power(dfc, freq, voltage);
+	pr_err("%lu MHz @ %lu mV: %lu + %lu = %lu mW\n",
+		 freq / 1000000, voltage,
+		 power_dyn, power_static, power_dyn + power_static);
+}
+
+void gpu_scale_power_by_time(struct thermal_cooling_device *cdev,
+			     unsigned long state, u32 *static_power,
+			     u32 *dyn_power)
+{
+	struct devfreq_cooling_device *dfc = cdev->devdata;
+	struct devfreq *df = dfc->devfreq;
+	struct devfreq_dev_status *status = &df->last_status;
+	unsigned long freq = status->current_frequency;
+	u32 dync_power = 0;
+	unsigned long load = 0;
+#ifdef CONFIG_ITS_IPA
+	unsigned long long temp_power = 0;
+	unsigned long voltage;
+	int ret;
+
+	/* check device is GPU */
+	if (strncmp(cdev->type, "thermal-devfreq-0",
+		strlen("thermal-devfreq-0")) == 0 &&
+		check_its_enabled() &&
+		check_dpm_enabled(DPM_GPU_MODULE)) {
+		voltage = gpu_get_voltage(df, freq);
+		*dyn_power = 0;
+		*static_power = 0;
+		ret = get_gpu_dynamic_power(&temp_power);
+		if (ret == 0)
+			*dyn_power = (unsigned long)temp_power;
+		ret = get_gpu_leakage_power(&temp_power);
+		if (ret == 0)
+			*static_power = (unsigned long)temp_power;
+
+		dfc->normalized_powerdata =
+			normalize_devfreq_power(voltage, *dyn_power, freq);
+	} else {
+#endif
+		dync_power = dfc->power_table[state];
+		/* Scale dynamic power for utilization */
+		if (status->total_time) {
+			dync_power *= status->busy_time;
+			dync_power /= status->total_time;
+			*dyn_power = dync_power;
+		}
+		/* Get static power */
+		*static_power = gpu_get_static_power(dfc, freq);
+#ifdef CONFIG_ITS_IPA
+	}
+#endif
+	if (status->total_time)
+		load = 100 * status->busy_time / status->total_time;
+
+	trace_perf(IPA_actor_gpu_get_power, (freq / 1000), load, *dyn_power, *static_power,
+			*dyn_power + *static_power);
+
+	cdev->current_load = load;
+	cdev->current_freq = freq;
+}
+
+void ipa_parse_pid_parameter(struct device_node *child, struct thermal_zone_params *tzp)
+{
+	u32 prop = 0;
+	const char *gov_name = NULL;
+
+	if (!of_property_read_u32(child, "k_po", &prop))
+		tzp->k_po = prop;
+	if (!of_property_read_u32(child, "k_pu", &prop))
+		tzp->k_pu = prop;
+	if (!of_property_read_u32(child, "k_i", &prop))
+		tzp->k_i = prop;
+	if (!of_property_read_u32(child, "integral_cutoff", &prop))
+		tzp->integral_cutoff = prop;
+
+	/* set power allocator governor as defualt */
+	if (!of_property_read_string(child, "governor_name", (const char **)&gov_name))
+		(void)strncpy_s(tzp->governor_name, sizeof(tzp->governor_name),
+				gov_name, strlen(gov_name));
+
+	tzp->max_sustainable_power = tzp->sustainable_power;
+#ifdef CONFIG_THERMAL_SOC_SHELL
+	soc_shell_thermal_parse_parameters(child);
+#endif /* CONFIG_THERMAL_SOC_SHELL */
+#ifdef CONFIG_OPT_IPA_THERMAL
+	opt_ipa_parse_parameters(child);
+#endif /* CONFIG_OPT_IPA_THERMAL */
+}
+
+#ifdef CONFIG_LDK_THERMAL
+int cdev_get_cpu_info(struct cpufreq_cooling_device *cpufreq_cdev)
+{
+	int cluster = cpufreq_cdev->cluster;
+	int cpu;
+	int i;
+	int cpu_num[MAX_CPU_CLUSTER] = {0};
+	int last_cluster_idx = 0; // Filter out invalid cluster_idx
+
+	struct thermal_cooling_device *cdev = NULL;
+
+	if (cluster >= MAX_CPU_CLUSTER) {
+		pr_err("cluster %d is too big\n", cluster);
+		return -1;
+	}
+
+	for_each_possible_cpu(cpu) {
+		int cluster_idx = topology_physical_package_id(cpu);
+		if (cluster_idx < last_cluster_idx)
+			break;
+		last_cluster_idx = cluster_idx;
+		cpu_num[cluster_idx]++;
+	}
+	cpufreq_cdev->cpu_num = cpu_num[cluster];
+
+	cpufreq_cdev->cpuid_start = 0;
+	for (i = 0; i < cluster; i++)
+		cpufreq_cdev->cpuid_start += cpu_num[i];
+
+	pr_debug("cpufreq_cdev->cpuid_start=%d, cpu_num=%d\n", cpufreq_cdev->cpuid_start, cpufreq_cdev->cpu_num);
+	return 0;
+}
+
+static int is_vaild_cpufreq(struct device_node *np, bool *is_valid)
+{
+	int err;
+	u32 support_hw;
+
+	*is_valid = false;
+	err = of_property_read_u32(np, "opp-supported-hw", &support_hw);
+	if (err < 0) {
+		pr_err("opp-supported-hw not found: %d\n", err);
+		return -EINVAL;
+	}
+	if (g_cpu_version & support_hw)
+		*is_valid = true;
+	return 0;
+}
+
+static unsigned int get_cpu_freq_num(struct device_node *np)
+{
+	int err;
+	struct device_node *child = NULL;
+	u32 support_hw;
+	u32 cpu_freq_num = 0;
+	bool is_valid;
+
+	for_each_available_child_of_node(np, child) {
+		err = is_vaild_cpufreq(child, &is_valid);
+		if (err)
+			return 0;
+		if (is_valid)
+			cpu_freq_num++;
+	}
+	return cpu_freq_num;
+}
+
+static int set_opp_volt(struct device_node *node, struct freq_table *item)
+{
+	int err;
+	u64 freq_hz;
+	u32 microvolt;
+	bool is_valid_freq;
+#ifdef CONFIG_IPA_CPU_EM_PWR
+	u32 microwatt;
+#endif
+
+	err = is_vaild_cpufreq(node, &is_valid_freq);
+	if (err < 0)
+		return err;
+	if (!is_valid_freq)
+		return 1;
+
+	err = of_property_read_u64(node, "opp-hz", &freq_hz);
+	if (err < 0) {
+		pr_err("opp-hz not found: %d\n", err);
+		return err;
+	}
+	if (freq_hz / HZ_PER_KHZ >= UINT_MAX) {
+		pr_err("opp-hz is out of range\n");
+		return -EINVAL;
+	}
+
+	err = of_property_read_u32(node, "opp-microvolt", &microvolt);
+	if (err < 0) {
+		pr_err("microvolt not found: %d\n", err);
+		return err;
+	}
+	item->frequency = freq_hz / HZ_PER_KHZ;
+	item->volt = microvolt;
+#ifdef CONFIG_IPA_CPU_EM_PWR
+	err = of_property_read_u32(node, "opp-microwatt", &microwatt);
+	if (err < 0) {
+		pr_err("microwatt not found: %d\n", err);
+		return err;
+	}
+	item->power = microwatt / MW_PER_W;
+#endif
+
+	return 0;
+}
+
+int get_opp_freq_and_volt(struct cpufreq_cooling_device *cpufreq_cdev)
+{
+	struct device_node *np = NULL;
+	struct device_node *child = NULL;
+	unsigned int opp_count;
+	unsigned int index = 0;
+	char node[16] = {0};
+	int cluster;
+	int ret;
+
+	if (cpufreq_cdev == NULL) {
+		pr_err("%s input para is NULL\n", __func__);
+		return -ENODEV;
+	}
+	cluster = cpufreq_cdev->cluster;
+	g_cpu_version = ipa_get_cpu_version();
+	if (g_cpu_version == 0) {
+		pr_err("%s get cpu version failed.\n", __func__);
+		return -ENODEV;
+	}
+	pr_debug("cpu version is 0x%x\n", g_cpu_version);
+#ifndef CONFIG_THERMAL_OPP_TABLE_V2
+	ret = snprintf_s(node, sizeof(node), (sizeof(node) - 1),
+			 "opp_table%d", cluster);
+#else
+	if (cluster < OPP_TABLE_CLUSTER_LIMIT) {
+		ret = snprintf_s(node, sizeof(node), (sizeof(node) - 1),
+			"opp_table%d", cluster);
+	} else {
+		ret = snprintf_s(node, sizeof(node), (sizeof(node) - 1),
+			"opp_table%d_%d", OPP_TABLE_CLUSTER_LIMIT, cluster - OPP_TABLE_CLUSTER_LIMIT);
+	}
+#endif
+
+	if (ret < 0) {
+		pr_err("%s:snprintf_s error: %s\n", __func__, node);
+		return ERR_PTR(-ENODEV);
+	}
+
+	np = of_find_node_by_name(NULL, node);
+	if (np == NULL) {
+		pr_err("Node not found: %s\n", node);
+		return ERR_PTR(-ENODEV);
+	}
+
+	opp_count = get_cpu_freq_num(np);
+	if (opp_count == 0) {
+		pr_err("get opp count failed.\n");
+		return ERR_PTR(-ENODEV);
+	}
+
+	/* max_level is an index, not a counter */
+	cpufreq_cdev->max_level = opp_count - 1;
+	pr_debug("get_opp_freq_and_volt: opp_count:%u\n", opp_count);
+
+#ifdef CONFIG_IPA_THERMAL
+	cpufreq_cdev->freq_table = kmalloc_array(cpufreq_cdev->max_level + 1,
+						 sizeof(*cpufreq_cdev->freq_table),
+						 GFP_KERNEL);
+	if (!cpufreq_cdev->freq_table) {
+		pr_err("freq_table alloc failed\n");
+		return -ENODATA;
+	}
+	index = cpufreq_cdev->max_level;
+	for_each_available_child_of_node(np, child) {
+		/* Fill freq-table in descending order of frequencies */
+		ret = set_opp_volt(child, &cpufreq_cdev->freq_table[index]);
+		if (ret < 0) {
+			pr_err("get opp volt failed: %d\n", ret);
+			kfree(cpufreq_cdev->freq_table);
+			cpufreq_cdev->freq_table = NULL;
+			return ret;
+		}
+		if (ret > 0)
+			continue;
+		if (index == 0)
+			break;
+		index--;
+	}
+#endif
+	return 0;
+}
+#endif

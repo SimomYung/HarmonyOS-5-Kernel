@@ -1,0 +1,19 @@
+Module include header files hierarchy specification
+===================================================
+There gonna be several modules under developing, here
+comes the specification for header files hierarchy.
+
+Ongoing refactor shall follow these rules:
+Header file hierarchy:
+1.  include/mapi: directory used for header files commonly shared by multiple modules.
+    Non commonly shared header files shall be placed under its own dir according to 2.
+
+1.1 include/mapi/lib: common shared utility library dir for modules, such as
+    rbtree, spinlock and so on.
+
+1.2 include/mapi/uapi/xxx(xxx is module name): dir specially used to export ABI to
+    user space, refer to USERINCLUDE and USERAPPINCLUDE definition is Makefile.master.
+
+2.  header files specially for module named xxx: that the recommended way is: Putting
+    respective header files together with src files, the same way as Linux.
+    To include these file, xxx's Makefile has to explicitly include it.

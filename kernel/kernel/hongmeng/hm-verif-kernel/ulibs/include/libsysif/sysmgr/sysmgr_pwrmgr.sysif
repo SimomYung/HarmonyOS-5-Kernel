@@ -1,0 +1,99 @@
+/*
+ * Copyright (c) Huawei Technologies Co., Ltd. 2022-2022. All rights reserved.
+ * Description: Definition of time sysif api
+ * Author: Huawei OS Kernel Lab
+ * Create: Mon Jan 10 18:49:41 2022
+ */
+
+#ifdef SYSIF_EXPORT_API
+
+#define MAX_CI_KEY_LEN		48
+#define CI_META_DATA_LEN	16
+
+struct crypt_info {
+	uint8_t key[MAX_CI_KEY_LEN];
+	int key_len;
+	unsigned int key_index;
+	uint8_t metadata[CI_META_DATA_LEN];
+};
+
+#endif
+
+/*
+ * To support the mixed data modepl which means the client and the server
+ * may use different data model. See the document for limitation of data type
+ * used in the sysif interfaces in <Documentation/sysif_compat.md>.
+ */
+DEFINE_MANAGER(pwrmgr, 16,
+	DEFINE_SIMPLE_METHOD(sysmgr, pm_ap_acquire,
+		      ARG_NO,
+		      RET(1, unsigned long long, pm_ap_uref),
+		      SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(sysmgr, pm_action,
+		      ARG(1, unsigned int, action),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(pwrmgr, register_nosave_region,
+		      ARG(2, unsigned long, pfn_start,
+			     unsigned long, pfn_end),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	/* used by suspend */
+	DEFINE_METHOD(pwrmgr, preallocate_memory,
+		      ARG_NO,
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_METHOD(pwrmgr, snapshot,
+		      ARG(1, int *, hibernating),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_METHOD(pwrmgr, suspend_to_disk,
+		      ARG(3, unsigned int, resume_device,
+		      unsigned long long, resume_offset,
+		      unsigned int, cpuid),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_METHOD(pwrmgr, free_image_memory,
+		      ARG_NO,
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	/* used by resume */
+	DEFINE_METHOD(pwrmgr, check_resume_file,
+		      ARG(2, unsigned int, resume_device,
+		      unsigned long long, resume_offset),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_METHOD(pwrmgr, read_disk_image,
+		      ARG_NO,
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_METHOD(pwrmgr, resume_from_disk,
+		      ARG_NO,
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_METHOD(pwrmgr, resume_fast_cpu_read,
+		      ARG(1, unsigned int *, fast_cpu),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_METHOD(pwrmgr, resume_abort,
+		      ARG_NO,
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(pwrmgr, set_crypt_info,
+			     ARG(2, struct crypt_info, crypt_info,
+				    bool, clear),
+			     RET_NO,
+			     SLOWDATA_NO)
+)

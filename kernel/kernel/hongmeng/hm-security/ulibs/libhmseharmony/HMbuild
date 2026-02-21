@@ -1,0 +1,37 @@
+# Copyright (c) Huawei Technologies Co., Ltd. 2023-2023. All rights reserved.
+# Description: HMbuild for libhmseharmony
+# Author: Huawei OS Kernel Lab
+# Create: Tue Jan 31 10:25:23 2023
+
+# headers: libhmseharmony
+
+findpkg: HMSepolLib
+
+subdir-y: adapter
+
+include-y: ./
+include-y: ../../include
+
+src-y: services.c
+src-y: policydb.c
+src-y: classmapping.c
+src-y: policycap.c
+src-y: avc.c
+src-y: sidtab.c
+src-y: seharmony.c
+src-y: network.c
+src-CONFIG_DEBUG_BUILD: test_seharmony.c
+
+# libhmseharmony.a
+lib-static-y: hmseharmony
+cflags-hmseharmony-y: -ffunction-sections
+cflags-hmseharmony-y: -fdata-sections
+cflags-hmseharmony-CONFIG_PIE: -fPIE
+install-hmseharmony-y: LIBDIR
+
+# libhmseharmony.so
+lib-dynamic-y: hmseharmony_shared
+output-hmseharmony_shared: hmseharmony
+install-hmseharmony_shared-y: LIBDIR
+
+# vim:ts=4:sw=4:expandtab

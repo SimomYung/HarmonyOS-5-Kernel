@@ -1,0 +1,12 @@
+lib-dynamic-y: dhext_probe
+
+cflags-dhext_probe-y: -D_DH_PLUGIN_NAME=probe -fvisibility=hidden
+linklib-dhext_probe-y: -Tksymtab.lds
+
+src-dhext_probe-y: probe_if.c
+src-dhext_probe-y: ext_main.c
+
+include-.-y: include/
+
+installinc: include/
+install-dhext_probe-y: BASE_LIBDIR

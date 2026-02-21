@@ -1,0 +1,134 @@
+From 862752ef988c637562196b802504ce5b3cafe9ea Mon Sep 17 00:00:00 2001
+From: wuzx <wuzx1226@qq.com>
+Date: Thu, 11 Aug 2022 14:58:42 +0000
+Subject: [PATCH] e2fsprogs add sw64
+
+Add code related to sw64 in file configure configure.ac aclocal.m4 lib/blkid/llseek.c lib/ext2fs/unix_io.c to support sw64 architecture.
+
+Signed-off-by: wuzx <wuzx1226@qq.com>
+---
+ aclocal.m4           | 13 +++++++++++--
+ configure            |  6 +++---
+ configure.ac         |  2 +-
+ lib/blkid/llseek.c   |  2 +-
+ lib/ext2fs/unix_io.c |  2 +-
+ 5 files changed, 17 insertions(+), 8 deletions(-)
+
+diff --git a/aclocal.m4 b/aclocal.m4
+index 0f39d30..206d5b0 100644
+--- a/aclocal.m4
++++ b/aclocal.m4
+@@ -977,6 +977,12 @@ changequote([,])dnl
+            [gl_cv_host_cpu_c_abi=i386])
+          ;;
+ 
++changequote(,)dnl
++       sw_64* )
++changequote([,])dnl
++         gl_cv_host_cpu_c_abi=sw_64
++         ;;
++
+ changequote(,)dnl
+        alphaev[4-8] | alphaev56 | alphapca5[67] | alphaev6[78] )
+ changequote([,])dnl
+@@ -1242,6 +1248,9 @@ EOF
+ #ifndef __x86_64__
+ #undef __x86_64__
+ #endif
++#ifndef __sw_64__
++#undef __sw_64__
++#endif
+ #ifndef __alpha__
+ #undef __alpha__
+ #endif
+@@ -1355,7 +1364,7 @@ AC_DEFUN([gl_HOST_CPU_C_ABI_32BIT],
+        case "$gl_cv_host_cpu_c_abi" in
+          i386 | x86_64-x32 | arm | armhf | arm64-ilp32 | hppa | ia64-ilp32 | mips | mipsn32 | powerpc | riscv*-ilp32* | s390 | sparc)
+            gl_cv_host_cpu_c_abi_32bit=yes ;;
+-         x86_64 | alpha | arm64 | hppa64 | ia64 | mips64 | powerpc64 | powerpc64-elfv2 | riscv*-lp64* | s390x | sparc64 )
++         x86_64 | sw_64 | alpha | arm64 | hppa64 | ia64 | mips64 | powerpc64 | powerpc64-elfv2 | riscv*-lp64* | s390x | sparc64 )
+            gl_cv_host_cpu_c_abi_32bit=no ;;
+          *)
+            gl_cv_host_cpu_c_abi_32bit=unknown ;;
+@@ -1385,7 +1394,7 @@ AC_DEFUN([gl_HOST_CPU_C_ABI_32BIT],
+ 
+          # CPUs that only support a 64-bit ABI.
+ changequote(,)dnl
+-         alpha | alphaev[4-8] | alphaev56 | alphapca5[67] | alphaev6[78] \
++         sw_64* | alpha | alphaev[4-8] | alphaev56 | alphapca5[67] | alphaev6[78] \
+          | mmix )
+ changequote([,])dnl
+            gl_cv_host_cpu_c_abi_32bit=no
+diff --git a/configure b/configure
+index 405b730..bc483dc 100755
+--- a/configure
++++ b/configure
+@@ -4462,7 +4462,7 @@ $as_echo_n "checking for additional special compiler flags... " >&6; }
+ if test "$GCC" = yes
+ then
+     case "$host_cpu" in
+-	alpha)		addcflags="-mieee" ;;
++	alpha | sw_64)		addcflags="-mieee" ;;
+     esac
+ fi
+ if test "x$addcflags" != x
+@@ -7552,7 +7552,7 @@ else
+        case "$gl_cv_host_cpu_c_abi" in
+          i386 | x86_64-x32 | arm | armhf | arm64-ilp32 | hppa | ia64-ilp32 | mips | mipsn32 | powerpc | riscv*-ilp32* | s390 | sparc)
+            gl_cv_host_cpu_c_abi_32bit=yes ;;
+-         x86_64 | alpha | arm64 | hppa64 | ia64 | mips64 | powerpc64 | powerpc64-elfv2 | riscv*-lp64* | s390x | sparc64 )
++         x86_64 | alpha | sw_64 | arm64 | hppa64 | ia64 | mips64 | powerpc64 | powerpc64-elfv2 | riscv*-lp64* | s390x | sparc64 )
+            gl_cv_host_cpu_c_abi_32bit=no ;;
+          *)
+            gl_cv_host_cpu_c_abi_32bit=unknown ;;
+@@ -7581,7 +7581,7 @@ else
+            ;;
+ 
+          # CPUs that only support a 64-bit ABI.
+-         alpha | alphaev[4-8] | alphaev56 | alphapca5[67] | alphaev6[78] \
++         sw_64* | alpha | alphaev[4-8] | alphaev56 | alphapca5[67] | alphaev6[78] \
+          | mmix )
+            gl_cv_host_cpu_c_abi_32bit=no
+            ;;
+diff --git a/configure.ac b/configure.ac
+index 824a93d..6f39955 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -113,7 +113,7 @@ AC_MSG_CHECKING(for additional special compiler flags)
+ if test "$GCC" = yes
+ then
+     case "$host_cpu" in
+-	alpha)		addcflags="-mieee" ;;
++	alpha | sw_64)		addcflags="-mieee" ;;
+     esac
+ fi
+ if test "x$addcflags" != x
+diff --git a/lib/blkid/llseek.c b/lib/blkid/llseek.c
+index 5929864..25c613b 100644
+--- a/lib/blkid/llseek.c
++++ b/lib/blkid/llseek.c
+@@ -88,7 +88,7 @@ static blkid_loff_t my_llseek(int fd, blkid_loff_t offset, int origin)
+ 	return (retval == -1 ? (blkid_loff_t) retval : result);
+ }
+ 
+-#endif	/* __alpha__ || __ia64__ */
++#endif	/* __alpha__ || __sw_64__ || __ia64__ */
+ 
+ #endif /* HAVE_LLSEEK */
+ 
+diff --git a/lib/ext2fs/unix_io.c b/lib/ext2fs/unix_io.c
+index d251c20..e7a2b4e 100644
+--- a/lib/ext2fs/unix_io.c
++++ b/lib/ext2fs/unix_io.c
+@@ -786,7 +786,7 @@ static errcode_t unix_open_channel(const char *name, int fd,
+ 
+ #ifdef __linux__
+ #undef RLIM_INFINITY
+-#if (defined(__alpha__) || ((defined(__sparc__) || defined(__mips__)) && (SIZEOF_LONG == 4)))
++#if (defined(__alpha__) || defined(__sw_64__) || ((defined(__sparc__) || defined(__mips__)) && (SIZEOF_LONG == 4)))
+ #define RLIM_INFINITY	((unsigned long)(~0UL>>1))
+ #else
+ #define RLIM_INFINITY  (~0UL)
+-- 
+2.33.0
+

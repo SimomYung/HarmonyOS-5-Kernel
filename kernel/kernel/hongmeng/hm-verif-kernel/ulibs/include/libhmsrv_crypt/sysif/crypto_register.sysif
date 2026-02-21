@@ -1,0 +1,20 @@
+/*
+ * Copyright (C) Huawei Technologies Co., Ltd. 2019-2020. All rights reserved.
+ * Description: Generate crypto sysif interface for devhost
+ * Author: Huawei OS Kernel Lab
+ * Create: Mon Sep 14 10:45:12 2020
+ */
+
+/*
+ * To support the mixed data model which means the client and the server
+ * may use different data model. See the document for limitation of data type
+ * used in the sysif interfaces in <Documentation/sysif_compat.md>.
+ */
+
+DEFINE_MANAGER(crypto, 1,
+	DEFINE_METHOD(crypto, register,
+			     ARG(1,
+				 uref_t, uref),
+			     RET_NO,
+			     SLOWDATA_NO)
+)

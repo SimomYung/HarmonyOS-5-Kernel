@@ -1,0 +1,11 @@
+# SPDX-License-Identifier: GPL-2.0-only
+
+obj-y += kernel/
+obj-y += mm/
+obj-y += fs/
+obj-y += lib/
+obj-y += pm/
+obj-y += drivers/
+obj-$(CONFIG_LIBLINUX_NET_STACK) += net/
+obj-$(CONFIG_SECURITY) += security/
+obj-y += init/

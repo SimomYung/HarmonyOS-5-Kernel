@@ -1,0 +1,32 @@
+# Copyright (C) Huawei Technologies Co., Ltd. 2021. All rights reserved.
+# Description: HMbuild
+# Author: Huawei OS Kernel Lab
+# Create: Tue Nov 02 16:49:26 2021
+
+findpkg: HMLwIPLib
+
+lib-static-y: hmsrv_uxnet
+
+subdir-y: security
+subdir-y: core
+subdir-CONFIG_UXNET_BPF: bpf
+subdir-y: utils
+subdir-CONFIG_UXNET_PACKET: packet
+subdir-CONFIG_UXNET_UNIX: unix
+subdir-CONFIG_UXNET_NETFILTER: netfilter
+subdir-CONFIG_UXNET_NETLINK: netlink
+subdir-CONFIG_UEV_TRACE: uev
+subdir-CONFIG_VISP: visp
+subdir-CONFIG_AUDIT: audit
+subdir-CONFIG_LWIP: lwip
+subdir-CONFIG_VIRTIO_VSOCK: vsock
+subdir-CONFIG_UXNET_TUN: tun
+subdir-CONFIG_UXNET_CAN: can
+subdir-CONFIG_VHOST: vhost
+subdir-CONFIG_LDK: ldk
+
+cflags-.-y: -fno-asynchronous-unwind-tables
+cflags-.-y: -D_GNU_SOURCE=1
+cflags-.-CONFIG_SEHARMONY: -DNEED_SECURITY_FRAME_OVERLAY
+
+install-hmsrv_uxnet-y: LIBDIR

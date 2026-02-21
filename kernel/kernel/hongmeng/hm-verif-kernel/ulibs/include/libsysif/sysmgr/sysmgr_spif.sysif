@@ -1,0 +1,61 @@
+/*
+ * Copyright (c) Huawei Technologies Co., Ltd. 2021-2022. All rights reserved.
+ * Description: Spif interface in sysmgr
+ * Author: Huawei OS Kernel Lab
+ * Create: Sat Jun 26 10:05:16 2021
+ */
+
+#ifdef SYSIF_EXPORT_API
+
+#include <lib/perfra/ksus.h>
+
+#include <unistd.h>
+
+enum hmspif_paju_cmd_e {
+	HMSPIF_PAJU_CMD_PAJUMP = 1,
+	HMSPIF_PAJU_CMD_PANOP = 2,
+	HMSPIF_PAJU_CMD_QUERY = 3,
+};
+
+enum hmspif_paju_status_e {
+	HMSPIF_PAJU_STATUS_INVALID = 0,
+	HMSPIF_PAJU_STATUS_JUMP = 1,
+	HMSPIF_PAJU_STATUS_NOP = 2,
+};
+
+#endif
+
+/*
+ * To support the mixed data model which means the client and the server
+ * may use different data model. See the document for limitation of data type
+ * used in the sysif interfaces in <Documentation/sysif_compat.md>.
+ */
+DEFINE_MANAGER(hmspif, 8,
+	DEFINE_SIMPLE_METHOD(hmspif, ksus_user_start_session,
+			     ARG_NO,
+			     RET_NO,
+			     SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(hmspif, ksus_user_create_region,
+			     ARG(4, unsigned int, chunkid, unsigned int, prot, unsigned int, page_order, bool, percpu),
+			     RET(1, const void *, rvaddr),
+			     SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(hmspif, ksus_user_attach_process,
+			     ARG(4, pid_t, pid, unsigned int, chunkid, unsigned int, prot, unsigned int, inherit),
+			     RET_NO,
+			     SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(hmspif, ksus_user_finish_session,
+			     ARG_NO,
+			     RET_NO,
+			     SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(hmspif, paju_cmd,
+			     ARG(7,
+				 pid_t, pid,
+				 const char *, dso_name,
+				 unsigned int, dso_namesize,
+				 unsigned int, group_index,
+				 unsigned int, point_index,
+				 unsigned int, cmd,
+				 unsigned int *, status),
+			     RET_NO,
+			     SLOWDATA_NO)
+)

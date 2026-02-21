@@ -1,0 +1,96 @@
+From 222f6ceada3c54cddf1cfa7a3b846716bafe244c Mon Sep 17 00:00:00 2001
+From: Benjamin Berg <bberg@redhat.com>
+Date: Fri, 18 Mar 2022 12:16:12 +0100
+Subject: [PATCH 1/3] glocalfilemonitor: Avoid file monitor destruction from
+ event thread
+
+Taking a reference to the GFileMonitor when handling events may cause
+object destruction from th worker thread that calls the function. This
+condition happens if the surrounding code drops the otherwise last
+reference ot the GFileMonitor. The series of events causes destruction
+from an unrelated worker thread and also triggers g_file_monitor_cancel
+to be called from g_file_monitor_source_handle_event.
+
+For the inotify backend, this results in a deadlock as cancellation
+needs to take a lock that protects data structures from being modified
+while events are dispatched.
+
+One alternative to this approach might be to add an RCU (release, copy,
+update) approach to the lists contained in the wd_dir_hash and
+wd_file_hash hash tables.
+
+Fixes: #1941
+
+An example stack trace of this happening is:
+
+Thread 2 (Thread 0x7fea68b1d640 (LWP 260961) "gmain"):
+ #0  syscall () at ../sysdeps/unix/sysv/linux/x86_64/syscall.S:38
+ #1  0x00007fea692215dc in g_mutex_lock_slowpath (mutex=mutex@entry=0x7fea6911e148 <g.inotify_lock_lock>) at ../glib/gthread-posix.c:1493
+ #2  0x00007fea69222062 in g_mutex_lock (mutex=mutex@entry=0x7fea6911e148 <g.inotify_lock_lock>) at ../glib/gthread-posix.c:1517
+ #3  0x00007fea6908025a in _ih_sub_cancel (sub=0x1492620) at ../gio/inotify/inotify-helper.c:131
+ #4  0x00007fea6907f9da in g_inotify_file_monitor_cancel (monitor=0x14a3550) at ../gio/inotify/ginotifyfilemonitor.c:75
+ #5  0x00007fea68fae959 in g_file_monitor_cancel (monitor=0x14a3550) at ../gio/gfilemonitor.c:241
+ #6  0x00007fea68fae9dc in g_file_monitor_dispose (object=0x14a3550) at ../gio/gfilemonitor.c:123
+ #7  0x00007fea69139341 in g_object_unref (_object=<optimized out>) at ../gobject/gobject.c:3636
+ #8  g_object_unref (_object=0x14a3550) at ../gobject/gobject.c:3553
+ #9  0x00007fea6907507a in g_file_monitor_source_handle_event (fms=0x14c3560, event_type=<optimized out>, child=0x7fea64001460 "spawned-1", rename_to=rename_to@entry=0x0, other=other@entry=0x0, event_time=<optimized out>) at ../gio/glocalfilemonitor.c:457
+ #10 0x00007fea6907fe0e in ih_event_callback (event=0x7fea64001420, sub=0x1492620, file_event=<optimized out>) at ../gio/inotify/inotify-helper.c:218
+ #11 0x00007fea6908075c in ip_event_dispatch (dir_list=dir_list@entry=0x14c14c0, file_list=0x0, event=event@entry=0x7fea64001420) at ../gio/inotify/inotify-path.c:493
+ #12 0x00007fea6908094e in ip_event_dispatch (event=0x7fea64001420, file_list=<optimized out>, dir_list=0x14c14c0) at ../gio/inotify/inotify-path.c:448
+ #13 ip_event_callback (event=0x7fea64001420) at ../gio/inotify/inotify-path.c:548
+ #14 ip_event_callback (event=0x7fea64001420) at ../gio/inotify/inotify-path.c:530
+ #15 0x00007fea69081391 in ik_source_dispatch (source=0x14a2bf0, func=0x7fea69080890 <ip_event_callback>, user_data=<optimized out>) at ../gio/inotify/inotify-kernel.c:327
+ #16 0x00007fea691d0824 in g_main_dispatch (context=0x14a2cc0) at ../glib/gmain.c:3417
+ #17 g_main_context_dispatch (context=0x14a2cc0) at ../glib/gmain.c:4135
+ #18 0x00007fea691d0b88 in g_main_context_iterate (context=context@entry=0x14a2cc0, block=block@entry=1, dispatch=dispatch@entry=1, self=<optimized out>) at ../glib/gmain.c:4211
+ #19 0x00007fea691d0c2f in g_main_context_iteration (context=0x14a2cc0, may_block=may_block@entry=1) at ../glib/gmain.c:4276
+ #20 0x00007fea691d0c81 in glib_worker_main (data=<optimized out>) at ../glib/gmain.c:6176
+ #21 0x00007fea691f9c2d in g_thread_proxy (data=0x1487cc0) at ../glib/gthread.c:827
+ #22 0x00007fea68d93b1a in start_thread (arg=<optimized out>) at pthread_create.c:443
+ #23 0x00007fea68e18650 in clone3 () at ../sysdeps/unix/sysv/linux/x86_64/clone3.S:81
+---
+ gio/glocalfilemonitor.c | 14 +++++---------
+ 1 file changed, 5 insertions(+), 9 deletions(-)
+
+diff --git a/gio/glocalfilemonitor.c b/gio/glocalfilemonitor.c
+index 4f85fea52..f408d0707 100644
+--- a/gio/glocalfilemonitor.c
++++ b/gio/glocalfilemonitor.c
+@@ -348,7 +348,6 @@ g_file_monitor_source_handle_event (GFileMonitorSource *fms,
+                                     gint64              event_time)
+ {
+   gboolean interesting = TRUE;
+-  GFileMonitor *instance = NULL;
+ 
+   g_assert (!child || is_basename (child));
+   g_assert (!rename_to || is_basename (rename_to));
+@@ -359,13 +358,11 @@ g_file_monitor_source_handle_event (GFileMonitorSource *fms,
+ 
+   g_mutex_lock (&fms->lock);
+ 
+-  /* monitor is already gone -- don't bother */
+-  instance = g_weak_ref_get (&fms->instance_ref);
+-  if (instance == NULL)
+-    {
+-      g_mutex_unlock (&fms->lock);
+-      return TRUE;
+-    }
++  /* NOTE: We process events even if the file monitor has already been disposed.
++   *       The reason is that we must not take a reference to the instance here
++   *       as destroying it from the event handling thread will lead to a
++   *       deadlock when taking the lock in _ih_sub_cancel.
++   */
+ 
+   switch (event_type)
+     {
+@@ -452,7 +449,6 @@ g_file_monitor_source_handle_event (GFileMonitorSource *fms,
+   g_file_monitor_source_update_ready_time (fms);
+ 
+   g_mutex_unlock (&fms->lock);
+-  g_clear_object (&instance);
+ 
+   return interesting;
+ }
+-- 
+2.41.0.windows.3
+

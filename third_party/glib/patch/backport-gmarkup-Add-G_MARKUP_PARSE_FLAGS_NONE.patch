@@ -1,0 +1,157 @@
+From 0d4e401ede234a3ce25e6098776ef5e966ad080b Mon Sep 17 00:00:00 2001
+From: Simon McVittie <smcv@collabora.com>
+Date: Thu, 23 Jun 2022 10:18:08 +0100
+Subject: [PATCH] gmarkup: Add G_MARKUP_PARSE_FLAGS_NONE
+
+Signed-off-by: Simon McVittie <smcv@collabora.com>
+
+Conflict:NA
+Reference:https://gitlab.gnome.org/GNOME/glib/-/commit/0d4e401ede234a3ce25e6098776ef5e966ad080b
+
+---
+ gio/gcontenttype.c            | 3 ++-
+ glib/gbookmarkfile.c          | 2 +-
+ glib/gmarkup.h                | 2 ++
+ glib/tests/autoptr.c          | 4 +++-
+ glib/tests/markup-collect.c   | 4 +++-
+ glib/tests/markup-parse.c     | 2 +-
+ glib/tests/markup-subparser.c | 3 ++-
+ glib/tests/markup.c           | 3 ++-
+ gobject/tests/boxed.c         | 3 ++-
+ 9 files changed, 18 insertions(+), 8 deletions(-)
+
+diff --git a/gio/gcontenttype.c b/gio/gcontenttype.c
+index 190c5d7bf8..170bb43419 100644
+--- a/gio/gcontenttype.c
++++ b/gio/gcontenttype.c
+@@ -435,7 +435,8 @@ load_comment_for_mime_helper (const char *dir,
+   if (!res)
+     return NULL;
+ 
+-  context = g_markup_parse_context_new   (&parser, 0, &parse_data, NULL);
++  context = g_markup_parse_context_new (&parser, G_MARKUP_PARSE_FLAGS_NONE,
++                                        &parse_data, NULL);
+   res = g_markup_parse_context_parse (context, data, len, NULL);
+   g_free (data);
+   g_markup_parse_context_free (context);
+diff --git a/glib/gbookmarkfile.c b/glib/gbookmarkfile.c
+index 5ae1ad6642..a45f939b0f 100644
+--- a/glib/gbookmarkfile.c
++++ b/glib/gbookmarkfile.c
+@@ -1510,7 +1510,7 @@ g_bookmark_file_parse (GBookmarkFile  *bookmark,
+   parse_data->bookmark_file = bookmark;
+ 
+   context = g_markup_parse_context_new (&markup_parser,
+-  					0,
++  					G_MARKUP_PARSE_FLAGS_NONE,
+   					parse_data,
+   					(GDestroyNotify) parse_data_free);
+ 
+diff --git a/glib/gmarkup.h b/glib/gmarkup.h
+index ae6976b154..6224d13431 100644
+--- a/glib/gmarkup.h
++++ b/glib/gmarkup.h
+@@ -76,6 +76,7 @@ GQuark g_markup_error_quark (void);
+ 
+ /**
+  * GMarkupParseFlags:
++ * @G_MARKUP_PARSE_FLAGS_NONE: No special behaviour. Since: 2.74
+  * @G_MARKUP_DO_NOT_USE_THIS_UNSUPPORTED_FLAG: flag you should not use
+  * @G_MARKUP_TREAT_CDATA_AS_TEXT: When this flag is set, CDATA marked
+  *     sections are not passed literally to the @passthrough function of
+@@ -96,6 +97,7 @@ GQuark g_markup_error_quark (void);
+  */
+ typedef enum
+ {
++  G_MARKUP_PARSE_FLAGS_NONE GLIB_AVAILABLE_ENUMERATOR_IN_2_74 = 0, /*< nick=none >*/
+   G_MARKUP_DO_NOT_USE_THIS_UNSUPPORTED_FLAG = 1 << 0,
+   G_MARKUP_TREAT_CDATA_AS_TEXT              = 1 << 1,
+   G_MARKUP_PREFIX_ERROR_POSITION            = 1 << 2,
+diff --git a/glib/tests/autoptr.c b/glib/tests/autoptr.c
+index 1b2dd7b094..035d3f6133 100644
+--- a/glib/tests/autoptr.c
++++ b/glib/tests/autoptr.c
+@@ -243,7 +243,9 @@ static GMarkupParser parser = {
+ static void
+ test_g_markup_parse_context (void)
+ {
+-  g_autoptr(GMarkupParseContext) val = g_markup_parse_context_new (&parser,  0, NULL, NULL);
++  g_autoptr(GMarkupParseContext) val = g_markup_parse_context_new (&parser,
++                                                                   G_MARKUP_PARSE_FLAGS_NONE,
++                                                                   NULL, NULL);
+   g_assert_nonnull (val);
+ }
+ 
+diff --git a/glib/tests/markup-collect.c b/glib/tests/markup-collect.c
+index 04b814b6cc..fa89b0ca61 100644
+--- a/glib/tests/markup-collect.c
++++ b/glib/tests/markup-collect.c
+@@ -206,7 +206,9 @@ test_cleanup (void)
+   if (!g_test_undefined ())
+     return;
+ 
+-  context = g_markup_parse_context_new (&cleanup_parser, 0, NULL, NULL);
++  context = g_markup_parse_context_new (&cleanup_parser,
++                                        G_MARKUP_PARSE_FLAGS_NONE, NULL,
++                                        NULL);
+   g_markup_parse_context_parse (context, XML, -1, NULL);
+ 
+   g_test_expect_message (G_LOG_DOMAIN, G_LOG_LEVEL_CRITICAL,
+diff --git a/glib/tests/markup-parse.c b/glib/tests/markup-parse.c
+index 00742d7459..1945bc39bd 100644
+--- a/glib/tests/markup-parse.c
++++ b/glib/tests/markup-parse.c
+@@ -314,7 +314,7 @@ main (int argc, char *argv[])
+   if (argc > 1)
+     {
+       gint arg = 1;
+-      GMarkupParseFlags flags = 0;
++      GMarkupParseFlags flags = G_MARKUP_PARSE_FLAGS_NONE;
+ 
+       if (strcmp (argv[1], "--cdata-as-text") == 0)
+         {
+diff --git a/glib/tests/markup-subparser.c b/glib/tests/markup-subparser.c
+index 71b9ac6af5..4b1bc50185 100644
+--- a/glib/tests/markup-subparser.c
++++ b/glib/tests/markup-subparser.c
+@@ -289,7 +289,8 @@ test (gconstpointer user_data)
+ 
+   error = NULL;
+   string = g_string_new (NULL);
+-  ctx = g_markup_parse_context_new (&parser, 0, string, NULL);
++  ctx = g_markup_parse_context_new (&parser, G_MARKUP_PARSE_FLAGS_NONE,
++                                    string, NULL);
+   result = g_markup_parse_context_parse (ctx, tc->markup,
+                                          strlen (tc->markup), &error);
+   if (result)
+diff --git a/glib/tests/markup.c b/glib/tests/markup.c
+index 71f9ff16c3..6fced87d49 100644
+--- a/glib/tests/markup.c
++++ b/glib/tests/markup.c
+@@ -80,7 +80,8 @@ test_markup_stack (void)
+   gboolean res;
+   GError *error = NULL;
+ 
+-  context = g_markup_parse_context_new (&parser, 0, &data, NULL);
++  context = g_markup_parse_context_new (&parser, G_MARKUP_PARSE_FLAGS_NONE,
++                                        &data, NULL);
+   res = g_markup_parse_context_parse (context, content, -1, &error);
+   g_assert (res);
+   g_assert_no_error (error);
+diff --git a/gobject/tests/boxed.c b/gobject/tests/boxed.c
+index f961a2f87b..c2d091c54a 100644
+--- a/gobject/tests/boxed.c
++++ b/gobject/tests/boxed.c
+@@ -560,7 +560,8 @@ test_boxed_markup (void)
+   g_value_init (&value, G_TYPE_MARKUP_PARSE_CONTEXT);
+   g_assert (G_VALUE_HOLDS_BOXED (&value));
+ 
+-  c = g_markup_parse_context_new (&parser, 0, NULL, NULL);
++  c = g_markup_parse_context_new (&parser, G_MARKUP_PARSE_FLAGS_NONE,
++                                  NULL, NULL);
+   g_value_take_boxed (&value, c);
+ 
+   c2 = g_value_get_boxed (&value);
+-- 
+GitLab
+

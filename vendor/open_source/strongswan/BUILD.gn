@@ -1,0 +1,60 @@
+# Copyright (c) 2024 Huawei Device Co., Ltd.
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+import("//build/ohos.gni")
+
+# Execute the script and extract strongswan source files
+strongswan_gen_dir = "${target_gen_dir}/strongswan/src"
+action("strongswan_install_action") {
+  script = "//vendor/open_source/strongswan/install.py"
+  outputs = [
+    "${strongswan_gen_dir}/_updown",
+    "${strongswan_gen_dir}/charon",
+    "${strongswan_gen_dir}/libcharon",
+    "${strongswan_gen_dir}/ipsec",
+    "${strongswan_gen_dir}/libipsec",
+    "${strongswan_gen_dir}/pki",
+    "${strongswan_gen_dir}/starter",
+    "${strongswan_gen_dir}/stroke",
+    "${strongswan_gen_dir}/libtls",
+    "${strongswan_gen_dir}/libstrongswan",
+    "${strongswan_gen_dir}/swanctl",
+    "${strongswan_gen_dir}/xfrmi",
+  ]
+
+  args = [
+    "--gen-dir",
+    rebase_path("${target_gen_dir}", root_build_dir),
+    "--source-file",
+    rebase_path("//vendor/open_source/strongswan"),
+  ]
+}
+
+group("build_strongswan") {
+  deps = [
+    ":strongswan_install_action",
+    "patching/src/_updown:_updown",
+    "patching/src/charon:charon",
+    "patching/src/ipsec:ipsec",
+    "patching/src/pki:pki",
+    "patching/src/starter:starter",
+    "patching/src/stroke:stroke",
+    "patching/src/swanctl:swanctl",
+    "patching/src/xfrmi:xfrmi",
+    "prebuilts:prebuilts_etc",
+  ]
+  external_deps = [
+    "openssl:libcrypto_shared",
+    "openssl:libssl_shared",
+  ]
+}

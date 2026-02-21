@@ -1,0 +1,10 @@
+# SPDX-License-Identifier: GPL-2.0
+config UNIFIED_COLLECTION
+	tristate "Enable unified collection"
+	help
+	  Unified collection driver
+
+config HUAWEI_PERFD
+	bool "cpu load"
+	help
+	  Enable get the running time of each frequency point of the CPU

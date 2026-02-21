@@ -1,0 +1,17 @@
+obj-$(CONFIG_PARADE_TS_KIT_3_0)  += parade/
+obj-$(CONFIG_CHIPONE_TS_KIT_3_0)  += chipone/
+obj-$(CONFIG_CHIPONE_HYBRID_TS_KIT_3_0)  += chipone_hybrid/
+obj-$(CONFIG_FOCALTECH_TS_KIT_3_0)  += focaltech/
+obj-$(CONFIG_GT1X_TS_KIT_3_0)  += gt1x/
+obj-$(CONFIG_GOODIX_GTX8_TS_KIT)  += gtx8/
+obj-$(CONFIG_GOODIX_GTX8_BRL_TS_KIT_3_0)  += gtx8_brl/
+obj-$(CONFIG_HIMAX_64_TS_KIT_3_0)  += himax_64/
+obj-$(CONFIG_ILITEK_TS_KIT_3_0)  += ilitek/
+obj-$(CONFIG_MSTAR_TS_KIT_3_0)  += mstar/
+obj-$(CONFIG_NOVATEK_TS_KIT_3_0)  += novatek/
+obj-$(CONFIG_SAMSUNG_TS_KIT_3_0)  += samsung/
+obj-$(CONFIG_ST_TS_KIT_3_0)  += st/
+obj-$(CONFIG_SYNAPTICS_TS_KIT_3_0)  += synaptics/
+obj-$(CONFIG_SYNAPTICS_TCM_TS_KIT_3_0)  += synaptics_tcm/
+obj-$(CONFIG_ZINITIX_TS_KIT_3_0)  += zinitix/
+obj-$(CONFIG_RAYDIUM_TS_KIT_3_0)  += raydium/

@@ -1,0 +1,155 @@
+This is the README file for ppp-2.5, a package which implements the
+Point-to-Point Protocol (PPP) to provide Internet connections over
+serial lines and other types of links which can be considered to be
+point-to-point links.
+
+
+Introduction.
+*************
+
+The Point-to-Point Protocol (PPP) provides a standard way to establish
+a network connection over a serial link.  At present, this package
+supports IP and IPV6 and the protocols layered above them, such as TCP
+and UDP.
+
+This PPP implementation consists of two parts:
+
+- Kernel code, which establishes a network interface and passes
+packets between the serial port, the kernel networking code and the
+PPP daemon (pppd).  This code is implemented using STREAMS modules on
+Solaris, and as a line discipline under Linux.
+
+- The PPP daemon (pppd), which negotiates with the peer to establish
+the link and sets up the ppp network interface.  Pppd includes support
+for authentication, so you can control which other systems may make a
+PPP connection and what IP addresses they may use.
+
+The platforms supported by this package are Linux and Solaris.  I have
+code for NeXTStep, FreeBSD, SunOS 4.x, SVR4, Tru64 (Digital Unix), AIX
+and Ultrix but no active maintainers for these platforms.  Code for
+all of these except AIX is included in the ppp-2.3.11 release.
+
+The kernel code for Linux is no longer distributed with this package,
+since the relevant kernel code is in the official Linux kernel source
+(and has been for many years) and is included in all reasonably modern
+Linux distributions.  The Linux kernel code supports using PPP over
+things other than serial ports, such as PPP over Ethernet and PPP over
+ATM.
+
+
+Installation.
+*************
+
+The file SETUP contains general information about setting up your
+system for using PPP.  There is also a README file for each supported
+system, which contains more specific details for installing PPP on
+that system.  The supported systems, and the corresponding README
+files, are:
+
+	Linux				README.linux
+	Solaris				README.sol2
+
+In each case you start by running the ./configure script.  This works
+out which operating system you are using and creates the appropriate
+makefiles.  You then run `make' to compile the user-level code, and
+(as root) `make install' to install the user-level programs pppd, chat
+and pppstats.
+
+N.B. Since 2.3.0, leaving the permitted IP addresses column of the
+pap-secrets or chap-secrets file empty means that no addresses are
+permitted.  You need to put a "*" in that column to allow the peer to
+use any IP address.  (This only applies where the peer is
+authenticating itself to you, of course.)
+
+
+What's new in ppp-2.5.0.
+************************
+
+The 2.5.0 release is a major release of pppd which contains breaking 
+changes for third-party plugins, a complete revamp of the build-system
+and that allows for flexibility of configuring features as needed.
+
+In Summary:
+* Support for PEAP authentication by Eivind Næss and Rustam Kovhaev
+* Support for loading PKCS12 certificate envelopes 
+* Adoption of GNU Autoconf / Automake build environment, by Eivind Næss
+  and others.
+* Support for pkgconfig tool has been added by Eivind Næss.
+* Bunch of fixes and cleanup to PPPoE and IPv6 support by Pali Rohár.
+* Major revision to PPPD's Plugin API by Eivind Næss.
+  - Defines in which describes what features was included in pppd
+  - Functions now prefixed with explicit ppp_* to indicate that
+    pppd functions being called.
+  - Header files were renamed to better align with their features,
+    and now use proper include guards
+  - A pppdconf.h file is supplied to allow third-party modules to use
+    the same feature defines pppd was compiled with.
+  - No extern declarations of internal variable names of pppd, 
+    continued use of these extern variables are considered 
+    unstable.
+* Lots of internal fixes and cleanups for Radius and PPPoE by Jaco Kroon
+* Dropped IPX support, as Linux has dropped support in version 5.15
+  for this protocol.
+* Many more fixes and cleanups.
+* Pppd is no longer installed setuid-root.
+* New pppd options:
+  - ipv6cp-noremote, ipv6cp-nosend, ipv6cp-use-remotenumber,
+    ipv6-up-script, ipv6-down-script
+  - -v, show-options
+  - usepeerwins, ipcp-no-address, ipcp-no-addresses, nosendip
+* On Linux, any baud rate can be set on a serial port provided the
+  kernel serial driver supports that.
+
+Note that if you have built and installed previous versions of this
+package and you want to continue having configuration and TDB files in
+/etc/ppp, you will need to use the --sysconfdir option to ./configure.
+
+For a list of the changes made during the 2.4 series releases of this
+package, see the Changes-2.4 file.
+
+
+Compression methods.
+********************
+
+This package supports two packet compression methods: Deflate and
+BSD-Compress.  Other compression methods which are in common use
+include Predictor, LZS, and MPPC.  These methods are not supported for
+two reasons - they are patent-encumbered, and they cause some packets
+to expand slightly, which pppd doesn't currently allow for.
+BSD-Compress and Deflate (which uses the same algorithm as gzip) don't
+ever expand packets.
+
+
+Contacts.
+*********
+
+Most communication relating to this package happens on github at
+https://github.com/ppp-project/ppp/.  The linux-ppp@vger.kernel.org
+mailing list also exists and can be used.
+
+If you find bugs in this package, the best thing to do is to create an
+issue on github.  If you can't or don't want to do that, you can post
+to linux-ppp@vger.kernel.org, or report them to the maintainer for the
+port for the operating system you are using:
+
+Linux			Paul Mackerras <paulus@ozlabs.org>
+Solaris			James Carlson <carlson@workingcode.com>
+
+
+Copyrights:
+***********
+
+All of the code can be freely used and redistributed.  The individual
+source files each have their own copyright and permission notice.
+Pppd, pppstats and pppdump are under BSD-style notices.  Some of the
+pppd plugins are GPL'd.  Chat is public domain.
+
+
+Distribution:
+*************
+
+The primary site for releases of this software is:
+
+	ftp://ftp.samba.org/pub/ppp/
+
+

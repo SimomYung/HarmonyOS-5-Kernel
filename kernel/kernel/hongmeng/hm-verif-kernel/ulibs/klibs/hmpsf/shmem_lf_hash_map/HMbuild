@@ -1,0 +1,7 @@
+# Copyright (C) Huawei Technologies Co., Ltd. 2023. All rights reserved.
+# Description: HMbuild for subdir of hmpsf shared-memory lock-free hash maps
+# Author: Huawei OS Kernel Lab
+# Create: Thu Dec 14 21:03:46 2023
+
+src-y: shmem_lf_hash_map.c
+src-y: shmem_lf_hash_map_utils.c

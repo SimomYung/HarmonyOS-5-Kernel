@@ -1,0 +1,9 @@
+#
+# huawei LT6911GXD drivers
+#
+
+config HW_LT6911GXD_DRIVER
+	tristate "LT6911GXD driver"
+	default n
+	help
+	  MCU LT6911GXD I2C driver.

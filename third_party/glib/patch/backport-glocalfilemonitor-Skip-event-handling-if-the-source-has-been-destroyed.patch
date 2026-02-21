@@ -1,0 +1,76 @@
+From 57bde3c9bda9cfdf1e55fd6ddc1c354bde1ee654 Mon Sep 17 00:00:00 2001
+From: Philip Withnall <pwithnall@endlessos.org>
+Date: Mon, 30 May 2022 17:54:18 +0100
+Subject: [PATCH 2/3] glocalfilemonitor: Skip event handling if the source has
+ been destroyed
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+This should prevent unbounded growth of the `event_queue` in the
+unlikely case that the `GSource` is removed from its `GMainContext` and
+destroyed separately from the `GFileMonitor`.
+
+I’m not sure if that can currently happen, but it could with future
+refactoring, so it’s best to address the possibility now while we’re
+thinking about this bit of code.
+
+Signed-off-by: Philip Withnall <pwithnall@endlessos.org>
+
+Helps: #1941
+---
+ gio/glocalfilemonitor.c | 29 +++++++++++++++++++++++------
+ 1 file changed, 23 insertions(+), 6 deletions(-)
+
+diff --git a/gio/glocalfilemonitor.c b/gio/glocalfilemonitor.c
+index f408d0707..68afd7b51 100644
+--- a/gio/glocalfilemonitor.c
++++ b/gio/glocalfilemonitor.c
+@@ -358,11 +358,28 @@ g_file_monitor_source_handle_event (GFileMonitorSource *fms,
+ 
+   g_mutex_lock (&fms->lock);
+ 
+-  /* NOTE: We process events even if the file monitor has already been disposed.
+-   *       The reason is that we must not take a reference to the instance here
+-   *       as destroying it from the event handling thread will lead to a
+-   *       deadlock when taking the lock in _ih_sub_cancel.
++  /* NOTE:
++   *
++   * We process events even if the file monitor has already been disposed.
++   * The reason is that we must not take a reference to the instance here as
++   * destroying it from the event handling thread will lead to a deadlock when
++   * taking the lock in _ih_sub_cancel.
++   *
++   * This results in seemingly-unbounded growth of the `event_queue` with the
++   * calls to `g_file_monitor_source_queue_event()`. However, each of those sets
++   * the ready time on the #GSource, which means that it will be dispatched in
++   * a subsequent iteration of the #GMainContext it’s attached to. At that
++   * point, `g_file_monitor_source_dispatch()` will return %FALSE, and this will
++   * trigger finalisation of the source. That will clear the `event_queue`.
++   *
++   * If the source is no longer attached, this will return early to prevent
++   * unbounded queueing.
+    */
++  if (g_source_is_destroyed ((GSource *) fms))
++    {
++      g_mutex_unlock (&fms->lock);
++      return TRUE;
++    }
+ 
+   switch (event_type)
+     {
+@@ -595,9 +612,9 @@ g_file_monitor_source_dispose (GFileMonitorSource *fms)
+ 
+   g_file_monitor_source_update_ready_time (fms);
+ 
+-  g_mutex_unlock (&fms->lock);
+-
+   g_source_destroy ((GSource *) fms);
++
++  g_mutex_unlock (&fms->lock);
+ }
+ 
+ static void
+-- 
+2.41.0.windows.3
+

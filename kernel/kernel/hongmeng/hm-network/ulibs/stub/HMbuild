@@ -1,0 +1,33 @@
+# Copyright (c) Huawei Technologies Co., Ltd. 2022. All rights reserved.
+# Description: HMbuild
+# Author: Huawei OS Kernel Lab
+# Create: Wed May 11 10:15:31 2022
+
+src-y: netdev_stub.c
+src-y: netlink_stub.c
+src-y: socket_stub.c
+src-y: vsock_stub.c
+
+installinc-hmnet: ../libsocket/include/hm_socket.h
+installinc-hmnet: ../libsocket/include/hmnet_devices.h
+installinc-hmnet: ../libsocket/include/hm_netlink.h
+installinc-hmnet: ../libsocket/include/hm_genetlink.h
+installinc-hmnet: ../libsocket/include/hm_neighbour.h
+installinc-hmnet: ../libsocket/include/hm_if_bonding.h
+installinc-hmnet: ../libsocket/include/hm_ethtool.h
+installinc-hmnet: ../libsocket/include/hm_if_tun.h
+installinc-hmnet: ../libsocket/include/hm_vsock.h
+installinc-hmnet: ../libsocket/include/hmnet_config.h
+installinc-hmnet: ../libsocket/include/hmnet_ldk.h
+installinc-hmnet: ../libsocket/include/hmnet_procfs.h
+installfindmodule: ../FindHMNetLibs_sysk.cmake
+installfindmodule: ../FindHMNetLibs.cmake
+
+lib-static-y: hmsrv_net
+install-hmsrv_net-y: LIBDIR
+
+lib-dynamic-y: hmsrv_net_shared
+output-hmsrv_net_shared: hmsrv_net
+cflags-hmsrv_net_shared-y: -fPIC
+linklib-hmsrv_net_shared-y: -nostdlib
+install-hmsrv_net_shared-y: LIBDIR

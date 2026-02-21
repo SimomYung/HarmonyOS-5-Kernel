@@ -1,0 +1,83 @@
+# Copyright (c) 2024 Huawei Device Co., Ltd.
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+import("//build/ohos.gni")
+
+# Execute the script and get xl2tpd source files
+source_gen_dir = "${target_gen_dir}/xl2tpd"
+sources_list = [
+  "$source_gen_dir/aaa.c",
+  "$source_gen_dir/avp.c",
+  "$source_gen_dir/avpsend.c",
+  "$source_gen_dir/call.c",
+  "$source_gen_dir/control.c",
+  "$source_gen_dir/file.c",
+  "$source_gen_dir/ipc_request.cpp",
+  "$source_gen_dir/md5.c",
+  "$source_gen_dir/misc.c",
+  "$source_gen_dir/network.c",
+  "$source_gen_dir/pty.c",
+  "$source_gen_dir/scheduler.c",
+  "$source_gen_dir/xl2tpd.c",
+]
+action("xl2tpd_install_action") {
+  script = "//vendor/open_source/xl2tpd/install.py"
+  outputs = sources_list
+  args = [
+    "--gen-dir",
+    rebase_path("${target_gen_dir}", root_build_dir),
+    "--source-file",
+    rebase_path("//vendor/open_source/xl2tpd"),
+  ]
+}
+
+ohos_executable("xl2tpd") {
+  sources = get_target_outputs(":xl2tpd_install_action")
+
+  include_dirs = [
+    "linux/include",
+    ".",
+  ]
+
+  defines = [
+    "DEBUG_PPPD",
+    "TRUST_PPPD_TO_DIE",
+    "LINUX",
+    "SANITY",
+    "IP_ALLOCATION",
+    "SUPPORT_SYSVPN",
+    "IPSEC_PIDDIR=\"/data/service/el1/public/vpn\"",
+  ]
+
+  cflags = [
+    "-Os",
+    "-Wall",
+    "-Wextra",
+    "-Wno-pointer-bool-conversion",
+    "-Wno-macro-redefined",
+  ]
+
+  ldflags = []
+  deps = [ ":xl2tpd_install_action" ]
+  external_deps = [
+    "ipc:ipc_single",
+    "netmanager_ext:net_vpn_manager_if",
+  ]
+  install_enable = true
+  part_name = "xl2tpd"
+  subsystem_name = "open_source"
+}
+
+group("build_xl2tpd") {
+  deps = [ ":xl2tpd" ]
+}

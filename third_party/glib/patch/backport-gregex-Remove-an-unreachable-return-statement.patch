@@ -1,0 +1,34 @@
+From 4fca3bba8f38627ee13b99b0b5093b73a2052e77 Mon Sep 17 00:00:00 2001
+From: Philip Withnall <pwithnall@endlessos.org>
+Date: Tue, 18 Oct 2022 15:05:30 +0100
+Subject: [PATCH] gregex: Remove an unreachable return statement
+
+Spotted by Coverity.
+
+Signed-off-by: Philip Withnall <pwithnall@endlessos.org>
+
+Coverity CID: #1497916
+
+Conflict:NA
+Reference:https://gitlab.gnome.org/GNOME/glib/-/commit/4fca3bba8f38627ee13b99b0b5093b73a2052e77
+
+---
+ glib/gregex.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/glib/gregex.c b/glib/gregex.c
+index 41ad675a76..53eda2b19d 100644
+--- a/glib/gregex.c
++++ b/glib/gregex.c
+@@ -947,7 +947,7 @@ enable_jit_with_match_options (GRegex   *regex,
+       break;
+     }
+ 
+-  return regex->jit_status;
++  g_assert_not_reached ();
+ }
+ 
+ /**
+-- 
+GitLab
+

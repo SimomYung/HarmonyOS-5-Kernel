@@ -1,0 +1,73 @@
+menu "ULIBS Options"
+
+config RAW_THREAD_COMPATIBLE_WITH_PTHREAD
+bool "Make raw thread compatible with pthread"
+default y
+
+config USERLAND_C_STANDARD
+  string "C standard used for userspace (sysmgr & ulibs)"
+  default "gnu99"
+config RESERVE_VMEM
+  int "RESERVE_VMEM"
+  range 1 2097152
+  default 4096
+
+config PTPOOL_SIZE
+  int "pt pool page count"
+  default 128
+config PTPOOL_INJECT_SIZE
+   int "pt pool inject page count when allocate failed"
+   default 16
+
+config U_HW_UNALIGN_ACCESS
+   bool "Hardware unalign access support"
+   depends on HW_UNALIGN_ACCESS
+   default y
+
+config LIBFAULTEVT
+    bool "Enable fault event"
+    default n
+
+config FUNCTION_TRACE
+   bool "Enable function trace"
+   depends on AARCH64
+   default n
+
+config FUNCTION_GRAPH
+   bool "Enable function trace"
+   depends on FUNCTION_TRACE
+   default n
+
+config HMVSYSCALL_TRACE
+   bool "Enable syscall trace"
+   default n
+
+config SLAB_FREELIST_RANDOM
+   bool "Enable slab freelist random"
+   default n
+
+# Dependency of keymgr config:
+#   KEYMGR_FUSION -> KEYMGR -> LIBKEYMGR
+config KEYMGR_FUSION
+  bool "enable key retention feature"
+  select KEYMGR
+  default n
+
+config KEYMGR
+  bool "enable key retention feature"
+  select LIBKEYMGR
+  default n
+
+config LIBKEYMGR
+  bool "compile keymgr as library"
+  default n
+
+config SHMALLOC_MEM_BITS
+  int "Share memory malloc bits"
+  default 12
+
+config HM_NOTIFIER
+  bool "Notifier chain support"
+  default n
+
+endmenu

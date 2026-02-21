@@ -1,0 +1,32 @@
+/*
+ * Copyright (c) Huawei Technologies Co., Ltd. 2022-2022. All rights reserved.
+ * Description: Add linux/netfilter/nf_conntrack_tcp.h to compat linux interface
+ * Author: Huawei OS Kernel Lab
+ * Create: Fri Jun 24 10:10:53 2022
+ */
+
+#ifndef LINUX_NF_CONNTRACK_TCP_H
+#define LINUX_NF_CONNTRACK_TCP_H
+
+#include <linux/types.h>
+
+enum tcp_conntrack {
+	TCP_CONNTRACK_NONE,
+	TCP_CONNTRACK_SYN_SENT,
+	TCP_CONNTRACK_SYN_RECV,
+	TCP_CONNTRACK_ESTABLISHED,
+	TCP_CONNTRACK_FIN_WAIT,
+	TCP_CONNTRACK_CLOSE_WAIT,
+	TCP_CONNTRACK_LAST_ACK,
+	TCP_CONNTRACK_TIME_WAIT,
+	TCP_CONNTRACK_CLOSE,
+	TCP_CONNTRACK_LISTEN,
+#define TCP_CONNTRACK_SYN_SENT2	TCP_CONNTRACK_LISTEN
+	TCP_CONNTRACK_MAX,
+	TCP_CONNTRACK_IGNORE,
+	TCP_CONNTRACK_RETRANS,
+	TCP_CONNTRACK_UNACK,
+	TCP_CONNTRACK_TIMEOUT_MAX
+};
+
+#endif

@@ -1,0 +1,118 @@
+/*
+ * Copyright (c) Huawei Technologies Co., Ltd. 2023-2023. All rights reserved.
+ * Description: devhost file_info sysif APIs
+ * Author: Huawei OS Kernel Lab
+ * Create: Thu Sep 14 02:56:12 2023
+ */
+#ifdef SYSIF_EXPORT_API
+
+#define TASK_COMM_LEN 16
+#define FENCE_NAME_LEN 32
+#define FENCE_ARRAY_LEN 4
+#define DMA_BUF_NAME_LEN 32
+
+struct dma_buf_info {
+	size_t size;
+	unsigned long long magic;
+	int allocator_pid;
+	char allocator_comm[TASK_COMM_LEN];
+};
+
+struct dma_fence_info {
+	char fence_name[FENCE_NAME_LEN];
+	unsigned long i_ino;
+	unsigned int total_num_fences;
+	unsigned int num_fences;
+};
+
+struct fences_info {
+	char timeline_name[FENCE_NAME_LEN];
+	char driver_name[FENCE_NAME_LEN];
+	int status;
+	size_t timestamp;
+};
+
+struct sync_file_info {
+	struct dma_fence_info dma_fence_info;
+	struct fences_info fences_array[FENCE_ARRAY_LEN];
+};
+
+struct ion_info {
+	size_t size;
+	unsigned long i_ino;
+	int allocator_tgid;
+	int allocator_pid;
+	char exp_task_comm[TASK_COMM_LEN];
+	char exp_thread_comm[TASK_COMM_LEN];
+	char name[DMA_BUF_NAME_LEN];
+	char exp_name[DMA_BUF_NAME_LEN];
+	bool reclaimable;
+	bool is_reclaimed;
+};
+
+struct devhost_mem_info {
+	unsigned long long ion_total_cache;
+	unsigned long long ion_total_used;
+	unsigned long dmaheap_total_cache;
+	unsigned long dmaheap_total_used;
+	unsigned long dmaheap_freelist_cache;
+	unsigned long gpu_total_used;
+	unsigned long vmalloc_total;
+	unsigned long vmalloc_used;
+	unsigned long long slab_total;
+	unsigned long long slab_unreclaimable;
+	unsigned long long slab_reclaimable;
+	unsigned long rsv_total_used;
+	unsigned long buddy_total;
+	unsigned long buddy_normal_total;
+	unsigned long buddy_normal_free;
+	unsigned long buddy_dma_total;
+	unsigned long buddy_dma_free;
+	unsigned long ldk_others_total; /* The exclusion of memory other than buddy and ion/dma_buf within LDK */
+	unsigned long discretepool_used;
+	unsigned long discretepool_free;
+	unsigned long vmemmap_rsv_total;
+};
+
+#endif
+
+DEFINE_MANAGER(file_info, 5,
+	DEFINE_METHOD(file_info, query_dmabuf,
+		      ARG(2,
+			  unsigned int, fastpath,
+			  unsigned long long, file_idx),
+		      RET(1,
+			  struct dma_buf_info, dma_buf_info),
+		      SLOWDATA_NO)
+
+	DEFINE_METHOD(file_info, query_fence,
+		      ARG(3,
+			  unsigned int, fastpath,
+			  unsigned long long, file_idx,
+			  unsigned int, offset),
+		      RET(1,
+			  struct sync_file_info, sync_file_info),
+		      SLOWDATA_NO)
+
+	DEFINE_METHOD(file_info, query_ion,
+		      ARG(2,
+			  unsigned int, fastpath,
+			  unsigned long long, file_idx),
+		      RET(1,
+			  struct ion_info, ion_info),
+		      SLOWDATA_NO)
+
+	DEFINE_METHOD(file_info, query_meminfo,
+		      ARG_NO,
+		      RET(1,
+			  struct devhost_mem_info, devhost_mem_info),
+		      SLOWDATA_NO)
+
+	DEFINE_METHOD(file_info, lowmem_debug,
+		      ARG(3,
+			  int, oom_score_adj,
+			  unsigned long long, mem_total,
+			  bool, is_emergency),
+		      RET_NO,
+		      SLOWDATA_NO)
+)

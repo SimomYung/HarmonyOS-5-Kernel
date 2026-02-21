@@ -1,0 +1,74 @@
+From 508b1b57f73a49effc975731f8b76325d45b0e0f Mon Sep 17 00:00:00 2001
+From: zhanchengbin <zhanchengbin1@huawei.com>
+Date: Fri, 18 Mar 2022 00:02:50 +0800
+Subject: [PATCH] e2fsck: handle->level is overflow in ext2fs_extent_get.
+
+In function check_blocks_extents, program call scan_extent_node recursively until
+leaf extent is found, and if this leaf extent is the last one in this extent_idx,
+it will delete the parent extent_idx of this leaf extent in ext2fs_extent_delete,
+and do handle->level--. After scan_extent_node return, program allways to get up extent,
+but level was already decreased.
+So calling ext2fs_extent_get(EXT2_EXTENT_UP) again will return EXT2_ET_EXTENT_NO_UP,
+and then print failed. 
+
+Signed-off-by: zhanchengbin <zhanchengbin1@huawei.com>
+---
+ e2fsck/pass1.c      | 7 +++++++
+ lib/ext2fs/ext2fs.h | 1 +
+ lib/ext2fs/extent.c | 5 +++++
+ 3 files changed, 13 insertions(+)
+
+diff --git a/e2fsck/pass1.c b/e2fsck/pass1.c
+index 26b9ab71..3d698934 100644
+--- a/e2fsck/pass1.c
++++ b/e2fsck/pass1.c
+@@ -3074,11 +3074,18 @@ report_problem:
+ 					}
+ 				}
+ 			}
++
++			int level_bak = ext2fs_current_level_get(ehandle);
++
+ 			scan_extent_node(ctx, pctx, pb, extent.e_lblk,
+ 					 last_lblk, eof_block, ehandle,
+ 					 next_try_repairs);
+ 			if (pctx->errcode)
+ 				return;
++
++			if (level_bak != ext2fs_current_level_get(ehandle))
++				return;
++
+ 			pctx->errcode = ext2fs_extent_get(ehandle,
+ 						  EXT2_EXTENT_UP, &extent);
+ 			if (pctx->errcode) {
+diff --git a/lib/ext2fs/ext2fs.h b/lib/ext2fs/ext2fs.h
+index 68f9c1fe..d0468f11 100644
+--- a/lib/ext2fs/ext2fs.h
++++ b/lib/ext2fs/ext2fs.h
+@@ -1333,6 +1333,7 @@ extern errcode_t ext2fs_extent_open2(ext2_filsys fs, ext2_ino_t ino,
+ extern void ext2fs_extent_free(ext2_extent_handle_t handle);
+ extern errcode_t ext2fs_extent_get(ext2_extent_handle_t handle,
+ 				   int flags, struct ext2fs_extent *extent);
++extern int ext2fs_current_level_get(ext2_extent_handle_t handle);
+ extern errcode_t ext2fs_extent_node_split(ext2_extent_handle_t handle);
+ extern errcode_t ext2fs_extent_replace(ext2_extent_handle_t handle, int flags,
+ 				       struct ext2fs_extent *extent);
+diff --git a/lib/ext2fs/extent.c b/lib/ext2fs/extent.c
+index b324c7b0..07acd4e0 100644
+--- a/lib/ext2fs/extent.c
++++ b/lib/ext2fs/extent.c
+@@ -575,6 +575,11 @@ retry:
+ 	return 0;
+ }
+ 
++int ext2fs_current_level_get(ext2_extent_handle_t handle)
++{
++	return handle->level;
++}
++
+ static errcode_t update_path(ext2_extent_handle_t handle)
+ {
+ 	blk64_t				blk;
+-- 
+2.27.0
+

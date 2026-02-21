@@ -1,0 +1,12 @@
+lib-dynamic-y: dhext_tracefs
+
+cflags-dhext_tracefs-y: -D_DH_PLUGIN_NAME=tracefs -fvisibility=hidden
+linklib-dhext_tracefs-y: -Tksymtab.lds
+
+src-dhext_tracefs-y: tracefs_if.c
+src-dhext_tracefs-y: tracefs.c
+
+include-.-y: include/
+
+installinc: include/
+install-dhext_tracefs-y: BASE_LIBDIR

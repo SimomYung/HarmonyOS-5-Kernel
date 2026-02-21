@@ -1,0 +1,31 @@
+{
+    "name": "@ohos/ltp",
+    "description": "The LTP testsuite contains a collection of tools for testing the Linux kernel and related features.",
+    "version": "3.1",
+    "license": "GPL V2.0",
+    "publishAs": "code-segment",
+    "segment": {
+        "destPath": "third_party/ltp"
+    },
+    "dirs": {},
+    "scripts": {},
+    "licensePath": "COPYING",
+    "component": {
+        "name": "ltp",
+        "subsystem": "thirdparty",
+        "syscap": [],
+        "features": [],
+        "adapted_system_type": ["standard"],
+        "rom": "",
+        "ram": "",
+        "deps": {
+            "components": [],
+            "third_party": []
+        },
+        "build": {
+            "sub_component": [],
+            "inner_kits": [],
+            "test": []
+        }
+    }
+}

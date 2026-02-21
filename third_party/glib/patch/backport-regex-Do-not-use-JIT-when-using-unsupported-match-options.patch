@@ -1,0 +1,241 @@
+From bec68b2d74853de5e23ee40c890433fa336ffbc5 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Marco=20Trevisan=20=28Trevi=C3=B1o=29?= <mail@3v1n0.net>
+Date: Fri, 9 Sep 2022 18:30:15 +0200
+Subject: [PATCH] glib/regex: Do not use JIT when using unsupported match
+ options
+
+Do not store jit status for regex unless during initial compilation.
+After that, decide whether to use it depending on matching options.
+
+In fact there are some matching options that are incompatible with JIT,
+as the PCRE2 docs states:
+
+  Setting PCRE2_ANCHORED or PCRE2_ENDANCHORED at match time is not
+  supported by the just-in-time (JIT) compiler. If it is set, JIT
+  matching is disabled and the interpretive code in pcre2_match() is
+  run. Apart from PCRE2_NO_JIT (obviously), the remaining options are
+  supported for JIT matching.
+
+Fixes: GNOME/gtksourceview#283
+---
+ glib/gregex.c      | 38 ++++++++++++++++---------
+ glib/tests/regex.c | 69 ++++++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 94 insertions(+), 13 deletions(-)
+
+diff --git a/glib/gregex.c b/glib/gregex.c
+index fe7473e628..220a1a11ac 100644
+--- a/glib/gregex.c
++++ b/glib/gregex.c
+@@ -201,6 +201,13 @@
+                               PCRE2_NEWLINE_CRLF |   \
+                               PCRE2_NEWLINE_ANYCRLF)
+ 
++/* Some match options are not supported when using JIT as stated in the
++ * pcre2jit man page under the 芦UNSUPPORTED OPTIONS AND PATTERN ITEMS禄 section:
++ *   https://www.pcre.org/current/doc/html/pcre2jit.html#SEC5
++ */
++#define G_REGEX_PCRE2_JIT_UNSUPPORTED_OPTIONS (PCRE2_ANCHORED | \
++                                               PCRE2_ENDANCHORED)
++
+ #define G_REGEX_COMPILE_NEWLINE_MASK (G_REGEX_NEWLINE_CR      | \
+                                       G_REGEX_NEWLINE_LF      | \
+                                       G_REGEX_NEWLINE_CRLF    | \
+@@ -869,7 +876,7 @@ recalc_match_offsets (GMatchInfo *match_info,
+   return TRUE;
+ }
+ 
+-static void
++static JITStatus
+ enable_jit_with_match_options (GRegex   *regex,
+                                uint32_t  match_options)
+ {
+@@ -877,9 +884,13 @@ enable_jit_with_match_options (GRegex   *regex,
+   uint32_t old_jit_options, new_jit_options;
+ 
+   if (!(regex->orig_compile_opts & G_REGEX_OPTIMIZE))
+-    return;
++    return JIT_STATUS_DISABLED;
++
+   if (regex->jit_status == JIT_STATUS_DISABLED)
+-    return;
++    return JIT_STATUS_DISABLED;
++
++  if (match_options & G_REGEX_PCRE2_JIT_UNSUPPORTED_OPTIONS)
++    return JIT_STATUS_DISABLED;
+ 
+   old_jit_options = regex->jit_options;
+   new_jit_options = old_jit_options | PCRE2_JIT_COMPLETE;
+@@ -890,34 +901,34 @@ enable_jit_with_match_options (GRegex   *regex,
+ 
+   /* no new options enabled */
+   if (new_jit_options == old_jit_options)
+-    return;
++    return regex->jit_status;
+ 
+   retval = pcre2_jit_compile (regex->pcre_re, new_jit_options);
+   switch (retval)
+     {
+     case 0: /* JIT enabled successfully */
+-      regex->jit_status = JIT_STATUS_ENABLED;
+       regex->jit_options = new_jit_options;
+-      break;
++      return JIT_STATUS_ENABLED;
+     case PCRE2_ERROR_NOMEMORY:
+       g_debug ("JIT compilation was requested with G_REGEX_OPTIMIZE, "
+                "but JIT was unable to allocate executable memory for the "
+                "compiler. Falling back to interpretive code.");
+-      regex->jit_status = JIT_STATUS_DISABLED;
+-      break;
++      return JIT_STATUS_DISABLED;
+     case PCRE2_ERROR_JIT_BADOPTION:
+       g_debug ("JIT compilation was requested with G_REGEX_OPTIMIZE, "
+                "but JIT support is not available. Falling back to "
+                "interpretive code.");
+-      regex->jit_status = JIT_STATUS_DISABLED;
++      return JIT_STATUS_DISABLED;
+       break;
+     default:
+       g_debug ("JIT compilation was requested with G_REGEX_OPTIMIZE, "
+                "but request for JIT support had unexpectedly failed (error %d). "
+                "Falling back to interpretive code.", retval);
+-      regex->jit_status = JIT_STATUS_DISABLED;
++      return JIT_STATUS_DISABLED;
+       break;
+     }
++
++  return regex->jit_status;
+ }
+ 
+ /**
+@@ -1039,6 +1050,7 @@ gboolean
+ g_match_info_next (GMatchInfo  *match_info,
+                    GError     **error)
+ {
++  JITStatus jit_status;
+   gint prev_match_start;
+   gint prev_match_end;
+   uint32_t opts;
+@@ -1060,8 +1072,8 @@ g_match_info_next (GMatchInfo  *match_info,
+ 
+   opts = match_info->regex->match_opts | match_info->match_opts;
+ 
+-  enable_jit_with_match_options (match_info->regex, opts);
+-  if (match_info->regex->jit_status == JIT_STATUS_ENABLED)
++  jit_status = enable_jit_with_match_options (match_info->regex, opts);
++  if (jit_status == JIT_STATUS_ENABLED)
+     {
+       match_info->matches = pcre2_jit_match (match_info->regex->pcre_re,
+                                              (PCRE2_SPTR8) match_info->string,
+@@ -1727,7 +1739,7 @@ g_regex_new (const gchar         *pattern,
+   regex->orig_compile_opts = compile_options;
+   regex->match_opts = pcre_match_options;
+   regex->orig_match_opts = match_options;
+-  enable_jit_with_match_options (regex, regex->match_opts);
++  regex->jit_status = enable_jit_with_match_options (regex, regex->match_opts);
+ 
+   return regex;
+ }
+diff --git a/glib/tests/regex.c b/glib/tests/regex.c
+index 26844d63a7..2052ba0204 100644
+--- a/glib/tests/regex.c
++++ b/glib/tests/regex.c
+@@ -2334,6 +2334,67 @@ test_compile_errors (void)
+   g_clear_error (&error);
+ }
+ 
++static void
++test_jit_unsupported_matching_options (void)
++{
++  GRegex *regex;
++  GMatchInfo *info;
++  gchar *substring;
++
++  regex = g_regex_new ("(\\w+)#(\\w+)", G_REGEX_OPTIMIZE, G_REGEX_MATCH_DEFAULT, NULL);
++
++  g_assert_true (g_regex_match (regex, "aa#bb cc#dd", G_REGEX_MATCH_DEFAULT, &info));
++  g_assert_cmpint (g_match_info_get_match_count (info), ==, 3);
++  substring = g_match_info_fetch (info, 1);
++  g_assert_cmpstr (substring, ==, "aa");
++  g_clear_pointer (&substring, g_free);
++  substring = g_match_info_fetch (info, 2);
++  g_assert_cmpstr (substring, ==, "bb");
++  g_clear_pointer (&substring, g_free);
++  g_assert_true (g_match_info_next (info, NULL));
++  g_assert_cmpint (g_match_info_get_match_count (info), ==, 3);
++  substring = g_match_info_fetch (info, 1);
++  g_assert_cmpstr (substring, ==, "cc");
++  g_clear_pointer (&substring, g_free);
++  substring = g_match_info_fetch (info, 2);
++  g_assert_cmpstr (substring, ==, "dd");
++  g_clear_pointer (&substring, g_free);
++  g_assert_false (g_match_info_next (info, NULL));
++  g_match_info_free (info);
++
++  g_assert_true (g_regex_match (regex, "aa#bb cc#dd", G_REGEX_MATCH_ANCHORED, &info));
++  g_assert_cmpint (g_match_info_get_match_count (info), ==, 3);
++  substring = g_match_info_fetch (info, 1);
++  g_assert_cmpstr (substring, ==, "aa");
++  g_clear_pointer (&substring, g_free);
++  substring = g_match_info_fetch (info, 2);
++  g_assert_cmpstr (substring, ==, "bb");
++  g_clear_pointer (&substring, g_free);
++  g_assert_false (g_match_info_next (info, NULL));
++  g_match_info_free (info);
++
++  g_assert_true (g_regex_match (regex, "aa#bb cc#dd", G_REGEX_MATCH_DEFAULT, &info));
++  g_assert_cmpint (g_match_info_get_match_count (info), ==, 3);
++  substring = g_match_info_fetch (info, 1);
++  g_assert_cmpstr (substring, ==, "aa");
++  g_clear_pointer (&substring, g_free);
++  substring = g_match_info_fetch (info, 2);
++  g_assert_cmpstr (substring, ==, "bb");
++  g_clear_pointer (&substring, g_free);
++  g_assert_true (g_match_info_next (info, NULL));
++  g_assert_cmpint (g_match_info_get_match_count (info), ==, 3);
++  substring = g_match_info_fetch (info, 1);
++  g_assert_cmpstr (substring, ==, "cc");
++  g_clear_pointer (&substring, g_free);
++  substring = g_match_info_fetch (info, 2);
++  g_assert_cmpstr (substring, ==, "dd");
++  g_clear_pointer (&substring, g_free);
++  g_assert_false (g_match_info_next (info, NULL));
++  g_match_info_free (info);
++
++  g_regex_unref (regex);
++}
++
+ int
+ main (int argc, char *argv[])
+ {
+@@ -2352,6 +2413,7 @@ main (int argc, char *argv[])
+   g_test_add_func ("/regex/explicit-crlf", test_explicit_crlf);
+   g_test_add_func ("/regex/max-lookbehind", test_max_lookbehind);
+   g_test_add_func ("/regex/compile-errors", test_compile_errors);
++  g_test_add_func ("/regex/jit-unsupported-matching", test_jit_unsupported_matching_options);
+ 
+   /* TEST_NEW(pattern, compile_opts, match_opts) */
+   TEST_NEW("[A-Z]+", G_REGEX_CASELESS | G_REGEX_EXTENDED | G_REGEX_OPTIMIZE, G_REGEX_MATCH_NOTBOL | G_REGEX_MATCH_PARTIAL);
+@@ -2488,6 +2550,7 @@ main (int argc, char *argv[])
+   TEST_MATCH_SIMPLE("a", "ab", 0, G_REGEX_MATCH_ANCHORED, TRUE);
+   TEST_MATCH_SIMPLE("a", "a", G_REGEX_CASELESS, 0, TRUE);
+   TEST_MATCH_SIMPLE("a", "A", G_REGEX_CASELESS, 0, TRUE);
++  TEST_MATCH_SIMPLE("\\C\\C", "ab", G_REGEX_OPTIMIZE | G_REGEX_RAW, 0, TRUE);
+   /* These are needed to test extended properties. */
+   TEST_MATCH_SIMPLE(AGRAVE, AGRAVE, G_REGEX_CASELESS, 0, TRUE);
+   TEST_MATCH_SIMPLE(AGRAVE, AGRAVE_UPPER, G_REGEX_CASELESS, 0, TRUE);
+@@ -2947,6 +3010,12 @@ main (int argc, char *argv[])
+   TEST_REPLACE("\\S+", "hello world", 0, "\\U-\\0-", "-HELLO- -WORLD-");
+   TEST_REPLACE(".", "a", 0, "\\A", NULL);
+   TEST_REPLACE(".", "a", 0, "\\g", NULL);
++  TEST_REPLACE_OPTIONS("(\\w+)#(\\w+)", "aa#bb cc#dd", 0, "\\2#\\1", "bb#aa dd#cc",
++                       G_REGEX_OPTIMIZE|G_REGEX_MULTILINE|G_REGEX_CASELESS,
++                       0);
++  TEST_REPLACE_OPTIONS("(\\w+)#(\\w+)", "aa#bb cc#dd", 0, "\\2#\\1", "bb#aa cc#dd",
++                       G_REGEX_OPTIMIZE|G_REGEX_MULTILINE|G_REGEX_CASELESS,
++                       G_REGEX_MATCH_ANCHORED);
+ 
+   /* TEST_REPLACE_LIT(pattern, string, start_position, replacement, expected) */
+   TEST_REPLACE_LIT("a", "ababa", 0, "A", "AbAbA");
+-- 
+GitLab
+

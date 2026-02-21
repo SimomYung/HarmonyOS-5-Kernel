@@ -1,0 +1,77 @@
+# Copyright (c) Huawei Technologies Co., Ltd. 2021-2021. All rights reserved.
+# Description: HMbuild for hm-security-headers
+# Author: Huawei OS Kernel Lab
+# Create: Fri Jan 07 11:07:13 2022
+
+# headers for libhmaudit
+installinc: libhmaudit
+
+# headers for libhmcrypt
+installinc: libhmcrypt
+installinc: libentropy
+installinc: libprng
+
+# headers for libhmsig
+installinc: libhmsig
+
+# headers for libhmdmverity
+installinc: libhmdmverity
+
+# headers for libkasan
+installinc: libkasan
+
+# headers for libtsan
+installinc: libtsan
+
+# headers for libhmsrv_sec
+installinc: librequester
+installinc: libsec
+installinc: libhmseccomp
+installinc: libhmencaps
+installinc: libsecconf
+installinc: libseqlock
+installinc: libshlist
+installinc: libpolicy_api.h
+installinc: libhmkip
+installinc: libroafterinit
+
+# headers for libkeymgr
+installinc: libkeymgr
+
+# headers for libhmelog
+installinc: libhmelog
+
+# headers for libhmseharmony
+installinc: libhmseharmony
+
+# headers for libhmdec
+installinc: libhmdec
+
+# headers for libseckcov
+installinc: libseckcov
+
+installfindmodule: FindHMAuditLib.cmake
+installfindmodule: FindHMAuditLib_sysk.cmake
+installfindmodule: FindHMCryptLib.cmake
+installfindmodule: FindHMCryptLib_sysk.cmake
+installfindmodule: FindHMELogLib.cmake
+installfindmodule: FindHMELogLib_sysk.cmake
+installfindmodule: FindHMSigLib.cmake
+installfindmodule: FindHMSigLib_sysk.cmake
+installfindmodule: FindHMDmverityLib.cmake
+installfindmodule: FindHMDmverityLib_sysk.cmake
+installfindmodule: FindKasanLib.cmake
+installfindmodule: FindKasanLib_sysk.cmake
+installfindmodule: FindTsanLib.cmake
+installfindmodule: FindTsanLib_sysk.cmake
+installfindmodule: FindHMSecLib.cmake
+installfindmodule: FindHMSecLib_sysk.cmake
+installfindmodule: FindKeymgrLib.cmake
+installfindmodule: FindKeymgrLib_sysk.cmake
+installfindmodule: FindHMSeHarmonyLib.cmake
+installfindmodule: FindHMSeHarmonyLib_sysk.cmake
+installfindmodule: FindHMSepolLib.cmake
+installfindmodule: FindHMSepolLib_sysk.cmake
+installfindmodule: FindSecKcovLib.cmake
+installfindmodule: FindSecKcovLib_sysk.cmake
+# vim:ts=4:sw=4:expandtab

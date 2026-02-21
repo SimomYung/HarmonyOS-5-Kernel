@@ -1,0 +1,50 @@
+/*
+ * Copyright (C) Huawei Technologies Co., Ltd. 2023. All rights reserved.
+ * Author: Huawei OS Kernel Lab
+ * Create: Thursday May 211, 2023 09:09:30 CST
+ */
+
+#ifndef HM_INCLUDE_HMSYSCALL_H
+#define HM_INCLUDE_HMSYSCALL_H
+
+/*
+ * New added syscall number should be added here. Begins from 447.
+ *
+ * Do not add new syscall numbers which already have been used in arm's original syscall number header file.
+ */
+
+#define SYS_cpu_getnum 447
+#define SYS_mq_close 448
+#define SYS_set_thread_area 449
+#define SYS_debug_proc_stack_vregion 450
+#define SYS_debug_thread_sp 451
+#define SYS_getifaddrs 452
+#define SYS_ext_wait 453
+#define SYS_ext_ctrl 454
+#define SYS_proc_check_regs 455
+#define SYS_debug_load_symbol 456
+#define SYS_debug_unload_symbol 457
+#define SYS_debug_addr2sym 458
+#define SYS_process_spawn 459
+#define SYS_pek_ctrl 460
+#define SYS_sched_get_avail_prio_max 461
+#define SYS_dopra_tick 500
+
+#define __NR_cpu_getnum 447
+#define __NR_mq_close 448
+#define __NR_set_thread_area 449
+#define __NR_debug_proc_stack_vregion 450
+#define __NR_debug_thread_sp 451
+#define __NR_getifaddrs 452
+#define __NR_ext_wait 453
+#define __NR_ext_ctrl 454
+#define __NR_proc_check_regs 455
+#define __NR_debug_load_symbol 456
+#define __NR_debug_unload_symbol 457
+#define __NR_debug_addr2sym 458
+#define __NR_process_spawn 459
+#define __NR_pek_ctrl 460
+#define __NR_sched_get_avail_prio_max 461
+#define __NR_dopra_tick 500
+
+#endif

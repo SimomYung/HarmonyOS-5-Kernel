@@ -1,0 +1,33 @@
+comment "UDK Fusion Settings"
+
+config UDK_DEPEND_SYSK
+	bool "Using sysk libraries"
+	default n
+
+config UDK_DEPEND_NO_SYSK
+	def_bool !UDK_DEPEND_SYSK
+
+config UDK_FUSION_KCFI
+	bool "enable udk fusion kcfi"
+	select UDK_DEPEND_SYSK
+	default n
+
+config UDK_FUSION_KCFI_CFLAGS
+	string "udk kcfi flags, only used in fusion mode"
+	default ""
+
+config UDK_FUISON_DRIVERS
+	bool "enable udk fusion loading drivers"
+	default n
+
+config UDK_FUSION_OF
+	bool "enable udk fusion of scanning"
+	default y
+
+config UDK_FUSION_KASAN_CFLAGS
+	string "udk kasan flags, only used in fusion mode"
+	default ""
+
+config UDK_FUSION_KCOV_CFLAGS
+    string "udk kcov flags, only used in fusion mode"
+    default ""

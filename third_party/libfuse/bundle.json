@@ -1,0 +1,46 @@
+{
+    "name": "@ohos/libfuse",
+    "description": "libfuse provides the reference implementation for communicating with the FUSE kernel module.",
+    "version": "3.16.1",
+    "license": "LGPL V2.1",
+    "publishAs": "code-segment",
+    "segment": {
+        "destPath": "third_party/libfuse"
+    },
+    "dirs": {},
+    "scripts": {},
+	"licensePath": "LGPL2.txt",
+	"readmePath": {
+        "en": "README"
+    },
+    "component": {
+        "name": "libfuse",
+        "subsystem": "thirdparty",
+        "syscap": [],
+        "features": [],
+        "adapted_system_type": [
+            "standard"
+        ],
+        "rom": "",
+        "ram": "",
+        "deps": {
+            "components": [
+                "c_utils"
+            ],
+            "third_party": []
+        },
+        "build": {
+            "sub_component": [],
+            "inner_kits": [
+                {
+                    "name": "//third_party/libfuse:libfuse",
+                    "header": {
+                      "header_files": [],
+                      "header_base": "//third_party/libfuse"
+                    }
+                }
+            ],
+            "test": []
+        }
+    }
+}

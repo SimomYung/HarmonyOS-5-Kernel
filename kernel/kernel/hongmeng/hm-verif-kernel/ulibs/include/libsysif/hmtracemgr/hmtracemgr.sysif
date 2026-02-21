@@ -1,0 +1,102 @@
+/*
+ * Copyright (C) Huawei Technologies Co., Ltd. 2019-2020. All rights reserved.
+ * Description: Hmtracemgr IPC interface
+ * Author: Huawei OS Kernel Lab
+ * Create: Mon Sep 9 16:30:16 2019
+ */
+
+/*
+ * To support the mixed data model which means the client and the server
+ * may use different data model. See the document for limitation of data type
+ * used in the sysif interfaces in <Documentation/sysif_compat.md>.
+ */
+#ifdef SYSIF_EXPORT_API
+#include <libhmtrace/hmtrace.h>
+#include <libhmtrace/ring_buffer/ring_buffer.h>
+#include <libbunch/bunch_ipc.h>
+
+#define HMTRACE_DATA_SIZE HMTRACE_MAX_CLASS_NAME_SIZE
+struct hmtrace_data {
+	char buffer[HMTRACE_DATA_SIZE];
+};
+
+struct hmtrace_eventname {
+	char buffer[HMTRACE_MAX_EVENT_NAME_SIZE_RESTRICTED];
+};
+#endif
+
+DEFINE_MANAGER(hmtrace, 16,
+	DEFINE_METHOD(hmtrace, get_registered_class_list,
+		      ARG(1, struct bunch_ipc_attr, attr),
+		      RET_NO,
+		      SLOWDATA_NO)
+	DEFINE_METHOD(hmtrace, get_registered_events_list,
+		      ARG(2, struct hmtrace_data, class_data,
+			  struct bunch_ipc_attr, attr),
+			  RET_NO,
+		      SLOWDATA_NO)
+	DEFINE_METHOD(hmtrace, get_available_events_list,
+		      ARG(2, struct hmtrace_data, class_data,
+			  struct bunch_ipc_attr, attr),
+			  RET_NO,
+		      SLOWDATA_NO)
+	DEFINE_METHOD(hmtrace, register_event,
+		      ARG(2, struct hmtrace_data, class_data,
+			  unsigned long long, key),
+		      RET_NO,
+		      SLOWDATA_NO)
+	DEFINE_METHOD(hmtrace, unregister_event,
+		      ARG(2, struct hmtrace_data, class_data,
+			  unsigned long long, key),
+		      RET_NO,
+		      SLOWDATA_NO)
+	DEFINE_METHOD(hmtrace, set_event_tracing_on,
+		      ARG(2, struct hmtrace_data, class_data,
+			  struct hmtrace_eventname, event_data),
+		      RET_NO,
+		      SLOWDATA_NO)
+	DEFINE_METHOD(hmtrace, set_event_tracing_off,
+		      ARG(2, struct hmtrace_data, class_data,
+			  struct hmtrace_eventname, event_data),
+		      RET_NO,
+		      SLOWDATA_NO)
+	DEFINE_METHOD(hmtrace, events_tracing_on,
+		      ARG(1, unsigned int, status),
+		      RET_NO,
+		      SLOWDATA_NO)
+	DEFINE_METHOD(hmtrace, get_event_tracing_status,
+		      ARG(2, struct hmtrace_data, class_data,
+			  struct hmtrace_eventname, event_data),
+		      RET(1, int, status),
+		      SLOWDATA_NO)
+	DEFINE_METHOD(hmtrace, get_rb_info,
+		      ARG(1, struct hmtrace_data, class_data),
+		      RET(1, struct rb, rb),
+		      SLOWDATA_NO)
+	DEFINE_METHOD(hmtrace, ipc_buf_open,
+		      ARG(1, struct hmtrace_data, ipc_data),
+		      RET_NO,
+		      SLOWDATA_NO)
+	DEFINE_METHOD(hmtrace, ipc_buf_read,
+		      ARG(2, int, handle, unsigned long long, key),
+		      RET_NO,
+		      SLOWDATA_NO)
+	DEFINE_METHOD(hmtrace, ipc_buf_close,
+		      ARG(1, int, handle),
+		      RET_NO,
+		      SLOWDATA_NO)
+	DEFINE_METHOD(hmtrace, get_event_tracing_eid,
+		      ARG(2, struct hmtrace_data, class_data,
+			  struct hmtrace_eventname, event_data),
+		      RET(1, int, eid),
+		      SLOWDATA_NO)
+	DEFINE_METHOD(hmtrace, realloc_trace_buffer,
+		      ARG(2, struct hmtrace_data, class_data,
+			  unsigned long, buffer_size),
+		      RET_NO,
+		      SLOWDATA_NO)
+	DEFINE_METHOD(hmtrace, trace_buffer_size,
+		      ARG(1, struct hmtrace_data, class_data),
+		      RET(1, unsigned long, buffer_size),
+		      SLOWDATA_NO)
+)

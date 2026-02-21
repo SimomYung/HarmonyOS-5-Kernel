@@ -1,0 +1,9 @@
+lib-dynamic-y: dhext_dso_demo
+
+cflags-dhext_dso_demo-y: -D_DH_PLUGIN_NAME=dso_demo -fvisibility=hidden
+linklib-dhext_dso_demo-y: -Tksymtab.lds
+
+src-dhext_dso_demo-y: simple_syms.c
+src-dhext_dso_demo-y: simple.c
+
+install-dhext_dso_demo-y: BASE_LIBDIR

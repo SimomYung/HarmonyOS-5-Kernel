@@ -1,0 +1,20 @@
+Unit Test in HongMeng Libc Using Cmocka
+
+Step 1: Compile and archive modules which will be tested to libhmut_*.a
+Step 2: Compile and archive testcase to libut_*_test.a
+Step 3: Link libhmut_*.a,libut_*_test.a and other related lib to
+
+TOOLS:
+gcc-linaro-7.3.1-2018.05-x86_64_armeb-eabi:
+https://releases.linaro.org/components/toolchain/binaries/7.3-2018.05/armeb-eabi/
+lcov: http://downloads.sourceforge.net/ltp/lcov-1.14.tar.gz
+
+UT-TEST:
+1. sh ut-build.sh
+2. qemu-armeb ./build/hmut_xxx.elf
+3. lcov.sh
+4. browser(chrome/filefox) lcov_output/lcov_out/index.html
+
+APPENDIX:
+see http://wenote.huawei.com/wapp/pages/view/share/s/3XCNAw2AtN7F2CoR4k1IiHJF1lR9Hg3yAx7F2lHKet2gul9c
+see https://api.cmocka.org/modules.html

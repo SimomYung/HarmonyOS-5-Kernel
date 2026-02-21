@@ -1,0 +1,32 @@
+# Copyright (c) Huawei Technologies Co., Ltd. 2021-2022. All rights reserved.
+# Description: HMbuild for libhmsrv_sec/libsec
+# Author: Huawei OS Kernel Lab
+# Create: Tue Nov 09 10:25:23 2021
+
+src-y: ability.c
+src-y: chk.c
+src-y: component.c
+src-y: cred.c
+src-y: dac.c
+src-y: mac.c
+src-y: module.c
+src-y: server.c
+src-y: file_cred.c
+src-y: uid_gid.c
+src-y: posix_acl.c
+src-y: posix_cap.c
+src-y: log.c
+src-y: utility.c
+src-y: keyring.c
+src-y: userns.c
+src-y: mem_range.c
+src-y: mem_range_log.c
+src-CONFIG_AUDIT_LOGINUID: audit.c
+src-CONFIG_AUDIT: log_hook.c
+src-CONFIG_SEHARMONY: overlay.c
+src-CONFIG_SEC_SERVICE_MANAGEMENT: service_communication.c
+src-CONFIG_SEC_SERVICE_MANAGEMENT: service_management.c
+
+cflags-posix_cap.c-y: -Wno-format-nonliteral
+cflags-dac.c-y: -Wno-format-nonliteral
+# vim:ts=4:sw=4:expandtab

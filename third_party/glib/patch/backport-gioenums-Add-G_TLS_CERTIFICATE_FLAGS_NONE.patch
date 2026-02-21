@@ -1,0 +1,82 @@
+From f59e02a1439c70616547d51abf0a6da33e095e80 Mon Sep 17 00:00:00 2001
+From: Simon McVittie <smcv@collabora.com>
+Date: Thu, 31 Mar 2022 14:28:56 +0100
+Subject: [PATCH] gioenums: Add G_TLS_CERTIFICATE_FLAGS_NONE
+
+This makes the absence of flags (in other words, a valid certificate)
+more self-documenting.
+
+Signed-off-by: Simon McVittie <smcv@collabora.com>
+
+Conflict:NA
+Reference:https://gitlab.gnome.org/GNOME/glib/-/commit/f59e02a1439c70616547d51abf0a6da33e095e80
+
+---
+ gio/gdtlsclientconnection.c | 2 +-
+ gio/gioenums.h              | 2 ++
+ gio/gtlscertificate.c       | 2 ++
+ gio/gtlsclientconnection.c  | 2 +-
+ 4 files changed, 6 insertions(+), 2 deletions(-)
+
+diff --git a/gio/gdtlsclientconnection.c b/gio/gdtlsclientconnection.c
+index 74cce7572f..403c8b74d0 100644
+--- a/gio/gdtlsclientconnection.c
++++ b/gio/gdtlsclientconnection.c
+@@ -191,7 +191,7 @@ g_dtls_client_connection_new (GDatagramBased      *base_socket,
+ GTlsCertificateFlags
+ g_dtls_client_connection_get_validation_flags (GDtlsClientConnection *conn)
+ {
+-  GTlsCertificateFlags flags = 0;
++  GTlsCertificateFlags flags = G_TLS_CERTIFICATE_FLAGS_NONE;
+ 
+   g_return_val_if_fail (G_IS_DTLS_CLIENT_CONNECTION (conn), 0);
+ 
+diff --git a/gio/gioenums.h b/gio/gioenums.h
+index 0d27c15a2b..deacd62206 100644
+--- a/gio/gioenums.h
++++ b/gio/gioenums.h
+@@ -1578,6 +1578,7 @@ typedef enum {
+ 
+ /**
+  * GTlsCertificateFlags:
++ * @G_TLS_CERTIFICATE_FLAGS_NONE: No flags. Since: 2.74
+  * @G_TLS_CERTIFICATE_UNKNOWN_CA: The signing certificate authority is
+  *   not known.
+  * @G_TLS_CERTIFICATE_BAD_IDENTITY: The certificate does not match the
+@@ -1609,6 +1610,7 @@ typedef enum {
+  * Since: 2.28
+  */
+ typedef enum {
++  G_TLS_CERTIFICATE_FLAGS_NONE GLIB_AVAILABLE_ENUMERATOR_IN_2_74 = 0,
+   G_TLS_CERTIFICATE_UNKNOWN_CA    = (1 << 0),
+   G_TLS_CERTIFICATE_BAD_IDENTITY  = (1 << 1),
+   G_TLS_CERTIFICATE_NOT_ACTIVATED = (1 << 2),
+diff --git a/gio/gtlscertificate.c b/gio/gtlscertificate.c
+index ca09b180ae..e97b8ac144 100644
+--- a/gio/gtlscertificate.c
++++ b/gio/gtlscertificate.c
+@@ -1121,6 +1121,8 @@ g_tls_certificate_get_issuer (GTlsCertificate  *cert)
+  * check a certificate against a CA that is not part of the system
+  * CA database.
+  *
++ * If @cert is valid, %G_TLS_CERTIFICATE_FLAGS_NONE is returned.
++ *
+  * If @identity is not %NULL, @cert's name(s) will be compared against
+  * it, and %G_TLS_CERTIFICATE_BAD_IDENTITY will be set in the return
+  * value if it does not match. If @identity is %NULL, that bit will
+diff --git a/gio/gtlsclientconnection.c b/gio/gtlsclientconnection.c
+index a6dc897f9f..e6c77b681d 100644
+--- a/gio/gtlsclientconnection.c
++++ b/gio/gtlsclientconnection.c
+@@ -213,7 +213,7 @@ g_tls_client_connection_new (GIOStream           *base_io_stream,
+ GTlsCertificateFlags
+ g_tls_client_connection_get_validation_flags (GTlsClientConnection *conn)
+ {
+-  GTlsCertificateFlags flags = 0;
++  GTlsCertificateFlags flags = G_TLS_CERTIFICATE_FLAGS_NONE;
+ 
+   g_return_val_if_fail (G_IS_TLS_CLIENT_CONNECTION (conn), 0);
+ 
+-- 
+GitLab
+

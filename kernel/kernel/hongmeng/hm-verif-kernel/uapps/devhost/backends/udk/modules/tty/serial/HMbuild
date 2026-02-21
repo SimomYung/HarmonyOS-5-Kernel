@@ -1,0 +1,14 @@
+# Copyright (c) Huawei Technologies Co., Ltd. 2022. All rights reserved.
+# Description: HMbuild for udk
+# Author: Huawei OS Kernel Lab
+# Create: Wed Mar 02 11:51:30 2022
+
+lib-dynamic-y: udk_serial_8250
+
+cflags-udk_serial_8250-y: -D__UDK_TTY__
+
+include-udk_serial_8250-y: ../common/serial
+
+src-udk_serial_8250-y: serial_8250_init.c
+src-udk_serial_8250-y: ../common/serial/serial_8250.c
+src-udk_serial_8250-y: ../common/serial/serial_core.c

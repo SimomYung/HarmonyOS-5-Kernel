@@ -1,0 +1,10 @@
+# Copyright (c) Huawei Technologies Co., Ltd. 2021-2021. All rights reserved.
+# Author: Huawei OS Kernel Lab
+# Create: Tue Mar 22 17:37:23 2022
+findpkg: HMLibC
+exec-dynamic-y: test.elf
+cflags-.-y: -nostdinc
+src-y: src_main.c
+inclib-src_main.c-isystem: HMLibC::HMUserLibC_include
+inclib-src_main.c-isystem: CompilerLibs::CompilerLibs_include
+# vim:ts=4:sw=4:expandtab

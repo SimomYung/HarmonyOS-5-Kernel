@@ -1,0 +1,223 @@
+#Copyright (c) 2021 Huawei Device Co., Ltd.
+#Licensed under the Apache License, Version 2.0 (the "License");
+#you may not use this file except in compliance with the License.
+#You may obtain a copy of the License at
+#
+#    http://www.apache.org/licenses/LICENSE-2.0
+#
+#Unless required by applicable law or agreed to in writing, software
+#distributed under the License is distributed on an "AS IS" BASIS,
+#WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#See the License for the specific language governing permissions and
+#limitations under the License.
+
+import("//build/ohos.gni")
+
+SANE_CONFIG_DIR = "/data/service/el1/public/print_service/sane/config"
+SANE_DATA_DIR = "/data/service/el1/public/print_service/sane/data"
+SANE_TMP_DIR = "/data/service/el2/public/print_service/sane/tmp"
+SANE_LOCK_DIR = "/data/service/el1/public/print_service/sane/lock"
+SANE_LIB_DIR = "/data/service/el1/public/print_service/sane/backend"
+SANE_V_MAJOR = 1
+SANE_V_MINOR = 2
+enable_hilog = true
+source_dir = "//third_party/backends"
+target_dir = "${target_gen_dir}/sane"
+
+action("backends_action") {
+  print("backends_action is exec")
+  script = "//third_party/backends/install.py"
+  inputs = [ "${source_dir}/patches/modifying_driver_search_path.patch" ]
+  outputs = [
+    "${target_dir}/include/config.h",
+    "${target_dir}/src/dll.c",
+  ]
+  backends_source_dir = rebase_path("${source_dir}", root_build_dir)
+  args = [
+    "--source-dir",
+    "$backends_source_dir",
+  ]
+}
+
+config("backends_public_config") {
+  include_dirs = [
+    "./include",
+    "./include/sane",
+  ]
+}
+
+config("backends_private_config") {
+  cflags = [
+    "-Wall",
+    "-g",
+    "-O2",
+    "-fPIC",
+    "-DPIC",
+    "-D_REENTRANT",
+    "-DHAVE_CONFIG_H",
+    "-Wno-format",
+    "-Wno-unused-const-variable",
+    "-Wno-unused-variable",
+    "-Wno-unused-but-set-variable",
+  ]
+
+  if (enable_hilog) {
+    cflags += [ "-DENABLE_HILOG" ]
+  }
+
+  defines = [
+    "PATH_SANE_CONFIG_DIR=$SANE_CONFIG_DIR",
+    "PATH_SANE_DATA_DIR=$SANE_DATA_DIR",
+    "PATH_SANE_LOCK_DIR=$SANE_LOCK_DIR",
+    "PATH_SANE_TMP_DIR=$SANE_TMP_DIR",
+    "V_MAJOR=$SANE_V_MAJOR",
+    "V_MINOR=$SANE_V_MINOR",
+    "LIBDIR=\"$SANE_LIB_DIR\"",
+  ]
+}
+
+#build targets in /lib
+ohos_source_set("lib") {
+  sources = [ "./lib/md5.c" ]
+
+  public_configs = [ ":backends_public_config" ]
+
+  configs = [ ":backends_private_config" ]
+
+  subsystem_name = "thirdparty"
+  part_name = "backends"
+}
+
+#build targets in /sanei
+sanei_names = [
+  "sanei_directio",
+  "sanei_ab306",
+  "sanei_constrain_value",
+  "sanei_init_debug",
+  "sanei_net",
+  "sanei_wire",
+  "sanei_codec_ascii",
+  "sanei_codec_bin",
+  "sanei_scsi",
+  "sanei_config",
+  "sanei_config2",
+  "sanei_pio",
+  "sanei_pa4s2",
+  "sanei_auth",
+  "sanei_thread",
+  "sanei_pv8630",
+  "sanei_pp",
+  "sanei_lm983x",
+  "sanei_access",
+  "sanei_tcp",
+  "sanei_udp",
+  "sanei_magic",
+  "sanei_ir",
+  "sanei_jpeg",
+]
+
+ohos_source_set("sanei_usb") {
+  sources = [
+    "./sanei/sanei_usb.c",
+  ]
+
+  external_deps = [ "libusb:libusb" ]
+
+  if (enable_hilog) {
+    external_deps += [ "hilog:libhilog" ]
+  }
+
+  public_configs = [ ":backends_public_config" ]
+
+  configs = [ ":backends_private_config" ]
+
+  subsystem_name = "thirdparty"
+  part_name = "backends"
+}
+
+foreach (name, sanei_names) {
+  ohos_source_set("$name") {
+    sources = ["./sanei/$name.c"]
+
+    if (enable_hilog) {
+      external_deps = [
+        "hilog:libhilog",
+      ]
+    }
+
+    public_configs = [ ":backends_public_config" ]
+
+    configs = [ ":backends_private_config" ]
+
+    subsystem_name = "thirdparty"
+    part_name = "backends"
+  }
+}
+
+ohos_static_library("sanei") {
+  sources = []
+
+  foreach(name, sanei_names) {
+    sources += ["./sanei/$name.c"]
+  }
+
+  if (enable_hilog) {
+    external_deps = [ "hilog:libhilog" ]
+  }
+
+  public_configs = [ ":backends_public_config" ]
+
+  configs = [ ":backends_private_config" ]
+
+  subsystem_name = "thirdparty"
+  part_name = "backends"
+}
+
+#build targets in /backend
+ohos_source_set("sane_strstatus") {
+  sources = ["./backend/sane_strstatus.c"]
+
+  public_configs = [ ":backends_public_config" ]
+
+  configs = [ ":backends_private_config" ]
+
+  subsystem_name = "thirdparty"
+  part_name = "backends"
+}
+
+ohos_shared_library("sane") {
+  sources = [
+    "./backend/dll.c",
+    "./backend/stubs.c",
+  ]
+
+  public_configs = [ ":backends_public_config" ]
+
+  configs = [ ":backends_private_config" ]
+
+  defines = ["BACKEND_NAME=dll"]
+
+  deps = [
+    ":backends_action",
+    ":lib",
+    ":sane_strstatus",
+    ":sanei_config",
+    ":sanei_constrain_value",
+    ":sanei_init_debug",
+    ":sanei_usb",
+  ]
+
+  if (enable_hilog) {
+    external_deps = [ "hilog:libhilog" ]
+  }
+
+  ldflags = ["-ldl"]
+
+  subsystem_name = "thirdparty"
+  part_name = "backends"
+}
+
+#the target group
+group("third_sane") {
+  deps = [ ":sane" ]
+}

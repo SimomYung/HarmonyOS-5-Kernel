@@ -1,0 +1,13 @@
+# Copyright (c) Huawei Technologies Co., Ltd. 2022. All rights reserved.
+# Description: HMbuild for udk
+# Author: Huawei OS Kernel Lab
+# Create: Wed Mar 02 11:51:30 2022
+
+lib-dynamic-y: udktest_net
+
+include-udktest_net-y: .
+
+cflags-udktest_net-y: -DUDK_MODULE
+
+src-udktest_net-y: udktest_net.c
+src-udktest_net-y: udktest_net_alloc.c

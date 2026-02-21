@@ -1,0 +1,46 @@
+{
+    "name": "@ohos/elfutils",
+    "description": "elfutils is a collection of utilities and libraries to read, create and modify ELF binary files, find and handle DWARF debug data, symbols, thread state and stacktraces for processes and core files on GNU/Linux.",
+    "version": "4.0",
+    "license": "LGPL V2.1,LGPL V3 or GPL v2",
+    "publishAs": "code-segment",
+    "segment": {
+        "destPath": "third_party/elfutils"
+    },
+    "dirs": {},
+    "scripts": {},
+	"licensePath": "COPYING-LGPLV3",
+	"readmePath": {
+        "en": "README"
+    },
+    "component": {
+        "name": "elfutils",
+        "subsystem": "thirdparty",
+        "syscap": [],
+        "features": [],
+        "adapted_system_type": [ "standard" ],
+        "rom": "",
+        "ram": "",
+        "deps": {
+            "components": [
+                "zlib"
+            ],
+            "third_party": []
+        },
+        "build": {
+            "sub_component": [],
+            "inner_kits": [
+                {
+                    "header": {
+                        "header_base": "//third_party/elfutils/libdw",
+                        "header_files": [
+                            "libdw.h"
+                        ]
+                    },
+                    "name": "//third_party/elfutils:libdw_static"
+                }
+            ],
+            "test": []
+        }
+    }
+}

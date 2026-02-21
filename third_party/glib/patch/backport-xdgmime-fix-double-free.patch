@@ -1,0 +1,36 @@
+From f95ca6cb713383548f16f9a8ba2f6c51a4d25e25 Mon Sep 17 00:00:00 2001
+From: Michael Catanzaro <mcatanzaro@redhat.com>
+Date: Fri, 17 Jun 2022 08:48:10 -0500
+Subject: [PATCH] xdgmime: fix double free
+
+We free xdg_dirs[i] twice, but fail to free xdg_dirs itself.
+
+Also, since free() is NULL-safe, there is no need for the second check
+here.
+
+Discovered in: https://gitlab.freedesktop.org/xdg/xdgmime/-/merge_requests/16#note_1432025
+
+Conflict:NA
+Reference:https://gitlab.gnome.org/GNOME/glib/-/commit/f95ca6cb713383548f16f9a8ba2f6c51a4d25e25
+
+---
+ gio/xdgmime/xdgmime.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/gio/xdgmime/xdgmime.c b/gio/xdgmime/xdgmime.c
+index 9ab6760486..c3c11625e8 100644
+--- a/gio/xdgmime/xdgmime.c
++++ b/gio/xdgmime/xdgmime.c
+@@ -350,8 +350,7 @@ xdg_mime_set_dirs (const char * const *dirs)
+ 
+   for (i = 0; xdg_dirs != NULL && xdg_dirs[i] != NULL; i++)
+     free (xdg_dirs[i]);
+-  if (xdg_dirs != NULL)
+-    free (xdg_dirs[i]);
++  free (xdg_dirs);
+   xdg_dirs = NULL;
+ 
+   if (dirs != NULL)
+-- 
+GitLab
+

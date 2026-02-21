@@ -1,0 +1,7 @@
+# SPDX-License-Identifier: GPL-2.0
+
+config KAPI_TEST
+	bool "kapi test"
+	help
+	  Performance and stability test for
+	  linux kernel api.

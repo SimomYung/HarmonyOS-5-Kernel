@@ -1,0 +1,53 @@
+From cc528f6c2e336a3484c920fe2d11337388829dbe Mon Sep 17 00:00:00 2001
+From: Simon McVittie <smcv@collabora.com>
+Date: Thu, 23 Jun 2022 10:09:15 +0100
+Subject: [PATCH] giomodule test: Don't pass a magic number to
+ g_test_trap_subprocess()
+
+This worked, but seems like bad style.
+
+Signed-off-by: Simon McVittie <smcv@collabora.com>
+
+Conflict:NA
+Reference:https://gitlab.gnome.org/GNOME/glib/-/commit/cc528f6c2e336a3484c920fe2d11337388829dbe
+
+---
+ gio/tests/giomodule.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
+
+diff --git a/gio/tests/giomodule.c b/gio/tests/giomodule.c
+index b4923eeefd..4ea6efebd1 100644
+--- a/gio/tests/giomodule.c
++++ b/gio/tests/giomodule.c
+@@ -80,6 +80,10 @@ test_extension_point (void)
+   g_assert (g_io_extension_get_priority (ext) == 10);
+ }
+ 
++#define INHERIT_ALL (G_TEST_SUBPROCESS_INHERIT_STDIN | \
++                     G_TEST_SUBPROCESS_INHERIT_STDOUT | \
++                     G_TEST_SUBPROCESS_INHERIT_STDERR)
++
+ static void
+ test_module_scan_all (void)
+ {
+@@ -105,7 +109,7 @@ test_module_scan_all (void)
+       g_assert_cmpstr (g_io_extension_get_name (ext), ==, "test-a");
+       return;
+     }
+-  g_test_trap_subprocess (NULL, 0, 7);
++  g_test_trap_subprocess (NULL, 0, INHERIT_ALL);
+   g_test_trap_assert_passed ();
+ }
+ 
+@@ -136,7 +140,7 @@ test_module_scan_all_with_scope (void)
+       g_io_module_scope_free (scope);
+       return;
+     }
+-  g_test_trap_subprocess (NULL, 0, 7);
++  g_test_trap_subprocess (NULL, 0, INHERIT_ALL);
+   g_test_trap_assert_passed ();
+ }
+ 
+-- 
+GitLab
+

@@ -1,0 +1,79 @@
+{
+    "name": "@ohos/e2fsprogs",
+    "description": "The E2fsprogs package contains the utilities for handling the ext2 file system. It also supports the ext3 and ext4 journaling file systems",
+    "version": "4.1",
+    "license": "LGPL V2.0, BSD 3-Clause License, GPL V2.0, MIT License",
+    "publishAs": "code-segment",
+    "segment": {
+        "destPath": "third_party/e2fsprogs"
+    },
+    "dirs": {},
+    "scripts": {},
+    "licensePath": "NOTICE",
+    "readmePath": {
+        "en": "README"
+    },
+    "component": {
+        "name": "e2fsprogs",
+        "subsystem": "thirdparty",
+        "syscap": [],
+        "features": [],
+        "adapted_system_type": [
+            "standard"
+        ],
+        "rom": "",
+        "ram": "",
+        "deps": {
+            "components": [
+                "selinux",
+                "c_utils"
+            ],
+            "third_party": []
+        },
+        "build": {
+            "sub_component": [],
+            "inner_kits": [
+                {
+                    "name": "//third_party/e2fsprogs:libext2_blkid"
+                },
+                {
+                    "name": "//third_party/e2fsprogs:libext2_com_err"
+                },
+                {
+                    "name": "//third_party/e2fsprogs:libext2_e2p"
+                },
+                {
+                    "name": "//third_party/e2fsprogs:libext2_misc"
+                },
+                {
+                    "name": "//third_party/e2fsprogs:libext2_quota"
+                },
+                {
+                    "name": "//third_party/e2fsprogs:libext2_uuid"
+                },
+                {
+                    "name": "//third_party/e2fsprogs:libext2fs"
+                },
+                {
+                    "name": "//third_party/e2fsprogs:blkid"
+                },
+                {
+                    "name": "//third_party/e2fsprogs:e2fsck"
+                },
+                {
+                    "name": "//third_party/e2fsprogs:mke2fs"
+                },
+                {
+                    "name": "//third_party/e2fsprogs:resize2fs"
+                },
+                {
+                    "name": "//third_party/e2fsprogs:e2fsdroid"
+                },
+                {
+                    "name": "//third_party/e2fsprogs:libdacconfig"
+                }
+            ],
+            "test": []
+        }
+    }
+}

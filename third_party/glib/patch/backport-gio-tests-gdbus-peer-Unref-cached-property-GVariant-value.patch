@@ -1,0 +1,29 @@
+From e268ff39b648e7b100d2aa50f472b4ff8ff5313a Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Marco=20Trevisan=20=28Trevi=C3=B1o=29?= <mail@3v1n0.net>
+Date: Fri, 2 Sep 2022 21:10:05 +0200
+Subject: [PATCH] gio/tests/gdbus-peer: Unref cached property GVariant value
+
+Helps with: https://gitlab.gnome.org/GNOME/glib/-/issues/333
+
+Conflict:NA
+Reference:https://gitlab.gnome.org/GNOME/glib/-/commit/e268ff39b648e7b100d2aa50f472b4ff8ff5313a
+
+---
+ gio/tests/gdbus-peer.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/gio/tests/gdbus-peer.c b/gio/tests/gdbus-peer.c
+index 7179d089df..763689a4fd 100644
+--- a/gio/tests/gdbus-peer.c
++++ b/gio/tests/gdbus-peer.c
+@@ -843,6 +843,7 @@ do_test_peer (void)
+   error = NULL;
+   value = g_dbus_proxy_get_cached_property (proxy, "PeerProperty");
+   g_assert_cmpstr (g_variant_get_string (value, NULL), ==, "ThePropertyValue");
++  g_clear_pointer (&value, g_variant_unref);
+ 
+   /* try invoking a method */
+   error = NULL;
+-- 
+GitLab
+

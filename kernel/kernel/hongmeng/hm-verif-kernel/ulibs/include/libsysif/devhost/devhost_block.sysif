@@ -1,0 +1,80 @@
+/*
+ * Copyright (C) Huawei Technologies Co., Ltd. 2019-2020. All rights reserved.
+ * Description: devhost block device operation sysif APIs
+ * Author: Huawei OS Kernel Lab
+ * Create: Tue Feb 12 19:11:36 2019
+ */
+#ifdef SYSIF_EXPORT_API
+#include <stdint.h>
+
+#include <hmkernel/types.h>
+#include <hmkernel/capability.h>
+
+#include <libsysif/devhost/bd_types.h>
+#endif
+
+/*
+ * To support the mixed data model which means the client and the server
+ * may use different data model. See the document for limitation of data type
+ * used in the sysif interfaces in <Documentation/sysif_compat.md>.
+ */
+DEFINE_MANAGER(block, 9,
+	DEFINE_METHOD(block, check_feature,
+		      ARG(3,
+			  int, idx,
+			  unsigned long long, file_id,
+			  unsigned long long, features),
+		      RET(1,
+			  unsigned long long, supported_features),
+		      SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(block, submit_bio,
+		      ARG(6,
+			  unsigned long long, file_id,
+			  unsigned long long, rw,
+			  unsigned long long, sector,
+			  int, vec_cnt,
+			  unsigned int, priority,
+			  unsigned long long, bi_crypt_ctx),
+		      RET_NO,
+		      SLOWDATA)
+	DEFINE_SIMPLE_METHOD(block, submit_cmd,
+		      ARG(5,
+			  unsigned long long, file_id,
+			  unsigned long long, cmd,
+			  unsigned long long, sector,
+			  unsigned int, size,
+			  unsigned int, priority),
+		      RET_NO,
+		      SLOWDATA_NO)
+	DEFINE_METHOD(block, run_queue,
+		      ARG(3,
+			  unsigned long, file_id,
+			  unsigned int, flags,
+			  unsigned int, idx),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_METHOD(block, direct_access,
+		      ARG(3,
+			  unsigned long, file_id,
+			  unsigned long, offset,
+			  unsigned long, size),
+		      RET(2,
+			  unsigned long long, paddr,
+			  unsigned long long, ret_size),
+		      SLOWDATA_NO)
+
+	DEFINE_METHOD(block, register_bio_notify,
+		      ARG(4,
+			  unsigned long, file_id,
+			  uref_t, uref,
+			  unsigned int, method,
+			  size_t, bd_shm_size),
+		      RET(4,
+			  unsigned long long, submit_fd,
+			  unsigned long long, end_fd,
+			  unsigned long, shm_vaddr,
+			  unsigned long long, obj_cnt),
+		      SLOWDATA_NO)
+)

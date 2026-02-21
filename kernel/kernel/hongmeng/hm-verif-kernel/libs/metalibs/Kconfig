@@ -1,0 +1,84 @@
+# Copyright (c) Huawei Technologies Co., Ltd. 2022-2022. All rights reserved.
+# Description: Kconfig for metalibs
+# Author: Huawei OS Kernel Lab
+# Create: Mon May 23 16:07:11 2022
+
+source "$(HMCMAKENG_KCONFIG)"
+
+choice
+    prompt "Target Arch"
+    default AARCH64
+    config ARM
+        bool "ARM"
+    config AARCH64
+        bool "AARCH64"
+endchoice
+
+config COMPAT
+    bool "Support for 32-bit applications at EL0"
+    default n
+config NO_COMPAT
+    def_bool !COMPAT
+
+config DLIST_DEBUG
+    bool "Dlist check data corruption debug"
+    default y
+
+config CC_USE_CLANG
+    bool "Use Clang as compiler"
+    default n
+
+config DEBUG_BUILD
+    bool "Build kernel with debug mode"
+    default n
+
+config ILP32
+    bool "Support for aarch64ilp32 applications at EL0"
+    depends on AARCH64
+    default n
+    help
+        This option enables support for the aarch64ilp32 EL0 apps running
+        under 64-bit kernel and 64-bit servers.
+config NO_ILP32
+    def_bool !ILP32
+
+config HYPERVISOR
+    bool "Enable the HongMeng hypervisor"
+    depends on AARCH64
+    select CAP_VM_ENABLE
+    default n
+    help
+        Enable the HongMeng hypervisor support.
+
+config CAP_VM_ENABLE
+    bool "Enable vm capability"
+    default n
+    help
+      Enable vm capability
+
+if CAP_VM_ENABLE
+  choice
+    prompt "VM Mode"
+    default VM_MODE_HYPER
+
+  config VM_MODE_HYPER
+    bool "Enable vm with hypervisor mode"
+    depends on HYPERVISOR
+    help
+        Virtual machine has two different modes, this one is the
+        traditional mode, the guest os is running with hypervisor.
+
+  config VM_MODE_BM
+    bool "Enable vm with bare metal mode"
+    help
+        This is another mode of virtual machine, in this mode, the guest
+        os is running on a bare metal core without hypervisor.
+  endchoice
+endif
+
+config MMIO_DISPATCHER
+    bool "Enable hypervisor MMIO region dispatcher"
+    default n
+    depends on HYPERVISOR
+    help
+        Enable MMIO region dispatcher on hypervisor

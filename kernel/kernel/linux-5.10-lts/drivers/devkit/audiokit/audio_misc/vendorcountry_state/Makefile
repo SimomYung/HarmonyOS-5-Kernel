@@ -1,0 +1,1 @@
+obj-$(CONFIG_AUDIO_VENDORCOUNTRY_STATE) += vendorcountry_state.o

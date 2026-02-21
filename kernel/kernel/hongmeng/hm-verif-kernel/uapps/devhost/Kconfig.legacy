@@ -1,0 +1,16 @@
+# Copyright (c) Huawei Technologies Co., Ltd. 2021. All rights reserved.
+# Description: Kconfig for devhsot
+# Author: Huawei OS Kernel Lab
+# Create: Fri Nov 19 11:26:07 2021
+
+# common configs for legacy build and ngbuild
+source "uapps/devhost/Kconfig.common"
+
+# backend configs
+source "uapps/devhost/backends/Kconfig"
+
+# default select for legacy build
+config USE_DEVHOST_LEGACY_BUILD
+	def_bool y
+	select DEVHOST_PLUGIN_DEMO if PLAT_QEMU_VIRT
+	select DEVHOST_PM_PLUGIN if TPPMGR

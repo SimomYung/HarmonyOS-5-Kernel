@@ -1,0 +1,115 @@
+/*
+ * Copyright (c) Huawei Technologies Co., Ltd. 2022-2022. All rights reserved.
+ * Description: Definition of time sysif api
+ * Author: Huawei OS Kernel Lab
+ * Create: Mon Jan 10 18:49:41 2022
+ */
+
+#ifdef SYSIF_EXPORT_API
+#include <sys/timex.h>
+#include <hmkernel/vtimekeep.h>
+#endif
+
+/*
+ * To support the mixed data model which means the client and the server
+ * may use different data model. See the document for limitation of data type
+ * used in the sysif interfaces in <Documentation/sysif_compat.md>.
+ */
+DEFINE_MANAGER(time, 16,
+	DEFINE_LSYSCALL_METHOD(clock_getres, SYS_clock_getres_time32,
+			       ARG(2, clockid_t, clk_id,
+				   void *, ts),
+			       ARCH(__arm__))
+
+	DEFINE_LSYSCALL_METHOD(clock_getres, SYS_clock_getres,
+			       ARG(2, clockid_t, clk_id,
+				   void *, ts),
+			       ARCH(__aarch64__))
+
+	DEFINE_LSYSCALL_METHOD(clock_gettime, SYS_clock_gettime32,
+			       ARG(2, clockid_t, clk_id,
+				   void *, ts),
+			       ARCH(__arm__))
+
+	DEFINE_LSYSCALL_METHOD(clock_gettime, SYS_clock_gettime,
+			       ARG(2, clockid_t, clk_id,
+				   void *, ts),
+			       ARCH(__aarch64__))
+
+	DEFINE_LSYSCALL_METHOD(clock_settime, SYS_clock_settime32,
+			       ARG(2, clockid_t, clk_id,
+				   const void *, ts),
+			       ARCH(__arm__))
+
+	DEFINE_LSYSCALL_METHOD(clock_settime, SYS_clock_settime,
+			       ARG(2, clockid_t, clk_id,
+				   const void *, ts),
+			       ARCH(__aarch64__))
+
+	DEFINE_LSYSCALL_METHOD_LONG(times, SYS_times,
+			       ARG(1, void *, buf))
+
+	DEFINE_LSYSCALL_METHOD(do_settimeofday, SYS_settimeofday_time32,
+			       ARG(2, void *, tv,
+				   void *, tz),
+			       ARCH(__arm__))
+
+	DEFINE_LSYSCALL_METHOD(do_settimeofday, SYS_settimeofday,
+			       ARG(2, void *, tv,
+				   void *, tz),
+			       ARCH(__aarch64__))
+
+	DEFINE_LSYSCALL_METHOD(do_adjtimex, SYS_adjtimex,
+			       ARG(1, void *, tx))
+
+	DEFINE_LSYSCALL_METHOD(clock_adjtime, SYS_clock_adjtime,
+			       ARG(2, int, which,
+				   void *, tx))
+)
+
+DEFINE_MANAGER(itimer, 4,
+	DEFINE_LSYSCALL_METHOD(setitimer, SYS_setitimer,
+			       ARG(3, int, which,
+				   void *, new_value,
+				   void *, old_value))
+	DEFINE_LSYSCALL_METHOD(getitimer, SYS_getitimer,
+			       ARG(2, int, which,
+				   void *, curr_value))
+)
+
+DEFINE_MANAGER(timer, 8,
+	DEFINE_LSYSCALL_METHOD(create_signal, SYS_timer_create,
+			       ARG(3, clockid_t, clockid,
+				   void *, sevp,
+				   void *, timerid))
+
+	DEFINE_LSYSCALL_METHOD(settime, SYS_timer_settime32,
+			       ARG(4, int, timerid,
+				   int, flags,
+				   const void *, new_value,
+				   void *, old_value),
+			       ARCH(__arm__))
+
+	DEFINE_LSYSCALL_METHOD(settime, SYS_timer_settime,
+			       ARG(4, int, timerid,
+				   int, flags,
+				   const void *, new_value,
+				   void *, old_value),
+			       ARCH(__aarch64__))
+
+	DEFINE_LSYSCALL_METHOD(gettime, SYS_timer_gettime32,
+			       ARG(2, int, timerid,
+				   void *, old_value),
+			       ARCH(__arm__))
+
+	DEFINE_LSYSCALL_METHOD(gettime, SYS_timer_gettime,
+			       ARG(2, int, timerid,
+				   void *, old_value),
+			       ARCH(__aarch64__))
+
+	DEFINE_LSYSCALL_METHOD(getoverrun, SYS_timer_getoverrun,
+			       ARG(1, int, timerid))
+
+	DEFINE_LSYSCALL_METHOD(delete, SYS_timer_delete,
+			       ARG(1, int, timerid))
+)

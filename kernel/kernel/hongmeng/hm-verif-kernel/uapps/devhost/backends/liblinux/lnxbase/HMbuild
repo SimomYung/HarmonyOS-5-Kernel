@@ -1,0 +1,32 @@
+# Copyright (c) Huawei Technologies Co., Ltd. 2021. All rights reserved.
+# Description: HMbuild for lnxbase
+# Author: Huawei OS Kernel Lab
+# Create: Thu Dec 16 17:20:01 2021
+
+src-y: cache.c
+src-y: devhost_symbols.c
+src-y: extension.c
+src-y: file.c
+src-y: iofast.c
+src-y: lnxbase_args.c
+src-y: lnxbase.c
+src-y: mem_shrinker.c
+src-y: shrinker.c
+src-y: mm.c
+src-y: module.c
+src-y: time.c
+src-y: backtrace.c
+src-y: sync.c
+src-y: vmallocinfo.c
+src-y: vtimer.c
+src-y: page_pool.c
+src-y: sysctl.c
+src-y: power.c
+src-y: rtc.c
+src-CONFIG_LIBLINUX_EXT_HISI_GPU: hvgr_mmu.c
+
+subdir-y: pal
+
+cflags-vtimer.c: -D_GNU_SOURCE
+cflags-page_pool.c-y: -Wframe-larger-than=16384
+cflags-vtimer.c-y: -Wno-strict-prototypes -Wno-old-style-definition

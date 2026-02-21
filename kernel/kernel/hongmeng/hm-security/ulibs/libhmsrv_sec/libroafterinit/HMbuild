@@ -1,0 +1,5 @@
+include-y: ../../include
+
+src-y: ro_after_init.c
+
+# vim:ts=4:sw=4:expandtab

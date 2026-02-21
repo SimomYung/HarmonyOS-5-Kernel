@@ -1,0 +1,16 @@
+menu "Hisilicon platform"
+
+menuconfig HISILICON_PLATFORM
+	bool "Hisilicon platform support"
+	default n
+	help
+	  Say yes here to support the hisilicon platform
+
+if HISILICON_PLATFORM
+
+source "drivers/hisi/hi1103_eeprom/Kconfig"
+
+
+endif #HISILICON_PLATFORM
+
+endmenu

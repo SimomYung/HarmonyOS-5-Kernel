@@ -1,0 +1,135 @@
+From cbc3a30711701f0e8d7f5df14f84adfb2c9fec1f Mon Sep 17 00:00:00 2001
+From: majun <majun65@huawei.com>
+Date: Fri, 16 Apr 2021 14:52:42 +0800
+Subject: [PATCH] 
+
+iptables: add null check for fw in X_entry
+If the fw pointer is empty, a core dump occurs.
+
+---
+ iptables/ip6tables.c | 21 +++++++++++++++++++++
+ iptables/iptables.c  | 20 ++++++++++++++++++++
+ 2 files changed, 41 insertions(+)
+
+diff --git a/iptables/ip6tables.c b/iptables/ip6tables.c
+index c95355b..1902cb4 100644
+--- a/iptables/ip6tables.c
++++ b/iptables/ip6tables.c
+@@ -478,6 +478,10 @@ append_entry(const xt_chainlabel chain,
+ 	unsigned int i, j;
+ 	int ret = 1;
+ 
++	if (!fw) {
++                return 0;
++        }
++
+ 	for (i = 0; i < nsaddrs; i++) {
+ 		fw->ipv6.src = saddrs[i];
+ 		fw->ipv6.smsk = smasks[i];
+@@ -502,6 +506,11 @@ replace_entry(const xt_chainlabel chain,
+ 	      int verbose,
+ 	      struct xtc_handle *handle)
+ {
++
++        if (!fw) {
++                return 0;
++        }
++
+ 	fw->ipv6.src = *saddr;
+ 	fw->ipv6.dst = *daddr;
+ 	fw->ipv6.smsk = *smask;
+@@ -528,6 +537,10 @@ insert_entry(const xt_chainlabel chain,
+ 	unsigned int i, j;
+ 	int ret = 1;
+ 
++	if (!fw) {
++                return 0;
++        }
++
+ 	for (i = 0; i < nsaddrs; i++) {
+ 		fw->ipv6.src = saddrs[i];
+ 		fw->ipv6.smsk = smasks[i];
+@@ -595,6 +608,10 @@ delete_entry(const xt_chainlabel chain,
+ 	int ret = 1;
+ 	unsigned char *mask;
+ 
++	if (!fw) {
++                return 0;
++        }
++
+ 	mask = make_delete_mask(matches, target);
+ 	for (i = 0; i < nsaddrs; i++) {
+ 		fw->ipv6.src = saddrs[i];
+@@ -625,6 +642,10 @@ check_entry(const xt_chainlabel chain, struct ip6t_entry *fw,
+ 	int ret = 1;
+ 	unsigned char *mask;
+ 
++	if (!fw) {
++                return 0;
++        }
++
+ 	mask = make_delete_mask(matches, target);
+ 	for (i = 0; i < nsaddrs; i++) {
+ 		fw->ipv6.src = saddrs[i];
+diff --git a/iptables/iptables.c b/iptables/iptables.c
+index 7d61831..a206825 100644
+--- a/iptables/iptables.c
++++ b/iptables/iptables.c
+@@ -469,6 +469,10 @@ append_entry(const xt_chainlabel chain,
+ 	unsigned int i, j;
+ 	int ret = 1;
+ 
++        if (!fw) {
++                return 0;
++        }
++
+ 	for (i = 0; i < nsaddrs; i++) {
+ 		fw->ip.src.s_addr = saddrs[i].s_addr;
+ 		fw->ip.smsk.s_addr = smasks[i].s_addr;
+@@ -493,6 +497,10 @@ replace_entry(const xt_chainlabel chain,
+ 	      int verbose,
+ 	      struct xtc_handle *handle)
+ {
++	if (!fw) {
++                return 0;
++        }
++
+ 	fw->ip.src.s_addr = saddr->s_addr;
+ 	fw->ip.dst.s_addr = daddr->s_addr;
+ 	fw->ip.smsk.s_addr = smask->s_addr;
+@@ -519,6 +527,10 @@ insert_entry(const xt_chainlabel chain,
+ 	unsigned int i, j;
+ 	int ret = 1;
+ 
++	if (!fw) {
++                return 0;
++        }
++
+ 	for (i = 0; i < nsaddrs; i++) {
+ 		fw->ip.src.s_addr = saddrs[i].s_addr;
+ 		fw->ip.smsk.s_addr = smasks[i].s_addr;
+@@ -586,6 +598,10 @@ delete_entry(const xt_chainlabel chain,
+ 	int ret = 1;
+ 	unsigned char *mask;
+ 
++        if (!fw) {
++                return 0;
++        }
++
+ 	mask = make_delete_mask(matches, target);
+ 	for (i = 0; i < nsaddrs; i++) {
+ 		fw->ip.src.s_addr = saddrs[i].s_addr;
+@@ -616,6 +632,10 @@ check_entry(const xt_chainlabel chain, struct ipt_entry *fw,
+ 	int ret = 1;
+ 	unsigned char *mask;
+ 
++	if (!fw) {
++                return 0;
++        }
++
+ 	mask = make_delete_mask(matches, target);
+ 	for (i = 0; i < nsaddrs; i++) {
+ 		fw->ip.src.s_addr = saddrs[i].s_addr;
+-- 
+2.27.0
+

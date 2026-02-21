@@ -1,0 +1,57 @@
+# Copyright (c) 2022 Huawei Device Co., Ltd.
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+import("//build/ohos.gni")
+config("bindfs_defaults") {
+  cflags = [ 
+  "-Wno-unused-variable",
+  "-Wno-sign-compare",
+  "-DHAVE_FUSE_3",
+  "-DHAVE_UTIMENSAT",
+  "-DHAVE_SETXATTR",
+  "-DHAVE_LSETXATTR",
+  "-DHAVE_LGETXATTR",
+  "-DHAVE_LLISTXATTR",
+  "-DHAVE_LREMOVEXATTR",
+  "-D_FORTIFY_SOURCE=2 -O2",
+  "-fstack-protector-strong",
+  ]
+}
+bindfs_source = [
+  "//vendor/open_source/bindfs/src/arena.c",
+  "//vendor/open_source/bindfs/src/bindfs.c",
+  "//vendor/open_source/bindfs/src/debug.c",
+  "//vendor/open_source/bindfs/src/misc.c",
+  "//vendor/open_source/bindfs/src/permchain.c",
+  "//vendor/open_source/bindfs/src/rate_limiter.c",
+  "//vendor/open_source/bindfs/src/userinfo.c",
+  "//vendor/open_source/bindfs/src/usermap.c",
+]
+
+import("//build/ohos.gni")
+
+ohos_executable("bindfs") {
+  configs = [ ":bindfs_defaults" ]
+  include_dirs = [
+    "//vendor/open_source/bindfs/src",
+    "//third_party/libfuse/include",
+    "//third_party/e2fsprogs/e2fsprogs/lib",
+  ]
+  deps = [ "//third_party/libfuse:libfuse" ]
+  sources = bindfs_source
+  install_enable = true
+  license_file = "//vendor/open_source/bindfs/COPYING"
+
+  subsystem_name = "virt_service"
+  part_name = "bindfs"
+}

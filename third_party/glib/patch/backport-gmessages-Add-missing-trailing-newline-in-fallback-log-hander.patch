@@ -1,0 +1,32 @@
+From d01fb412801ddc55843f1e1642d0fef0afba441a Mon Sep 17 00:00:00 2001
+From: John Lindgren <john@jlindgren.net>
+Date: Thu, 13 Oct 2022 14:00:12 +0100
+Subject: [PATCH] gmessages: Add missing trailing newline in fallback log
+ handler
+
+This makes the fallback log handler match the behaviour of the default
+log handlers.
+
+Conflict:NA
+Reference:https://gitlab.gnome.org/GNOME/glib/-/commit/d01fb412801ddc55843f1e1642d0fef0afba441a
+
+Spotted as part of https://gitlab.gnome.org/GNOME/glib/-/issues/2753
+---
+ glib/gmessages.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/glib/gmessages.c b/glib/gmessages.c
+index fb1297f8a8..e197f1707a 100644
+--- a/glib/gmessages.c
++++ b/glib/gmessages.c
+@@ -3159,6 +3159,7 @@ _g_log_fallback_handler (const gchar   *log_domain,
+   write_string (stream, level_prefix);
+   write_string (stream, ": ");
+   write_string (stream, message);
++  write_string (stream, "\n");
+ }
+ 
+ static void
+-- 
+GitLab
+

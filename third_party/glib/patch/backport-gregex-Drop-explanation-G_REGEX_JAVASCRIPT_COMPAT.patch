@@ -1,0 +1,40 @@
+From 664ee9ca6afcc3e08c99f0918982e9d2e22f34a8 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Guido=20G=C3=BCnther?= <agx@sigxcpu.org>
+Date: Fri, 23 Sep 2022 15:27:49 +0200
+Subject: [PATCH] gregex: Drop explanation G_REGEX_JAVASCRIPT_COMPAT
+
+It's not supported as of glib 2.74
+
+Conflict:NA
+Reference:https://gitlab.gnome.org/GNOME/glib/-/commit/664ee9ca6afcc3e08c99f0918982e9d2e22f34a8
+
+---
+ glib/gregex.c | 12 ------------
+ 1 file changed, 12 deletions(-)
+
+diff --git a/glib/gregex.c b/glib/gregex.c
+index 6b22f1f151..50abeee89f 100644
+--- a/glib/gregex.c
++++ b/glib/gregex.c
+@@ -89,18 +89,6 @@
+  * unescaped "#" outside a character class is encountered. This indicates
+  * a comment that lasts until after the next newline.
+  *
+- * When setting the %G_REGEX_JAVASCRIPT_COMPAT flag, pattern syntax and pattern
+- * matching is changed to be compatible with the way that regular expressions
+- * work in JavaScript. More precisely, a lonely ']' character in the pattern
+- * is a syntax error; the '\x' escape only allows 0 to 2 hexadecimal digits, and
+- * you must use the '\u' escape sequence with 4 hex digits to specify a unicode
+- * codepoint instead of '\x' or 'x{....}'. If '\x' or '\u' are not followed by
+- * the specified number of hex digits, they match 'x' and 'u' literally; also
+- * '\U' always matches 'U' instead of being an error in the pattern. Finally,
+- * pattern matching is modified so that back references to an unset subpattern
+- * group produces a match with the empty string instead of an error. See
+- * pcreapi(3) for more information.
+- *
+  * Creating and manipulating the same #GRegex structure from different
+  * threads is not a problem as #GRegex does not modify its internal
+  * state between creation and destruction, on the other hand #GMatchInfo
+-- 
+GitLab
+

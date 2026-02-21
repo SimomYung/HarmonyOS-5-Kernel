@@ -1,0 +1,14 @@
+# Copyright (c) Huawei Technologies Co., Ltd. 2022. All rights reserved.
+# Description: HMbuild for udk
+# Author: Huawei OS Kernel Lab
+# Create: Wed Mar 02 11:51:30 2022
+
+lib-dynamic-y: udk_kconsole
+
+cflags-udk_kconsole-y: -D__UDK_TTY__
+
+include-udk_kconsole-y: ../common/kconsole
+
+src-udk_kconsole-y: kconsole_init.c
+src-udk_kconsole-y: ../common/kconsole/kconsole_core.c
+src-udk_kconsole-y: ../common/kconsole/kconsole_kvic.c

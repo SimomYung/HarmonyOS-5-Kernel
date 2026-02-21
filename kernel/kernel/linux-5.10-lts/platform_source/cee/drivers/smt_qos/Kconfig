@@ -1,0 +1,8 @@
+menu "SMT-QOS Driver"
+
+config PLATFORM_ARM64_SMT_QOS
+    bool "enable SMT-QOS extension"
+    default n
+    help
+      This enables the SMT-QOS driver.
+endmenu

@@ -1,0 +1,4 @@
+menuconfig CABLE_IN_DETECT
+    bool "cable_in_detect support"
+    default n
+

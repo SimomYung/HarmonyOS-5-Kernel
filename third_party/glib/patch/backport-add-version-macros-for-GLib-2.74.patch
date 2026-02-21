@@ -1,0 +1,228 @@
+From 4f79f0712cd5c67301e60e758a2f6c60b44e7a0e Mon Sep 17 00:00:00 2001
+From: Philip Withnall <pwithnall@endlessos.org>
+Date: Mon, 28 Mar 2022 12:55:20 +0100
+Subject: [PATCH] gversionmacros: Add version macros for GLib 2.74
+
+Signed-off-by: Philip Withnall <pwithnall@endlessos.org>
+
+Conflict:NA
+Reference:https://gitlab.gnome.org/GNOME/glib/-/commit/4f79f0712cd5c67301e60e758a2f6c60b44e7a0e
+
+---
+ docs/reference/gio/gio-docs.xml         |  4 +++
+ docs/reference/glib/glib-docs.xml       |  4 +++
+ docs/reference/glib/glib-sections.txt   | 14 ++++++++
+ docs/reference/gobject/gobject-docs.xml |  4 +++
+ docs/reference/meson.build              |  2 +-
+ glib/gversionmacros.h                   | 44 +++++++++++++++++++++++++
+ 6 files changed, 71 insertions(+), 1 deletion(-)
+
+diff --git a/docs/reference/gio/gio-docs.xml b/docs/reference/gio/gio-docs.xml
+index 76057e8978..bee46875ff 100644
+--- a/docs/reference/gio/gio-docs.xml
++++ b/docs/reference/gio/gio-docs.xml
+@@ -400,6 +400,10 @@
+     <title>Index of new symbols in 2.72</title>
+     <xi:include href="xml/api-index-2.72.xml"><xi:fallback /></xi:include>
+   </index>
++  <index id="api-index-2-74" role="2.74">
++    <title>Index of new symbols in 2.74</title>
++    <xi:include href="xml/api-index-2.74.xml"><xi:fallback /></xi:include>
++  </index>
+ 
+   <xi:include href="xml/annotation-glossary.xml"><xi:fallback /></xi:include>
+ 
+diff --git a/docs/reference/glib/glib-docs.xml b/docs/reference/glib/glib-docs.xml
+index e642f4e930..b3928257e4 100644
+--- a/docs/reference/glib/glib-docs.xml
++++ b/docs/reference/glib/glib-docs.xml
+@@ -296,6 +296,10 @@
+     <title>Index of new symbols in 2.72</title>
+     <xi:include href="xml/api-index-2.72.xml"><xi:fallback /></xi:include>
+   </index>
++  <index id="api-index-2-74" role="2.74">
++    <title>Index of new symbols in 2.74</title>
++    <xi:include href="xml/api-index-2.74.xml"><xi:fallback /></xi:include>
++  </index>
+ 
+   <xi:include href="xml/annotation-glossary.xml"><xi:fallback /></xi:include>
+ 
+diff --git a/docs/reference/glib/glib-sections.txt b/docs/reference/glib/glib-sections.txt
+index 97dcf1f701..3532d28cb0 100644
+--- a/docs/reference/glib/glib-sections.txt
++++ b/docs/reference/glib/glib-sections.txt
+@@ -140,6 +140,7 @@ GLIB_VERSION_2_66
+ GLIB_VERSION_2_68
+ GLIB_VERSION_2_70
+ GLIB_VERSION_2_72
++GLIB_VERSION_2_74
+ GLIB_VERSION_CUR_STABLE
+ GLIB_VERSION_PREV_STABLE
+ GLIB_VERSION_MIN_REQUIRED
+@@ -172,6 +173,7 @@ GLIB_AVAILABLE_ENUMERATOR_IN_2_66
+ GLIB_AVAILABLE_ENUMERATOR_IN_2_68
+ GLIB_AVAILABLE_ENUMERATOR_IN_2_70
+ GLIB_AVAILABLE_ENUMERATOR_IN_2_72
++GLIB_AVAILABLE_ENUMERATOR_IN_2_74
+ GLIB_AVAILABLE_IN_ALL
+ GLIB_AVAILABLE_IN_2_26
+ GLIB_AVAILABLE_IN_2_28
+@@ -197,6 +199,7 @@ GLIB_AVAILABLE_IN_2_66
+ GLIB_AVAILABLE_IN_2_68
+ GLIB_AVAILABLE_IN_2_70
+ GLIB_AVAILABLE_IN_2_72
++GLIB_AVAILABLE_IN_2_74
+ GLIB_AVAILABLE_MACRO_IN_2_26
+ GLIB_AVAILABLE_MACRO_IN_2_28
+ GLIB_AVAILABLE_MACRO_IN_2_30
+@@ -221,6 +224,7 @@ GLIB_AVAILABLE_MACRO_IN_2_66
+ GLIB_AVAILABLE_MACRO_IN_2_68
+ GLIB_AVAILABLE_MACRO_IN_2_70
+ GLIB_AVAILABLE_MACRO_IN_2_72
++GLIB_AVAILABLE_MACRO_IN_2_74
+ GLIB_AVAILABLE_STATIC_INLINE_IN_2_44
+ GLIB_AVAILABLE_STATIC_INLINE_IN_2_60
+ GLIB_AVAILABLE_STATIC_INLINE_IN_2_62
+@@ -229,6 +233,7 @@ GLIB_AVAILABLE_STATIC_INLINE_IN_2_66
+ GLIB_AVAILABLE_STATIC_INLINE_IN_2_68
+ GLIB_AVAILABLE_STATIC_INLINE_IN_2_70
+ GLIB_AVAILABLE_STATIC_INLINE_IN_2_72
++GLIB_AVAILABLE_STATIC_INLINE_IN_2_74
+ GLIB_AVAILABLE_TYPE_IN_2_26
+ GLIB_AVAILABLE_TYPE_IN_2_28
+ GLIB_AVAILABLE_TYPE_IN_2_30
+@@ -253,6 +258,7 @@ GLIB_AVAILABLE_TYPE_IN_2_66
+ GLIB_AVAILABLE_TYPE_IN_2_68
+ GLIB_AVAILABLE_TYPE_IN_2_70
+ GLIB_AVAILABLE_TYPE_IN_2_72
++GLIB_AVAILABLE_TYPE_IN_2_74
+ GLIB_DEPRECATED_ENUMERATOR
+ GLIB_DEPRECATED_ENUMERATOR_FOR
+ GLIB_DEPRECATED_ENUMERATOR_IN_2_26
+@@ -303,6 +309,8 @@ GLIB_DEPRECATED_ENUMERATOR_IN_2_70
+ GLIB_DEPRECATED_ENUMERATOR_IN_2_70_FOR
+ GLIB_DEPRECATED_ENUMERATOR_IN_2_72
+ GLIB_DEPRECATED_ENUMERATOR_IN_2_72_FOR
++GLIB_DEPRECATED_ENUMERATOR_IN_2_74
++GLIB_DEPRECATED_ENUMERATOR_IN_2_74_FOR
+ GLIB_DEPRECATED_IN_2_26
+ GLIB_DEPRECATED_IN_2_26_FOR
+ GLIB_DEPRECATED_IN_2_28
+@@ -351,6 +359,8 @@ GLIB_DEPRECATED_IN_2_70
+ GLIB_DEPRECATED_IN_2_70_FOR
+ GLIB_DEPRECATED_IN_2_72
+ GLIB_DEPRECATED_IN_2_72_FOR
++GLIB_DEPRECATED_IN_2_74
++GLIB_DEPRECATED_IN_2_74_FOR
+ GLIB_DEPRECATED_MACRO
+ GLIB_DEPRECATED_MACRO_FOR
+ GLIB_DEPRECATED_MACRO_IN_2_26
+@@ -401,6 +411,8 @@ GLIB_DEPRECATED_MACRO_IN_2_70
+ GLIB_DEPRECATED_MACRO_IN_2_70_FOR
+ GLIB_DEPRECATED_MACRO_IN_2_72
+ GLIB_DEPRECATED_MACRO_IN_2_72_FOR
++GLIB_DEPRECATED_MACRO_IN_2_74
++GLIB_DEPRECATED_MACRO_IN_2_74_FOR
+ GLIB_DEPRECATED_TYPE
+ GLIB_DEPRECATED_TYPE_FOR
+ GLIB_DEPRECATED_TYPE_IN_2_26
+@@ -451,6 +463,8 @@ GLIB_DEPRECATED_TYPE_IN_2_70
+ GLIB_DEPRECATED_TYPE_IN_2_70_FOR
+ GLIB_DEPRECATED_TYPE_IN_2_72
+ GLIB_DEPRECATED_TYPE_IN_2_72_FOR
++GLIB_DEPRECATED_TYPE_IN_2_74
++GLIB_DEPRECATED_TYPE_IN_2_74_FOR
+ GLIB_VERSION_CUR_STABLE
+ GLIB_VERSION_PREV_STABLE
+ </SECTION>
+diff --git a/docs/reference/gobject/gobject-docs.xml b/docs/reference/gobject/gobject-docs.xml
+index aa5a9c7220..bfab048372 100644
+--- a/docs/reference/gobject/gobject-docs.xml
++++ b/docs/reference/gobject/gobject-docs.xml
+@@ -218,6 +218,10 @@
+     <title>Index of new symbols in 2.72</title>
+     <xi:include href="xml/api-index-2.72.xml"><xi:fallback /></xi:include>
+   </index>
++  <index id="api-index-2-74" role="2.74">
++    <title>Index of new symbols in 2.74</title>
++    <xi:include href="xml/api-index-2.74.xml"><xi:fallback /></xi:include>
++  </index>
+ 
+   <xi:include href="xml/annotation-glossary.xml"><xi:fallback /></xi:include>
+ 
+diff --git a/docs/reference/meson.build b/docs/reference/meson.build
+index 8128e21bf2..1bc97a2f6e 100644
+--- a/docs/reference/meson.build
++++ b/docs/reference/meson.build
+@@ -7,7 +7,7 @@
+ stable_2_series_versions = [
+   '26', '28', '30', '32', '34', '36', '38',
+   '40', '42', '44', '46', '48', '50', '52', '54', '56', '58',
+-  '60', '62', '64', '66', '68', '70', '72',
++  '60', '62', '64', '66', '68', '70', '72', '74',
+ ]
+ 
+ ignore_decorators = [
+diff --git a/glib/gversionmacros.h b/glib/gversionmacros.h
+index e08c809019..143e048241 100644
+--- a/glib/gversionmacros.h
++++ b/glib/gversionmacros.h
+@@ -275,6 +275,16 @@
+  */
+ #define GLIB_VERSION_2_72       (G_ENCODE_VERSION (2, 72))
+ 
++/**
++ * GLIB_VERSION_2_74:
++ *
++ * A macro that evaluates to the 2.74 version of GLib, in a format
++ * that can be used by the C pre-processor.
++ *
++ * Since: 2.74
++ */
++#define GLIB_VERSION_2_74       (G_ENCODE_VERSION (2, 74))
++
+ /**
+  * GLIB_VERSION_CUR_STABLE:
+  *
+@@ -1164,4 +1174,38 @@
+ # define GLIB_AVAILABLE_TYPE_IN_2_72
+ #endif
+ 
++#if GLIB_VERSION_MIN_REQUIRED >= GLIB_VERSION_2_74
++# define GLIB_DEPRECATED_IN_2_74                GLIB_DEPRECATED
++# define GLIB_DEPRECATED_IN_2_74_FOR(f)         GLIB_DEPRECATED_FOR(f)
++# define GLIB_DEPRECATED_MACRO_IN_2_74          GLIB_DEPRECATED_MACRO
++# define GLIB_DEPRECATED_MACRO_IN_2_74_FOR(f)   GLIB_DEPRECATED_MACRO_FOR(f)
++# define GLIB_DEPRECATED_ENUMERATOR_IN_2_74          GLIB_DEPRECATED_ENUMERATOR
++# define GLIB_DEPRECATED_ENUMERATOR_IN_2_74_FOR(f)   GLIB_DEPRECATED_ENUMERATOR_FOR(f)
++# define GLIB_DEPRECATED_TYPE_IN_2_74           GLIB_DEPRECATED_TYPE
++# define GLIB_DEPRECATED_TYPE_IN_2_74_FOR(f)    GLIB_DEPRECATED_TYPE_FOR(f)
++#else
++# define GLIB_DEPRECATED_IN_2_74                _GLIB_EXTERN
++# define GLIB_DEPRECATED_IN_2_74_FOR(f)         _GLIB_EXTERN
++# define GLIB_DEPRECATED_MACRO_IN_2_74
++# define GLIB_DEPRECATED_MACRO_IN_2_74_FOR(f)
++# define GLIB_DEPRECATED_ENUMERATOR_IN_2_74
++# define GLIB_DEPRECATED_ENUMERATOR_IN_2_74_FOR(f)
++# define GLIB_DEPRECATED_TYPE_IN_2_74
++# define GLIB_DEPRECATED_TYPE_IN_2_74_FOR(f)
++#endif
++
++#if GLIB_VERSION_MAX_ALLOWED < GLIB_VERSION_2_72
++# define GLIB_AVAILABLE_IN_2_74                 GLIB_UNAVAILABLE(2, 72)
++# define GLIB_AVAILABLE_STATIC_INLINE_IN_2_74   GLIB_UNAVAILABLE_STATIC_INLINE(2, 72)
++# define GLIB_AVAILABLE_MACRO_IN_2_74           GLIB_UNAVAILABLE_MACRO(2, 72)
++# define GLIB_AVAILABLE_ENUMERATOR_IN_2_74      GLIB_UNAVAILABLE_ENUMERATOR(2, 72)
++# define GLIB_AVAILABLE_TYPE_IN_2_74            GLIB_UNAVAILABLE_TYPE(2, 72)
++#else
++# define GLIB_AVAILABLE_IN_2_74                 _GLIB_EXTERN
++# define GLIB_AVAILABLE_STATIC_INLINE_IN_2_74
++# define GLIB_AVAILABLE_MACRO_IN_2_74
++# define GLIB_AVAILABLE_ENUMERATOR_IN_2_74
++# define GLIB_AVAILABLE_TYPE_IN_2_74
++#endif
++
+ #endif /*  __G_VERSION_MACROS_H__ */
+-- 
+GitLab
+

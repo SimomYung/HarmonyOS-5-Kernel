@@ -1,0 +1,11 @@
+lib-dynamic-y: dhext_vpipe
+
+cflags-dhext_vpipe-y: -D_DH_PLUGIN_NAME=vpipe -fvisibility=hidden
+linklib-dhext_vpipe-y: -Tksymtab.lds
+
+src-dhext_vpipe-y: vpipe.c
+src-dhext_vpipe-y: vnotify_syms.c
+src-dhext_vpipe-y: ipc_shm_syms.c
+src-dhext_vpipe-y: uvmm_syms.c
+
+install-dhext_vpipe-y: BASE_LIBDIR

@@ -1,0 +1,361 @@
+# Copyright (c) 2024 Huawei Device Co., Ltd.
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+import("//build/ohos.gni")
+import("//vendor/open_source/strongswan/strongswan_config.gni")
+
+source_gen_dir = "${target_gen_dir}/../../../strongswan/src/libcharon"
+sources_list = [
+  "${source_gen_dir}/attributes/attributes.c",
+  "${source_gen_dir}/attributes/attribute_manager.c",
+  "${source_gen_dir}/attributes/mem_pool.c",
+  "${source_gen_dir}/bus/bus.c",
+  "${source_gen_dir}/bus/listeners/file_logger.c",
+  "${source_gen_dir}/bus/listeners/sys_logger.c",
+  "${source_gen_dir}/config/backend_manager.c",
+  "${source_gen_dir}/config/child_cfg.c",
+  "${source_gen_dir}/config/ike_cfg.c",
+  "${source_gen_dir}/config/peer_cfg.c",
+  "${source_gen_dir}/control/controller.c",
+  "${source_gen_dir}/daemon.c",
+  "${source_gen_dir}/encoding/generator.c",
+  "${source_gen_dir}/encoding/message.c",
+  "${source_gen_dir}/encoding/parser.c",
+  "${source_gen_dir}/encoding/payloads/auth_payload.c",
+  "${source_gen_dir}/encoding/payloads/cert_payload.c",
+  "${source_gen_dir}/encoding/payloads/certreq_payload.c",
+  "${source_gen_dir}/encoding/payloads/configuration_attribute.c",
+  "${source_gen_dir}/encoding/payloads/cp_payload.c",
+  "${source_gen_dir}/encoding/payloads/delete_payload.c",
+  "${source_gen_dir}/encoding/payloads/eap_payload.c",
+  "${source_gen_dir}/encoding/payloads/encodings.c",
+  "${source_gen_dir}/encoding/payloads/encrypted_payload.c",
+  "${source_gen_dir}/encoding/payloads/id_payload.c",
+  "${source_gen_dir}/encoding/payloads/ike_header.c",
+  "${source_gen_dir}/encoding/payloads/ke_payload.c",
+  "${source_gen_dir}/encoding/payloads/nonce_payload.c",
+  "${source_gen_dir}/encoding/payloads/notify_payload.c",
+  "${source_gen_dir}/encoding/payloads/payload.c",
+  "${source_gen_dir}/encoding/payloads/proposal_substructure.c",
+  "${source_gen_dir}/encoding/payloads/sa_payload.c",
+  "${source_gen_dir}/encoding/payloads/traffic_selector_substructure.c",
+  "${source_gen_dir}/encoding/payloads/transform_attribute.c",
+  "${source_gen_dir}/encoding/payloads/transform_substructure.c",
+  "${source_gen_dir}/encoding/payloads/ts_payload.c",
+  "${source_gen_dir}/encoding/payloads/unknown_payload.c",
+  "${source_gen_dir}/encoding/payloads/vendor_id_payload.c",
+  "${source_gen_dir}/encoding/payloads/hash_payload.c",
+  "${source_gen_dir}/encoding/payloads/fragment_payload.c",
+  "${source_gen_dir}/kernel/kernel_interface.c",
+  "${source_gen_dir}/kernel/kernel_ipsec.c",
+  "${source_gen_dir}/kernel/kernel_net.c",
+  "${source_gen_dir}/kernel/kernel_handler.c",
+  "${source_gen_dir}/network/receiver.c",
+  "${source_gen_dir}/network/sender.c",
+  "${source_gen_dir}/network/socket.c",
+  "${source_gen_dir}/network/socket_manager.c",
+  "${source_gen_dir}/processing/jobs/acquire_job.c",
+  "${source_gen_dir}/processing/jobs/delete_child_sa_job.c",
+  "${source_gen_dir}/processing/jobs/delete_ike_sa_job.c",
+  "${source_gen_dir}/processing/jobs/migrate_job.c",
+  "${source_gen_dir}/processing/jobs/process_message_job.c",
+  "${source_gen_dir}/processing/jobs/redirect_job.c",
+  "${source_gen_dir}/processing/jobs/rekey_child_sa_job.c",
+  "${source_gen_dir}/processing/jobs/rekey_ike_sa_job.c",
+  "${source_gen_dir}/processing/jobs/retransmit_job.c",
+  "${source_gen_dir}/processing/jobs/retry_initiate_job.c",
+  "${source_gen_dir}/processing/jobs/send_dpd_job.c",
+  "${source_gen_dir}/processing/jobs/send_keepalive_job.c",
+  "${source_gen_dir}/processing/jobs/start_action_job.c",
+  "${source_gen_dir}/processing/jobs/roam_job.c",
+  "${source_gen_dir}/processing/jobs/update_sa_job.c",
+  "${source_gen_dir}/processing/jobs/inactivity_job.c",
+  "${source_gen_dir}/processing/jobs/initiate_tasks_job.c",
+  "${source_gen_dir}/sa/eap/eap_method.c",
+  "${source_gen_dir}/sa/eap/eap_manager.c",
+  "${source_gen_dir}/sa/xauth/xauth_method.c",
+  "${source_gen_dir}/sa/xauth/xauth_manager.c",
+  "${source_gen_dir}/sa/authenticator.c",
+  "${source_gen_dir}/sa/child_sa.c",
+  "${source_gen_dir}/sa/ike_sa.c",
+  "${source_gen_dir}/sa/ike_sa_id.c",
+  "${source_gen_dir}/sa/keymat.c",
+  "${source_gen_dir}/sa/ike_sa_manager.c",
+  "${source_gen_dir}/sa/child_sa_manager.c",
+  "${source_gen_dir}/sa/task_manager.c",
+  "${source_gen_dir}/sa/shunt_manager.c",
+  "${source_gen_dir}/sa/trap_manager.c",
+  "${source_gen_dir}/sa/redirect_manager.c",
+  "${source_gen_dir}/sa/task.c",
+]
+
+# adding the ikev2 source files
+sources_list += [
+  "${source_gen_dir}/sa/ikev2/keymat_v2.c",
+  "${source_gen_dir}/sa/ikev2/task_manager_v2.c",
+  "${source_gen_dir}/sa/ikev2/authenticators/eap_authenticator.c",
+  "${source_gen_dir}/sa/ikev2/authenticators/psk_authenticator.c",
+  "${source_gen_dir}/sa/ikev2/authenticators/pubkey_authenticator.c",
+  "${source_gen_dir}/sa/ikev2/tasks/child_create.c",
+  "${source_gen_dir}/sa/ikev2/tasks/child_delete.c",
+  "${source_gen_dir}/sa/ikev2/tasks/child_rekey.c",
+  "${source_gen_dir}/sa/ikev2/tasks/ike_auth.c",
+  "${source_gen_dir}/sa/ikev2/tasks/ike_cert_pre.c",
+  "${source_gen_dir}/sa/ikev2/tasks/ike_cert_post.c",
+  "${source_gen_dir}/sa/ikev2/tasks/ike_config.c",
+  "${source_gen_dir}/sa/ikev2/tasks/ike_delete.c",
+  "${source_gen_dir}/sa/ikev2/tasks/ike_dpd.c",
+  "${source_gen_dir}/sa/ikev2/tasks/ike_establish.c",
+  "${source_gen_dir}/sa/ikev2/tasks/ike_init.c",
+  "${source_gen_dir}/sa/ikev2/tasks/ike_natd.c",
+  "${source_gen_dir}/sa/ikev2/tasks/ike_mid_sync.c",
+  "${source_gen_dir}/sa/ikev2/tasks/ike_mobike.c",
+  "${source_gen_dir}/sa/ikev2/tasks/ike_rekey.c",
+  "${source_gen_dir}/sa/ikev2/tasks/ike_reauth.c",
+  "${source_gen_dir}/sa/ikev2/tasks/ike_reauth_complete.c",
+  "${source_gen_dir}/sa/ikev2/tasks/ike_redirect.c",
+  "${source_gen_dir}/sa/ikev2/tasks/ike_auth_lifetime.c",
+  "${source_gen_dir}/sa/ikev2/tasks/ike_vendor.c",
+  "${source_gen_dir}/sa/ikev2/tasks/ike_verify_peer_cert.c",
+]
+
+# adding the ikev1 source files
+sources_list += [
+  "${source_gen_dir}/sa/ikev1/keymat_v1.c",
+  "${source_gen_dir}/sa/ikev1/iv_manager.c",
+  "${source_gen_dir}/sa/ikev1/task_manager_v1.c",
+  "${source_gen_dir}/sa/ikev1/authenticators/psk_v1_authenticator.c",
+  "${source_gen_dir}/sa/ikev1/authenticators/pubkey_v1_authenticator.c",
+  "${source_gen_dir}/sa/ikev1/authenticators/hybrid_authenticator.c",
+  "${source_gen_dir}/sa/ikev1/phase1.c",
+  "${source_gen_dir}/sa/ikev1/tasks/main_mode.c",
+  "${source_gen_dir}/sa/ikev1/tasks/aggressive_mode.c",
+  "${source_gen_dir}/sa/ikev1/tasks/informational.c",
+  "${source_gen_dir}/sa/ikev1/tasks/isakmp_cert_pre.c",
+  "${source_gen_dir}/sa/ikev1/tasks/isakmp_cert_post.c",
+  "${source_gen_dir}/sa/ikev1/tasks/isakmp_natd.c",
+  "${source_gen_dir}/sa/ikev1/tasks/isakmp_vendor.c",
+  "${source_gen_dir}/sa/ikev1/tasks/isakmp_delete.c",
+  "${source_gen_dir}/sa/ikev1/tasks/isakmp_dpd.c",
+  "${source_gen_dir}/sa/ikev1/tasks/xauth.c",
+  "${source_gen_dir}/sa/ikev1/tasks/quick_mode.c",
+  "${source_gen_dir}/sa/ikev1/tasks/quick_delete.c",
+  "${source_gen_dir}/sa/ikev1/tasks/mode_config.c",
+  "${source_gen_dir}/processing/jobs/dpd_timeout_job.c",
+  "${source_gen_dir}/processing/jobs/adopt_children_job.c",
+]
+
+# adding the plugin source files
+# attr kernel-libipsec kernel-pfkey kernel-netlink resolve socket-default
+# farp stroke vici updown eap-identity eap-mschapv2 xauth-generic counters dhcp
+
+# plugins/attr
+sources_list += [
+  "${source_gen_dir}/plugins/attr/attr_provider.c",
+  "${source_gen_dir}/plugins/attr/attr_plugin.c",
+]
+
+# plugins/kernel_libipsec
+sources_list += [
+  "${source_gen_dir}/plugins/kernel_libipsec/kernel_libipsec_ipsec.c",
+  "${source_gen_dir}/plugins/kernel_libipsec/kernel_libipsec_plugin.c",
+  "${source_gen_dir}/plugins/kernel_libipsec/kernel_libipsec_router.c",
+]
+
+# plugins/kernel_pfkey
+sources_list += [
+  "${source_gen_dir}/plugins/kernel_pfkey/kernel_pfkey_ipsec.c",
+  "${source_gen_dir}/plugins/kernel_pfkey/kernel_pfkey_plugin.c",
+]
+
+# plugins/kernel_netlink
+sources_list += [
+  "${source_gen_dir}/plugins/kernel_netlink/kernel_netlink_ipsec.c",
+  "${source_gen_dir}/plugins/kernel_netlink/kernel_netlink_net.c",
+  "${source_gen_dir}/plugins/kernel_netlink/kernel_netlink_shared.c",
+  "${source_gen_dir}/plugins/kernel_netlink/kernel_netlink_plugin.c",
+  "${source_gen_dir}/plugins/kernel_netlink/kernel_netlink_xfrmi.c",
+]
+
+# plugins/resolve
+sources_list += [
+  "${source_gen_dir}/plugins/resolve/resolve_handler.c",
+  "${source_gen_dir}/plugins/resolve/resolve_plugin.c",
+]
+
+# plugins/socket_default
+sources_list += [
+  "${source_gen_dir}/plugins/socket_default/socket_default_plugin.c",
+  "${source_gen_dir}/plugins/socket_default/socket_default_socket.c",
+]
+
+# plugins/farp
+sources_list += [
+  "${source_gen_dir}/plugins/farp/farp_plugin.c",
+  "${source_gen_dir}/plugins/farp/farp_spoofer.c",
+  "${source_gen_dir}/plugins/farp/farp_listener.c",
+]
+
+# plugins/stroke
+sources_list += [
+  "${source_gen_dir}/plugins/stroke/stroke_list.c",
+  "${source_gen_dir}/plugins/stroke/stroke_config.c",
+  "${source_gen_dir}/plugins/stroke/stroke_control.c",
+  "${source_gen_dir}/plugins/stroke/stroke_attribute.c",
+  "${source_gen_dir}/plugins/stroke/stroke_plugin.c",
+  "${source_gen_dir}/plugins/stroke/stroke_handler.c",
+  "${source_gen_dir}/plugins/stroke/stroke_ca.c",
+  "${source_gen_dir}/plugins/stroke/stroke_counter.c",
+  "${source_gen_dir}/plugins/stroke/stroke_socket.c",
+  "${source_gen_dir}/plugins/stroke/stroke_cred.c",
+]
+
+# plugins/vici
+sources_list += [
+  "${source_gen_dir}/plugins/vici/vici_control.c",
+  "${source_gen_dir}/plugins/vici/vici_query.c",
+  "${source_gen_dir}/plugins/vici/libvici.c",
+  "${source_gen_dir}/plugins/vici/vici_config.c",
+  "${source_gen_dir}/plugins/vici/vici_attribute.c",
+  "${source_gen_dir}/plugins/vici/vici_builder.c",
+  "${source_gen_dir}/plugins/vici/vici_socket.c",
+  "${source_gen_dir}/plugins/vici/vici_dispatcher.c",
+  "${source_gen_dir}/plugins/vici/vici_message.c",
+  "${source_gen_dir}/plugins/vici/vici_plugin.c",
+  "${source_gen_dir}/plugins/vici/vici_logger.c",
+  "${source_gen_dir}/plugins/vici/vici_authority.c",
+  "${source_gen_dir}/plugins/vici/vici_cred.c",
+  "${source_gen_dir}/plugins/vici/vici_cert_info.c",
+]
+
+# plugins/updown
+sources_list += [
+  "${source_gen_dir}/plugins/updown/updown_listener.c",
+  "${source_gen_dir}/plugins/updown/updown_plugin.c",
+  "${source_gen_dir}/plugins/updown/updown_handler.c",
+]
+
+# plugins/eap_identity
+sources_list += [
+  "${source_gen_dir}/plugins/eap_identity/eap_identity_plugin.c",
+  "${source_gen_dir}/plugins/eap_identity/eap_identity.c",
+]
+
+# plugins/eap_mschapv2
+sources_list += [
+  "${source_gen_dir}/plugins/eap_mschapv2/eap_mschapv2_plugin.c",
+  "${source_gen_dir}/plugins/eap_mschapv2/eap_mschapv2.c",
+]
+
+# plugins/xauth_generic
+sources_list += [
+  "${source_gen_dir}/plugins/xauth_generic/xauth_generic.c",
+  "${source_gen_dir}/plugins/xauth_generic/xauth_generic_plugin.c",
+]
+
+# plugins/counters
+sources_list += [
+  "${source_gen_dir}/plugins/counters/counters_listener.c",
+  "${source_gen_dir}/plugins/counters/counters_plugin.c",
+]
+
+# plugins/dhcp
+sources_list += [
+  "${source_gen_dir}/plugins/dhcp/dhcp_provider.c",
+  "${source_gen_dir}/plugins/dhcp/dhcp_plugin.c",
+  "${source_gen_dir}/plugins/dhcp/dhcp_socket.c",
+  "${source_gen_dir}/plugins/dhcp/dhcp_transaction.c",
+]
+
+# ohos keystore api
+sources_list += [ "${source_gen_dir}/keystore/keystore.c" ]
+
+# certmanager
+sources_list += [
+  "${source_gen_dir}/certmanager/src/cert_manager_api.c",
+  "${source_gen_dir}/certmanager/src/cm_ipc_client.c",
+  "${source_gen_dir}/certmanager/src/cm_ipc_client_serialization.c",
+  "${source_gen_dir}/certmanager/src/cm_load_sa.cpp",
+  "${source_gen_dir}/certmanager/src/cm_log.c",
+  "${source_gen_dir}/certmanager/src/cm_mem.c",
+  "${source_gen_dir}/certmanager/src/cm_param.c",
+  "${source_gen_dir}/certmanager/src/cm_request.cpp",
+  "${source_gen_dir}/certmanager/src/cm_x509.c",
+]
+
+action("libcharon_install_action") {
+  script = "//vendor/open_source/strongswan/empty.py"
+  outputs = sources_list
+  deps = [ "../../../:strongswan_install_action" ]
+}
+
+action("parse_plugins_install_action") {
+  script = "//vendor/open_source/strongswan/parse_plugins.py"
+  outputs = [ "${source_gen_dir}/plugin_constructors.c" ]
+  deps = [ "../../../:strongswan_install_action" ]
+  args = [
+    "--parse-plugins",
+    "attr kernel-libipsec kernel-pfkey kernel-netlink resolve socket-default farp stroke vici updown eap-identity eap-mschapv2 xauth-generic counters",
+    "--gen-dir",
+    rebase_path("${source_gen_dir}", root_build_dir),
+    "--output-file",
+    "plugin_constructors.c",
+  ]
+}
+
+ohos_shared_library("libcharon") {
+  sources = get_target_outputs(":libcharon_install_action")
+  sources += get_target_outputs(":parse_plugins_install_action")
+  include_dirs = [
+    "${source_gen_dir}",
+    "${source_gen_dir}/plugins/counters",
+    "${source_gen_dir}/../include",
+    "${source_gen_dir}/../libipsec",
+    "${source_gen_dir}/../libstrongswan",
+    "${source_gen_dir}/../libstrongswan/plugins/pubkey",
+    "${source_gen_dir}/../stroke",
+    "${source_gen_dir}/../sa",
+    "${source_gen_dir}/../sa/ikev2",
+  ]
+
+  # add keystore, certmanager, netmanager include path
+  include_dirs += [
+    "${source_gen_dir}/keystore",
+    "${source_gen_dir}/certmanager/include",
+    "${source_gen_dir}/../libstrongswan/netmanager/include",
+  ]
+
+  defines = common_defines
+  cflags = common_cflags
+  cflags += [ "-U__MUSL__" ]
+  cflags_cc = common_cflags_cc
+  ldflags = [ "--no-undefined" ]
+
+  deps = [
+    ":libcharon_install_action",
+    ":parse_plugins_install_action",
+    "../libipsec:libipsec",
+    "../libstrongswan:libstrongswan",
+  ]
+
+  external_deps = [
+    "c_utils:utils",
+    "hilog:libhilog",
+    "ipc:ipc_core",
+    "openssl:libcrypto_shared",
+    "samgr:samgr_proxy",
+  ]
+
+  part_name = "strongswan"
+  subsystem_name = "open_source"
+}

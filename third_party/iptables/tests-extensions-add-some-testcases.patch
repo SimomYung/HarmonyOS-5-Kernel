@@ -1,0 +1,475 @@
+From 0663cc944204ed3afa7fa4f7cf3beadb3ea8e1e4 Mon Sep 17 00:00:00 2001
+From: chenzhen <vchanger123456@163.com>
+Date: Fri, 1 Apr 2022 11:26:32 +0800
+Subject: [PATCH] tests: extensions: add some testcases
+
+These testcases are intended to test options of commonly used extentions like
+DNAT/SNAT/tcp/udp as much as possible, covering normal and abnormal scenes.
+
+Signed-off-by: chenzhen <vchanger123456@163.com>
+---
+ extensions/libip6t_DNAT.t       | 10 ++++++++++
+ extensions/libip6t_DNAT.txlate  |  3 +++
+ extensions/libip6t_LOG.t        |  1 +
+ extensions/libip6t_LOG.txlate   |  9 +++++++++
+ extensions/libip6t_MASQUERADE.t |  1 +
+ extensions/libip6t_REDIRECT.t   |  3 +++
+ extensions/libip6t_REJECT.t     |  2 ++
+ extensions/libip6t_SNAT.t       |  9 +++++++++
+ extensions/libip6t_connlimit.t  | 16 ++++++++++++++++
+ extensions/libip6t_icmp6.t      |  5 +++++
+ extensions/libip6t_rt.t         |  6 ++++++
+ extensions/libip6t_rt.txlate    |  3 +++
+ extensions/libipt_DNAT.t        |  9 +++++++++
+ extensions/libipt_DNAT.txlate   |  3 +++
+ extensions/libipt_LOG.t         |  1 +
+ extensions/libipt_LOG.txlate    |  9 +++++++++
+ extensions/libipt_MASQUERADE.t  |  1 +
+ extensions/libipt_NETMAP.t      |  1 +
+ extensions/libipt_REDIRECT.t    |  3 +++
+ extensions/libipt_REJECT.t      |  2 ++
+ extensions/libipt_SNAT.t        |  9 +++++++++
+ extensions/libipt_icmp.t        |  5 +++++
+ extensions/libxt_iprange.t      |  8 +++-----
+ extensions/libxt_limit.t        |  8 ++++++++
+ extensions/libxt_standard.t     |  1 +
+ extensions/libxt_string.t       | 33 +++++++++++++++++++--------------
+ extensions/libxt_tcp.t          |  3 +++
+ iptables-test.py                | 22 ++++++++++++++++++++++
+ 28 files changed, 167 insertions(+), 19 deletions(-)
+ create mode 100644 extensions/libip6t_connlimit.t
+
+diff --git a/extensions/libip6t_DNAT.t b/extensions/libip6t_DNAT.t
+index ec7d61f..e6de1fc 100644
+--- a/extensions/libip6t_DNAT.t
++++ b/extensions/libip6t_DNAT.t
+@@ -13,4 +13,14 @@
+ -p tcp -j DNAT --to-destination [dead::beef-dead::fee7]:1000-2000/65535;=;OK
+ -p tcp -j DNAT --to-destination [dead::beef-dead::fee7]:1000-2000/0;;FAIL
+ -p tcp -j DNAT --to-destination [dead::beef-dead::fee7]:1000-2000/65536;;FAIL
++-p tcp -j DNAT --to-destination dead::beef --random --persistent;=;OK
++-p tcp -j DNAT --to-destination [dead::beef;;FAIL
++-p tcp -j DNAT --to-destination [dead::beef]:65536;;FAIL
++-p tcp -j DNAT --to-destination [dead::beef]:1-65536;;FAIL
++-p tcp -j DNAT --to-destination [dead::beef]:1:65535;;FAIL
++-p tcp -j DNAT --to-destination [dead::beef]:2-1;;FAIL
++-p tcp -j DNAT --to-destination live::beef;;FAIL
++-p tcp -j DNAT --to-destination dead::beef-live::beef;;FAIL
++-p tcp -j DNAT --to-destination :65535;=;OK
+ -j DNAT;;FAIL
++-j DNAT -h;;OK
+diff --git a/extensions/libip6t_DNAT.txlate b/extensions/libip6t_DNAT.txlate
+index 03c4caf..e6b6218 100644
+--- a/extensions/libip6t_DNAT.txlate
++++ b/extensions/libip6t_DNAT.txlate
+@@ -9,3 +9,6 @@ nft add rule ip6 nat prerouting meta l4proto tcp counter dnat to [fec0::1234]:80
+ 
+ ip6tables-translate -t nat -A prerouting -p tcp -j DNAT --to-destination [fec0::1234]:80 --random --persistent
+ nft add rule ip6 nat prerouting meta l4proto tcp counter dnat to [fec0::1234]:80 random,persistent
++
++ip6tables-translate -t nat -A prerouting -p tcp -j DNAT --to-destination [dead::beef-dead::beef]
++nft add rule ip6 nat prerouting meta l4proto tcp counter dnat to dead::beef
+diff --git a/extensions/libip6t_LOG.t b/extensions/libip6t_LOG.t
+index fbf5118..e3fb58f 100644
+--- a/extensions/libip6t_LOG.t
++++ b/extensions/libip6t_LOG.t
+@@ -8,5 +8,6 @@
+ -j LOG --log-prefix "test: " --log-tcp-options;=;OK
+ -j LOG --log-prefix "test: " --log-ip-options;=;OK
+ -j LOG --log-prefix "test: " --log-uid;=;OK
++-j LOG --log-prefix "test: " --log-macdecode;=;OK
+ -j LOG --log-prefix "test: " --log-level bad;;FAIL
+ -j LOG --log-prefix;;FAIL
+diff --git a/extensions/libip6t_LOG.txlate b/extensions/libip6t_LOG.txlate
+index 2820a82..6fa47af 100644
+--- a/extensions/libip6t_LOG.txlate
++++ b/extensions/libip6t_LOG.txlate
+@@ -6,3 +6,12 @@ nft add rule ip6 filter FORWARD meta l4proto tcp counter log level debug
+ 
+ ip6tables-translate -A FORWARD -p tcp -j LOG --log-prefix "Checking log"
+ nft add rule ip6 filter FORWARD meta l4proto tcp counter log prefix \"Checking log\"
++
++ip6tables-translate -A FORWARD -p tcp -j LOG --log-tcp-sequence --log-tcp-options --log-ip-options --log-uid
++nft add rule ip6 filter FORWARD meta l4proto tcp counter log flags tcp sequence,options flags ip options flags skuid
++
++ip6tables-translate -A FORWARD -p tcp -j LOG --log-tcp-sequence --log-tcp-options --log-ip-options --log-uid --log-macdecode
++nft add rule ip6 filter FORWARD meta l4proto tcp counter log flags all
++
++ip6tables-translate -A FORWARD -p tcp -j LOG --log-tcp-sequence --log-macdecode
++nft add rule ip6 filter FORWARD meta l4proto tcp counter log flags tcp sequence flags ether
+diff --git a/extensions/libip6t_MASQUERADE.t b/extensions/libip6t_MASQUERADE.t
+index e25d2a0..e254fa7 100644
+--- a/extensions/libip6t_MASQUERADE.t
++++ b/extensions/libip6t_MASQUERADE.t
+@@ -7,3 +7,4 @@
+ -p udp -j MASQUERADE --to-ports 1024-65535;=;OK
+ -p udp -j MASQUERADE --to-ports 1024-65536;;FAIL
+ -p udp -j MASQUERADE --to-ports -1;;FAIL
++-j MASQUERADE --to-ports 1024;;FAIL
+diff --git a/extensions/libip6t_REDIRECT.t b/extensions/libip6t_REDIRECT.t
+index a0fb0ed..4ea9f6e 100644
+--- a/extensions/libip6t_REDIRECT.t
++++ b/extensions/libip6t_REDIRECT.t
+@@ -4,3 +4,6 @@
+ -p udp -j REDIRECT --to-ports 42-1234;=;OK
+ -p tcp -j REDIRECT --to-ports 42-1234 --random;=;OK
+ -j REDIRECT --to-ports 42;;FAIL
++-p tcp -j REDIRECT --to-ports -1;;FAIL
++-p tcp -j REDIRECT --to-ports 42-65536;;FAIL
++-j REDIRECT -h;;OK
+diff --git a/extensions/libip6t_REJECT.t b/extensions/libip6t_REJECT.t
+index d2b337d..0ac8824 100644
+--- a/extensions/libip6t_REJECT.t
++++ b/extensions/libip6t_REJECT.t
+@@ -9,3 +9,5 @@
+ -j REJECT --reject-with icmp6-reject-route;=;OK
+ -p tcp -j REJECT --reject-with tcp-reset;=;OK
+ -j REJECT --reject-with tcp-reset;;FAIL
++-j REJECT --reject-with icmp6-wrong;;FAIL
++-j REJECT -h;;OK
+diff --git a/extensions/libip6t_SNAT.t b/extensions/libip6t_SNAT.t
+index d188a6b..74ebd2b 100644
+--- a/extensions/libip6t_SNAT.t
++++ b/extensions/libip6t_SNAT.t
+@@ -8,4 +8,13 @@
+ -p tcp -j SNAT --to-source [dead::beef-dead::fee7]:1025-65535;=;OK
+ -p tcp -j SNAT --to-source [dead::beef-dead::fee7]:1025-65536;;FAIL
+ -p tcp -j SNAT --to-source [dead::beef-dead::fee7]:1025-65535 --to-source [dead::beef-dead::fee8]:1025-65535;;FAIL
++-p tcp -j SNAT --to-source dead::beef --random --random-fully --persistent;=;OK
++-p tcp -j SNAT --to-source :65535;=;OK
++-p tcp -j SNAT --to-source [dead::beef;;FAIL
++-p tcp -j SNAT --to-source [dead::beef]:1-65536;;FAIL
++-p tcp -j SNAT --to-source [dead::beef]:1:65535;;FAIL
++-p tcp -j SNAT --to-source [dead::beef]:2-1;;FAIL
++-p tcp -j SNAT --to-source live::beef;;FAIL
++-p tcp -j SNAT --to-source dead::beef-live::beef;;FAIL
+ -j SNAT;;FAIL
++-j SNAT -h;;OK
+diff --git a/extensions/libip6t_connlimit.t b/extensions/libip6t_connlimit.t
+new file mode 100644
+index 0000000..808cef4
+--- /dev/null
++++ b/extensions/libip6t_connlimit.t
+@@ -0,0 +1,16 @@
++:INPUT,FORWARD,OUTPUT
++-m connlimit --connlimit-upto 0;=;OK
++-m connlimit --connlimit-upto 4294967295;=;OK
++-m connlimit --connlimit-upto 4294967296;;FAIL
++-m connlimit --connlimit-upto -1;;FAIL
++-m connlimit --connlimit-above 0;=;OK
++-m connlimit --connlimit-above 4294967295;=;OK
++-m connlimit --connlimit-above 4294967296;;FAIL
++-m connlimit --connlimit-above -1;;FAIL
++-m connlimit --connlimit-upto 1 --conlimit-above 1;;FAIL
++-m connlimit --connlimit-above 10 --connlimit-saddr;-m connlimit --connlimit-above 10 --connlimit-mask 128 --connlimit-saddr;OK
++-m connlimit --connlimit-above 10 --connlimit-daddr;-m connlimit --connlimit-above 10 --connlimit-mask 128 --connlimit-daddr;OK
++-m connlimit --connlimit-above 10 --connlimit-saddr --connlimit-daddr;;FAIL
++-m connlimit --connlimit-above 10 --connlimit-mask 32 --connlimit-saddr;=;OK
++-m connlimit --connlimit-above 10 --connlimit-mask 32 --connlimit-daddr;=;OK
++-m connlimit;;FAIL
+diff --git a/extensions/libip6t_icmp6.t b/extensions/libip6t_icmp6.t
+index 028cfc1..73c42e7 100644
+--- a/extensions/libip6t_icmp6.t
++++ b/extensions/libip6t_icmp6.t
+@@ -4,3 +4,8 @@
+ -p ipv6-icmp -m icmp6 --icmpv6-type 2;=;OK
+ # cannot use option twice:
+ -p ipv6-icmp -m icmp6 --icmpv6-type no-route --icmpv6-type packet-too-big;;FAIL
++-p ipv6-icmp -m icmp6 ! --icmpv6-type 2;=;OK
++-p ipv6-icmp -m icmp6 --icmpv6-type router;;FAIL
++-p ipv6-icmp -m icmp6 --icmpv6-type -1;;FAIL
++-p ipv6-icmp -m icmp6 --icmpv6-type 1/65536;;FAIL
++-p ipv6-icmp -h;;OK
+diff --git a/extensions/libip6t_rt.t b/extensions/libip6t_rt.t
+index 3c7b2d9..730603e 100644
+--- a/extensions/libip6t_rt.t
++++ b/extensions/libip6t_rt.t
+@@ -2,4 +2,10 @@
+ -m rt --rt-type 0 --rt-segsleft 1:23 --rt-len 42 --rt-0-res;=;OK
+ -m rt --rt-type 0 ! --rt-segsleft 1:23 ! --rt-len 42 --rt-0-res;=;OK
+ -m rt ! --rt-type 1 ! --rt-segsleft 12:23 ! --rt-len 42;=;OK
++-m rt --rt-type 0 --rt-0-addrs beef::feed --rt-0-not-strict;=;OK
++-m rt --rt-0-addrs beef::feed;;FAIL
++-m rt --rt-0-res;;FAIL
++-m rt --rt-type 0 --rt-0-not-strict;;FAIL
++-m rt --rt-type 0 --rt-0-addrs beef::wrong --rt-0-not-strict;;FAIL
++-m rt --rt-type 0 --rt-segsleft 1:1 --rt-len 42 --rt-0-res;-m rt --rt-type 0 --rt-segsleft 1 --rt-len 42 --rt-0-res;OK
+ -m rt;=;OK
+diff --git a/extensions/libip6t_rt.txlate b/extensions/libip6t_rt.txlate
+index 6464cf9..d07ab50 100644
+--- a/extensions/libip6t_rt.txlate
++++ b/extensions/libip6t_rt.txlate
+@@ -12,3 +12,6 @@ nft add rule ip6 filter INPUT rt type 0 rt hdrlength 22 counter drop
+ 
+ ip6tables-translate -A INPUT -m rt --rt-type 0 --rt-len 22 ! --rt-segsleft 26 -j ACCEPT
+ nft add rule ip6 filter INPUT rt type 0 rt seg-left != 26 rt hdrlength 22 counter accept
++
++ip6tables-translate -A INPUT -m rt --rt-type 0 --rt-len 22 --rt-segsleft 1:26 -j ACCEPT
++nft add rule ip6 filter INPUT rt type 0 rt seg-left 1-26 rt hdrlength 22 counter accept
+diff --git a/extensions/libipt_DNAT.t b/extensions/libipt_DNAT.t
+index 1c4413b..1146ef1 100644
+--- a/extensions/libipt_DNAT.t
++++ b/extensions/libipt_DNAT.t
+@@ -13,4 +13,13 @@
+ -p tcp -j DNAT --to-destination 1.1.1.1:1000-2000/65535;=;OK
+ -p tcp -j DNAT --to-destination 1.1.1.1:1000-2000/0;;FAIL
+ -p tcp -j DNAT --to-destination 1.1.1.1:1000-2000/65536;;FAIL
++-p tcp -j DNAT --to-destination 1.1.1.1 --random --persistent;=;OK
++-p tcp -j DNAT --to-destination :65535;=;OK
++-p tcp -j DNAT --to-destination 1.1.1.1:1000;=;OK
++-p tcp -j DNAT --to-destination 1.1.1.1:1025-65536;;FAIL
++-p tcp -j DNAT --to-destination 1.1.1.1:1025:65535;;FAIL
++-p tcp -j DNAT --to-destination 1.1.1.1:2000-1000;;FAIL
++-p tcp -j DNAT --to-destination 1.1.1.a;;FAIL
++-p tcp -j DNAT --to-destination 1.1.1.1-1.1.1.a;;FAIL
+ -j DNAT;;FAIL
++-j DNAT -h;;OK
+diff --git a/extensions/libipt_DNAT.txlate b/extensions/libipt_DNAT.txlate
+index e88314d..5da8077 100644
+--- a/extensions/libipt_DNAT.txlate
++++ b/extensions/libipt_DNAT.txlate
+@@ -12,3 +12,6 @@ nft add rule ip nat prerouting oifname "eth0" ip protocol tcp counter dnat to 1.
+ 
+ iptables-translate -t nat -A prerouting -p tcp -o eth0 -j DNAT --to-destination 1.2.3.4 --random --persistent
+ nft add rule ip nat prerouting oifname "eth0" ip protocol tcp counter dnat to 1.2.3.4 random,persistent
++
++iptables-translate -t nat -A prerouting -p tcp -o eth0 -j DNAT --to-destination 1.2.3.4:1000-2000/65535
++nft add rule ip nat prerouting oifname "eth0" ip protocol tcp counter dnat to 1.2.3.4:1000-2000;65535
+diff --git a/extensions/libipt_LOG.t b/extensions/libipt_LOG.t
+index fbf5118..e3fb58f 100644
+--- a/extensions/libipt_LOG.t
++++ b/extensions/libipt_LOG.t
+@@ -8,5 +8,6 @@
+ -j LOG --log-prefix "test: " --log-tcp-options;=;OK
+ -j LOG --log-prefix "test: " --log-ip-options;=;OK
+ -j LOG --log-prefix "test: " --log-uid;=;OK
++-j LOG --log-prefix "test: " --log-macdecode;=;OK
+ -j LOG --log-prefix "test: " --log-level bad;;FAIL
+ -j LOG --log-prefix;;FAIL
+diff --git a/extensions/libipt_LOG.txlate b/extensions/libipt_LOG.txlate
+index 81f64fb..ecb3304 100644
+--- a/extensions/libipt_LOG.txlate
++++ b/extensions/libipt_LOG.txlate
+@@ -3,3 +3,12 @@ nft add rule ip filter FORWARD ip protocol tcp counter log level err
+ 
+ iptables-translate -A FORWARD -p tcp -j LOG --log-prefix "Random prefix"
+ nft add rule ip filter FORWARD ip protocol tcp counter log prefix \"Random prefix\"
++
++iptables-translate -A FORWARD -p tcp -j LOG --log-tcp-sequence --log-tcp-options --log-ip-options --log-uid
++nft add rule ip filter FORWARD ip protocol tcp counter log flags tcp sequence,options flags ip options flags skuid
++
++iptables-translate -A FORWARD -p tcp -j LOG --log-tcp-sequence --log-tcp-options --log-ip-options --log-uid --log-macdecode
++nft add rule ip filter FORWARD ip protocol tcp counter log flags all
++
++iptables-translate -A FORWARD -p tcp -j LOG --log-tcp-sequence --log-macdecode
++nft add rule ip filter FORWARD ip protocol tcp counter log flags tcp sequence flags ether
+diff --git a/extensions/libipt_MASQUERADE.t b/extensions/libipt_MASQUERADE.t
+index e25d2a0..e254fa7 100644
+--- a/extensions/libipt_MASQUERADE.t
++++ b/extensions/libipt_MASQUERADE.t
+@@ -7,3 +7,4 @@
+ -p udp -j MASQUERADE --to-ports 1024-65535;=;OK
+ -p udp -j MASQUERADE --to-ports 1024-65536;;FAIL
+ -p udp -j MASQUERADE --to-ports -1;;FAIL
++-j MASQUERADE --to-ports 1024;;FAIL
+diff --git a/extensions/libipt_NETMAP.t b/extensions/libipt_NETMAP.t
+index 31924b9..1a0f23b 100644
+--- a/extensions/libipt_NETMAP.t
++++ b/extensions/libipt_NETMAP.t
+@@ -2,3 +2,4 @@
+ *nat
+ -j NETMAP --to 1.2.3.0/24;=;OK
+ -j NETMAP --to 1.2.3.4;=;OK
++-j NETMAP --to 1.2.3.4/33;;OK
+diff --git a/extensions/libipt_REDIRECT.t b/extensions/libipt_REDIRECT.t
+index a0fb0ed..4ea9f6e 100644
+--- a/extensions/libipt_REDIRECT.t
++++ b/extensions/libipt_REDIRECT.t
+@@ -4,3 +4,6 @@
+ -p udp -j REDIRECT --to-ports 42-1234;=;OK
+ -p tcp -j REDIRECT --to-ports 42-1234 --random;=;OK
+ -j REDIRECT --to-ports 42;;FAIL
++-p tcp -j REDIRECT --to-ports -1;;FAIL
++-p tcp -j REDIRECT --to-ports 42-65536;;FAIL
++-j REDIRECT -h;;OK
+diff --git a/extensions/libipt_REJECT.t b/extensions/libipt_REJECT.t
+index 5b26b10..8977eb6 100644
+--- a/extensions/libipt_REJECT.t
++++ b/extensions/libipt_REJECT.t
+@@ -7,3 +7,5 @@
+ -j REJECT --reject-with icmp-net-prohibited;=;OK
+ -j REJECT --reject-with icmp-host-prohibited;=;OK
+ -j REJECT --reject-with icmp-admin-prohibited;=;OK
++-j REJECT --reject-with echo-reply;;FAIL
++-j REJECT -h;;OK
+diff --git a/extensions/libipt_SNAT.t b/extensions/libipt_SNAT.t
+index 186e1cb..e88774a 100644
+--- a/extensions/libipt_SNAT.t
++++ b/extensions/libipt_SNAT.t
+@@ -8,4 +8,13 @@
+ -p tcp -j SNAT --to-source 1.1.1.1-1.1.1.10:1025-65535;=;OK
+ -p tcp -j SNAT --to-source 1.1.1.1-1.1.1.10:1025-65536;;FAIL
+ -p tcp -j SNAT --to-source 1.1.1.1-1.1.1.10:1025-65535 --to-source 2.2.2.2-2.2.2.20:1025-65535;;FAIL
++-p tcp -j SNAT --to-source 1.1.1.1 --random --random-fully --persistent;=;OK
++-p tcp -j SNAT --to-source :65535;=;OK
++-p tcp -j SNAT --to-source 1.1.1.1:1025;=;OK
++-p tcp -j SNAT --to-source 1.1.1.1:1025-65536;;FAIL
++-p tcp -j SNAT --to-source 1.1.1.1:1025:65535;;FAIL
++-p tcp -j SNAT --to-source 1.1.1.1:65535-1025;;FAIL
++-p tcp -j SNAT --to-source 1.1.1.a;;FAIL
++-p tcp -j SNAT --to-source 1.1.1.1-1.1.1.a;;FAIL
+ -j SNAT;;FAIL
++-j SNAT -h;;OK
+diff --git a/extensions/libipt_icmp.t b/extensions/libipt_icmp.t
+index f4ba65c..09771a3 100644
+--- a/extensions/libipt_icmp.t
++++ b/extensions/libipt_icmp.t
+@@ -13,3 +13,8 @@
+ # we accept "iptables -I INPUT -p tcp -m tcp", why not this below?
+ # ERROR: cannot load: iptables -A INPUT -p icmp -m icmp
+ # -p icmp -m icmp;=;OK
++-p icmp -m icmp ! --icmp-type 1/0;=;OK
++-p icmp -m icmp --icmp-type router;;FAIL
++-p icmp -m icmp --icmp-type -1;;FAIL
++-p icmp -m icmp --icmp-type 1/65536;;FAIL
++-p icmp -m icmp -h;;OK
+diff --git a/extensions/libxt_iprange.t b/extensions/libxt_iprange.t
+index 6fd98be..34449f0 100644
+--- a/extensions/libxt_iprange.t
++++ b/extensions/libxt_iprange.t
+@@ -3,9 +3,7 @@
+ -m iprange ! --src-range 1.1.1.1-1.1.1.10;=;OK
+ -m iprange --dst-range 1.1.1.1-1.1.1.10;=;OK
+ -m iprange ! --dst-range 1.1.1.1-1.1.1.10;=;OK
+-# it shows -A INPUT -m iprange --src-range 1.1.1.1-1.1.1.1, should we support this?
+-# ERROR: should fail: iptables -A INPUT -m iprange --src-range 1.1.1.1
+-# -m iprange --src-range 1.1.1.1;;FAIL
+-# ERROR: should fail: iptables -A INPUT -m iprange --dst-range 1.1.1.1
+-#-m iprange --dst-range 1.1.1.1;;FAIL
++-m iprange --src-range 1.1.1.1;=;OK
++-m iprange --dst-range 1.1.1.1;=;OK
+ -m iprange;;FAIL
++-m iprange -h;;OK
+diff --git a/extensions/libxt_limit.t b/extensions/libxt_limit.t
+index b0af653..c06f91c 100644
+--- a/extensions/libxt_limit.t
++++ b/extensions/libxt_limit.t
+@@ -4,3 +4,11 @@
+ -m limit --limit 1000/hour;=;OK
+ -m limit --limit 1000/day;=;OK
+ -m limit --limit 1/sec --limit-burst 1;=;OK
++-m limit --limit 0/sec;;FAIL
++-m limit --limit 1/bad;;FAIL
++-m limit ! --limit 1/sec;;FAIL
++# Rate too fast(> 10000/sec)
++-m limit --limit 10001/second;;FAIL
++# Default value for --limit
++-m limit;-m limit --limit 3/hour;OK
++-m limit -h;;OK
+diff --git a/extensions/libxt_standard.t b/extensions/libxt_standard.t
+index 4313f7b..2f5f9d3 100644
+--- a/extensions/libxt_standard.t
++++ b/extensions/libxt_standard.t
+@@ -9,3 +9,4 @@
+ -j ACCEPT;=;OK
+ -j RETURN;=;OK
+ ! -p 0 -j ACCEPT;=;FAIL
++-j standard -h;;OK
+diff --git a/extensions/libxt_string.t b/extensions/libxt_string.t
+index d68f099..0103eae 100644
+--- a/extensions/libxt_string.t
++++ b/extensions/libxt_string.t
+@@ -1,18 +1,23 @@
+ :INPUT,FORWARD,OUTPUT
+-# ERROR: cannot find: iptables -I INPUT -m string --algo bm --string "test"
+-# -m string --algo bm --string "test";=;OK
+-# ERROR: cannot find: iptables -I INPUT -m string --algo kmp --string "test")
+-# -m string --algo kmp --string "test";=;OK
+-# ERROR: cannot find: iptables -I INPUT -m string --algo kmp ! --string "test"
+-# -m string --algo kmp ! --string "test";=;OK
+-# cannot find: iptables -I INPUT -m string --algo bm --string "xxxxxxxxxxx" ....]
+-# -m string --algo bm --string "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx";=;OK
+-# ERROR: cannot load: iptables -A INPUT -m string --algo bm --string "xxxx"
+-# -m string --algo bm --string "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx";=;OK
+-# ERROR: cannot load: iptables -A INPUT -m string --algo bm --hexstring "|0a0a0a0a|"
+-# -m string --algo bm --hexstring "|0a0a0a0a|";=;OK
+-# ERROR: cannot find: iptables -I INPUT -m string --algo bm --from 0 --to 65535 --string "test"
+-# -m string --algo bm --from 0 --to 65535 --string "test";=;OK
++-m string --string "test" --algo bm;=;OK
++-m string --string "test" --algo kmp;=;OK
++-m string ! --string "test" --algo kmp;=;OK
++-m string --string "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" --algo bm;=;OK
++-m string --algo bm --string "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx";;FAIL
++-m string --string "\\" --algo bm;-m string --hex-string "|5c|";OK
++-m string --hex-string "|0a0a0a0a|" --algo bm;=;OK
++-m string ! --hex-string "|0a0a0a0a|" --algo bm;=;OK
++-m string --algo bm --hex-string "| 0a|";-m string --hex-string "|0a|";OK
++-m string --algo bm --hex-string "|0a0|";;FAIL
++-m string --algo bm --hex-string "|ww|";;FAIL
++-m string --algo bm --hex-string "";;FAIL
++-m string --algo bm --hex-string "|0a\\|";;FAIL
++-m string --algo bm --hex-string "xxx\\";;FAIL
++-m string --algo bm --hex-string "|\\";;FAIL
++-m string --algo bm --hex-string "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx";;FAIL
++-m string --string "test" --algo bm --from 1 --to 65535;=;OK
+ -m string --algo wrong;;FAIL
+ -m string --algo bm;;FAIL
+ -m string;;FAIL
++-m string --string "test" --algo bm --to 65535 --icase;=;OK
++-m string -h;;OK
+diff --git a/extensions/libxt_tcp.t b/extensions/libxt_tcp.t
+index b0e8006..bd6345f 100644
+--- a/extensions/libxt_tcp.t
++++ b/extensions/libxt_tcp.t
+@@ -22,5 +22,8 @@
+ -p tcp -m tcp --tcp-flags FIN,SYN,RST,PSH,ACK,URG SYN;=;OK
+ -p tcp -m tcp ! --tcp-flags FIN,SYN,RST,PSH,ACK,URG SYN;=;OK
+ -p tcp -m tcp --tcp-flags FIN,SYN,RST,PSH,ACK,URG RST;=;OK
++-p tcp -m tcp --tcp-option 1;=;OK
++-p tcp -m tcp --tcp-option -1;;FAIL
++-p tcp -m tcp ! --tcp-option 1;=;OK
+ # should we accept this below?
+ -p tcp -m tcp;=;OK
+diff --git a/iptables-test.py b/iptables-test.py
+index ca5efb1..f3e96f4 100755
+--- a/iptables-test.py
++++ b/iptables-test.py
+@@ -64,6 +64,23 @@ def delete_rule(iptables, rule, filename, lineno):
+     return 0
+ 
+ 
++def list_rules(iptables, rule, filename, lineno):
++    '''
++    list iptables rules
++    '''
++    cmd = iptables + " -vvL "
++    if " -t " in rule:
++        cmd += " -t " + rule.split(" -t ")[1].split(" ")[0]
++
++    ret = execute_cmd(cmd, filename, lineno)
++    if ret:
++        reason = "cannot list: " + iptables + " -vvL " + rule
++        print_error(reason, filename, lineno)
++        return -1
++
++    return 0
++
++
+ def run_test(iptables, rule, rule_save, res, filename, lineno, netns):
+     '''
+     Executes an unit test. Returns the output of delete_rule().
+@@ -151,6 +168,11 @@ def run_test(iptables, rule, rule_save, res, filename, lineno, netns):
+     if netns:
+         return 0
+ 
++    ret = list_rules(iptables, rule, filename, lineno)
++    if ret < 0:
++        delete_rule(iptables, rule, filename, lineno)
++        return -1
++
+     return delete_rule(iptables, rule, filename, lineno)
+ 
+ def execute_cmd(cmd, filename, lineno):
+-- 
+2.23.0
+

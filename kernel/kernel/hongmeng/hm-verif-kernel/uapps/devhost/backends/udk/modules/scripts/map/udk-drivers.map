@@ -1,0 +1,12 @@
+{
+  global:
+    udk_init_module;
+    udk_exit_module;
+    udk_module_deps;
+    udk_module_len;
+    udk_weak_param_list;
+    udk_set_this_module;
+
+  local:
+    *;
+};

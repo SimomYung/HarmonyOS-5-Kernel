@@ -1,0 +1,36 @@
+From 6c93ac876f71d7221a172e430ca450b6c0b8b699 Mon Sep 17 00:00:00 2001
+From: Marco Trevisan <mail@3v1n0.net>
+Date: Wed, 20 Jul 2022 06:32:30 +0200
+Subject: [PATCH] gregex: Free match info if offset matching recalc failed
+
+It's not probably ever happening in practice, but coverity found it and
+it's easy enough to fix it.
+
+Coverity CID: #1490730
+
+Conflict:NA
+Reference:https://gitlab.gnome.org/GNOME/glib/-/commit/6c93ac876f71d7221a172e430ca450b6c0b8b699
+
+---
+ glib/gregex.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/glib/gregex.c b/glib/gregex.c
+index 5fc7b16bc8..be03f0e094 100644
+--- a/glib/gregex.c
++++ b/glib/gregex.c
+@@ -2237,7 +2237,10 @@ g_regex_match_all_full (const GRegex      *regex,
+                                        info->workspace, info->n_workspace);
+ 
+       if (!recalc_match_offsets (info, error))
+-        return FALSE;
++        {
++          g_match_info_free (info);
++          return FALSE;
++        }
+ 
+       if (info->matches == PCRE2_ERROR_DFA_WSSIZE)
+         {
+-- 
+GitLab
+

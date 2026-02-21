@@ -1,0 +1,73 @@
+{
+    "root": {
+        "data": {
+            "id": "ci27l63cu8w0",
+            "created": 1645495824622,
+            "text": "HLIBC",
+            "usecase": 99
+        },
+        "children": [
+            {
+                "data": {
+                    "id": "cj0iobul2sw0",
+                    "created": 1648980142980,
+                    "text": "支持channel模块，提供报文收发机制",
+                    "usecase": 1
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "cj0irib0cxk0",
+                            "created": 1648980392126,
+                            "text": "guest_app和host_app分别根据同一名称创建channel",
+                            "usecase": 3,
+                            "expandState": "expand"
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "cj0is36pdh40",
+                                    "created": 1648980437579,
+                                    "text": "报文收发功能",
+                                    "usecase": 2
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "cj0iti425g80",
+                                            "created": 1648980548435,
+                                            "text": "guest_app发送报文，host_app接收报文并校验",
+                                            "usecase": 4,
+                                            "author": "z00572669",
+                                            "showId": "00051",
+                                            "usecaseType": 2
+                                        },
+                                        "children": []
+                                    },
+                                    {
+                                        "data": {
+                                            "id": "cj0itx8syrk0",
+                                            "created": 1648980581373,
+                                            "text": "host_app发送报文，guest_app接收报文并校验",
+                                            "usecase": 4,
+                                            "author": "z00572669",
+                                            "showId": "00052",
+                                            "usecaseType": 2
+                                        },
+                                        "children": []
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    "templatePath": null,
+    "singleTemplatePath": null,
+    "testcaseFilePath": "",
+    "template": "right",
+    "theme": "fresh-blue",
+    "version": "1.4.43"
+}

@@ -1,0 +1,23 @@
+# Copyright (c) Huawei Technologies Co., Ltd. 2024. All rights reserved.
+# Description: HMbuild for hm-security-libs
+# Author: Huawei OS Kernel Lab
+# Create: Fri Aug 09 10:48:33 2024
+
+# vim:ts=4:sw=4:expandtab
+
+# headers: libseckcov
+
+src-y: seckcov.c
+
+include-y: ./
+include-y: ../../include
+
+excludecflags-.-y: -fsanitize-coverage=trace-pc
+excludecflags-.-y: -fsanitize-coverage=trace-cmp
+
+lib-static-y: seckcov
+install-seckcov-y: LIBDIR
+
+lib-dynamic-y: seckcov_shared
+output-seckcov_shared: seckcov
+install-seckcov_shared-y: LIBDIR

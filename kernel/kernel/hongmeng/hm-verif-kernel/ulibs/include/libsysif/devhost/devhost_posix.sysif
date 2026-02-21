@@ -1,0 +1,11 @@
+/*
+ * Copyright (c) Huawei Technologies Co., Ltd. 2024. All rights reserved.
+ * Description: devhost posix syscall
+ * Author: Huawei OS Kernel Lab
+ * Create: Mon Jul 29 14:30:00 2024
+ */
+
+DEFINE_MANAGER(posix, 1,
+	DEFINE_LSYSCALL_METHOD(vhangup, SYS_vhangup,
+			       ARG_NO)
+)

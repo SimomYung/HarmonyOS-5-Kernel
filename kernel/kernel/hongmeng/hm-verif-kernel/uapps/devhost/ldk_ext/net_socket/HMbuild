@@ -1,0 +1,16 @@
+findpkg: HMNetLibs
+
+lib-dynamic-y: dhext_net_socket
+
+cflags-dhext_net_socket-y: -D_DH_PLUGIN_NAME=net_socket -fvisibility=default
+linklib-dhext_net_socket-CONFIG_HKIP: -Thkip_with_ksymtab.lds
+linklib-dhext_net_socket-CONFIG_NO_HKIP: -Tksymtab.lds
+
+src-dhext_net_socket-y: net_socket_if.c
+src-dhext_net_socket-y: ext_main.c
+cflags-ext_main.c-y: -D_GNU_SOURCE
+linklib-dhext_net_socket-CONFIG_NET_FUSION: HMNetLibs::HMNetSrvLib_static
+
+install-dhext_net_socket-y: BASE_LIBDIR
+
+installinc: include/

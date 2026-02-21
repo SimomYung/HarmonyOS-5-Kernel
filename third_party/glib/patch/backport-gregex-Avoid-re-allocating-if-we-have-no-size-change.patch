@@ -1,0 +1,47 @@
+From aee84cb45caf42e336dee5183d561b89eb44f8f3 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Marco=20Trevisan=20=28Trevi=C3=B1o=29?= <mail@3v1n0.net>
+Date: Tue, 6 Sep 2022 18:56:39 +0200
+Subject: [PATCH] gregex: Avoid re-allocating if we have no size change
+
+This is handled by the syscall underneath, but we can just avoid a call
+cheaply.
+---
+ glib/gregex.c | 13 ++++++++++---
+ 1 file changed, 10 insertions(+), 3 deletions(-)
+
+diff --git a/glib/gregex.c b/glib/gregex.c
+index 84c4245753..cf86f0fe0d 100644
+--- a/glib/gregex.c
++++ b/glib/gregex.c
+@@ -832,6 +832,7 @@ recalc_match_offsets (GMatchInfo *match_info,
+                       GError     **error)
+ {
+   PCRE2_SIZE *ovector;
++  uint32_t pre_n_offset;
+   uint32_t i;
+ 
+   if (pcre2_get_ovector_count (match_info->match_data) > G_MAXUINT32 / 2)
+@@ -842,11 +843,17 @@ recalc_match_offsets (GMatchInfo *match_info,
+       return FALSE;
+     }
+ 
++  pre_n_offset = match_info->n_offsets;
+   match_info->n_offsets = pcre2_get_ovector_count (match_info->match_data) * 2;
+   ovector = pcre2_get_ovector_pointer (match_info->match_data);
+-  match_info->offsets = g_realloc_n (match_info->offsets,
+-                                     match_info->n_offsets,
+-                                     sizeof (gint));
++
++  if (match_info->n_offsets != pre_n_offset)
++    {
++      match_info->offsets = g_realloc_n (match_info->offsets,
++                                         match_info->n_offsets,
++                                         sizeof (gint));
++    }
++
+   for (i = 0; i < match_info->n_offsets; i++)
+     {
+       match_info->offsets[i] = (int) ovector[i];
+-- 
+GitLab
+

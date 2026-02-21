@@ -1,0 +1,41 @@
+/*
+ * Copyright (C) Huawei Technologies Co., Ltd. 2022-2022. All rights reserved.
+ * Description: Header file for ldk sysif api
+ * Author: Huawei OS Kernel Lab
+ * Create: Mon May 16 15:12:31 2022
+ */
+
+/*
+ * To support the mixed data model which means the client and the server
+ * may use different data model. See the comment for limitation of data type
+ * used in the sysif interfaces in <libsysif/base/api.h>.
+ */
+DEFINE_MANAGER(ldk, 6,
+	DEFINE_SIMPLE_METHOD(ldk, domain_register,
+			     ARG(2, int, family, unsigned long long, dh_ap_uref),
+			     RET_NO,
+			     SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(procfs, create_ldk_entry,
+			     ARG(5, unsigned int, nsid,
+					const char *, path,
+					void *, ops,
+					void *, ctx,
+					unsigned int, mode),
+			     RET_NO,
+			     SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(procfs, delete_ldk_entry_specific,
+			     ARG(2,
+				 const char *, pathname,
+				 unsigned int, nsid),
+			     RET_NO,
+			     SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(procfs, create_ldk_entries,
+			     ARG(3,
+				 void *, parent,
+				 unsigned int, size,
+				 void *, ops),
+			     RET_NO,
+			     SLOWDATA_NO)
+	DEFINE_LSYSCALL_METHOD(bpf, SYS_bpf,
+			     ARG(3, int, cmd, void *, attr, unsigned , size))
+)

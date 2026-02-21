@@ -1,0 +1,19 @@
+config AKMD_AKSM
+	bool "AKMD aksm driver support"
+	default n
+	help
+	  This feature supports aksm driver
+
+config AKMD_DEBUG_ENABLE
+	bool "AKMD debug enable"
+	default n
+	depends on AKMD_AKSM
+	help
+	  This feature supports debug config
+
+config AKMD_ASSERT_ENABLE
+	bool "AKMD assert enable"
+	default n
+	depends on AKMD_AKSM
+	help
+	  This feature supports assert enable

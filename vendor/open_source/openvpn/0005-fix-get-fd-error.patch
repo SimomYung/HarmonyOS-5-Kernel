@@ -1,0 +1,118 @@
+From 853c1387c8664780df15776ef69cf8523f2aaa46 Mon Sep 17 00:00:00 2001
+From: h00852261 <h00852261@notesmail.huawei.com/>
+Date: Fri, 27 Jun 2025 14:32:44 +0800
+Subject: [PATCH] TicketNo:DTS2024121221117 Description:openvpn fix get fd
+ error Team:OTHERS Feature or Bugfix:Bugfix Binary Source:No
+ PrivateCode(Yes/No):No
+
+Change-Id: I27b962876897bbeee659fcaf5d57b90af0fbf065
+---
+ src/openvpn/openvpn.c | 13 +++++++++++++
+ src/openvpn/options.c | 25 ++++++++++++++++++++++++-
+ src/openvpn/options.h |  9 +++++++++
+ 3 files changed, 46 insertions(+), 1 deletion(-)
+
+diff --git a/src/openvpn/openvpn.c b/src/openvpn/openvpn.c
+index 58b98a6..aed67dc 100644
+--- a/src/openvpn/openvpn.c
++++ b/src/openvpn/openvpn.c
+@@ -219,6 +219,17 @@ openvpn_main(int argc, char *argv[])
+             /* parse command line options, and read configuration file */
+             parse_argv(&c.options, argc, argv, M_USAGE, OPT_P_DEFAULT, NULL, c.es);
+ 
++#ifdef SUPPORT_SYSVPN
++            /* become a daemon if --daemon */
++            if (c.first_time)
++            {
++                c.did_we_daemonize = possibly_become_daemon(&c.options);
++                write_pid_file(c.options.writepid, c.options.chroot_dir);
++            }
++            /* read config */
++            read_config_str(&c.options, &c.options.config, M_USAGE, OPT_P_DEFAULT, NULL, c.es);
++#endif
++
+ #ifdef SUPPORT_SYSVPN
+             g_options = c.options;
+ #endif // SUPPORT_SYSVPN
+@@ -286,12 +297,14 @@ openvpn_main(int argc, char *argv[])
+ #endif
+             init_query_passwords(&c);
+ 
++#ifndef SUPPORT_SYSVPN
+             /* become a daemon if --daemon */
+             if (c.first_time)
+             {
+                 c.did_we_daemonize = possibly_become_daemon(&c.options);
+                 write_pid_file(c.options.writepid, c.options.chroot_dir);
+             }
++#endif
+ 
+ #ifdef ENABLE_MANAGEMENT
+             /* open management subsystem */
+diff --git a/src/openvpn/options.c b/src/openvpn/options.c
+index 9db097d..6752f5e 100644
+--- a/src/openvpn/options.c
++++ b/src/openvpn/options.c
+@@ -5334,6 +5334,28 @@ read_config(const char *prefix,
+     }
+     secure_memzero(line, sizeof(line));
+ }
++
++static void
++read_config_file(struct options *options,
++                 const char *file,
++                 int level,
++                 const char *top_file,
++                 const int top_line,
++                 const int msglevel,
++                 const unsigned int permission_mask,
++                 unsigned int *option_types_found,
++                 struct env_set *es);
++
++void read_config_str(struct options *options,
++           char *p[],
++           const int msglevel,
++           const unsigned int permission_mask,
++           unsigned int *option_types_found,
++           struct env_set *es)
++{
++    read_config_file(options, p, 0, NULL, 0, msglevel, permission_mask,
++                   option_types_found, es);
++}
+ #endif
+ 
+ static void
+@@ -5853,8 +5875,9 @@ add_option(struct options *options,
+         {
+             options->config = p[1];
+         }
+-
++#ifndef SUPPORT_SYSVPN
+         read_config_file(options, p[1], level, file, line, msglevel, permission_mask, option_types_found, es);
++#endif
+     }
+ #if defined(ENABLE_DEBUG) && !defined(ENABLE_SMALL)
+     else if (streq(p[0], "show-gateway") && !p[2])
+diff --git a/src/openvpn/options.h b/src/openvpn/options.h
+index 8c75a85..754cd90 100644
+--- a/src/openvpn/options.h
++++ b/src/openvpn/options.h
+@@ -804,6 +804,15 @@ void setenv_settings(struct env_set *es, const struct options *o);
+ 
+ void show_settings(const struct options *o);
+ 
++#ifdef SUPPORT_SYSVPN
++void read_config_str(struct options *options,
++           char *p[],
++           const int msglevel,
++           const unsigned int permission_mask,
++           unsigned int *option_types_found,
++           struct env_set *es);
++#endif
++
+ bool string_defined_equal(const char *s1, const char *s2);
+ 
+ const char *options_string_version(const char *s, struct gc_arena *gc);
+-- 
+2.34.1
+

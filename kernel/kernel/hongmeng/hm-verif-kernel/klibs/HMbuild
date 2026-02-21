@@ -1,0 +1,117 @@
+# Copyright (C) Huawei Technologies Co., Ltd. 2021. All rights reserved.
+# Description: HMbuild for klibs
+# Author: Huawei OS Kernel Lab
+# Create: Mon Jul 12 14:54:52 2021
+
+lib-static-y: klibs
+
+findpkg: LibVSync
+findpkg: HISILibs
+
+subdir-y: klibc
+subdir-CONFIG_KLIBS_PGTBL: pgtbl
+subdir-CONFIG_AARCH64: arch/aarch64
+subdir-CONFIG_ARM: arch/arm
+subdir-CONFIG_HMPSF: hmpsf/
+subdir-CONFIG_HMPROBE: hmprobe/
+
+subdir-y: exts/hisi
+
+src-y: atomic.c
+src-y: boot_helper.c
+src-y: cpio.c
+src-y: div.c
+src-y: ekbox_rb.c
+src-y: errno.c
+src-y: jitter.c
+src-y: klog.c
+src-y: klogport.c
+src-y: random.c
+src-y: scq.c
+src-y: strsyscall.c
+src-y: vsnprintf.c
+src-y: vspace_layout.c
+
+src-y: uart/8250_early_output.c
+src-y: uart/early_output.c
+src-y: uart/pl011_early_output.c
+src-y: uart/stm32h7_early_output.c
+
+src-y: wdt/hisi_hi1210_wdt.c
+src-y: wdt/hisi_sd6219e_wdt.c
+
+# Next generation of early devices and drivers
+src-y: edrivers/econsole.c
+src-y: edrivers/econsole/8250.c
+src-y: edrivers/econsole/pl011.c
+src-y: edrivers/econsole/stm32h7.c
+src-y: edrivers/econsole/msm.c
+src-y: edrivers/econsole/hisi_uart.c
+
+src-y: edrivers/ewatchdog.c
+src-y: edrivers/ewatchdog/hi121x.c
+src-y: edrivers/ewatchdog/sd5151t.c
+src-y: edrivers/ewatchdog/ipq6028.c
+src-y: edrivers/ewatchdog/sd6219e.c
+src-y: edrivers/ewatchdog/sp805.c
+src-y: edrivers/ewatchdog/hiv500.c
+
+src-y: edrivers/ellc.c
+src-CONFIG_HISI_SD7601_LLC: edrivers/ellc/sd7601.c
+src-CONFIG_HMPERF_NG: perf_rb.c
+src-CONFIG_HMPERF_NG: perf_user.c
+
+src-y: gic/arm_early_gicv2.c
+src-CONFIG_AARCH64: gic/arm_early_gicv3.c
+
+src-CONFIG_AARCH64: livepatch/livepatch_loader.c
+src-CONFIG_AARCH64: livepatch/livepatch_elf_check.c
+src-CONFIG_AARCH64: livepatch/livepatch_relocate_aarch64.c
+
+# libverified settings
+src-y: verified/priomap.c
+
+src-CONFIG_AARCH64: edrivers/epmucounter/aarch64_pmucounter.c
+src-CONFIG_ARM: edrivers/epmucounter/arm_pmucounter.c
+
+src-y: trace/trace.c
+
+include-.-CONFIG_AARCH64: ../arch/aarch64/include
+include-.-CONFIG_AARCH64: ../arch/aarch64/include/mapi
+include-.-CONFIG_AARCH64: ../arch/aarch64/include/mapi/uapi
+include-.-CONFIG_ARM: ../arch/arm/include
+include-.-CONFIG_ARM: ../arch/arm/include/mapi
+include-.-CONFIG_ARM: ../arch/arm/include/mapi/uapi
+include-.-y: ../kernel/include
+include-.-y: ../kernel/include/mapi
+include-.-y: ../kernel/include/mapi/uapi
+include-.-y: include
+include-.-y: hmk/math/export
+
+inclib: LibVSync::LibVSync_include
+inclib-.-isystem: CompilerLibs::CompilerLibs_include
+
+cflags-.-y: -nostdinc
+cflags-.-y: -D__KERNEL__
+cflags-.-y: -Wno-unused-parameter
+cflags-.-y: -fvisibility=hidden
+cflags-.-y: -fno-strict-aliasing
+cflags-.-y: -fno-common
+cflags-.-y: -fno-asynchronous-unwind-tables
+cflags-.-y: -fno-omit-frame-pointer
+cflags-.-CONFIG_AARCH64: -mgeneral-regs-only
+cflags-.-CONFIG_DLIST_DEBUG: -DDLIST_DEBUG_ENABLE
+cflags-.-CONFIG_PIE: -fPIE
+cflags-.-CONFIG_CC_USE_CLANG: -Wno-unused-command-line-argument
+cflags-.-CONFIG_CC_USE_CLANG: -Wno-asm-operand-widths
+cflags-.-CONFIG_CC_STACKPROTECTOR_STRONG: -fstack-protector-strong
+cflags-.-CONFIG_CC_STACKPROTECTOR_REGULAR: -fstack-protector
+cflags-.-CONFIG_HMBUILD_LLVM_RETURN_GUARD: -fstack-protector-ret-strong
+cflags-.-CONFIG_HMBUILD_LLVM_RETURN_GUARD_ALL: -fstack-protector-ret-all
+
+cflags-klog.c: -Wno-type-limits
+
+installinc: include/lib
+installinc: include/vfreestanding.h
+
+install-klibs-y: LIBDIR

@@ -1,0 +1,256 @@
+{
+    "root": {
+        "data": {
+            "id": "cig5eca0tg00",
+            "created": 1646911486710,
+            "text": "hlibc"
+        },
+        "children": [
+            {
+                "data": {
+                    "id": "cig5lxaap7s0",
+                    "created": 1646912080988,
+                    "text": "软件定时器"
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "cig5lxaaq8g0",
+                            "created": 1646912080988,
+                            "text": "HpeSwTimerCreate",
+                            "layout_mind_offset": {
+                                "x": -12,
+                                "y": -154
+                            },
+                            "usecase": 1
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "cig5lxaaj8g0",
+                                    "created": 1646912080988,
+                                    "text": "参数错误",
+                                    "usecase": 2
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "cig5lxaarjs0",
+                                            "created": 1646912080988,
+                                            "text": "定时器创建",
+                                            "usecase": 4,
+                                            "author": "j00576234",
+                                            "showId": "00010"
+                                        },
+                                        "children": []
+                                    }
+                                ]
+                            },
+                            {
+                                "data": {
+                                    "id": "cig5lxaasxc0",
+                                    "created": 1646912080988,
+                                    "text": "回调函数中包含定时器创建/启动/停止/销毁",
+                                    "usecase": 2
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "cig5lxabd680",
+                                            "created": 1646912080989,
+                                            "text": "回调函数包含定时器操作",
+                                            "usecase": 4,
+                                            "author": "j00576234",
+                                            "showId": "00012"
+                                        },
+                                        "children": []
+                                    }
+                                ]
+                            },
+                            {
+                                "data": {
+                                    "id": "cijliy68aa80",
+                                    "created": 1647261665457,
+                                    "text": "DE确认：定时器name不做key值，不做判重",
+                                    "priority": null
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "cijlkss2k3s0",
+                                            "created": 1647261810443,
+                                            "text": "后续提供cli命令行查看：当前定时器数量，是否存在重复等信息"
+                                        },
+                                        "children": []
+                                    }
+                                ]
+                            },
+                            {
+                                "data": {
+                                    "id": "cijljyiadqg0",
+                                    "created": 1647261744548,
+                                    "text": "DE确认：控制面允许用户态定时器前一个回调过长影响后续定时器精度，业务面通过其他高精度定时器避免此问题",
+                                    "priority": null
+                                },
+                                "children": []
+                            }
+                        ]
+                    },
+                    {
+                        "data": {
+                            "id": "cig5lxab8i00",
+                            "created": 1646912080989,
+                            "text": "HpeSwTimerDelete",
+                            "layout_mind_offset": {
+                                "x": -30,
+                                "y": -153
+                            },
+                            "usecase": 1
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "cig5lxabkdc0",
+                                    "created": 1646912080989,
+                                    "text": "参数错误",
+                                    "usecase": 2
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "cig5lxabcg00",
+                                            "created": 1646912080989,
+                                            "text": "定时器删除",
+                                            "usecase": 4,
+                                            "author": "j00576234",
+                                            "showId": "00013"
+                                        },
+                                        "children": []
+                                    }
+                                ]
+                            },
+                            {
+                                "data": {
+                                    "id": "cig5lxabgco0",
+                                    "created": 1646912080989,
+                                    "text": "重复销毁",
+                                    "usecase": 4,
+                                    "author": "j00576234",
+                                    "showId": "00014"
+                                },
+                                "children": []
+                            }
+                        ]
+                    },
+                    {
+                        "data": {
+                            "id": "cig5lxabgcg0",
+                            "created": 1646912080989,
+                            "text": "HpeSwTimerStart",
+                            "layout_mind_offset": {
+                                "x": 981,
+                                "y": 123
+                            },
+                            "usecase": 1
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "cig5lxab8sw0",
+                                    "created": 1646912080989,
+                                    "text": "参数错误",
+                                    "usecase": 2
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "cig5lxabem80",
+                                            "created": 1646912080989,
+                                            "text": "定时器启动",
+                                            "usecase": 4,
+                                            "author": "j00576234",
+                                            "showId": "00015"
+                                        },
+                                        "children": []
+                                    }
+                                ]
+                            },
+                            {
+                                "data": {
+                                    "id": "cig5lxabih40",
+                                    "created": 1646912080989,
+                                    "text": "多次启动",
+                                    "usecase": 4,
+                                    "author": "j00576234",
+                                    "showId": "00016"
+                                },
+                                "children": []
+                            }
+                        ]
+                    },
+                    {
+                        "data": {
+                            "id": "cig5lxabcds0",
+                            "created": 1646912080989,
+                            "text": "HpeSwTimerStop",
+                            "layout_mind_offset": {
+                                "x": 988,
+                                "y": 114
+                            },
+                            "usecase": 1
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "cig5lxabhhk0",
+                                    "created": 1646912080989,
+                                    "text": "参数错误",
+                                    "usecase": 2
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "cig5lxabnqo0",
+                                            "created": 1646912080990,
+                                            "text": "定时器暂停",
+                                            "usecase": 4,
+                                            "author": "j00576234",
+                                            "showId": "00017"
+                                        },
+                                        "children": []
+                                    }
+                                ]
+                            },
+                            {
+                                "data": {
+                                    "id": "cig5lxabvk80",
+                                    "created": 1646912080990,
+                                    "text": "多次暂停",
+                                    "usecase": 4,
+                                    "author": "j00576234",
+                                    "showId": "00018"
+                                },
+                                "children": []
+                            }
+                        ]
+                    },
+                    {
+                        "data": {
+                            "id": "cihqym5q0kg0",
+                            "created": 1647073878767,
+                            "text": "并发场景",
+                            "usecase": 2
+                        },
+                        "children": []
+                    }
+                ]
+            }
+        ]
+    },
+    "templatePath": null,
+    "singleTemplatePath": null,
+    "testcaseFilePath": "",
+    "template": "default",
+    "theme": "fresh-blue",
+    "version": "1.4.43"
+}

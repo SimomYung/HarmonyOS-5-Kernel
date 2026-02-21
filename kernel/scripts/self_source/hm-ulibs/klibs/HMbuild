@@ -1,0 +1,43 @@
+# Copyright (C) Huawei Technologies Co., Ltd. 2021. All rights reserved.
+# Description: HMbuild for klibs
+# Author: Huawei OS Kernel Lab
+# Create: Mon Jul 12 14:54:52 2021
+
+lib-static-y: klibs
+
+findpkg: LibVSync
+
+include-.-CONFIG_AARCH64: ../arch/aarch64/include
+include-.-CONFIG_AARCH64: ../arch/aarch64/include/mapi
+include-.-CONFIG_AARCH64: ../arch/aarch64/include/mapi/uapi
+include-.-CONFIG_ARM: ../arch/arm/include
+include-.-CONFIG_ARM: ../arch/arm/include/mapi
+include-.-CONFIG_ARM: ../arch/arm/include/mapi/uapi
+include-.-y: ../kernel/include
+include-.-y: ../kernel/include/mapi
+include-.-y: ../kernel/include/mapi/uapi
+include-.-y: include
+
+inclib: LibVSync::LibVSync_include
+inclib-.-isystem: CompilerLibs::CompilerLibs_include
+
+cflags-.-y: -nostdinc
+cflags-.-y: -D__KERNEL__
+cflags-.-y: -Wno-unused-parameter
+cflags-.-y: -fvisibility=hidden
+cflags-.-y: -fno-strict-aliasing
+cflags-.-y: -fno-common
+cflags-.-y: -fno-asynchronous-unwind-tables
+cflags-.-y: -fno-omit-frame-pointer
+cflags-.-CONFIG_AARCH64: -mgeneral-regs-only
+cflags-.-CONFIG_DLIST_DEBUG: -DDLIST_DEBUG_ENABLE
+cflags-.-CONFIG_PIE: -fPIE
+cflags-.-CONFIG_CC_USE_CLANG: -Wno-unused-command-line-argument
+cflags-.-CONFIG_CC_USE_CLANG: -Wno-asm-operand-widths
+
+cflags-klog.c: -Wno-type-limits
+
+installinc: include/lib
+installinc: include/vfreestanding.h
+
+install-klibs-y: LIBDIR

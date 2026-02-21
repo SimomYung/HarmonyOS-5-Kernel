@@ -1,0 +1,8 @@
+# SPDX-License-Identifier: GPL-2.0
+
+config NVME_CRYPTO
+	tristate "nvme crypto support"
+	depends on HISI_FALLBACK_ENCRYPTION
+	default y
+	help
+	  config nvme crypto driver

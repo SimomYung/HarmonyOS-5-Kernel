@@ -1,0 +1,108 @@
+# Copyright (c) Huawei Technologies Co., Ltd. 2022-2022. All rights reserved.
+# Description: HMbuild for hm ulibs
+# Author: Huawei OS Kernel Lab
+# Create: Mon May 23 16:07:49 2022
+
+findpkg: CompilerLibs
+findpkg: HMMetaLibs
+findpkg: HMMetaLibs_sysk
+findpkg: HISILibs
+
+subdir-y: include
+
+subdir-CONFIG_AARCH64: arch/aarch64/ulibs
+subdir-CONFIG_ARM: arch/arm/ulibs
+
+installinc: ../sysmgr/include/aapi/hmsysmgr
+installinc: ../uapps/tppmgr/trace/events/tppmgr_trace_list.h
+
+lib-dynamic-y: hmulibs
+install-hmulibs-y: LIBDIR
+
+lib-static-y: hmulibs_static
+output-hmulibs_static: hmulibs
+install-hmulibs_static-y: LIBDIR
+
+cflags-.-CONFIG_NO_COMPAT: -D__sysif_server_hmtracemgr_no_compat32_handlers__
+cflags-.-CONFIG_NO_COMPAT: -D__sysif_server_devhost_no_compat32_handlers__
+
+cflags-.-CONFIG_NO_ILP32: -D__sysif_server_devhost_no_ilp32_handlers__
+cflags-.-CONFIG_NO_ILP32: -D__sysif_server_hmtracemgr_no_ilp32_handlers__
+
+cflags-.-CONFIG_SHADOW_STACK: -D__hmfeature_shadowstack__
+cflags-.-CONFIG_AARCH64: -funwind-tables
+cflags-.-CONFIG_AARCH64: -mgeneral-regs-only
+cflags-.-CONFIG_DLIST_DEBUG: -DDLIST_DEBUG_ENABLE
+
+cflags-.-y: -D_XOPEN_SOURCE=700
+cflags-.-y: -ffreestanding
+cflags-.-y: -fno-strict-aliasing
+cflags-.-y: -fno-common
+cflags-.-y: -Wold-style-definition
+cflags-.-y: -Dhmulibs_EXPORTS
+
+linklib-hmulibs-y: -nostdlib
+linklib-hmulibs-y: -Wl,--hash-style=both
+linklib-hmulibs-y: CompilerLibs::CompilerLibs_static
+
+linklib-hmulibs-CONFIG_NOSYSK: -Wl,--whole-archive
+linklib-hmulibs-CONFIG_NOSYSK: HMMetaLibs::HMMetaLibs_fpic_static
+linklib-hmulibs-CONFIG_NOSYSK: -Wl,--no-whole-archive
+
+linklib-hmulibs-CONFIG_SYSK: -Wl,--whole-archive
+linklib-hmulibs-CONFIG_SYSK: HMMetaLibs::HMMetaLibs_fpic_sysk_static
+linklib-hmulibs-CONFIG_SYSK: -Wl,--no-whole-archive
+linklib-hmulibs-CONFIG_HKIP: -Taarch64-euler-elf-gcc.shared.roafterinit_whitout_hkip.lds
+
+subdir-y: libalgo
+subdir-y: libbunch
+subdir-y: libcrt
+subdir-y: libpanic
+subdir-y: libhmlog
+subdir-y: libhmsync
+subdir-y: libhmirq
+subdir-y: libmem
+subdir-y: libperf
+subdir-y: libprocfs
+subdir-y: libsysif
+subdir-y: libhmucap
+subdir-y: libvsyscall
+subdir-y: klibs
+subdir-y: libhmsrv_sys
+subdir-y: libhmshmalloc
+subdir-y: libhmpm
+subdir-y: librb
+subdir-y: libself_rel
+subdir-y: libhmactv
+subdir-y: libhmtrace
+subdir-y: libhmtrace_ng
+subdir-y: libhmelf
+subdir-y: libkbox
+subdir-y: libhmuev
+subdir-y: libkev
+subdir-y: libhguard
+subdir-y: libhmsrv_crypt
+subdir-y: libhmebr
+subdir-y: libpreempt
+subdir-y: libvpipe
+subdir-y: libhmiov
+subdir-y: libhmsrv_key
+subdir-y: libfdtable
+subdir-y: libhmfaultevt
+subdir-y: hongmeng
+subdir-y: libsysevent
+subdir-y: libkcov
+subdir-y: libtrack_info
+
+subdir-y: exts/hisi
+
+subdir-CONFIG_HM_NOTIFIER: libhmnotifier
+subdir-CONFIG_FS_SAFETY_READ: libhmcert
+subdir-CONFIG_HYPERVISOR: libvhost_user
+subdir-CONFIG_HMVSYSCALL_TRACE: libstrace
+subdir-CONFIG_HMLDKUNAME: libhmuname
+subdir-CONFIG_UCFI: libucfi
+subdir-CONFIG_HMPSF: libhmpsf
+subdir-CONFIG_HMPROBE: libhmprobe
+include-.-CONFIG_AARCH64: ../../ulibs/arch/aarch64/ulibs/libhmsync
+include-.-CONFIG_ARM: ../../ulibs/arch/arm/ulibs/libhmsync

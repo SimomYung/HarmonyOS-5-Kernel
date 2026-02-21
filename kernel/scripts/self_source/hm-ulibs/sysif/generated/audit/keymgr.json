@@ -1,0 +1,1 @@
+{"server_name": "keymgr", "methods": ["keymgr_keymgr_fscrypt_ctrl", "keymgr_keymgr_fsverity_ctrl", "keymgr_keymgr_procfs_read", "keymgr_keymgr_procfs_write", "keymgr_keymgr_add_key", "keymgr_keymgr_request_key", "keymgr_keymgr_keyctl"]}

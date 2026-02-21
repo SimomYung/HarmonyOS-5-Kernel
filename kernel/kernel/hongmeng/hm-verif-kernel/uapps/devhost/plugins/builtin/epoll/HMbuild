@@ -1,0 +1,10 @@
+# Copyright (c) Huawei Technologies Co., Ltd. 2021. All rights reserved.
+# Description: HMbuild for devhost
+# Author: Huawei OS Kernel Lab
+# Create: Fri Nov 19 11:26:07 2021
+
+cflags-y: -D_DH_PLUGIN_NAME=epoll
+
+src-y: devhost_epoll.c
+src-y: devhost_poll.c
+src-y: epoll_if.c

@@ -1,0 +1,27 @@
+From 1185a1304a88319b58359105f2c1038ae4d7edce Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Marco=20Trevisan=20=28Trevi=C3=B1o=29?= <mail@3v1n0.net>
+Date: Tue, 6 Sep 2022 16:46:13 +0200
+Subject: [PATCH] gregex: Mark g_match_info_get_regex as transfer none
+
+Since it had no explicit annotation, g-i was defaulting to transfer-full
+while in this case the GRegex is owned by the GMatchInfo.
+---
+ glib/gregex.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/glib/gregex.c b/glib/gregex.c
+index 2eb9b858ea..219d9cee34 100644
+--- a/glib/gregex.c
++++ b/glib/gregex.c
+@@ -912,7 +912,7 @@ enable_jit_with_match_options (GRegex   *regex,
+  * and must not be freed. Use g_regex_ref() if you need to keep it
+  * after you free @match_info object.
+  *
+- * Returns: #GRegex object used in @match_info
++ * Returns: (transfer none): #GRegex object used in @match_info
+  *
+  * Since: 2.14
+  */
+-- 
+GitLab
+

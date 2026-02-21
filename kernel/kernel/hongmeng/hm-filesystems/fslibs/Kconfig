@@ -1,0 +1,53 @@
+# Copyright (c) Huawei Technologies Co., Ltd. 2021-2021. All rights reserved.
+# Description: Kconfig for fslibs
+# Author: Huawei OS Kernel Lab
+# Create: Mon Oct 11 20:36:42 2021
+
+# HMCMAKENG_KCONFIG is injected by HongmengCMakeNG/Kconfig.cmake
+# which defines multiple config options which is useful for HMbuild.
+source "$(HMCMAKENG_KCONFIG)"
+
+config FSLIB_DEBUG
+  bool "Build in Debug mode"
+  default n
+
+config FSLIB_TRANSFER_FD
+  bool "Enable transfer fd support"
+  default n
+
+config FSLIB_HM_BINDER
+  bool "Enable binder support"
+  depends on FSLIB_TRANSFER_FD
+  default "n"
+
+config FSLIB_HM_BINDER_32BIT
+  bool "Enable binder 32bit support"
+  default "n"
+
+config FSLIB_DEFAULT_OPEN_FILES
+  int "Default number of open files"
+  default 512
+
+config FSLIB_MAX_OPEN_FILES
+  int "Max number of open files"
+  default 1048576
+
+config FSLIB_SERVER_INFO_LIST_SIZE
+  int "Initial server info list size"
+  default 8
+
+config FSLIB_GFD_TABLE
+  bool "manage fd table in fsmgr"
+  default y
+
+config FSLIB_SECURITY_XPM
+  bool "Enable xpm"
+  default n
+
+config FSLIB_AUDIT
+  bool "enable audit feature"
+  default n
+
+config FSLIB_ENCAPS
+  bool "Enable encaps"
+  default n

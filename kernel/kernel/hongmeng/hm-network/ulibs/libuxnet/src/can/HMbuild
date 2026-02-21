@@ -1,0 +1,17 @@
+# Copyright (C) Huawei Technologies Co., Ltd. 2021. All rights reserved.
+# Description: HMbuild
+# Author: Huawei OS Kernel Lab
+# Create: Thu Nov 04 11:36:17 2021
+
+src-y: ux_can_core.c
+src-y: ux_can_proto.c
+src-y: ux_can_netdev.c
+src-y: ux_can_filter.c
+src-y: ux_can_raw.c
+src-y: ux_can_vcan.c
+
+cflags-ux_can_core.c-y: -Wno-unused-parameter
+cflags-ux_can_netdev.c-y: -Wno-unused-parameter
+cflags-ux_can_filter.c-y: -Wno-unused-parameter
+cflags-ux_can_raw.c-y: -Wno-unused-parameter
+cflags-ux_can_vcan.c-y: -Wno-unused-parameter

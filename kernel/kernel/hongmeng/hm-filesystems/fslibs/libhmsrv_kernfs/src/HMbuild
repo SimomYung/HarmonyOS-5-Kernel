@@ -1,0 +1,11 @@
+# Copyright (c) Huawei Technologies Co., Ltd. 2021-2021. All rights reserved.
+# Description: HMbuild
+# Author: Huawei OS Kernel Lab
+# Create: Wed Sep 01 17:03:03 2021
+
+src-y: procfs.c
+src-y: sysfs.c
+src-y: kernfslib_common.c
+
+include-y: ../include
+include-y: ../../../fslibs/include

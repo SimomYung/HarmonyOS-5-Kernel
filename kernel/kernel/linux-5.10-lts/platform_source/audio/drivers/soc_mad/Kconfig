@@ -1,0 +1,4 @@
+config SOC_MAD
+	tristate "audio mad support"
+
+source "platform_source/audio/drivers/soc_mad/mad_extension/Kconfig"

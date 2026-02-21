@@ -1,0 +1,43 @@
+From ffa6de1e3da4216a2ed6ec2890e16b22dc2ca40f Mon Sep 17 00:00:00 2001
+From: "lihaoxiang (F)" <lihaoxiang9@huawei.com>
+Date: Tue, 29 Nov 2022 15:02:39 +0800
+Subject: [PATCH] mmp: fix wrong comparison in ext2fs_mmp_stop
+
+In our knowledge, ext2fs_mmp_stop use to process the rest of work
+when mmp will finish.  Critically, it must check if the mmp block is
+not changed. But there exist an error in comparing the mmp and mmp_cmp.
+
+Look to ext2fs_mmp_read, the assignment of mmp_cmp retrieve from the
+superblock of disk and it copy to mmp_buf if mmp_buf is not none
+and not equal to mmp_cmp in the meanwhile. However, ext2fs_mmp_stop
+pass the no NULL pointer fs->mmp_buf which has possed the mmp info to
+ext2fs_mmp_read. Consequently, ext2fs_mmp_read override fs->mmp_buf
+by fs->mmp_cmp so that loss the meaning of comparing themselves
+after that and worse yet, couldn't judge whether the struct of mmp
+has changed.
+
+In fact, we only need to modify the parameter to NULL pointer for
+solving this problem.
+
+Signed-off-by: lihaoxiang <lihaoxiang9@huawei.com>
+Signed-off-by: Theodore Ts'o <tytso@mit.edu>
+---
+ lib/ext2fs/mmp.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/lib/ext2fs/mmp.c b/lib/ext2fs/mmp.c
+index 7970aac..1428970 100644
+--- a/lib/ext2fs/mmp.c
++++ b/lib/ext2fs/mmp.c
+@@ -407,7 +407,7 @@ errcode_t ext2fs_mmp_stop(ext2_filsys fs)
+ 	    (fs->mmp_buf == NULL) || (fs->mmp_cmp == NULL))
+ 		goto mmp_error;
+ 
+-	retval = ext2fs_mmp_read(fs, fs->super->s_mmp_block, fs->mmp_buf);
++	retval = ext2fs_mmp_read(fs, fs->super->s_mmp_block, NULL);
+ 	if (retval)
+ 		goto mmp_error;
+ 
+-- 
+1.8.3.1
+

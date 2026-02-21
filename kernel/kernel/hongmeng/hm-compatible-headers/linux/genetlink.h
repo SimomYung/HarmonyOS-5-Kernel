@@ -1,0 +1,62 @@
+/*
+ * Copyright (c) Huawei Technologies Co., Ltd. 2022-2022. All rights reserved.
+ * Description: Add linux/genetlink.h to compat linux interface
+ * Author: Huawei OS Kernel Lab
+ * Create: Sat Jun 25 13:57:24 2022
+ */
+
+#ifndef LINUX_GENETLINK_H
+#define LINUX_GENETLINK_H
+
+#include <linux/types.h>
+
+struct genlmsghdr {
+	__u8	cmd;
+	__u8	version;
+	__u16	reserved;
+};
+
+enum {
+	CTRL_CMD_UNSPEC,
+	CTRL_CMD_NEWFAMILY,
+	CTRL_CMD_DELFAMILY,
+	CTRL_CMD_GETFAMILY,
+	CTRL_CMD_NEWOPS,
+	CTRL_CMD_DELOPS,
+	CTRL_CMD_GETOPS,
+	CTRL_CMD_NEWMCAST_GRP,
+	CTRL_CMD_DELMCAST_GRP,
+	CTRL_CMD_GETMCAST_GRP, /* unused */
+	CTRL_CMD_GETPOLICY,
+	__CTRL_CMD_MAX,
+};
+
+#define CTRL_CMD_MAX (__CTRL_CMD_MAX - 1)
+
+enum {
+	CTRL_ATTR_UNSPEC,
+	CTRL_ATTR_FAMILY_ID,
+	CTRL_ATTR_FAMILY_NAME,
+	CTRL_ATTR_VERSION,
+	CTRL_ATTR_HDRSIZE,
+	CTRL_ATTR_MAXATTR,
+	CTRL_ATTR_OPS,
+	CTRL_ATTR_MCAST_GROUPS,
+	CTRL_ATTR_POLICY,
+	CTRL_ATTR_OP_POLICY,
+	CTRL_ATTR_OP,
+	__CTRL_ATTR_MAX,
+};
+
+#define CTRL_ATTR_MAX (__CTRL_ATTR_MAX - 1)
+
+enum {
+	CTRL_ATTR_MCAST_GRP_UNSPEC,
+	CTRL_ATTR_MCAST_GRP_NAME,
+	CTRL_ATTR_MCAST_GRP_ID,
+	__CTRL_ATTR_MCAST_GRP_MAX,
+};
+
+#define CTRL_ATTR_MCAST_GRP_MAX (__CTRL_ATTR_MCAST_GRP_MAX - 1)
+
+#endif

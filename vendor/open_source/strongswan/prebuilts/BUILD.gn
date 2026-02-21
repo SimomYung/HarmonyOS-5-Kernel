@@ -1,0 +1,167 @@
+# Copyright (c) 2024 Huawei Device Co., Ltd.
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+import("//build/ohos.gni")
+
+etc_gen_dir = "${target_gen_dir}/../strongswan/prebuilts"
+
+action("etc_other_install_action") {
+  script = "//vendor/open_source/strongswan/empty.py"
+  outputs = [
+    "${etc_gen_dir}/etc/ipsec.conf",
+    "${etc_gen_dir}/etc/ipsec.secrets.conf",
+    "${etc_gen_dir}/etc/strongswan.conf",
+  ]
+  deps = [ "../:strongswan_install_action" ]
+}
+
+action("etc_strongswan_install_action") {
+  script = "//vendor/open_source/strongswan/empty.py"
+  outputs = [
+    "${etc_gen_dir}/etc/strongswan.d/charon-logging.conf",
+    "${etc_gen_dir}/etc/strongswan.d/charon.conf",
+    "${etc_gen_dir}/etc/strongswan.d/pki.conf",
+    "${etc_gen_dir}/etc/strongswan.d/starter.conf",
+    "${etc_gen_dir}/etc/strongswan.d/swanctl.conf",
+  ]
+  deps = [ "../:strongswan_install_action" ]
+}
+
+action("etc_strongswan_charon_install_action") {
+  script = "//vendor/open_source/strongswan/empty.py"
+  outputs = [
+    "${etc_gen_dir}/etc/strongswan.d/charon/aes.conf",
+    "${etc_gen_dir}/etc/strongswan.d/charon/af-alg.conf",
+    "${etc_gen_dir}/etc/strongswan.d/charon/attr.conf",
+    "${etc_gen_dir}/etc/strongswan.d/charon/ccm.conf",
+    "${etc_gen_dir}/etc/strongswan.d/charon/cmac.conf",
+    "${etc_gen_dir}/etc/strongswan.d/charon/constraints.conf",
+    "${etc_gen_dir}/etc/strongswan.d/charon/counters.conf",
+    "${etc_gen_dir}/etc/strongswan.d/charon/ctr.conf",
+    "${etc_gen_dir}/etc/strongswan.d/charon/curve25519.conf",
+    "${etc_gen_dir}/etc/strongswan.d/charon/des.conf",
+    "${etc_gen_dir}/etc/strongswan.d/charon/dhcp.conf",
+    "${etc_gen_dir}/etc/strongswan.d/charon/dnskey.conf",
+    "${etc_gen_dir}/etc/strongswan.d/charon/drbg.conf",
+    "${etc_gen_dir}/etc/strongswan.d/charon/eap-identity.conf",
+    "${etc_gen_dir}/etc/strongswan.d/charon/eap-mschapv2.conf",
+    "${etc_gen_dir}/etc/strongswan.d/charon/farp.conf",
+    "${etc_gen_dir}/etc/strongswan.d/charon/fips-prf.conf",
+    "${etc_gen_dir}/etc/strongswan.d/charon/gcm.conf",
+    "${etc_gen_dir}/etc/strongswan.d/charon/hmac.conf",
+    "${etc_gen_dir}/etc/strongswan.d/charon/kdf.conf",
+    "${etc_gen_dir}/etc/strongswan.d/charon/kernel-libipsec.conf",
+    "${etc_gen_dir}/etc/strongswan.d/charon/kernel-netlink.conf",
+    "${etc_gen_dir}/etc/strongswan.d/charon/kernel-pfkey.conf",
+    "${etc_gen_dir}/etc/strongswan.d/charon/md5.conf",
+    "${etc_gen_dir}/etc/strongswan.d/charon/nonce.conf",
+    "${etc_gen_dir}/etc/strongswan.d/charon/openssl.conf",
+    "${etc_gen_dir}/etc/strongswan.d/charon/pem.conf",
+    "${etc_gen_dir}/etc/strongswan.d/charon/pgp.conf",
+    "${etc_gen_dir}/etc/strongswan.d/charon/pkcs1.conf",
+    "${etc_gen_dir}/etc/strongswan.d/charon/pkcs11.conf",
+    "${etc_gen_dir}/etc/strongswan.d/charon/pkcs12.conf",
+    "${etc_gen_dir}/etc/strongswan.d/charon/pkcs7.conf",
+    "${etc_gen_dir}/etc/strongswan.d/charon/pkcs8.conf",
+    "${etc_gen_dir}/etc/strongswan.d/charon/pubkey.conf",
+    "${etc_gen_dir}/etc/strongswan.d/charon/random.conf",
+    "${etc_gen_dir}/etc/strongswan.d/charon/rc2.conf",
+    "${etc_gen_dir}/etc/strongswan.d/charon/resolve.conf",
+    "${etc_gen_dir}/etc/strongswan.d/charon/revocation.conf",
+    "${etc_gen_dir}/etc/strongswan.d/charon/sha1.conf",
+    "${etc_gen_dir}/etc/strongswan.d/charon/sha2.conf",
+    "${etc_gen_dir}/etc/strongswan.d/charon/socket-default.conf",
+    "${etc_gen_dir}/etc/strongswan.d/charon/sshkey.conf",
+    "${etc_gen_dir}/etc/strongswan.d/charon/stroke.conf",
+    "${etc_gen_dir}/etc/strongswan.d/charon/updown.conf",
+    "${etc_gen_dir}/etc/strongswan.d/charon/vici.conf",
+    "${etc_gen_dir}/etc/strongswan.d/charon/x509.conf",
+    "${etc_gen_dir}/etc/strongswan.d/charon/xauth-generic.conf",
+    "${etc_gen_dir}/etc/strongswan.d/charon/xcbc.conf",
+  ]
+  deps = [ "../:strongswan_install_action" ]
+}
+
+action("etc_swanctl_install_action") {
+  script = "//vendor/open_source/strongswan/empty.py"
+  outputs = [ "${etc_gen_dir}/etc/swanctl/swanctl.conf" ]
+  deps = [ "../:strongswan_install_action" ]
+}
+
+template("prebuilt_strongswan_etc") {
+  ohos_prebuilt_etc("${target_name}") {
+    forward_variables_from(invoker,
+                           "*",
+                           [
+                             "source",
+                             "relative_install_dir",
+                             "deps",
+                           ])
+    source = invoker.source
+    deps = invoker.deps
+    install_enable = true
+    relative_install_dir = invoker.relative_install_dir
+    subsystem_name = "open_source"
+    part_name = "strongswan"
+  }
+}
+
+dependency = []
+
+# /system/etc/strongswan
+foreach(src, get_target_outputs(":etc_other_install_action")) {
+  src_name = "etc_other_" + get_path_info("$src", "file")
+  dependency += [ ":${src_name}" ]
+  prebuilt_strongswan_etc("${src_name}") {
+    source = src
+    relative_install_dir = "strongswan"
+    deps = [ ":etc_other_install_action" ]
+  }
+}
+
+# /system/etc/strongswan/strongswan.d
+foreach(src, get_target_outputs(":etc_strongswan_install_action")) {
+  src_name = "etc_strongswan_" + get_path_info("$src", "file")
+  dependency += [ ":${src_name}" ]
+  prebuilt_strongswan_etc("${src_name}") {
+    source = src
+    relative_install_dir = "strongswan/strongswan.d"
+    deps = [ ":etc_strongswan_install_action" ]
+  }
+}
+
+# /system/etc/strongswan/strongswan.d/charon
+foreach(src, get_target_outputs(":etc_strongswan_charon_install_action")) {
+  src_name = "etc_strongswan_charon_" + get_path_info("$src", "file")
+  dependency += [ ":${src_name}" ]
+  prebuilt_strongswan_etc("${src_name}") {
+    source = src
+    relative_install_dir = "strongswan/strongswan.d/charon"
+    deps = [ ":etc_strongswan_charon_install_action" ]
+  }
+}
+
+# /system/etc/strongswan/swanctl
+foreach(src, get_target_outputs(":etc_swanctl_install_action")) {
+  src_name = "etc_swanctl_" + get_path_info("$src", "file")
+  dependency += [ ":${src_name}" ]
+  prebuilt_strongswan_etc("${src_name}") {
+    source = src
+    relative_install_dir = "strongswan/swanctl"
+    deps = [ ":etc_swanctl_install_action" ]
+  }
+}
+
+group("prebuilts_etc") {
+  deps = dependency
+}

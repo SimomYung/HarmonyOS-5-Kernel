@@ -1,0 +1,6 @@
+# Copyright (C) Huawei Technologies Co., Ltd. 2021. All rights reserved.
+# Description: HMbuild
+# Author: Huawei OS Kernel Lab
+# Create: Thu Nov 25 10:00:21 2021
+
+installinc: ./include/libsysif_net

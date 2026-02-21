@@ -1,0 +1,13 @@
+# Copyright (c) Huawei Technologies Co., Ltd. 2022-2022. All rights reserved.
+# Description: HMbuild
+# Author: Huawei OS Kernel Lab
+# Create: Thu May 26 15:25:30 2022
+
+src-y: rb_htable.c
+src-y: easy_rbhtable.c
+src-y: id_generator.c
+src-y: radix_tree.c
+src-y: idr.c
+src-y: interval_tree.c
+src-y: mcache_id_generator.c
+src-y: radix_tree_node_alloc.c

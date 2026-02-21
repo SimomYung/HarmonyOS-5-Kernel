@@ -1,0 +1,1 @@
+obj-$(CONFIG_HUAWEI_NAT_TRAV) += nat_traversal.o

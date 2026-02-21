@@ -1,0 +1,27 @@
+# SPDX-License-Identifier: GPL-2.0
+#
+# Copyright (c) Huawei Technologies Co., Ltd. 2022-2022. All rights reserved.
+# Description: Huawei kernel sg configuration
+# Cryptographic API Configuration
+# Create: 2022-07-23
+#
+
+menu "Huawei KERNEL SG"
+
+config HW_KERNEL_SG
+	tristate "enables Huawei KERNEL SG"
+	default n
+	help
+	  This option enables support for Huawei kernel sg in kernel space.
+	  Huawei kernel sg is a threat perception module at kernel.
+	  each source of threat can report the risk info to native throught the kernel sg
+
+config HW_KERNEL_SG_ENG_DEBUG
+	bool "Huawei KERNEL SG for engineering mode debug"
+	depends on HW_KERNEL_SG
+	default n
+	help
+	  This option should only be enabled for engineering mode & debug log.
+	  In engineering mode, more debug info can be print.
+
+endmenu

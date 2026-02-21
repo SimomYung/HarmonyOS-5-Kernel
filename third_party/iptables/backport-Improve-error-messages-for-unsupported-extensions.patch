@@ -1,0 +1,90 @@
+From 17534cb18ed0a5052dc45c117401251359dba6aa Mon Sep 17 00:00:00 2001
+From: Phil Sutter <phil@nwl.cc>
+Date: Fri, 11 Feb 2022 17:47:22 +0100
+Subject: Improve error messages for unsupported extensions
+
+If a given extension was not supported by the kernel, iptables would
+print a rather confusing error message if extension parameters were
+given:
+
+| # rm /lib/modules/$(uname -r)/kernel/net/netfilter/xt_LOG.ko
+| # iptables -A FORWARD -j LOG --log-prefix foo
+| iptables v1.8.7 (legacy): unknown option "--log-prefix"
+
+Avoid this by pretending extension revision 0 is always supported. It is
+the same hack as used to successfully print extension help texts as
+unprivileged user, extended to all error codes to serve privileged ones
+as well.
+
+In addition, print a warning if kernel rejected revision 0 and it's not
+a permissions problem. This helps users find out which extension in a
+rule the kernel didn't like.
+
+Finally, the above commands result in these messages:
+
+| Warning: Extension LOG revision 0 not supported, missing kernel
+module?
+| iptables: No chain/target/match by that name.
+
+Or, for iptables-nft:
+
+| Warning: Extension LOG revision 0 not supported, missing kernel
+module?
+| iptables v1.8.7 (nf_tables):  RULE_APPEND failed (No such file or
+directory): rule in chain FORWARD
+
+Conflict: NA
+Reference:
+https://git.netfilter.org/iptables/commit/?id=17534cb18ed0a5052dc45c117401251359dba6aa
+Signed-off-by: Phil Sutter <phil@nwl.cc>
+---
+ iptables/nft.c       | 13 +++++++++----
+ libxtables/xtables.c |  7 ++++++-
+ 2 files changed, 15 insertions(+), 5 deletions(-)
+
+diff --git a/iptables/nft.c b/iptables/nft.c
+index c9a4940..18bf21c 100644
+--- a/iptables/nft.c
++++ b/iptables/nft.c
+@@ -3245,11 +3245,16 @@ int nft_compatible_revision(const char *name, uint8_t rev, int opt)
+ err:
+ 	mnl_socket_close(nl);
+ 
+-    /* pretend revision 0 is valid if not permitted to check -
+-    * this is required for printing extension help texts as user */
+-    if (ret < 0 && errno == EPERM && rev == 0)
++   /* pretend revision 0 is valid -
++    * this is required for printing extension help texts as user, also
++    * helps error messaging on unavailable kernel extension */
++    if (ret < 0 && rev == 0) {
++        if (errno != EPERM)
++            fprintf(stderr,
++                "Warning: Extension %s revision 0 not supported, missing kernel module?\n",
++                name);
+         return 1;
+-
++    }
+ 	return ret < 0 ? 0 : 1;
+ }
+ 
+diff --git a/libxtables/xtables.c b/libxtables/xtables.c
+index bc42ba8..1f585e5 100644
+--- a/libxtables/xtables.c
++++ b/libxtables/xtables.c
+@@ -923,7 +923,12 @@ int xtables_compatible_revision(const char *name, uint8_t revision, int opt)
+ 		/* Definitely don't support this? */
+ 		if (errno == ENOENT || errno == EPROTONOSUPPORT) {
+ 			close(sockfd);
+-			return 0;
++               /* Pretend revision 0 support for better error messaging */
++               if (revision == 0)
++                   fprintf(stderr,
++                       "Warning: Extension %s revision 0 not supported, missing kernel module?\n",
++                       name);
++               return (revision == 0);
+ 		} else if (errno == ENOPROTOOPT) {
+ 			close(sockfd);
+ 			/* Assume only revision 0 support (old kernel) */
+-- 
+2.23.0
+

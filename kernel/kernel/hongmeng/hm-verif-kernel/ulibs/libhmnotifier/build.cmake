@@ -1,0 +1,5 @@
+if (CONFIG_HM_NOTIFIER)
+add_hm_library(hm_notifier.c)
+add_hm_library(hm_cpuhp_notifier.c)
+add_hm_library(hm_event_handler.c)
+endif()

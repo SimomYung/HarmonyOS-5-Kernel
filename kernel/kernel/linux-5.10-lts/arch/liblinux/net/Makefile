@@ -1,0 +1,11 @@
+# SPDX-License-Identifier: GPL-2.0-only
+obj-y += skbuff.o
+obj-y += socket.o
+obj-y += af_packet.o
+obj-y += xdp_umem.o
+obj-y += alg_umem.o
+obj-$(CONFIG_LIBLINUX_NET_SOCKMAP) += sockmap.o
+obj-y += tls.o
+obj-y += x_tables.o
+obj-y += net_comm.o
+obj-y += drop_monitor.o

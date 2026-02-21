@@ -1,0 +1,37 @@
+From be31c2648487596f23096278dacd86bf88305a14 Mon Sep 17 00:00:00 2001
+From: "[200~jiangheng" <jiangheng12@huawei.com>
+Date: Wed, 17 Nov 2021 13:41:10 -0800
+Subject: [PATCH] lnstat: fix buffer overflow in header output
+
+Running lnstat will cause core dump from reading past end of array.
+
+Segmentation fault (core dumped)
+
+The maximum  value of th.num_lines is HDR_LINES(10),  h should not be equal to th.num_lines, array th.hdr may be out of bounds.
+
+Signed-off-by jiangheng <jiangheng12@huawei.com>
+Signed-off-by: Stephen Hemminger <stephen@networkplumber.org>
+Conflict: NA
+Reference: https://git.kernel.org/pub/scm/network/iproute2/iproute2.git/commit?id=be31c264848
+---
+ misc/lnstat.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/misc/lnstat.c b/misc/lnstat.c
+index 89cb0e7e..98904d45 100644
+--- a/misc/lnstat.c
++++ b/misc/lnstat.c
+@@ -210,8 +210,9 @@ static struct table_hdr *build_hdr_string(struct lnstat_file *lnstat_files,
+ 		}
+ 		ofs += width+1;
+ 	}
++
+ 	/* fill in spaces */
+-	for (h = 1; h <= th.num_lines; h++) {
++	for (h = 1; h < th.num_lines; h++) {
+ 		for (i = 0; i < ofs; i++) {
+ 			if (th.hdr[h][i] == '\0')
+ 				th.hdr[h][i] = ' ';
+-- 
+2.23.0
+

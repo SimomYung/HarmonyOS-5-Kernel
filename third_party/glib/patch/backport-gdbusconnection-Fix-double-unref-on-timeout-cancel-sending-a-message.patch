@@ -1,0 +1,877 @@
+From 4900ea5215e329fbfe893be7975cf05ff153ef81 Mon Sep 17 00:00:00 2001
+From: Philip Withnall <pwithnall@endlessos.org>
+Date: Wed, 22 Feb 2023 02:40:35 +0000
+Subject: [PATCH 1/9] gdbusconnection: Fix double unref on timeout/cancel
+ sending a message
+ 
+This appears to fix an intermittent failure seen when sending a D-Bus
+message with either of a cancellable or a timeout set.
+ 
+In particular, I can reliably reproduce it with:
+```
+meson test gdbus-test-codegen-min-required-2-64 --repeat 10000
+```
+ 
+It can be caught easily with asan when reproduced. Tracking down the
+location of the refcount mismatch was a little tricky, but was
+simplified by replacing a load of `g_object_ref (message)` calls with
+`g_dbus_message_copy (message, NULL)` to switch `GDBusMessage` handling
+to using copy semantics. This allowed asan to home in on where the
+refcount mismatch was happening.
+ 
+The problem was that `send_message_data_deliver_error()` takes ownership
+of the `GTask` passed to it, but the
+`send_message_with_replace_cancelled_idle_cb()` and
+`send_message_with_reply_timeout_cb()` functions which were calling it,
+were not passing in a strong reference as they should have.
+ 
+Another approach to fixing this would have been to change the transfer
+semantics of `send_message_data_deliver_error()` so it was `(transfer
+none)` on its `GTask`. That would probably have resulted in cleaner
+code, but would have been a lot harder to verify/review the fix, and
+easier to inadvertently introduce new bugs.
+ 
+The fact that the bug was only triggered by the cancellation and timeout
+callbacks explains why it was intermittent: these code paths are
+typically never hit, but the timeout path may sometimes be hit on a very
+slow test run.
+ 
+Signed-off-by: Philip Withnall <pwithnall@endlessos.org>
+ 
+Fixes: #1264
+ 
+Conflict:NA
+Reference:https://gitlab.gnome.org/GNOME/glib/-/commit/4900ea5215e329fbfe893be7975cf05ff153ef81
+ 
+---
+ gio/gdbusconnection.c | 12 +++++++-----
+ 1 file changed, 7 insertions(+), 5 deletions(-)
+ 
+diff --git a/gio/gdbusconnection.c b/gio/gdbusconnection.c
+index d938f71b99..06c8a6141f 100644
+--- a/gio/gdbusconnection.c
++++ b/gio/gdbusconnection.c
+@@ -1822,7 +1822,7 @@ send_message_data_deliver_reply_unlocked (GTask           *task,
+   ;
+ }
+ 
+-/* Called from a user thread, lock is not held */
++/* Called from a user thread, lock is not held; @task is (transfer full) */
+ static void
+ send_message_data_deliver_error (GTask      *task,
+                                  GQuark      domain,
+@@ -1849,13 +1849,14 @@ send_message_data_deliver_error (GTask      *task,
+ 
+ /* ---------------------------------------------------------------------------------------------------- */
+ 
+-/* Called from a user thread, lock is not held; @task is (transfer full) */
++/* Called from a user thread, lock is not held; @task is (transfer none) */
+ static gboolean
+ send_message_with_reply_cancelled_idle_cb (gpointer user_data)
+ {
+   GTask *task = user_data;
+ 
+-  send_message_data_deliver_error (task, G_IO_ERROR, G_IO_ERROR_CANCELLED,
++  g_object_ref (task);
++  send_message_data_deliver_error (g_steal_pointer (&task), G_IO_ERROR, G_IO_ERROR_CANCELLED,
+                                    _("Operation was cancelled"));
+   return FALSE;
+ }
+@@ -1879,13 +1880,14 @@ send_message_with_reply_cancelled_cb (GCancellable *cancellable,
+ 
+ /* ---------------------------------------------------------------------------------------------------- */
+ 
+-/* Called from a user thread, lock is not held; @task is (transfer full) */
++/* Called from a user thread, lock is not held; @task is (transfer none) */
+ static gboolean
+ send_message_with_reply_timeout_cb (gpointer user_data)
+ {
+   GTask *task = user_data;
+ 
+-  send_message_data_deliver_error (task, G_IO_ERROR, G_IO_ERROR_TIMED_OUT,
++  g_object_ref (task);
++  send_message_data_deliver_error (g_steal_pointer (&task), G_IO_ERROR, G_IO_ERROR_TIMED_OUT,
+                                    _("Timeout was reached"));
+   return FALSE;
+ }
+-- 
+GitLab
+ 
+ 
+From 127c899a2e727d10eb88b8fae196add11a6c053f Mon Sep 17 00:00:00 2001
+From: Philip Withnall <pwithnall@endlessos.org>
+Date: Wed, 22 Feb 2023 02:45:15 +0000
+Subject: [PATCH 2/9] gdbusconnection: Fix the type of a free function
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+ 
+This didnâ€™t actually cause any observable bugs, since the structures of
+`PropertyData` and `PropertyGetAllData` were equivalent for the members
+which the free function touches.
+ 
+Definitely should be fixed though.
+ 
+Signed-off-by: Philip Withnall <pwithnall@endlessos.org>
+ 
+Conflict:NA
+Reference:https://gitlab.gnome.org/GNOME/glib/-/commit/127c899a2e727d10eb88b8fae196add11a6c053f
+ 
+---
+ gio/gdbusconnection.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+ 
+diff --git a/gio/gdbusconnection.c b/gio/gdbusconnection.c
+index 06c8a6141f..6a0d67a8ee 100644
+--- a/gio/gdbusconnection.c
++++ b/gio/gdbusconnection.c
+@@ -4584,7 +4584,7 @@ typedef struct
+ } PropertyGetAllData;
+ 
+ static void
+-property_get_all_data_free (PropertyData *data)
++property_get_all_data_free (PropertyGetAllData *data)
+ {
+   g_object_unref (data->connection);
+   g_object_unref (data->message);
+-- 
+GitLab
+ 
+ 
+From 90af20d9505a11d02e81a4f8fa09ee15faba96b8 Mon Sep 17 00:00:00 2001
+From: Philip Withnall <pwithnall@endlessos.org>
+Date: Wed, 22 Feb 2023 02:46:55 +0000
+Subject: [PATCH 3/9] gdbusconnection: Improve docs of message ownership in
+ closures
+ 
+This introduces no functional changes, but makes it a little clearer how
+the ownership of these `GDBusMessage` instances works. The free function
+is changed to `g_clear_object()` to avoid the possibility of somehow
+using the messages after freeing them.
+ 
+Basically just some drive-by docs improvements while trying to debug
+issue #1264.
+ 
+Signed-off-by: Philip Withnall <pwithnall@endlessos.org>
+ 
+Helps: #1264
+ 
+Conflict:NA
+Reference:https://gitlab.gnome.org/GNOME/glib/-/commit/90af20d9505a11d02e81a4f8fa09ee15faba96b8
+ 
+---
+ gio/gdbusconnection.c | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
+ 
+diff --git a/gio/gdbusconnection.c b/gio/gdbusconnection.c
+index 6a0d67a8ee..0cbfc66c13 100644
+--- a/gio/gdbusconnection.c
++++ b/gio/gdbusconnection.c
+@@ -3743,7 +3743,7 @@ g_dbus_connection_signal_unsubscribe (GDBusConnection *connection,
+ typedef struct
+ {
+   SignalSubscriber    *subscriber;  /* (owned) */
+-  GDBusMessage        *message;
++  GDBusMessage        *message;  /* (owned) */
+   GDBusConnection     *connection;
+   const gchar         *sender;  /* (nullable) for peer-to-peer connections */
+   const gchar         *path;
+@@ -3807,7 +3807,7 @@ emit_signal_instance_in_idle_cb (gpointer data)
+ static void
+ signal_instance_free (SignalInstance *signal_instance)
+ {
+-  g_object_unref (signal_instance->message);
++  g_clear_object (&signal_instance->message);
+   g_object_unref (signal_instance->connection);
+   signal_subscriber_unref (signal_instance->subscriber);
+   g_free (signal_instance);
+@@ -4219,7 +4219,7 @@ has_object_been_unregistered (GDBusConnection    *connection,
+ typedef struct
+ {
+   GDBusConnection *connection;
+-  GDBusMessage *message;
++  GDBusMessage *message;  /* (owned) */
+   gpointer user_data;
+   const gchar *property_name;
+   const GDBusInterfaceVTable *vtable;
+@@ -4233,7 +4233,7 @@ static void
+ property_data_free (PropertyData *data)
+ {
+   g_object_unref (data->connection);
+-  g_object_unref (data->message);
++  g_clear_object (&data->message);
+   g_free (data);
+ }
+ 
+@@ -4575,7 +4575,7 @@ handle_getset_property (GDBusConnection *connection,
+ typedef struct
+ {
+   GDBusConnection *connection;
+-  GDBusMessage *message;
++  GDBusMessage *message;  /* (owned) */
+   gpointer user_data;
+   const GDBusInterfaceVTable *vtable;
+   GDBusInterfaceInfo *interface_info;
+@@ -4587,7 +4587,7 @@ static void
+ property_get_all_data_free (PropertyGetAllData *data)
+ {
+   g_object_unref (data->connection);
+-  g_object_unref (data->message);
++  g_clear_object (&data->message);
+   g_free (data);
+ }
+ 
+@@ -6815,7 +6815,7 @@ typedef struct
+ static void
+ subtree_deferred_data_free (SubtreeDeferredData *data)
+ {
+-  g_object_unref (data->message);
++  g_clear_object (&data->message);
+   exported_subtree_unref (data->es);
+   g_free (data);
+ }
+-- 
+GitLab
+ 
+ 
+From ed7044b5f383cf8b77df751578e184d4ad7a134f Mon Sep 17 00:00:00 2001
+From: Philip Withnall <pwithnall@endlessos.org>
+Date: Wed, 22 Feb 2023 02:49:29 +0000
+Subject: [PATCH 4/9] gdbusprivate: Improve docs on message ownership in
+ MessageToWriteData
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+ 
+This doesnâ€™t introduce any functional changes, but should make the code
+a little clearer.
+ 
+Drive-by improvements while trying to debug #1264.
+ 
+Signed-off-by: Philip Withnall <pwithnall@endlessos.org>
+ 
+Helps: #1264
+ 
+Conflict:NA
+Reference:https://gitlab.gnome.org/GNOME/glib/-/commit/ed7044b5f383cf8b77df751578e184d4ad7a134f
+ 
+---
+ gio/gdbusprivate.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
+ 
+diff --git a/gio/gdbusprivate.c b/gio/gdbusprivate.c
+index 762afcee46..bd776a4214 100644
+--- a/gio/gdbusprivate.c
++++ b/gio/gdbusprivate.c
+@@ -889,7 +889,7 @@ _g_dbus_worker_do_initial_read (gpointer data)
+ struct _MessageToWriteData
+ {
+   GDBusWorker  *worker;
+-  GDBusMessage *message;
++  GDBusMessage *message;  /* (owned) */
+   gchar        *blob;
+   gsize         blob_size;
+ 
+@@ -901,8 +901,7 @@ static void
+ message_to_write_data_free (MessageToWriteData *data)
+ {
+   _g_dbus_worker_unref (data->worker);
+-  if (data->message)
+-    g_object_unref (data->message);
++  g_clear_object (&data->message);
+   g_free (data->blob);
+   g_slice_free (MessageToWriteData, data);
+ }
+-- 
+GitLab
+ 
+ 
+From 861741ef4bff1a3ee15175e189136563b74fe790 Mon Sep 17 00:00:00 2001
+From: Philip Withnall <pwithnall@endlessos.org>
+Date: Wed, 22 Feb 2023 02:50:47 +0000
+Subject: [PATCH 5/9] gdbusprivate: Ensure data->task is cleared when it
+ returns
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+ 
+The existing comment in the code was correct that `data` is freed when
+the task callback is called, because `data` is also pointed to by the
+`user_data` for the task, and thatâ€™s freed at the end of the callback.
+ 
+So the existing code was correct to take a copy of `data->task` before
+calling `g_task_return_*()`.
+ 
+After calling `g_task_return_*()`, the existing code unreffed the task
+(which is correct), but then didnâ€™t clear the `data->task` pointer,
+leaving `data->task` dangling. That could cause a use-after-free or a
+double-unref.
+ 
+Avoid that risk by explicitly clearing `data->task` before calling
+`g_task_return_*()`.
+ 
+After some testing, it turns out this doesnâ€™t actually fix any bugs, but
+itâ€™s still a good robustness improvement.
+ 
+Signed-off-by: Philip Withnall <pwithnall@endlessos.org>
+ 
+Helps: #1264
+ 
+Conflict:NA
+Reference:https://gitlab.gnome.org/GNOME/glib/-/commit/861741ef4bff1a3ee15175e189136563b74fe790
+ 
+---
+ gio/gdbusprivate.c | 54 ++++++++++++++++++++++++++++------------------
+ 1 file changed, 33 insertions(+), 21 deletions(-)
+ 
+diff --git a/gio/gdbusprivate.c b/gio/gdbusprivate.c
+index bd776a4214..0b4806f524 100644
+--- a/gio/gdbusprivate.c
++++ b/gio/gdbusprivate.c
+@@ -894,7 +894,7 @@ struct _MessageToWriteData
+   gsize         blob_size;
+ 
+   gsize         total_written;
+-  GTask        *task;
++  GTask        *task;  /* (owned) and (nullable) before writing starts and after g_task_return_*() is called */
+ };
+ 
+ static void
+@@ -903,6 +903,11 @@ message_to_write_data_free (MessageToWriteData *data)
+   _g_dbus_worker_unref (data->worker);
+   g_clear_object (&data->message);
+   g_free (data->blob);
++
++  /* The task must either not have been created, or have been created, returned
++   * and finalised by now. */
++  g_assert (data->task == NULL);
++
+   g_slice_free (MessageToWriteData, data);
+ }
+ 
+@@ -921,14 +926,14 @@ write_message_async_cb (GObject      *source_object,
+                         gpointer      user_data)
+ {
+   MessageToWriteData *data = user_data;
+-  GTask *task;
+   gssize bytes_written;
+   GError *error;
+ 
+-  /* Note: we can't access data->task after calling g_task_return_* () because the
+-   * callback can free @data and we're not completing in idle. So use a copy of the pointer.
+-   */
+-  task = data->task;
++  /* The ownership of @data is a bit odd in this function: itâ€™s (transfer full)
++   * when the function is called, but the code paths which call g_task_return_*()
++   * on @data->task will indirectly cause it to be freed, because @data is
++   * always guaranteed to be the user_data in the #GTask. So thatâ€™s why it looks
++   * like @data is not always freed on every code path in this function. */
+ 
+   error = NULL;
+   bytes_written = g_output_stream_write_finish (G_OUTPUT_STREAM (source_object),
+@@ -936,8 +941,9 @@ write_message_async_cb (GObject      *source_object,
+                                                 &error);
+   if (bytes_written == -1)
+     {
++      GTask *task = g_steal_pointer (&data->task);
+       g_task_return_error (task, error);
+-      g_object_unref (task);
++      g_clear_object (&task);
+       goto out;
+     }
+   g_assert (bytes_written > 0); /* zero is never returned */
+@@ -948,8 +954,9 @@ write_message_async_cb (GObject      *source_object,
+   g_assert (data->total_written <= data->blob_size);
+   if (data->total_written == data->blob_size)
+     {
++      GTask *task = g_steal_pointer (&data->task);
+       g_task_return_boolean (task, TRUE);
+-      g_object_unref (task);
++      g_clear_object (&task);
+       goto out;
+     }
+ 
+@@ -986,16 +993,14 @@ write_message_continue_writing (MessageToWriteData *data)
+ {
+   GOutputStream *ostream;
+ #ifdef G_OS_UNIX
+-  GTask *task;
+   GUnixFDList *fd_list;
+ #endif
+ 
+-#ifdef G_OS_UNIX
+-  /* Note: we can't access data->task after calling g_task_return_* () because the
+-   * callback can free @data and we're not completing in idle. So use a copy of the pointer.
+-   */
+-  task = data->task;
+-#endif
++  /* The ownership of @data is a bit odd in this function: itâ€™s (transfer full)
++   * when the function is called, but the code paths which call g_task_return_*()
++   * on @data->task will indirectly cause it to be freed, because @data is
++   * always guaranteed to be the user_data in the #GTask. So thatâ€™s why it looks
++   * like @data is not always freed on every code path in this function. */
+ 
+   ostream = g_io_stream_get_output_stream (data->worker->stream);
+ #ifdef G_OS_UNIX
+@@ -1024,11 +1029,12 @@ write_message_continue_writing (MessageToWriteData *data)
+         {
+           if (!(data->worker->capabilities & G_DBUS_CAPABILITY_FLAGS_UNIX_FD_PASSING))
+             {
++              GTask *task = g_steal_pointer (&data->task);
+               g_task_return_new_error (task,
+                                        G_IO_ERROR,
+                                        G_IO_ERROR_FAILED,
+                                        "Tried sending a file descriptor but remote peer does not support this capability");
+-              g_object_unref (task);
++              g_clear_object (&task);
+               goto out;
+             }
+           control_message = g_unix_fd_message_new_with_fd_list (fd_list);
+@@ -1065,9 +1071,13 @@ write_message_continue_writing (MessageToWriteData *data)
+               g_error_free (error);
+               goto out;
+             }
+-          g_task_return_error (task, error);
+-          g_object_unref (task);
+-          goto out;
++          else
++            {
++              GTask *task = g_steal_pointer (&data->task);
++              g_task_return_error (task, error);
++              g_clear_object (&task);
++              goto out;
++            }
+         }
+       g_assert (bytes_written > 0); /* zero is never returned */
+ 
+@@ -1077,8 +1087,9 @@ write_message_continue_writing (MessageToWriteData *data)
+       g_assert (data->total_written <= data->blob_size);
+       if (data->total_written == data->blob_size)
+         {
++          GTask *task = g_steal_pointer (&data->task);
+           g_task_return_boolean (task, TRUE);
+-          g_object_unref (task);
++          g_clear_object (&task);
+           goto out;
+         }
+ 
+@@ -1093,12 +1104,13 @@ write_message_continue_writing (MessageToWriteData *data)
+           /* We were trying to write byte 0 of the message, which needs
+            * the fd list to be attached to it, but this connection doesn't
+            * support doing that. */
++          GTask *task = g_steal_pointer (&data->task);
+           g_task_return_new_error (task,
+                                    G_IO_ERROR,
+                                    G_IO_ERROR_FAILED,
+                                    "Tried sending a file descriptor on unsupported stream of type %s",
+                                    g_type_name (G_TYPE_FROM_INSTANCE (ostream)));
+-          g_object_unref (task);
++          g_clear_object (&task);
+           goto out;
+         }
+ #endif
+-- 
+GitLab
+ 
+ 
+From d7c813cf5b6148c18184e4f1af23d234e73aafb8 Mon Sep 17 00:00:00 2001
+From: Philip Withnall <pwithnall@endlessos.org>
+Date: Wed, 22 Feb 2023 02:56:56 +0000
+Subject: [PATCH 6/9] gdbusprivate: Improve ownership docs for
+ write_message_async()
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+ 
+The ownership transfers in this code are a bit complex, so adding some
+extra documentation and `g_steal_pointer()` calls should hopefully help
+clarify things.
+ 
+This doesnâ€™t introduce any functional changes, just code documentation.
+ 
+Another drive-by improvement in the quest for #1264.
+ 
+Signed-off-by: Philip Withnall <pwithnall@endlessos.org>
+ 
+Helps: #1264
+ 
+Conflict:NA
+Reference:https://gitlab.gnome.org/GNOME/glib/-/commit/d7c813cf5b6148c18184e4f1af23d234e73aafb8
+ 
+---
+ gio/gdbusprivate.c | 21 ++++++++++++---------
+ 1 file changed, 12 insertions(+), 9 deletions(-)
+ 
+diff --git a/gio/gdbusprivate.c b/gio/gdbusprivate.c
+index 0b4806f524..5aa141a60e 100644
+--- a/gio/gdbusprivate.c
++++ b/gio/gdbusprivate.c
+@@ -919,13 +919,14 @@ static void write_message_continue_writing (MessageToWriteData *data);
+  *
+  * write-lock is not held on entry
+  * output_pending is PENDING_WRITE on entry
++ * @user_data is (transfer full)
+  */
+ static void
+ write_message_async_cb (GObject      *source_object,
+                         GAsyncResult *res,
+                         gpointer      user_data)
+ {
+-  MessageToWriteData *data = user_data;
++  MessageToWriteData *data = g_steal_pointer (&user_data);
+   gssize bytes_written;
+   GError *error;
+ 
+@@ -960,7 +961,7 @@ write_message_async_cb (GObject      *source_object,
+       goto out;
+     }
+ 
+-  write_message_continue_writing (data);
++  write_message_continue_writing (g_steal_pointer (&data));
+ 
+  out:
+   ;
+@@ -977,8 +978,8 @@ on_socket_ready (GSocket      *socket,
+                  GIOCondition  condition,
+                  gpointer      user_data)
+ {
+-  MessageToWriteData *data = user_data;
+-  write_message_continue_writing (data);
++  MessageToWriteData *data = g_steal_pointer (&user_data);
++  write_message_continue_writing (g_steal_pointer (&data));
+   return FALSE; /* remove source */
+ }
+ #endif
+@@ -987,6 +988,7 @@ on_socket_ready (GSocket      *socket,
+  *
+  * write-lock is not held on entry
+  * output_pending is PENDING_WRITE on entry
++ * @data is (transfer full)
+  */
+ static void
+ write_message_continue_writing (MessageToWriteData *data)
+@@ -1064,7 +1066,7 @@ write_message_continue_writing (MessageToWriteData *data)
+                                                data->worker->cancellable);
+               g_source_set_callback (source,
+                                      (GSourceFunc) on_socket_ready,
+-                                     data,
++                                     g_steal_pointer (&data),
+                                      NULL); /* GDestroyNotify */
+               g_source_attach (source, g_main_context_get_thread_default ());
+               g_source_unref (source);
+@@ -1093,7 +1095,7 @@ write_message_continue_writing (MessageToWriteData *data)
+           goto out;
+         }
+ 
+-      write_message_continue_writing (data);
++      write_message_continue_writing (g_steal_pointer (&data));
+     }
+ #endif
+   else
+@@ -1121,7 +1123,7 @@ write_message_continue_writing (MessageToWriteData *data)
+                                    G_PRIORITY_DEFAULT,
+                                    data->worker->cancellable,
+                                    write_message_async_cb,
+-                                   data);
++                                   data);  /* steal @data */
+     }
+ #ifdef G_OS_UNIX
+  out:
+@@ -1144,7 +1146,7 @@ write_message_async (GDBusWorker         *worker,
+   g_task_set_source_tag (data->task, write_message_async);
+   g_task_set_name (data->task, "[gio] D-Bus write message");
+   data->total_written = 0;
+-  write_message_continue_writing (data);
++  write_message_continue_writing (g_steal_pointer (&data));
+ }
+ 
+ /* called in private thread shared by all GDBusConnection instances (with write-lock held) */
+@@ -1333,6 +1335,7 @@ prepare_flush_unlocked (GDBusWorker *worker)
+  *
+  * write-lock is not held on entry
+  * output_pending is PENDING_WRITE on entry
++ * @user_data is (transfer full)
+  */
+ static void
+ write_message_cb (GObject       *source_object,
+@@ -1551,7 +1554,7 @@ continue_writing (GDBusWorker *worker)
+       write_message_async (worker,
+                            data,
+                            write_message_cb,
+-                           data);
++                           data);  /* takes ownership of @data as user_data */
+     }
+ }
+ 
+-- 
+GitLab
+ 
+ 
+From 08a4387678346caaa42b69e5e6e5995d48cd61c4 Mon Sep 17 00:00:00 2001
+From: Philip Withnall <pwithnall@endlessos.org>
+Date: Wed, 22 Feb 2023 02:58:05 +0000
+Subject: [PATCH 7/9] gdbusprivate: Use G_SOURCE_REMOVE in a source callback
+ 
+This is equivalent to the current behaviour, but a little clearer in its
+meaning.
+ 
+Signed-off-by: Philip Withnall <pwithnall@endlessos.org>
+ 
+Helps: #1264
+ 
+Conflict:NA
+Reference:https://gitlab.gnome.org/GNOME/glib/-/commit/08a4387678346caaa42b69e5e6e5995d48cd61c4
+ 
+---
+ gio/gdbusprivate.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+ 
+diff --git a/gio/gdbusprivate.c b/gio/gdbusprivate.c
+index 5aa141a60e..2c9238c638 100644
+--- a/gio/gdbusprivate.c
++++ b/gio/gdbusprivate.c
+@@ -980,7 +980,7 @@ on_socket_ready (GSocket      *socket,
+ {
+   MessageToWriteData *data = g_steal_pointer (&user_data);
+   write_message_continue_writing (g_steal_pointer (&data));
+-  return FALSE; /* remove source */
++  return G_SOURCE_REMOVE;
+ }
+ #endif
+ 
+-- 
+GitLab
+ 
+ 
+From b84ec21f9c4c57990309e691206582c589f59770 Mon Sep 17 00:00:00 2001
+From: Philip Withnall <pwithnall@endlessos.org>
+Date: Wed, 22 Feb 2023 12:19:16 +0000
+Subject: [PATCH 8/9] gdbusconnection: Rearrange refcount handling of
+ map_method_serial_to_task
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+ 
+It already implicitly held a strong ref on its `GTask` values, but
+didnâ€™t have a free function set so that they would be automatically
+unreffed on removal from the map.
+ 
+This meant that the functions handling removals from the map,
+`on_worker_closed()` (via `cancel_method_on_close()`) and
+`send_message_with_reply_cleanup()` had to call unref once more than
+they would otherwise.
+ 
+In `send_message_with_reply_cleanup()`, this behaviour depended on
+whether it was called with `remove == TRUE`. If not, it was `(transfer
+none)` not `(transfer full)`. This led to bugs in its callers.
+ 
+For example, this led to a direct leak in `cancel_method_on_close()`, as
+it needed to remove tasks from `map_method_serial_to_task`, but called
+`send_message_with_reply_cleanup(remove = FALSE)` and erroneously didnâ€™t
+call unref an additional time.
+ 
+Try and simplify it all by setting a `GDestroyNotify` on
+`map_method_serial_to_task`â€™s values, and making the refcount handling
+of `send_message_with_reply_cleanup()` not be conditional on its
+arguments.
+ 
+Signed-off-by: Philip Withnall <pwithnall@endlessos.org>
+ 
+Helps: #1264
+ 
+Conflict:NA
+Reference:https://gitlab.gnome.org/GNOME/glib/-/commit/b84ec21f9c4c57990309e691206582c589f59770
+ 
+---
+ gio/gdbusconnection.c | 24 ++++++++++++------------
+ 1 file changed, 12 insertions(+), 12 deletions(-)
+ 
+diff --git a/gio/gdbusconnection.c b/gio/gdbusconnection.c
+index 0cbfc66c13..f4bc21bb37 100644
+--- a/gio/gdbusconnection.c
++++ b/gio/gdbusconnection.c
+@@ -409,7 +409,7 @@ struct _GDBusConnection
+   GDBusConnectionFlags flags;
+ 
+   /* Map used for managing method replies, protected by @lock */
+-  GHashTable *map_method_serial_to_task;  /* guint32 -> GTask* */
++  GHashTable *map_method_serial_to_task;  /* guint32 -> owned GTask* */
+ 
+   /* Maps used for managing signal subscription, protected by @lock */
+   GHashTable *map_rule_to_signal_data;                      /* match rule (gchar*)    -> SignalData */
+@@ -1061,7 +1061,7 @@ g_dbus_connection_init (GDBusConnection *connection)
+   g_mutex_init (&connection->lock);
+   g_mutex_init (&connection->init_lock);
+ 
+-  connection->map_method_serial_to_task = g_hash_table_new (g_direct_hash, g_direct_equal);
++  connection->map_method_serial_to_task = g_hash_table_new_full (g_direct_hash, g_direct_equal, NULL, g_object_unref);
+ 
+   connection->map_rule_to_signal_data = g_hash_table_new (g_str_hash,
+                                                           g_str_equal);
+@@ -1768,7 +1768,7 @@ send_message_data_free (SendMessageData *data)
+ 
+ /* ---------------------------------------------------------------------------------------------------- */
+ 
+-/* can be called from any thread with lock held; @task is (transfer full) */
++/* can be called from any thread with lock held; @task is (transfer none) */
+ static void
+ send_message_with_reply_cleanup (GTask *task, gboolean remove)
+ {
+@@ -1798,13 +1798,11 @@ send_message_with_reply_cleanup (GTask *task, gboolean remove)
+                                               GUINT_TO_POINTER (data->serial));
+       g_warn_if_fail (removed);
+     }
+-
+-  g_object_unref (task);
+ }
+ 
+ /* ---------------------------------------------------------------------------------------------------- */
+ 
+-/* Called from GDBus worker thread with lock held; @task is (transfer full). */
++/* Called from GDBus worker thread with lock held; @task is (transfer none). */
+ static void
+ send_message_data_deliver_reply_unlocked (GTask           *task,
+                                           GDBusMessage    *reply)
+@@ -1822,7 +1820,7 @@ send_message_data_deliver_reply_unlocked (GTask           *task,
+   ;
+ }
+ 
+-/* Called from a user thread, lock is not held; @task is (transfer full) */
++/* Called from a user thread, lock is not held; @task is (transfer none) */
+ static void
+ send_message_data_deliver_error (GTask      *task,
+                                  GQuark      domain,
+@@ -1839,7 +1837,10 @@ send_message_data_deliver_error (GTask      *task,
+       return;
+     }
+ 
++  /* Hold a ref on @task as send_message_with_reply_cleanup() will remove it
++   * from the task map and could end up dropping the last reference */
+   g_object_ref (task);
++
+   send_message_with_reply_cleanup (task, TRUE);
+   CONNECTION_UNLOCK (connection);
+ 
+@@ -1855,8 +1856,7 @@ send_message_with_reply_cancelled_idle_cb (gpointer user_data)
+ {
+   GTask *task = user_data;
+ 
+-  g_object_ref (task);
+-  send_message_data_deliver_error (g_steal_pointer (&task), G_IO_ERROR, G_IO_ERROR_CANCELLED,
++  send_message_data_deliver_error (task, G_IO_ERROR, G_IO_ERROR_CANCELLED,
+                                    _("Operation was cancelled"));
+   return FALSE;
+ }
+@@ -1886,8 +1886,7 @@ send_message_with_reply_timeout_cb (gpointer user_data)
+ {
+   GTask *task = user_data;
+ 
+-  g_object_ref (task);
+-  send_message_data_deliver_error (g_steal_pointer (&task), G_IO_ERROR, G_IO_ERROR_TIMED_OUT,
++  send_message_data_deliver_error (task, G_IO_ERROR, G_IO_ERROR_TIMED_OUT,
+                                    _("Timeout was reached"));
+   return FALSE;
+ }
+@@ -2391,7 +2390,8 @@ on_worker_message_about_to_be_sent (GDBusWorker  *worker,
+   return message;
+ }
+ 
+-/* called with connection lock held, in GDBusWorker thread */
++/* called with connection lock held, in GDBusWorker thread
++ * @key, @value and @user_data are (transfer none) */
+ static gboolean
+ cancel_method_on_close (gpointer key, gpointer value, gpointer user_data)
+ {
+-- 
+GitLab
+ 
+ 
+From 0a84c182e28f50be2263e42e0bc21074dd523701 Mon Sep 17 00:00:00 2001
+From: Philip Withnall <pwithnall@endlessos.org>
+Date: Wed, 22 Feb 2023 14:55:40 +0000
+Subject: [PATCH 9/9] gdbusconnection: Improve refcount handling of timeout
+ source
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+ 
+The ref on the timeout source owned by `SendMessageData` was being
+dropped just after attaching the source to the main context, leaving it
+unowned in that struct. That meant the only ref on the source was held
+by the `GMainContext` it was attached to.
+ 
+This ref was dropped when returning `G_SOURCE_REMOVE` from
+`send_message_with_reply_timeout_cb()`. Before that happens,
+`send_message_data_deliver_error()` is called, which normally calls
+`send_message_with_reply_cleanup()` and destroys the source.
+ 
+However, if `send_message_data_deliver_error()` is called when the
+message has already been delivered, calling
+`send_message_with_reply_cleanup()` will be skipped. This leaves the
+source pointer in `SendMessageData` dangling, which will cause problems
+when `g_source_destroy()` is subsequently called on it.
+ 
+Iâ€™m not sure if itâ€™s possible in practice for this situation to occur,
+but the code certainly does nothing to prevent it, and itâ€™s easy enough
+to avoid by keeping a strong ref on the source in `SendMessageData`.
+ 
+Signed-off-by: Philip Withnall <pwithnall@endlessos.org>
+ 
+Helps: #1264
+ 
+Conflict:NA
+Reference:https://gitlab.gnome.org/GNOME/glib/-/commit/0a84c182e28f50be2263e42e0bc21074dd523701
+ 
+---
+ gio/gdbusconnection.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+ 
+diff --git a/gio/gdbusconnection.c b/gio/gdbusconnection.c
+index f4bc21bb37..bed1ff2841 100644
+--- a/gio/gdbusconnection.c
++++ b/gio/gdbusconnection.c
+@@ -1751,7 +1751,7 @@ typedef struct
+ 
+   gulong cancellable_handler_id;
+ 
+-  GSource *timeout_source;
++  GSource *timeout_source;  /* (owned) (nullable) */
+ 
+   gboolean delivered;
+ } SendMessageData;
+@@ -1760,6 +1760,7 @@ typedef struct
+ static void
+ send_message_data_free (SendMessageData *data)
+ {
++  /* These should already have been cleared by send_message_with_reply_cleanup(). */
+   g_assert (data->timeout_source == NULL);
+   g_assert (data->cancellable_handler_id == 0);
+ 
+@@ -1784,7 +1785,7 @@ send_message_with_reply_cleanup (GTask *task, gboolean remove)
+   if (data->timeout_source != NULL)
+     {
+       g_source_destroy (data->timeout_source);
+-      data->timeout_source = NULL;
++      g_clear_pointer (&data->timeout_source, g_source_unref);
+     }
+   if (data->cancellable_handler_id > 0)
+     {
+@@ -1888,7 +1889,7 @@ send_message_with_reply_timeout_cb (gpointer user_data)
+ 
+   send_message_data_deliver_error (task, G_IO_ERROR, G_IO_ERROR_TIMED_OUT,
+                                    _("Timeout was reached"));
+-  return FALSE;
++  return G_SOURCE_REMOVE;
+ }
+ 
+ /* ---------------------------------------------------------------------------------------------------- */
+@@ -1949,7 +1950,6 @@ g_dbus_connection_send_message_with_reply_unlocked (GDBusConnection     *connect
+       data->timeout_source = g_timeout_source_new (timeout_msec);
+       g_task_attach_source (task, data->timeout_source,
+                             (GSourceFunc) send_message_with_reply_timeout_cb);
+-      g_source_unref (data->timeout_source);
+     }
+ 
+   g_hash_table_insert (connection->map_method_serial_to_task,
+-- 
+GitLab

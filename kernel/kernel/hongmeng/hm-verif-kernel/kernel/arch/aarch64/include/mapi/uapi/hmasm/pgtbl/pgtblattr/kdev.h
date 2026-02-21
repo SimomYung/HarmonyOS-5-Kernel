@@ -1,0 +1,28 @@
+/*
+ * Copyright (c) Huawei Technologies Co., Ltd. 2022-2022. All rights reserved.
+ * Description: Page table attribute for kdev - uapi
+ * Author: Huawei OS Kernel Lab
+ * Create: Tue Jan 18 16:59:47 2022
+ */
+
+#ifndef AARCH64_MAPI_UAPI_ASM_PGTBL_PGTBLATTR_KDEV_H
+#define AARCH64_MAPI_UAPI_ASM_PGTBL_PGTBLATTR_KDEV_H
+
+#include <hmasm/pgtbl/pgtblattr.h>
+
+#define __A64_PGTBLATTR_KDEV_BLK1G	(__PGTBLATTR_A64BLK1G(0, 0, 1, 1, 0, 0, 0, 0, 1, \
+					 __PGTBLATTR_A64LOWERBLKATTR_SH_INNER_SHAREABLE, 0, 0, \
+					__PGTBLATTR_A64LOWERBLKATTR_ATTRIDX_DEVICE_nGnRnE, 0))
+#define __A64_PGTBLATTR_KDEV_BLK2M	(__PGTBLATTR_A64BLK2M(0, 0, 1, 1, 0, 0, 0, 0, 1, \
+					 __PGTBLATTR_A64LOWERBLKATTR_SH_INNER_SHAREABLE, 0, 0, \
+					 __PGTBLATTR_A64LOWERBLKATTR_ATTRIDX_DEVICE_nGnRnE, 0))
+#define __A64_PGTBLATTR_KDEV_PAGE4K	(__PGTBLATTR_A64PAGE4K(0, 0, 1, 1, 0, 0, 0, 1, \
+					 __PGTBLATTR_A64LOWERBLKATTR_SH_INNER_SHAREABLE, 0, 0, \
+					 __PGTBLATTR_A64LOWERBLKATTR_ATTRIDX_DEVICE_nGnRnE, 0))
+#endif
+
+#ifndef __PGTBLATTR_MODEL
+#define __PGTBLATTR_MODEL(name)
+#endif
+
+__PGTBLATTR_MODEL(KDEV)

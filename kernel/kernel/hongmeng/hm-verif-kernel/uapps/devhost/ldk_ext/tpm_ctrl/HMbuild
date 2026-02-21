@@ -1,0 +1,12 @@
+lib-dynamic-y: dhext_tpm_ctrl
+
+cflags-dhext_tpm_ctrl-y: -D_DH_PLUGIN_NAME=tpm_ctrl -fvisibility=hidden
+linklib-dhext_tpm_ctrl-y: -Tksymtab.lds
+
+src-dhext_tpm_ctrl-y: tpm_ctrl_if.c
+src-dhext_tpm_ctrl-y: ext_main.c
+
+include-.-y: include/
+
+installinc: include/
+install-dhext_tpm_ctrl-y: BASE_LIBDIR

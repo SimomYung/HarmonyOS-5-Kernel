@@ -1,0 +1,39 @@
+/*
+ * Copyright (C) Huawei Technologies Co., Ltd. 2019-2020. All rights reserved.
+ * Description: Header file for netdev sysif api
+ * Author: Huawei OS Kernel Lab
+ * Create: Sat Oct 05 08:58:35 2019
+ */
+
+#ifdef SYSIF_EXPORT_API
+
+#include <net/if.h>
+#include <hmnet/hmnet_devices.h>
+
+struct netdev_ifname {
+	char name[IF_NAMESIZE];
+};
+
+#endif
+
+/*
+ * To support the mixed data model which means the client and the server
+ * may use different data model. See the comment for limitation of data type
+ * used in the sysif interfaces in <libsysif/base/api.h>.
+ */
+DEFINE_MANAGER(netdev, 4,
+	DEFINE_SIMPLE_METHOD(netdev, rx,
+			     ARG(5, unsigned int, cell_pool_offset, int, shm_len,
+				 int, rx_len, int, offset, int, devno),
+			     RET_NO,
+			     SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(netdev, notify,
+			     ARG(5, enum hm_netdev_event, event, int, devno, int, option,
+				 struct netdev_ifname, ifname, unsigned long long, features),
+			     RET_NO,
+			     SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(netdev, rx_ex_slowdata,
+			     ARG(1, int, num),
+			     RET_NO,
+			     SLOWDATA)
+)

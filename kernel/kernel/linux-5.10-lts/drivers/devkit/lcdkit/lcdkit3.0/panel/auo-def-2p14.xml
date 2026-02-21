@@ -1,0 +1,20 @@
+<hwlcd>
+<PanelEntry>
+	<PanelCompatible>"auo_def_2p14"</PanelCompatible>
+	<PanelName>"auo_def_2p14_def_LEM 6.94' CMD TFT 1136 x 2690"</PanelName>
+	<!--lcdtype: amoled_2, lcd_1-->
+	<PanelType>0x01</PanelType>
+	<PanelXres>480</PanelXres>
+	<PanelYres>480</PanelYres>
+	<PanelWidth>39</PanelWidth>
+	<PanelHeight>39</PanelHeight>
+	<!-- Panel Command information -->
+	<PanelOnCommand>""</PanelOnCommand>
+	<PanelOnCommandState>0</PanelOnCommandState>
+
+	<PanelOffCommand>""</PanelOffCommand>
+	<PanelOffCommandState>0</PanelOffCommandState>
+
+	<PanelBacklightCommand>"0x15, 0x01, 0x00, 0x00, 0x00, 0x00, 0x02, 0x51, 0x00"</PanelBacklightCommand>
+</PanelEntry>
+</hwlcd>

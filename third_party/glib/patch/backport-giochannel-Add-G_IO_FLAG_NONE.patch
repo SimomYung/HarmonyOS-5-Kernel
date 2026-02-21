@@ -1,0 +1,58 @@
+From cef780e9ef86b1d9545db892c6b8340488da21d9 Mon Sep 17 00:00:00 2001
+From: Simon McVittie <smcv@collabora.com>
+Date: Thu, 23 Jun 2022 10:12:44 +0100
+Subject: [PATCH] giochannel: Add G_IO_FLAG_NONE
+
+This makes the state where no flags are set a bit more self-documenting.
+
+Signed-off-by: Simon McVittie <smcv@collabora.com>
+
+Conflict:NA
+Reference:https://gitlab.gnome.org/GNOME/glib/-/commit/cef780e9ef86b1d9545db892c6b8340488da21d9
+
+---
+ glib/giochannel.c | 1 +
+ glib/giochannel.h | 1 +
+ glib/giounix.c    | 2 +-
+ 3 files changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/glib/giochannel.c b/glib/giochannel.c
+index 6fec45f66d..25baf42c9a 100644
+--- a/glib/giochannel.c
++++ b/glib/giochannel.c
+@@ -946,6 +946,7 @@ g_io_channel_get_line_term (GIOChannel *channel,
+  **/
+ /**
+  * GIOFlags:
++ * @G_IO_FLAG_NONE: no special flags set. Since: 2.74
+  * @G_IO_FLAG_APPEND: turns on append mode, corresponds to %O_APPEND
+  *     (see the documentation of the UNIX open() syscall)
+  * @G_IO_FLAG_NONBLOCK: turns on nonblocking mode, corresponds to
+diff --git a/glib/giochannel.h b/glib/giochannel.h
+index 5a13449d58..dee3d7d055 100644
+--- a/glib/giochannel.h
++++ b/glib/giochannel.h
+@@ -85,6 +85,7 @@ typedef enum
+ 
+ typedef enum
+ {
++  G_IO_FLAG_NONE GLIB_AVAILABLE_ENUMERATOR_IN_2_74 = 0,
+   G_IO_FLAG_APPEND = 1 << 0,
+   G_IO_FLAG_NONBLOCK = 1 << 1,
+   G_IO_FLAG_IS_READABLE = 1 << 2,	/* Read only flag */
+diff --git a/glib/giounix.c b/glib/giounix.c
+index b6345b6c68..067cecf9ac 100644
+--- a/glib/giounix.c
++++ b/glib/giounix.c
+@@ -400,7 +400,7 @@ g_io_unix_set_flags (GIOChannel *channel,
+ static GIOFlags
+ g_io_unix_get_flags (GIOChannel *channel)
+ {
+-  GIOFlags flags = 0;
++  GIOFlags flags = G_IO_FLAG_NONE;
+   glong fcntl_flags;
+   GIOUnixChannel *unix_channel = (GIOUnixChannel *) channel;
+ 
+-- 
+GitLab
+

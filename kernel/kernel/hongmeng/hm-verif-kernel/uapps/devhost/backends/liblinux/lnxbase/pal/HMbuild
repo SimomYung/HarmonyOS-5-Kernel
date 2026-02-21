@@ -1,0 +1,53 @@
+# Copyright (c) Huawei Technologies Co., Ltd. 2021. All rights reserved.
+# Description: HMbuild for lnxbase
+# Author: Huawei OS Kernel Lab
+# Create: Thu Dec 16 17:20:01 2021
+
+src-y: blkdev.c
+src-y: cache.c
+src-y: cap.c
+src-y: chrdev.c
+src-CONFIG_LNXBASE_DISCRETEPOOL: discretepool.c
+src-y: cma.c
+src-y: cpu.c
+src-y: cpufreq.c
+src-y: dma.c
+src-y: dmabuf_swap.c
+src-y: suspend.c
+src-y: file.c
+src-y: fw.c
+src-y: vmemmap.c
+src-y: kernfs.c
+src-y: lock.c
+src-y: mempool.c
+src-y: mm.c
+src-y: module.c
+src-y: net.c
+src-y: page.c
+src-y: printk.c
+src-y: procfs.c
+src-y: random.c
+src-CONFIG_DEVHOST_HVC: smccc_hvc.c
+src-y: symbols.c
+src-y: sysfs.c
+src-y: thread.c
+src-y: time.c
+src-CONFIG_DEVHOST_PERI_DMA: peri_dma.c
+src-y: vmalloc.c
+src-y: vmap.c
+src-y: wakelock.c
+src-y: tzdriver.c
+src-y: livepatch.c
+src-y: fileguard.c
+src-y: rpc.c
+src-y: sd.c
+src-y: usertype.c
+src-y: freq_hide.c
+src-CONFIG_LNXBASE_BUDDYPOOL: buddypool.c
+src-CONFIG_SEHARMONY: seharmony.c
+src-CONFIG_HKIP_LDK_PRMEM: prmem.c
+src-CONFIG_BIG_MODEL_MONITOR: mpam.c
+src-CONFIG_HISI_THERMAL_INTELLIGENT_FREQ_CTRL: thermal_intelligent_freq_ctrl.c
+src-y: smp.c
+
+cflags-thread.c-y: -D_GNU_SOURCE

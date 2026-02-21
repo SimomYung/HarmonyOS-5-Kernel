@@ -1,0 +1,35 @@
+From 4de59102f49ff9128378568cf967d6c7aabea6f2 Mon Sep 17 00:00:00 2001
+From: Roi Dayan <roid@nvidia.com>
+Date: Wed, 7 Dec 2022 10:22:13 +0200
+Subject: [PATCH] tc: ct: Fix invalid pointer dereference
+
+Using macro NEXT_ARG_FWD does not validate argc.
+Use macro NEXT_ARG which validates argc while parsing args
+in the same loop iteration.
+
+Conflict:NA
+Reference:https://git.kernel.org/pub/scm/network/iproute2/iproute2.git/commit?id=4de59102f49ff9128378568cf967d6c7aabea6f2
+
+Fixes: c8a494314c40 ("tc: Introduce tc ct action")
+Signed-off-by: Roi Dayan <roid@nvidia.com>
+Reviewed-by: Paul Blakey <paulb@nvidia.com>
+Signed-off-by: Stephen Hemminger <stephen@networkplumber.org>
+---
+ tc/m_ct.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/tc/m_ct.c b/tc/m_ct.c
+index a02bf0cc..54d64867 100644
+--- a/tc/m_ct.c
++++ b/tc/m_ct.c
+@@ -243,7 +243,7 @@ parse_ct(struct action_util *a, int *argc_p, char ***argv_p, int tca_id,
+ 				return -1;
+ 			}
+ 
+-			NEXT_ARG_FWD();
++			NEXT_ARG();
+ 			if (matches(*argv, "port") != 0)
+ 				continue;
+ 
+-- 
+2.23.0

@@ -1,0 +1,30 @@
+/*
+ * Copyright (C) Huawei Technologies Co., Ltd. 2023-2023. All rights reserved.
+ * Description: Sysif api for coobj
+ * Author: Huawei OS Kernel Lab
+ * Create: Sat Mar 11 17:23:05 2023 +0800
+ */
+
+#ifdef SYSIF_EXPORT_API
+#include <libhmsrv_sys/hm_coobj.h>
+
+#define COOBJ_OBJ_NAME_MAX PATHMGR_PATH_NAME_MAX
+
+struct coobj_name {
+	char name[COOBJ_OBJ_NAME_MAX];
+};
+#endif
+
+DEFINE_MANAGER(ips, 1,
+	DEFINE_SIMPLE_METHOD(ips, init,
+			     ARG(6, uintptr_t, resv_va_start,
+				 struct coobj_name, obj_name,
+				 int, coobj_role,
+				 mode_t, mode,
+				 unsigned int, flags,
+				 uintptr_t, shadow_pgref_va),
+			     RET(3, uintptr_t, uator_list_uva,
+				 long, uator_typeid,
+				 unsigned char, mapped),
+			     SLOWDATA_NO)
+)

@@ -1,0 +1,744 @@
+/*
+ * Copyright (C) Huawei Technologies Co., Ltd. 2018-2020. All rights reserved.
+ * Description: Sysmgr_mem function declaration
+ * Author: Huawei OS Kernel Lab
+ * Create: Fri Nov 16 10:27:57 2018
+ */
+
+/*
+ * To support the mixed data model which means the client and the server
+ * may use different data model. See the document for limitation of data type
+ * used in the sysif interfaces in <Documentation/sysif_compat.md>.
+ */
+#ifdef SYSIF_EXPORT_API
+#include <sys/stat.h>
+#include <libmem/mstat.h>
+#include <libmem/types.h>
+
+/* also change devhost memory when calling change_secmem_linmap_attr other than sysmgr and kernel */
+#define SECMEM_LINMAP_FLAG_DEVHOST 0x1
+
+#define MEMMGR_CMA_MAX_NAME 64UL
+#define MEMMGR_SHM_NAME_MAX PATHMGR_PATH_NAME_MAX
+struct memmgr_shm_name {
+	char path[MEMMGR_SHM_NAME_MAX];
+};
+
+#define FS_SERVICE_NAME_MAX PATHMGR_PATH_NAME_MAX
+struct fs_service_name {
+	char name[FS_SERVICE_NAME_MAX];
+};
+
+#define VR_ANON_NAME_MAX 80
+struct vr_anon_name {
+	char name[VR_ANON_NAME_MAX];
+};
+
+struct shm_node_info {
+	unsigned long long paddr;
+};
+
+struct hgtlb_mount_args_s {
+	unsigned int order;
+};
+
+struct file_map_info_s {
+	int shm_map_cnt;
+};
+
+enum iofast_region_type {
+	IOFAST_RSV_PGCACHE,
+	IOFAST_NR_TYPES,
+};
+
+struct iofast_region {
+	unsigned long vstart;
+	unsigned long length;
+};
+
+struct iofast_mem_desc {
+	unsigned long vstart;
+	unsigned long length;
+	unsigned long long pstart;
+	struct iofast_region regions[IOFAST_NR_TYPES];
+};
+#endif
+
+DEFINE_MANAGER(mem, 102,
+	DEFINE_SIMPLE_METHOD(mem, mmap,
+			     ARG(6, const void *, addr, unsigned long, length,
+				 unsigned int, prot,
+				 unsigned int, flags,
+				 int, fd, long long, offset),
+			     RET(2, unsigned long long, rvaddr, int, unmapped),
+			     SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(mem, mmap_ex,
+			     ARG(7, const void *, addr, unsigned long, length,
+				 unsigned int, prot,
+				 unsigned int, flags,
+				 int, fd, long long, offset,
+				 unsigned long, guard_size),
+			     RET(1, unsigned long long, rvaddr),
+			     SLOWDATA_NO)
+
+	DEFINE_LSYSCALL_METHOD_LONG(mmap_lsyscall, NATIVE, SYS_mmap2,
+				  ARG(6, const void *, addr, unsigned long, length,
+				      unsigned int, prot,
+				      unsigned int, flags,
+				      int, fd, unsigned long, offset),
+				  ARCH(__arm__))
+
+	DEFINE_LSYSCALL_METHOD_LONG(mmap_lsyscall, NATIVE, SYS_mmap,
+				  ARG(6, const void *, addr, unsigned long, length,
+				      unsigned int, prot,
+				      unsigned int, flags,
+				      int, fd, unsigned long, offset),
+				  ARCH(__aarch64__))
+
+	DEFINE_LSYSCALL_METHOD(munmap_lsyscall, NATIVE, SYS_munmap,
+			       ARG(2, const void *, addr, unsigned long, length))
+
+	DEFINE_SIMPLE_METHOD(mem, munmap,
+			     ARG(2, const void *, addr, unsigned long, length),
+			     RET_NO,
+			     SLOWDATA_NO)
+
+	DEFINE_LSYSCALL_METHOD_LONG(mremap, NATIVE, SYS_mremap,
+		      ARG(5, void *, old_addr, unsigned long, old_len,
+			  unsigned long, new_len, unsigned int, flags,
+			  void *, new_addr))
+
+	DEFINE_SIMPLE_METHOD(mem, alloc_pmem,
+		      ARG(1, unsigned long, size),
+		      RET(1, unsigned long long, pmem_cref),
+		      SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(mem, free_pmem,
+		      ARG(1, unsigned long long, pmem_cref),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_LSYSCALL_METHOD_LONG(brk, NATIVE, SYS_brk,
+			     ARG(1, const void *, brk))
+
+	DEFINE_LSYSCALL_METHOD(madvise_lsyscall, SYS_madvise,
+			       ARG(3, const void *, addr, unsigned long, length,
+				   unsigned int, flags))
+
+	DEFINE_SIMPLE_METHOD(mem, madvise,
+			     ARG(3, const void *, addr, unsigned long, length,
+				 unsigned int, flags),
+			     RET_NO,
+			     SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(mem, mprotect,
+			     ARG(3, const void *, addr, unsigned long, length,
+				 unsigned int, prot),
+			     RET_NO,
+			     SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(mem, amend_prot,
+			     ARG(4, const void *, addr, unsigned long, length,
+				 unsigned int, set_prot,
+				 unsigned int, clear_prot),
+			     RET_NO,
+			     SLOWDATA_NO)
+
+	DEFINE_LSYSCALL_METHOD(mprotect_lsyscall, SYS_mprotect,
+			     ARG(3, const void *, addr, unsigned long, length,
+				 unsigned int, prot))
+
+	DEFINE_LSYSCALL_METHOD(msync, SYS_msync,
+			     ARG(3, const void *, addr, unsigned long, length,
+				 unsigned int, flags))
+
+	DEFINE_LSYSCALL_METHOD(mlock, SYS_mlock,
+			       ARG(2, const void *, addr, unsigned long, length))
+
+	DEFINE_LSYSCALL_METHOD(mlock2, SYS_mlock2,
+			       ARG(3, const void *, addr, unsigned long, length, unsigned int, flags))
+
+	DEFINE_LSYSCALL_METHOD(munlock, SYS_munlock,
+			     ARG(2, const void *, addr, unsigned long, length))
+
+	DEFINE_LSYSCALL_METHOD(mlockall, SYS_mlockall,
+			       ARG(1, unsigned int, flags))
+
+	DEFINE_LSYSCALL_METHOD(munlockall, SYS_munlockall,
+			     ARG_NO)
+
+	DEFINE_LSYSCALL_METHOD(pkey_alloc, SYS_pkey_alloc,
+				 ARG(2, unsigned int, flags, unsigned int, access_rights))
+
+	DEFINE_LSYSCALL_METHOD(pkey_free, SYS_pkey_free,
+				 ARG(1, int, pkey))
+
+	DEFINE_LSYSCALL_METHOD(pkey_mprotect, SYS_pkey_mprotect,
+				 ARG(4, const void *, addr, size_t, len, int, prot, int, pkey))
+
+	DEFINE_LSYSCALL_METHOD_LONG(process_madvise, SYS_process_madvise,
+				 ARG(5,
+				 int, pidfd,
+				 const void *, iovec,
+				 size_t, vlen,
+				 int, advice,
+				 unsigned int, flags))
+
+	DEFINE_SIMPLE_METHOD(mem, drop_file_cache,
+			     ARG_NO,
+			     RET(1, size_t, nr_droped),
+			     SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(mem, alloc_range_restricted,
+			     ARG(6,
+				 size_t, length,
+				 unsigned long, low_limit,
+				 unsigned long, high_limit,
+				 uint32_t, flags,
+				 unsigned long, align_mask,
+				 unsigned long, align_offset),
+			     RET(1, unsigned long long, rvaddr),
+			     SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(mem, iofast_declare,
+			     ARG(4,
+				 const char *, name,
+				 unsigned long, page_offset,
+				 unsigned long, phy_offset,
+				 unsigned long, map_len),
+			     RET(1, struct iofast_mem_desc, desc),
+			     SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(mem, iofast_alloc_pfn_v,
+			     ARG(4,
+				 unsigned int, order,
+				 unsigned int, flags,
+				 void *, paddr_array,
+				 unsigned long, length),
+			     RET(1, unsigned long, paddr_num),
+			     SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(mem, iofast_free_pfn_v,
+			     ARG(2,
+				 void *, paddr_array,
+				 unsigned long, length),
+			     RET_NO,
+			     SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(mem, iofast_map_pfn_v,
+			     ARG(4,
+				 void *, paddr_array,
+				 unsigned long, length,
+				 unsigned int, prot,
+				 void *, vaddr_array),
+			     RET_NO,
+			     SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(mem, iofast_unmap_pfn_v,
+			     ARG(2,
+				 void *, paddr_array,
+				 unsigned long, length),
+			     RET_NO,
+			     SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(mem, iofast_ldk_page_info_init,
+			     ARG(3,
+				 unsigned long, pg_struct_va_start,
+				 size_t, pg_struct_size,
+				 unsigned int, pg_slab_shift),
+			     RET_NO,
+			     SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(mem, query_pfn_range,
+		      ARG(2,
+			  void *, paddr_array,
+			  unsigned long, length),
+		      RET(1,
+			  unsigned long, paddr_num),
+		      SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(mem, ioremap_prepare,
+		      ARG(4, const void *, addr, unsigned long, length,
+			  unsigned int, prot,
+			  unsigned int, flags),
+		      RET(2, unsigned long long, rvaddr,
+			  unsigned long long, sysmgr_rref), /* obsolete */
+		      SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(mem, iomem_mmap_page,
+		      ARG(6,
+			 unsigned long long, vspace_rref, /* obsolete */
+			 unsigned long long, paddr,
+			 void *, vaddr,
+			 unsigned long, len,
+			 unsigned long long, hint,
+			 unsigned long long, flags),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(mem, iomem_mmap_page_batch,
+		      ARG(5,
+			 void *, vaddr,
+			 const struct mem_raw_ranges *, pfn_array,
+			 unsigned int, pfn_array_cnt,
+			 unsigned long long, hint,
+			 unsigned long long, flags),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(mem, iomem_mmap_page_batch_fault,
+		      ARG(7,
+			 void *, vaddr,
+			 const struct mem_raw_ranges *, pfn_array,
+			 unsigned int, pfn_array_cnt,
+			 unsigned long long, hint,
+			 unsigned long long, flags,
+			 pid_t, pid,
+			 unsigned long long, vr_key),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(mem, iomem_mmap_page_batch_mm,
+		      ARG(6,
+			 void *, vaddr,
+			 const struct mem_raw_ranges *, pfn_array,
+			 unsigned int, pfn_array_cnt,
+			 unsigned long long, hint,
+			 unsigned long long, flags,
+			 unsigned long long, vs_key),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(mem, vmalloc_mmap_page,
+				ARG(4,
+				unsigned long, uaddr,
+				unsigned long, vaddr,
+				unsigned long, size,
+				unsigned long long, hint),
+				RET_NO,
+				SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(mem, file_mapping_stat,
+		      ARG(2,
+			 unsigned int, index,
+			 unsigned long long, dev_id),
+		      RET(1, struct file_map_info_s, map_info),
+		      SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(mem, shm_open,
+			     ARG(4, struct memmgr_shm_name, name,
+				 unsigned long, len,
+				 unsigned long long, oflag,
+				 mode_t, mode),
+			     RET(2, unsigned long long, ret_len,
+				 int, shm_id),
+			     SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(mem, shm_open_anon,
+			     ARG(4, unsigned long long, key,
+				 unsigned int, owner_cnode_idx,
+				 unsigned long long, oflag,
+				 unsigned long, len),
+			     RET(2, unsigned long long, ret_len,
+				 int, shm_id),
+			     SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(mem, kshm_open_anon,
+			     ARG(4, unsigned long long, key,
+				 unsigned int, owner_cnode_idx,
+				 unsigned long long, oflag,
+				 unsigned long, len),
+			     RET(2, unsigned long long, ret_len,
+				 int, kshmd),
+			     SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(mem, shm_unlink,
+			     ARG(1, struct memmgr_shm_name, name),
+			     RET_NO,
+			     SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(mem, shm_unlink_anon,
+			     ARG(1, int, shm_id),
+			     RET_NO,
+			     SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(mem, shm_close,
+			     ARG(1, int, shm_id),
+			     RET_NO,
+			     SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(mem, shm_check_owner,
+			     ARG(2, unsigned long long, key,
+				 unsigned int, cnode_idx),
+			     RET_NO,
+			     SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(mem, shm_reclaim_pages,
+		      ARG(3, int, shm_id,
+			  const void *, start_addr,
+			  unsigned long, nr_pages),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(mem, grant_shm_to_caller,
+			     ARG(2, int, shm_id,
+				 unsigned int, prot),
+			     RET(1, unsigned long long, key),
+			     SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(mem, grant_shm_by_xref,
+			     ARG(3, int, shm_id,
+				 unsigned int, prot,
+				 xref_t, xref),
+			     RET(1, unsigned long long, key),
+			     SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(mem, ashm_grant_trans,
+			     ARG(2, unsigned long long, key,
+				 xref_t, xref),
+		             RET_NO,
+			     SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(mem, query_shm_info,
+			     ARG(1, int, shm_id),
+			     RET(1, struct shm_node_info, shm_info),
+			     SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(mem, query_shm_paddr,
+			     ARG(3, int, shm_id,
+				 unsigned long long *, dst,
+				 unsigned long, size),
+			     RET_NO,
+			     SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(mem, shm_dump_info,
+			     ARG_NO,
+			     RET_NO,
+			     SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(mem, shm_chmod,
+			     ARG(2, struct memmgr_shm_name, name, mode_t, mode),
+			     RET_NO,
+			     SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(mem, extend_ctable,
+		      ARG_NO,
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(mem, stat,
+		      ARG(2, unsigned int, flags,
+			  struct bunch_ipc_attr, attr),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_LSYSCALL_METHOD_LONG(process_vm_readv, SYS_process_vm_readv,
+		      ARG(6, int, pid, const void *, liovec,
+			  unsigned long, liovcnt, const void *, riovec,
+			  unsigned long, riovcnt, unsigned int, flags))
+
+	DEFINE_LSYSCALL_METHOD_LONG(process_vm_writev, SYS_process_vm_writev,
+		      ARG(6, int, pid, const void *, liovec,
+			  unsigned long, liovcnt, const void *, riovec,
+			  unsigned long, riovcnt, unsigned int, flags))
+
+	DEFINE_LSYSCALL_METHOD(mincore, SYS_mincore,
+		      ARG(3, const void *, addr,
+			  size_t, length,
+			  const unsigned char *, vec))
+
+	DEFINE_SIMPLE_METHOD(mem, calculate,
+		      ARG_NO,
+		      RET(1, struct memstat_deviation, div),
+		      SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(mem, rmap_unmap_page,
+		      ARG(1, const void *, addr),
+		      RET(1, unsigned int, flags),
+		      SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(mem, fs_stat_register,
+			     ARG(1, const void *, stat_addr),
+			     RET_NO,
+			     SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(mem, hugetlbfs_mount,
+		      ARG(1, struct hgtlb_mount_args_s, args),
+		      RET(1, unsigned int, order),
+		      SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(mem, register_devhost,
+		      ARG(1, unsigned long long, devhost_uref),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(mem, iomap_prepare,
+		      ARG(5,
+			  const void *, va,
+			  unsigned long, len,
+			  unsigned int, iomem_id,
+			  unsigned int, prot,
+			  unsigned int, flags),
+		      RET(1, unsigned long long, rva),
+		      SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(mem, iomap_populate,
+		      ARG(4,
+			  const void *, va,
+			  unsigned long, len,
+			  unsigned long long, pa,
+			  unsigned long long, hint),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(mem, iomap_unpopulate,
+		      ARG(2,
+			  const void *, va,
+			  unsigned long, len),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(mem, iomap_finish,
+		      ARG(3,
+			  const void *, va,
+			  unsigned int, flags,
+			  unsigned int, iomem_id),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(mem, iomap_statvregion,
+		      ARG(2,
+			  const void *, va,
+			  unsigned long long, vspace_key),
+		      RET(1,
+			  unsigned int, iomem_id),
+		      SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(mem, iomap_statpage,
+		      ARG(1,
+			  const void *, va),
+		      RET(2,
+			  unsigned long long, pa,
+			  unsigned int, prot),
+		      SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(mem, cma_dyn_init,
+		      ARG(1,
+			  unsigned long, size),
+		      RET(1, unsigned int, cma_id),
+		      SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(mem, cma_alloc,
+		      ARG(3,
+			  unsigned int, cma_id,
+			  unsigned long, size,
+			  unsigned int, align_order),
+		      RET(1, unsigned long long, paddr),
+		      SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(mem, cma_free,
+		      ARG(3,
+			  unsigned int, cma_id,
+			  unsigned long long, paddr,
+			  unsigned long, size),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(mem, cma_id_fetch,
+		      ARG(3,
+			  unsigned long long, paddr,
+			  void *, name,
+			  unsigned long, name_len),
+		      RET(1, unsigned int, cma_id),
+		      SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(mem, swap_space_init,
+		      ARG(3,
+			  int, swap_id,
+			  unsigned long, total_size,
+			  unsigned int, ext_size),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(mem, swap_alloc_extentid,
+		      ARG(1,
+			 int, swap_id),
+		      RET(1,
+			  int, ext_id),
+		      SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(mem, swap_free_extentid,
+		      ARG(2,
+			  int, swap_id,
+			  int, ext_id),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(mem, swap_in_range,
+		      ARG(4,
+			  int, swap_id,
+			  void *, pa_array,
+			  void *, ext_ids,
+			  int, number),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(mem, swap_out_range,
+		      ARG(4,
+			  int, swap_id,
+			  void *, pa_array,
+			  void *, ext_ids,
+			  int, number),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(mem, resv_mem,
+		      ARG(2,
+			  const void *, addr,
+			  unsigned long, len),
+		      RET(1, unsigned long, rva),
+		      SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(mem, raw_map,
+		      ARG(5,
+			  const void *, va,
+			  unsigned long long, pa,
+			  unsigned long, len,
+			  unsigned int, flags,
+			  unsigned long long, hint),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(mem, flush_cache,
+		      ARG(3,
+			  unsigned long, vstart,
+			  unsigned long, vend,
+			  unsigned int, cmd),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(mem, enable_rsv_mem,
+		      ARG(2,
+			  unsigned long long, pfn_start,
+			  unsigned long long, pfn_end),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(mem, devhost_get_user_pages,
+			     ARG(4,
+				 unsigned long long, addr,
+				 size_t, length,
+				 unsigned long long *, ret_page_array,
+				 size_t, array_size),
+			     RET_NO,
+			     SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(mem, devhost_put_user_pages,
+			     ARG(4,
+				 unsigned long long, addr,
+				 size_t, length,
+				 unsigned long long *, ret_page_array,
+				 size_t, array_size),
+			     RET_NO,
+			     SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(mem, devhost_charge_mlock,
+			     ARG(1,
+				 unsigned long, mlock_size),
+			     RET_NO,
+			     SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(mem, devhost_uncharge_mlock,
+			     ARG(1,
+				 unsigned long, mlock_size),
+			     RET_NO,
+			     SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(mem, query_pgd,
+				ARG(1, int, pid),
+				RET(1, unsigned long long, pgd),
+				SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(mem, flush_user_dcache,
+			     ARG(3,
+			         int, pid,
+				 unsigned long, start,
+				 unsigned long, end),
+			     RET_NO,
+			     SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(mem, munmap_other,
+			     ARG(4, const void *, addr, unsigned long, length, int, pid,
+				 unsigned int, zap_pte),
+			     RET_NO,
+			     SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(mem, devhost_stat_register,
+			     ARG(2,
+				 const void *, stat_addr,
+				 size_t, stat_size),
+			     RET_NO,
+			     SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(mem, change_secmem_linmap_attr,
+		     ARG(5,
+			 unsigned long, va,
+			 unsigned long long, pa,
+			 unsigned long, len,
+			 unsigned long long, hint,
+			 unsigned int, flags),
+		     RET_NO,
+		     SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(mem, extfrag_index_read,
+			     ARG(2,
+				 void *, buf,
+				 size_t, len),
+			     RET_NO,
+			     SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(mem, compact,
+			     ARG_NO,
+			     RET_NO,
+			     SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(mem, cpa_prepare_memory,
+		     ARG(5,
+			 unsigned int, flags,
+			 unsigned long, water_mark_page,
+			 unsigned long, size,
+			 unsigned long, heap_size,
+			 unsigned long, allocated_size),
+		     RET_NO,
+		     SLOWDATA_NO)
+
+	DEFINE_LSYSCALL_METHOD(swapon, SYS_swapon,
+			       ARG(2, const char *, path, int, swapflags))
+
+	DEFINE_LSYSCALL_METHOD(swapoff, SYS_swapoff,
+			       ARG(1, const char *, path))
+
+	DEFINE_SIMPLE_METHOD(mem, vspace_of_current,
+			     ARG_NO,
+			     RET(1, uint64_t, key),
+			     SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(mem, proxy_munmap,
+			     ARG(4, const void *, addr, unsigned long, len,
+			         unsigned long long, vspace_key, unsigned int, zap_pte),
+			     RET_NO,
+			     SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(mem, dump_pte_with_pgd,
+			     ARG(3,
+				 pid_t, pid,
+				 unsigned long long, pgd,
+				 unsigned long long, va),
+			     RET_NO,
+			     SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(mem, ama_ddr_intr_notify,
+			     ARG(2, unsigned int, flow_type,
+				 unsigned int, ch),
+			     RET_NO,
+			     SLOWDATA_NO)
+)

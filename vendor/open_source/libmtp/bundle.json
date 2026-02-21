@@ -1,0 +1,50 @@
+{
+    "name": "@ohos/libmtp",
+    "description": "free libmtp implementation",
+    "version": "1.1.21",
+    "license": "GPL-2.1",
+    "publishAs": "code-segment",
+    "segment": {
+        "destPath": "vendor/open_source/libmtp"
+    },
+    "dirs": {},
+    "scripts": {},
+    "licensePath": "COPYING",
+    "readmePath": {
+        "en": "README"
+    },
+    "component": {
+        "name": "libmtp",
+        "subsystem": "open_source",
+        "syscap": [],
+        "features": [],
+        "adapted_system_type": [
+            "standard"
+        ],
+        "rom": "",
+        "ram": "",
+        "deps": {
+            "components": [
+                "hilog"
+            ],
+            "third_party": [
+                "libusb"
+            ]
+        },
+        "build": {
+            "sub_component": [],
+            "inner_kits": [
+                {
+                    "name": "//vendor/open_source/libmtp:libmtp",
+                    "header": {
+                        "header_files": [
+                            "libmtp.h"
+                        ],
+                        "header_base": "//vendor/open_source/libmtp/src"
+                    }
+                }
+            ],
+            "test": []
+        }
+    }
+}

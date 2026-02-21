@@ -1,0 +1,19 @@
+config UKMD_UKSM
+	bool "UKMD uksm driver support"
+	default n
+	help
+	  This feature supports uksm driver
+
+config UKMD_DEBUG_ENABLE
+	bool "UKMD debug enable"
+	default n
+	depends on UKMD_UKSM
+	help
+	  This feature supports debug config
+
+config UKMD_ASSERT_ENABLE
+	bool "UKMD assert enable"
+	default n
+	depends on UKMD_UKSM
+	help
+	  This feature supports assert enable

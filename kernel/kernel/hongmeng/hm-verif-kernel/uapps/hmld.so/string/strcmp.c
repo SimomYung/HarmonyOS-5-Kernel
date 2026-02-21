@@ -1,0 +1,1 @@
+../../../klibs/klibc/strcmp.c

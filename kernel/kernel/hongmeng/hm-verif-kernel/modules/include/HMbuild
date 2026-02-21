@@ -1,0 +1,6 @@
+# Copyright (c) Huawei Technologies Co., Ltd. 2022-2022. All rights reserved.
+# Author: Huawei OS Kernel Lab
+# Create: Tue Feb 08 16:24:29 2022
+
+installinc-hmkernel: mapi/uapi/hmkernel/
+installinc-misc: mapi/uapi/misc/

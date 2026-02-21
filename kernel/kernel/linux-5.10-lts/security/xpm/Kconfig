@@ -1,0 +1,35 @@
+# SPDX-License-Identifier: GPL-2.0-or-later
+# Copyright (c) 2023 Huawei Device Co., Ltd.
+#
+# Config for the excutable permission manager
+#
+
+menu "Executable permission manager"
+
+config SECURITY_XPM
+	bool "Enables excutable permission manager feature"
+	depends on SECURITY_CODE_SIGN
+	default n
+	help
+	  The Executable Permission Manager(XPM) control process execution
+	  by inserting control poliy into the security hook list, such as execv,
+	  mmap and etc. It can control not to execute an illegal signature
+	  process.
+config DSMM_DEVELOPER_ENABLE
+	bool "Enables device developer mode feature"
+	depends on SECURITY_XPM
+	default n
+	help
+	  This option should only be enabled for the device support developer
+	  mode feature. But whether or not developer mode is enabled on the
+	  device ultimately depends on the developer_mode string in cmdline.
+
+config SECURITY_XPM_DEBUG
+	bool "Enables excutable permission manager debug mode"
+	depends on SECURITY_XPM
+	default n
+	help
+	  This option should only be enabled for debug test which can enable
+	  some debug interfaces to obtain detailed information.
+endmenu
+# a blank line must be existed

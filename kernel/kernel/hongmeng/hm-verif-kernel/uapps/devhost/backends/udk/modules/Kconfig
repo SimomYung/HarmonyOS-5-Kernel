@@ -1,0 +1,6 @@
+comment "UDK modules Settings"
+source "$(HMCMAKENG_KCONFIG)"
+
+config UDK_LIBS_INSTALL_PATH
+	string
+	default "/lib/modules"

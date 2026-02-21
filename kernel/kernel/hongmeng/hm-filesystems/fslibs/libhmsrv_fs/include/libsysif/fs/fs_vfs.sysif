@@ -1,0 +1,1382 @@
+/*
+ * Copyright (c) Huawei Technologies Co., Ltd. 2019-2021. All rights reserved.
+ * Description: Implementation of fs
+ * Author: Huawei OS Kernel Lab
+ * Create: Wed Mar 13 12:47:04 2019
+ */
+
+#ifdef SYSIF_EXPORT_API
+#include <fs_ioaccount.h>
+#include <binderfs_data.h>
+#include <time.h>
+#include <sys/stat.h>
+#include <sys/sysmacros.h>
+#include <sys/types.h>
+#include <unistd.h>
+#include <libsec/posix_cap_def.h>
+
+#define VFS_FILE_CRED_DATA_LEN 128
+#define VFS_FILE_PROP_LEN 64
+struct vfs_file_cred {
+	char data[VFS_FILE_CRED_DATA_LEN];
+	sec_vfs_cap_data_t cap;
+	char prop_server[VFS_FILE_PROP_LEN];
+	bool nodump;
+};
+
+struct perf_event_attr;
+struct io_uring_params;
+
+/**
+ * vfs query info flags
+ * IO_DEV_NOT_GET, 0, vfs_query_info will not get devhost filp_node.
+ * IO_DEV_ALL_GET, 1, vfs_query_info will get all kind of devhost filp_node.
+ * IO_DEV_FASTPATH_GET, 2, vfs_query_info will only get fastpath devhost filp_node.
+ * IO_DEV_CALLER_CHECK, 4, vfs_query_info will check cnode_idx stored on ctx against the caller.
+ e*/
+#define IO_DEV_NOT_GET         0x0
+#define IO_DEV_ALL_GET         0x1
+#define IO_DEV_FASTPATH_GET    0x2
+#define IO_DEV_CALLER_CHECK    0x4
+
+#endif
+
+/*
+ * To support the mixed data model which means the client and the server
+ * may use different data model. See the comment for limitation of data type
+ * used in the sysif interfaces in <libsysif/base/api.h>.
+ */
+DEFINE_MANAGER(vfs, 259,
+	DEFINE_METHOD(vfs, client_init,
+		      ARG(4, uref_t, uref, char *, root_srvname,
+		          char *, cwd_srvname, int, buflen),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_METHOD(vfs, bind_update,
+		      ARG(2, uref_t, uref1, uref_t, uref2),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_LSYSCALL_METHOD(dup, NATIVE, SYS_dup,
+		      ARG(2, long long, file, int, newfd))
+
+	DEFINE_LSYSCALL_METHOD(dup2, SYS_dup2,
+		      ARG(3, long long, file, int, newfd, int, oldfd),
+		      ARCH(__arm__))
+
+	DEFINE_SIMPLE_METHOD(vfs, dup2_internal,
+		      ARG(3, int, oldfd, int, newfd,
+			  unsigned int, cnode_idx),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_LSYSCALL_METHOD(dup3, SYS_dup3,
+		      ARG(4, long long, file, int, newfd, int, flags, int, oldfd))
+
+	DEFINE_LSYSCALL_METHOD(close, NATIVE, SELFCALL, SYS_close,
+		      ARG(2, long long, fd_or_file, int, fd))
+
+	DEFINE_SIMPLE_METHOD(vfs, close_internal,
+		      ARG(2, int, fd, unsigned int, cnode_idx),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_LSYSCALL_METHOD(mount, NATIVE, SELFCALL, SYS_mount,
+		      ARG(5, const char *, src, const char *, tgt, const char *, fstype,
+			  unsigned long, flag, const char *, opts))
+
+	DEFINE_METHOD(vfs, mountpoint_del_mount,
+		      ARG(3, void *, mp, int, me_idx, unsigned int, nsid),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_METHOD(vfs, emergency_remount,
+		      ARG_NO,
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(vfs, openat_internal,
+		      ARG(5, unsigned int, cnode_idx, int, dfd,
+			  const char *, path, unsigned int, flags, unsigned int, mode),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_LSYSCALL_METHOD(openat, NATIVE, SELFCALL, SYS_openat,
+		      ARG(5, int, dfd, const char *, path, unsigned int, flags, unsigned int, mode, int, fd))
+
+	DEFINE_LSYSCALL_METHOD(open, SYS_open,
+		      ARG(3, const char *, path, unsigned int, flags, unsigned int, mode),
+		      ARCH(__arm__))
+
+	DEFINE_LSYSCALL_METHOD(open_by_handle_at, SYS_open_by_handle_at,
+		      ARG(4, int, mountdirfd, void *, handle, int, flags, int, fd))
+
+	DEFINE_LSYSCALL_METHOD(ftruncate64, NATIVE, SELFCALL, SYS_ftruncate64,
+		      ARG(4, long long, fd, long, ftruncate_dummy, long, len_low_addr, long, len_high_addr),
+		      ARCH(__arm__))
+
+	DEFINE_LSYSCALL_METHOD(ftruncate_arm, NATIVE, SELFCALL, SYS_ftruncate,
+		      ARG(4, long long, fd, long, ftruncate_dummy, long, len_low_addr, long, len_high_addr),
+		      ARCH(__arm__))
+
+	DEFINE_LSYSCALL_METHOD(ftruncate, NATIVE, SELFCALL, SYS_ftruncate,
+		      ARG(2, long long, fd, long, length),
+		      ARCH(__aarch64__))
+
+	DEFINE_LSYSCALL_METHOD(statx, SYS_statx,
+		      ARG(5, int, fd, const char *, path, int, flags,
+			  unsigned int, mask, void *, st))
+
+	DEFINE_LSYSCALL_METHOD(fstat, NATIVE, SELFCALL, SYS_fstat,
+		      ARG(2, long long, fd, void *, st))
+
+	DEFINE_METHOD(vfs, cnode_fstat,
+		      ARG(3, int, fd, __u32, cnode_idx, void *, st),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_LSYSCALL_METHOD(fstat64, NATIVE, SELFCALL, SYS_fstat64,
+		      ARG(2, long long, fd, void *, st),
+		      ARCH(__arm__))
+
+	DEFINE_LSYSCALL_METHOD(stat64, SYS_stat64,
+		      ARG(2, const char *, path, void *, st),
+		      ARCH(__arm__))
+
+	DEFINE_LSYSCALL_METHOD(stat, SYS_stat,
+		      ARG(2, const char *, path, void *, st),
+		      ARCH(__arm__))
+
+	DEFINE_LSYSCALL_METHOD(lstat64, SYS_lstat64,
+		      ARG(2, const char *, path, void *, st),
+		      ARCH(__arm__))
+
+	DEFINE_LSYSCALL_METHOD(lstat, SYS_lstat,
+		      ARG(2, const char *, path, void *, st),
+		      ARCH(__arm__))
+
+	DEFINE_METHOD(vfs, fstatat_internal,
+		      ARG(7, int, dfd, const char *, path,
+			  void *, st, unsigned int, flag,
+			  int, me_idx, int, link_cnt, int, actv_cnt),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_LSYSCALL_METHOD(fstatat, NATIVE, SELFCALL, SYS_newfstatat,
+		      ARG(4, int, dfd, const char *, path,
+			  void *, st, unsigned int, flag),
+			  ARCH(__aarch64__))
+
+	DEFINE_LSYSCALL_METHOD(fstatat, NATIVE, SELFCALL, SYS_fstatat64,
+		      ARG(4, int, dfd, const char *, path,
+			  void *, st, unsigned int, flag),
+			  ARCH(__arm__))
+
+	DEFINE_SIMPLE_METHOD(vfs, fstatat_nocheck,
+		      ARG(4, int, dfd, const char *, path,
+			  void *, st, unsigned int, flag),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_LSYSCALL_METHOD(statfs64, SYS_statfs64,
+		      ARG(3, const char *, path, size_t, size, void *, stfs),
+		      ARCH(__arm__))
+
+	DEFINE_LSYSCALL_METHOD(statfs, NATIVE, SELFCALL, SYS_statfs,
+		      ARG(2, const char *, path, void *, stfs))
+
+	DEFINE_LSYSCALL_METHOD(fstatfs64, SYS_fstatfs64,
+		      ARG(3, int, fd, size_t, size, void *, stfs),
+			  ARCH(__arm__))
+
+	DEFINE_LSYSCALL_METHOD(fstatfs, SYS_fstatfs,
+		      ARG(2, int, fd, void *, stfs))
+
+	DEFINE_LSYSCALL_METHOD(fsync, NATIVE, SYS_fsync,
+		      ARG(1, long long, fd))
+
+	DEFINE_LSYSCALL_METHOD(syncfs, SYS_syncfs,
+		      ARG(1, long long, fd))
+
+	DEFINE_LSYSCALL_METHOD(fdatasync, NATIVE, SYS_fdatasync,
+		      ARG(1, long long, fd))
+
+	DEFINE_LSYSCALL_METHOD(sync_file_range, SYS_sync_file_range,
+		      ARG(4, long long, fd, long, offset, long, nbytes, unsigned int, flags),
+		      ARCH(__aarch64__))
+
+	DEFINE_LSYSCALL_METHOD(sync_file_range2, SYS_sync_file_range2,
+		      ARG(6, long long, fd, unsigned int, flags, long, off_low_addr, long, off_high_addr,
+			  long, nbytes_low_addr, long, nbytes_high_addr),
+		      ARCH(__arm__))
+
+	DEFINE_LSYSCALL_METHOD(unmount, NATIVE, SELFCALL, SYS_umount2,
+		      ARG(2, const char *, path, unsigned int, flags))
+
+	DEFINE_LSYSCALL_METHOD(truncate64, SYS_truncate64,
+		      ARG(4, const char *, path, long, truncate_dummy, long, len_low_addr, long, len_high_addr),
+		      ARCH(__arm__))
+
+	DEFINE_LSYSCALL_METHOD(truncate_arm, SYS_truncate,
+		      ARG(4, const char *, path, long, truncate_dummy, long, len_low_addr, long, len_high_addr),
+		      ARCH(__arm__))
+
+	DEFINE_LSYSCALL_METHOD(truncate, SYS_truncate,
+		      ARG(2, const char *, path, unsigned long long, length),
+		      ARCH(__aarch64__))
+
+	DEFINE_SIMPLE_METHOD(vfs, is_dev_mounted,
+		      ARG(2, dev_t, major, dev_t, minor),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(vfs, fs_fork,
+		      ARG(5, int, fd, unsigned int, idx_src, unsigned int, idx_dst, unsigned int, idx_root, bool, copy_mfile),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(vfs, query_info,
+		      ARG(3, int, fd, unsigned int, cnode_idx, unsigned int, flags),
+		      RET(6, rref_t, rref, unsigned long long, filep,
+			  unsigned long long, file_idx, unsigned int, file_type,
+			  int, remote_fd, unsigned int, fastpath),
+		      SLOWDATA_NO)
+
+	DEFINE_LSYSCALL_METHOD_LONG(lseek, NATIVE, SELFCALL, SYS_lseek,
+		      ARG(3, long long, fd, long, offset, int, whence))
+
+	DEFINE_LSYSCALL_METHOD(_llseek, NATIVE, SELFCALL, SYS__llseek,
+		      ARG(5, long long, fd, unsigned long, offset_high, unsigned long, offset_low,
+			 long long *, res, int, whence),
+		      ARCH(__arm__))
+
+	DEFINE_SIMPLE_METHOD(vfs, trans,
+		      ARG(4, int, fd, const char *, data,
+			  int, pos, size_t, nbyte),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_LSYSCALL_METHOD(pipe2, NATIVE, SYS_pipe2,
+		      ARG(2, int *, fds, int, flags))
+
+	DEFINE_LSYSCALL_METHOD(pipe, SYS_pipe,
+		      ARG(1, int *, fds),
+		      ARCH(__arm__))
+
+	DEFINE_LSYSCALL_METHOD_LONG(tee, SYS_tee,
+		      ARG(4, int, fd_in, int, fd_out,
+			  size_t, len, unsigned int, flags))
+
+	DEFINE_LSYSCALL_METHOD_LONG(splice, SYS_splice,
+		      ARG(6,
+			  int, fd_in, void *, offset_in,
+			  int, fd_out, void *, offset_out,
+			  unsigned long, len, unsigned int, flags))
+
+	DEFINE_LSYSCALL_METHOD_LONG(vmsplice, SYS_vmsplice,
+		      ARG(4, int, fd, const void *, uvec, unsigned long, vlen,
+			  unsigned int, flags))
+
+	DEFINE_SIMPLE_METHOD(vfs, revoke_process,
+		      ARG(1, unsigned int, cnode_idx),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(vfs, setrlimit,
+		      ARG(4, unsigned int, cnode_idx, unsigned long long, rlim_cur,
+			  unsigned long long, rlim_max, unsigned int, type),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(vfs, get_ns,
+		      ARG(4, unsigned int, cnode_idx, unsigned int, oldid,
+			  unsigned int, newid, int, flags),
+		      RET(1, unsigned int, curr_nsid),
+		      SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(vfs, put_ns,
+		      ARG(3, unsigned int, nsid, int, me_idx, int, flags),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_LSYSCALL_METHOD(eventfd2, SYS_eventfd2,
+		      ARG(2, unsigned int, count, int, flags))
+
+	DEFINE_SIMPLE_METHOD(vfs, write_eventfd,
+		      ARG(4, int, fd,  const void *, buf, size_t, buf_len,
+			  unsigned int, cnode_idx),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_LSYSCALL_METHOD(timerfd_create, SYS_timerfd_create,
+			       ARG(2, int, clockid, int, flags))
+
+	DEFINE_LSYSCALL_METHOD(timerfd_settime, SYS_timerfd_settime,
+			       ARG(4, long long, fd, int, flags,
+				   const void *, new_value, void *, old_value))
+
+	DEFINE_LSYSCALL_METHOD(timerfd_gettime, SYS_timerfd_gettime,
+			       ARG(2, long long, fd, void *, curr_value))
+
+	DEFINE_METHOD(vfs, timerfd_cancel,
+		      ARG_NO,
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_METHOD(vfs, timerfd_next_alarm_pid_and_name,
+		      ARG(3, int *, pid_rp, char *, name_rp, int, name_size),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(vfs, open_exec,
+		      ARG(4, int, dfd, unsigned int, cnode_idx,
+		          unsigned int, cnode_idx_for_root, const char *, path),
+		      RET(6, int, uapp_rfd, int, sys_rfd, int, sys_fd, unsigned int, type,
+			  bool, mnt_nosuid, struct vfs_file_cred, file_cred),
+		      SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(vfs, close_exec,
+		      ARG(3, int, sys_rfd, unsigned int, cnode_idx, int, uapp_rfd),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_LSYSCALL_METHOD(ioctl, NATIVE, SELFCALL, SYS_ioctl,
+		      ARG(3, long long, fd, unsigned int, cmd, unsigned long, arg))
+
+	DEFINE_SIMPLE_METHOD(vfs, ioctl_nocheck,
+		      ARG(3, long long, fd, unsigned int, cmd, unsigned long, arg),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_LSYSCALL_METHOD(ioprio_set, SYS_ioprio_set,
+		      ARG(3, int, which, int, who, int, ioprio))
+
+	DEFINE_LSYSCALL_METHOD(ioprio_get, SYS_ioprio_get,
+		      ARG(2, int, which, int, who))
+
+	DEFINE_LSYSCALL_METHOD_LONG(read, NATIVE, SELFCALL, SYS_read,
+		      ARG(3, long long, fd, void *, buf, size_t, count))
+
+	DEFINE_LSYSCALL_METHOD_LONG(pread64_arm, NATIVE, SELFCALL, SYS_pread64,
+		      ARG(6, long long, fd, void *, buf, size_t, count, long, blob,
+			  long, off_low_addr, long, off_high_addr),
+		      ARCH(__arm__))
+
+	DEFINE_LSYSCALL_METHOD_LONG(pread64, NATIVE, SELFCALL, SYS_pread64,
+		      ARG(4, long long, fd, void *, buf, size_t, count, long long, offset),
+		      ARCH(__aarch64__))
+
+	DEFINE_LSYSCALL_METHOD_LONG(readv, SYS_readv,
+		      ARG(3, long long, fd, const void *, vec, int, vlen))
+
+	DEFINE_LSYSCALL_METHOD_LONG(preadv_arm, SYS_preadv,
+		      ARG(5, long long, fd, const void *, vec, int, vlen,
+			  unsigned long, off_low, unsigned long, off_high),
+		      ARCH(__arm__))
+
+	DEFINE_LSYSCALL_METHOD_LONG(preadv, SYS_preadv,
+		      ARG(4, long long, fd, const void *, vec, int, vlen, long long, offset),
+		      ARCH(__aarch64__))
+
+	DEFINE_LSYSCALL_METHOD_LONG(preadv2_arm, SYS_preadv2,
+		      ARG(6, long long, fd, const void *, vec, int, vlen,
+			  unsigned long, off_low, unsigned long, off_high, int, flags),
+		      ARCH(__arm__))
+
+	DEFINE_LSYSCALL_METHOD_LONG(preadv2, SYS_preadv2,
+		      ARG(6, long long, fd, const void *, vec, int, vlen,
+			  unsigned long, off_low, unsigned long, off_high, int, flags),
+		      ARCH(__aarch64__))
+
+	DEFINE_LSYSCALL_METHOD(getcwd, SYS_getcwd,
+		      ARG(2, char *, buf, size_t, size))
+
+	DEFINE_METHOD(vfs, get_process_cwdrootexe,
+		      ARG(3, unsigned int, cnode_idx, int, type, char *, buf),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_LSYSCALL_METHOD_LONG(readdir, NATIVE, SYS_getdents64,
+		      ARG(3, int, fd, void *, buf, size_t, size))
+
+	DEFINE_LSYSCALL_METHOD_LONG(write, NATIVE, SELFCALL, SYS_write,
+		      ARG(3, long long, fd, const void *, buf, size_t, count))
+
+	DEFINE_LSYSCALL_METHOD_LONG(pwrite64_arm, NATIVE, SELFCALL, SYS_pwrite64,
+		      ARG(6, long long, fd, const void *, buf, size_t, count, long, blob,
+			  long, off_low_addr, long, off_high_addr),
+		      ARCH(__arm__))
+
+	DEFINE_LSYSCALL_METHOD_LONG(pwrite64, NATIVE, SELFCALL, SYS_pwrite64,
+		      ARG(4, long long, fd, const void *, buf, size_t, count, long long, offset),
+		      ARCH(__aarch64__))
+
+	DEFINE_LSYSCALL_METHOD_LONG(writev, NATIVE, SELFCALL, SYS_writev,
+		      ARG(3, long long, fd, const void *, vec, int, vlen))
+
+	DEFINE_LSYSCALL_METHOD_LONG(pwritev_arm, SYS_pwritev,
+		      ARG(5, long long, fd, const void *, vec, int, vlen,
+			  unsigned long, off_low, unsigned long, off_high),
+		      ARCH(__arm__))
+
+	DEFINE_LSYSCALL_METHOD_LONG(pwritev, SYS_pwritev,
+		      ARG(4, long long, fd, const void *, vec, int, vlen, long long, offset),
+		      ARCH(__aarch64__))
+
+	DEFINE_LSYSCALL_METHOD_LONG(pwritev2_arm, SYS_pwritev2,
+		      ARG(6, long long, fd, const void *, vec, int, vlen,
+			  unsigned long, off_low, unsigned long, off_high, int, flags),
+		      ARCH(__arm__))
+
+	DEFINE_LSYSCALL_METHOD_LONG(pwritev2, SYS_pwritev2,
+		      ARG(6, long long, fd, const void *, vec, int, vlen,
+			  unsigned long, off_low, unsigned long, off_high, int, flags),
+		      ARCH(__aarch64__))
+
+	DEFINE_LSYSCALL_METHOD(sync, NATIVE, SELFCALL, SYS_sync,
+		      ARG_NO)
+
+	DEFINE_METHOD(vfs, do_sync,
+		      ARG_NO,
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_METHOD(vfs, utimensat_internal,
+		      ARG(7, int, dfd, const char*, path,
+			  const void *, tsp,
+			  unsigned int, flag, int, me_idx,
+			  int, link_cnt, int, actv_cnt),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_LSYSCALL_METHOD(utimensat, SYS_utimensat,
+		      ARG(4, int, dfd, const char*, path,
+			  const void *, tsp,
+			  unsigned int, flag))
+
+	DEFINE_METHOD(vfs, futimens,
+		      ARG(2, int, fd, const void *, tsp),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_METHOD(vfs, futimesat_internal,
+		      ARG(6, int, dfd, const char*, path,
+			  const void *, times,
+			  int, me_idx,
+			  int, link_cnt, int, actv_cnt),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_LSYSCALL_METHOD(futimesat, SYS_futimesat,
+		      ARG(3, int, dfd, const char*, path,
+			  const void *, times),
+			  ARCH(__arm__))
+
+	DEFINE_LSYSCALL_METHOD(utimes, SYS_utimes,
+		      ARG(2, const char *, path, const void *, times),
+		      ARCH(__arm__))
+
+	DEFINE_METHOD(vfs, futimes,
+		      ARG(2, int, fd, const void *, times),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_LSYSCALL_METHOD(chmod, SYS_chmod,
+		      ARG(2, const char *, path, mode_t, mode),
+		      ARCH(__arm__))
+
+	DEFINE_LSYSCALL_METHOD(fchmod, NATIVE, SELFCALL, SYS_fchmod,
+		      ARG(2, long long, fd, mode_t, mode))
+
+	DEFINE_METHOD(vfs, fchmodat_internal,
+		      ARG(6, int, dfd, const char *, path,
+			  mode_t, mode, int, me_idx,
+		          int, link_cnt, int, actv_cnt),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_LSYSCALL_METHOD(fchmodat, NATIVE, SYS_fchmodat,
+		      ARG(4, int, dfd, const char *, path,
+			  mode_t, mode, int, flags))
+
+	DEFINE_SIMPLE_METHOD(vfs, drop_caches,
+		      ARG(3, unsigned int, mode, int, max, int, reason),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_METHOD(vfs, do_drop_caches,
+		      ARG(3, unsigned int, mode, int, max, int, reason),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_LSYSCALL_METHOD(fadvise64_64, NATIVE, SYS_fadvise64_64,
+		      ARG(7, long long, fd, long, fadvise_dummy, long, off_low_addr, long, off_high_addr,
+			  long, len_low_addr, long, len_high_addr, int, fadvice),
+		      ARCH(__arm__))
+
+	DEFINE_LSYSCALL_METHOD(fadvise64, NATIVE, SYS_fadvise64,
+		      ARG(4, long long, fd, long, offset, long, len, int, fadvice),
+		      ARCH(__aarch64__))
+
+	DEFINE_LSYSCALL_METHOD(readahead_arm, SYS_readahead,
+		      ARG(5, long long, fd, long, rzero, long, off_low_addr, long, off_high_addr, size_t, count),
+		      ARCH(__arm__))
+
+	DEFINE_LSYSCALL_METHOD(readahead, SYS_readahead,
+		      ARG(3, long long, fd, long, offset, size_t, count),
+		      ARCH(__aarch64__))
+
+	DEFINE_METHOD(vfs, get_fd_path,
+		      ARG(4, int, fd, unsigned int, cnode_idx, char *, path, int, pathlen),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(vfs, sysmgr_get_fd_path,
+		      ARG(3, int, fd, unsigned int, cnode_idx, char *, path),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(vfs, sysmgr_get_fid_path,
+		      ARG(4, unsigned int, cnode_idx, unsigned long, fid, void *, buf,
+			  size_t, buflen),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_LSYSCALL_METHOD(fcntl, NATIVE, SYS_fcntl,
+			     ARG(4, long long, file, int, cmd, unsigned long, val, int, fd))
+
+	DEFINE_LSYSCALL_METHOD(fcntl64, NATIVE, SYS_fcntl64,
+			     ARG(4, long long, file, int, cmd, unsigned long, val, int, fd),
+			     ARCH(__arm__))
+
+	DEFINE_LSYSCALL_METHOD(quotactl, SYS_quotactl,
+			     ARG(4, unsigned int, cmd, const char *, special, int, id,
+				 char *, usr_buf))
+
+	DEFINE_LSYSCALL_METHOD_LONG(copy_file_range, SYS_copy_file_range,
+			     ARG(6, int, fd_in, long long *, off_in,
+				 int, fd_out, long long *, off_out,
+				 size_t, len, unsigned int, flags))
+
+	DEFINE_LSYSCALL_METHOD_LONG(sendfile_arm, SYS_sendfile,
+			     ARG(4, int, out_fd, int, in_fd, long long *, offset,
+				 size_t, count),
+			     ARCH(__arm__))
+
+	DEFINE_LSYSCALL_METHOD_LONG(sendfile, SYS_sendfile,
+			     ARG(4, int, out_fd, int, in_fd, long long *, offset,
+				 size_t, count),
+			     ARCH(__aarch64__))
+
+	DEFINE_LSYSCALL_METHOD_LONG(sendfile64, SYS_sendfile64,
+			     ARG(4, int, out_fd, int, in_fd, long long *, offset,
+				 size_t, count),
+			     ARCH(__arm__))
+
+	DEFINE_METHOD(vfs, same_file,
+		      ARG(2, int, fd1, int, fd2),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_METHOD(vfs, access_internal,
+		      ARG(2, const char *, path, int, mode),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_LSYSCALL_METHOD(access, SYS_access,
+		      ARG(2, const char *, path, int, mode),
+		      ARCH(__arm__))
+
+	DEFINE_METHOD(vfs, unix_access,
+		      ARG(2, const char *, path, int, mode),
+		      RET(2, unsigned long long, dev_id, unsigned long, index),
+		      SLOWDATA_NO)
+
+	DEFINE_LSYSCALL_METHOD(faccessat, SYS_faccessat,
+		      ARG(3, int, dfd, const char *, path,
+			  int, mode))
+
+	DEFINE_LSYSCALL_METHOD(faccessat2, NATIVE, SELFCALL, SYS_faccessat2,
+		      ARG(4, int, dfd, const char *, path,
+			  int, mode, int, flags))
+
+	DEFINE_LSYSCALL_METHOD(flock, SYS_flock,
+		      ARG(2, long long, fd, unsigned int, cmd))
+
+	DEFINE_METHOD(vfs, fchownat_internal,
+		      ARG(8, int, dfd, const char *, path,
+			  uid_t, uid, gid_t, gid,
+			  unsigned int, flag, int, me_idx,
+			  int, link_cnt, int, actv_cnt),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_LSYSCALL_METHOD(fchownat, NATIVE, SELFCALL, SYS_fchownat,
+		      ARG(5, int, dfd, const char *, path,
+			  uid_t, uid, gid_t, gid,
+			  unsigned int, flag))
+
+	DEFINE_LSYSCALL_METHOD(chown, SYS_chown,
+		      ARG(3, const char *, path,
+			  uid_t, uid, gid_t, gid),
+		      ARCH(__arm__))
+
+	DEFINE_LSYSCALL_METHOD(chown32, SYS_chown32,
+		      ARG(3, const char *, path,
+			  uid_t, uid, gid_t, gid),
+		      ARCH(__arm__))
+
+	DEFINE_LSYSCALL_METHOD(lchown, SYS_lchown,
+		      ARG(3, const char *, path,
+			  uid_t, uid, gid_t, gid),
+		      ARCH(__arm__))
+
+	DEFINE_LSYSCALL_METHOD(lchown32, SYS_lchown32,
+		      ARG(3, const char *, path,
+			  uid_t, uid, gid_t, gid),
+		      ARCH(__arm__))
+
+	DEFINE_LSYSCALL_METHOD(fchown, NATIVE, SELFCALL, SYS_fchown,
+		      ARG(3, long long, fd, uid_t, uid, gid_t, gid))
+
+	DEFINE_LSYSCALL_METHOD(fchown32, NATIVE, SELFCALL, SYS_fchown32,
+		      ARG(3, long long, fd, uid_t, uid, gid_t, gid),
+		      ARCH(__arm__))
+
+	DEFINE_METHOD(vfs, binderfs_read_debugfs_info,
+		      ARG(4, uint64_t, shm_key, size_t, len, int, type, int, pid),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_LSYSCALL_METHOD(signalfd4, SYS_signalfd4,
+		      ARG(4, int, fd, const void *, sigs, size_t, sigsize, int, flags))
+
+	DEFINE_LSYSCALL_METHOD(signalfd, SYS_signalfd,
+		      ARG(3, int, fd, const void *, sigs, size_t, sigsize),
+		      ARCH(__arm__))
+
+	DEFINE_LSYSCALL_METHOD(epoll_create, SYS_epoll_create,
+		      ARG(1, long, size),
+		      ARCH(__arm__))
+
+	DEFINE_LSYSCALL_METHOD(epoll_create, __LSYSCALL_COMPAT_EPOLL_CREATE,
+		      ARG(1, long, size),
+		      ARCH(__aarch64__))
+
+	DEFINE_LSYSCALL_METHOD(epoll_create1, SYS_epoll_create1,
+		      ARG(1, long, flags))
+
+	DEFINE_LSYSCALL_METHOD(epoll_ctl_ng, SYS_epoll_ctl,
+		      ARG(6, unsigned long long, epfd_file, unsigned long long, fd_file,
+		          int, epfd, int, op, int, fd, const void *, event))
+
+	DEFINE_SIMPLE_METHOD(vfs, epoll_rref_grant,
+		      ARG(4, int, epfd, __u32, ap_cnode_idx, rref_t, in_rref, rref_t *, out_rref),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(vfs, epoll_rref_acquire,
+		      ARG(3, int, epfd, __u32, ap_cnode_idx, void *, ep),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_METHOD(vfs, signalfd_notify,
+		      ARG(3, unsigned int, cnode_idx, const void *, buf, int, fdcnt),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_METHOD(vfs, pid_io_stats,
+		      ARG(1, unsigned int, pid),
+		      RET(1, struct io_account, io_ac),
+		      SLOWDATA_NO)
+
+	DEFINE_LSYSCALL_METHOD(fallocate_arm, NATIVE, SYS_fallocate,
+		      ARG(6, long long, fd, int, mode, long, off_low_adr, long, off_high_addr,
+			  long, len_low_addr, long, len_high_addr),
+		      ARCH(__arm__))
+
+	DEFINE_LSYSCALL_METHOD(fallocate, NATIVE, SYS_fallocate,
+		      ARG(4, long long, fd, int, mode, long, offset, long, len),
+		      ARCH(__aarch64__))
+
+	DEFINE_METHOD(vfs, set_cwdroot,
+		      ARG(5, int, dfd, int, type, char *, newpath,
+			  char *, new_server, int *, me_idx),
+		      RET_NO,
+		      SLOWDATA)
+
+	DEFINE_LSYSCALL_METHOD(pivot_root, SYS_pivot_root,
+		      ARG(2, const char *, new_root, const char *, put_old))
+
+	DEFINE_LSYSCALL_METHOD(fchdir, SYS_fchdir,
+		      ARG(1, long long, fd))
+
+	DEFINE_LSYSCALL_METHOD(chdir, SYS_chdir,
+		      ARG(1, const char *, path))
+
+	DEFINE_LSYSCALL_METHOD(chroot, SYS_chroot,
+		      ARG(1, const char *, path))
+
+	DEFINE_METHOD(vfs, disable_cwdroot,
+		      ARG(1, int, type),
+		      RET_NO,
+		      SLOWDATA)
+
+	DEFINE_METHOD(vfs, update_cwdroot,
+		      ARG(2, unsigned int, cnode_idx, int, type),
+		      RET_NO,
+		      SLOWDATA)
+
+	DEFINE_METHOD(vfs, handle_global_locks,
+		      ARG(3, unsigned int, cmd, unsigned int, cnode_idx,
+			  unsigned long, lock_id),
+		      RET(1, unsigned long, lock_id),
+		      SLOWDATA_NO)
+
+	DEFINE_METHOD(vfs, send_fd,
+		      ARG(3, int, send_fd, unsigned int, send_cidx,
+			  unsigned int, recv_cidx),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_METHOD(vfs, recv_fd,
+		      ARG(4, int, sfiles_idx, unsigned int, send_cidx,
+			  int, recv_fd, unsigned int, recv_cidx),
+		      RET(1, int, type),
+		      SLOWDATA_NO)
+
+	DEFINE_METHOD(vfs, get_recv_fda,
+		      ARG(3, int, fd, unsigned long long, ptr, void *, recv_fda),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_METHOD(vfs, sfile_put,
+		      ARG(3, unsigned int, send_cidx, unsigned int, recv_cidx,
+			  int, sfiles_idx),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_LSYSCALL_METHOD_LONG(readlink, SYS_readlink,
+		      ARG(3, const char *, path, char *, buf,
+			  size_t, bufsize),
+		      ARCH(__arm__))
+
+	DEFINE_METHOD_LONG(vfs, readlinkat_internal,
+		      ARG(7, int, dfd, const char *, path, char *, buf,
+			  size_t, bufsize, int, me_idx,
+			  int, link_cnt, int, actv_cnt),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_LSYSCALL_METHOD_LONG(readlinkat, NATIVE, SELFCALL, SYS_readlinkat,
+		      ARG(4, int, dfd, const char *, path, char *, buf,
+			  size_t, bufsize))
+
+	DEFINE_METHOD(vfs, get_slabinfo,
+		      ARG(2, char *, msg, unsigned, msg_len),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_METHOD(vfs, do_get_slabinfo,
+		      ARG(2, char *, msg, unsigned, msg_len),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_METHOD(vfs, fscache_print_info,
+		      ARG(1, int, count),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_LSYSCALL_METHOD(memfd_create, SYS_memfd_create,
+		      ARG(2, const char *, name, unsigned int, flags))
+
+	DEFINE_SIMPLE_METHOD(vfs, mknod_internal,
+		      ARG(3, const char *, path,
+			  unsigned int, mode, unsigned long long, devno),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_LSYSCALL_METHOD(mknod, SYS_mknod,
+		      ARG(3, const char *, path,
+			  unsigned int, mode, unsigned long, devno),
+		      ARCH(__arm__))
+
+	DEFINE_METHOD(vfs, mknodat_internal,
+		      ARG(7, int, dfd, const char *, path,
+			  unsigned int, mode, unsigned long, devno,
+			  int, me_idx, int, link_cnt, int, actv_cnt),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_LSYSCALL_METHOD(mknodat, NATIVE, SELFCALL, SYS_mknodat,
+		      ARG(4, int, dfd, const char *, path,
+			  unsigned int, mode, unsigned long, devno))
+
+	DEFINE_METHOD(vfs, unix_mknod,
+		      ARG(3, const char *, path,
+			  unsigned int, mode, unsigned long long, devno),
+		      RET(2, unsigned long long, dev_id, unsigned long, index),
+		      SLOWDATA_NO)
+
+	DEFINE_METHOD(vfs, unix_put_node,
+		      ARG(2, unsigned long long, dev_id, unsigned long, index),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_LSYSCALL_METHOD(rename, SYS_rename,
+		      ARG(2, const char *, old_path, const char *, new_path),
+		      ARCH(__arm__))
+
+	DEFINE_LSYSCALL_METHOD(renameat, NATIVE, SELFCALL, SYS_renameat,
+		      ARG(4, int, old_dfd, const char *, old_path,
+			  int, new_dfd, const char *, new_path))
+
+	DEFINE_LSYSCALL_METHOD(renameat2, NATIVE, SELFCALL, SYS_renameat2,
+		      ARG(5, int, old_dfd, const char *, old_path,
+			  int, new_dfd, const char *, new_path, unsigned int, flags))
+
+	DEFINE_LSYSCALL_METHOD(mkdir, SYS_mkdir,
+		      ARG(2, const char *, path, mode_t, mode),
+		      ARCH(__arm__))
+
+	DEFINE_METHOD(vfs, mkdirat_internal,
+		      ARG(6, int, dfd, const char *, path,
+			  mode_t, mode, int, me_idx,
+			  int, link_cnt, int, actv_cnt),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_LSYSCALL_METHOD(mkdirat, NATIVE, SELFCALL, SYS_mkdirat,
+		      ARG(3, int, dfd, const char *, path,
+			  mode_t, mode))
+
+	DEFINE_LSYSCALL_METHOD(link, SYS_link,
+		      ARG(2, const char *, old_path, const char *, new_path),
+		      ARCH(__arm__))
+
+	DEFINE_LSYSCALL_METHOD(linkat, NATIVE, SELFCALL, SYS_linkat,
+		      ARG(5, int, old_dfd, const char *, old_path,
+			  int, new_dfd, const char *, new_path, int, flags))
+
+	DEFINE_LSYSCALL_METHOD(unlink, SYS_unlink,
+			       ARG(1, const char *, path),
+			       ARCH(__arm__))
+
+	DEFINE_METHOD(vfs, unlinkat_internal,
+		      ARG(6, int, dfd, const char *, path,
+			  unsigned int, flag, int, me_idx,
+			  int, link_cnt, int, actv_cnt),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_LSYSCALL_METHOD(unlinkat, NATIVE, SELFCALL, SYS_unlinkat,
+		      ARG(3, int, dfd, const char *, path,
+			  unsigned int, flag))
+
+	DEFINE_LSYSCALL_METHOD(rmdir, SYS_rmdir,
+		      ARG(1, const char *, path),
+		      ARCH(__arm__))
+
+	DEFINE_LSYSCALL_METHOD(symlink, SYS_symlink,
+		      ARG(2, const char *, target,
+			  const char*, path),
+		      ARCH(__arm__))
+
+	DEFINE_METHOD(vfs, symlinkat_internal,
+		      ARG(6, const char *, target, int, dfd,
+			  const char*, path, int, me_idx,
+			  int, link_cnt, int, actv_cnt),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_LSYSCALL_METHOD(symlinkat, NATIVE, SELFCALL, SYS_symlinkat,
+		      ARG(3, const char *, target, int, dfd,
+			  const char*, path))
+
+	DEFINE_LSYSCALL_METHOD_LONG(getxattr, NATIVE, SELFCALL, SYS_getxattr,
+		      ARG(4, const char *, path, const char *, name,
+		          void *, value, size_t, size))
+
+	DEFINE_LSYSCALL_METHOD_LONG(lgetxattr, SYS_lgetxattr,
+		      ARG(4, const char *, path, const char *, name,
+		          void *, value, size_t, size))
+
+	DEFINE_LSYSCALL_METHOD_LONG(fgetxattr, SYS_fgetxattr,
+		      ARG(4, long long, fd, const char *, name,
+		          void *, value, size_t, size))
+
+	DEFINE_LSYSCALL_METHOD(setxattr, NATIVE, SELFCALL, SYS_setxattr,
+		      ARG(5, const char *, path, const char *, name,
+		          const char *, value, size_t, size, int, flags))
+
+	DEFINE_LSYSCALL_METHOD(lsetxattr, SYS_lsetxattr,
+		      ARG(5, const char *, path, const char *, name,
+		          const char *, value, size_t, size, int, flags))
+
+	DEFINE_LSYSCALL_METHOD(fsetxattr, NATIVE, SELFCALL, SYS_fsetxattr,
+		      ARG(5, long long, fd, const char *, name,
+		          const char *, value, size_t, size, int, flags))
+
+	DEFINE_LSYSCALL_METHOD_LONG(listxattr, SYS_listxattr,
+		      ARG(3, const char *, path, char *, list,
+		          size_t, size))
+
+	DEFINE_LSYSCALL_METHOD_LONG(llistxattr, SYS_llistxattr,
+		      ARG(3, const char *, path, char *, list,
+		          size_t, size))
+
+	DEFINE_LSYSCALL_METHOD_LONG(flistxattr, SYS_flistxattr,
+		      ARG(3, long long, fd, char *, list,
+		          size_t, size))
+
+	DEFINE_LSYSCALL_METHOD(removexattr, NATIVE, SELFCALL, SYS_removexattr,
+		      ARG(2, const char *, path, const char *, name))
+
+	DEFINE_LSYSCALL_METHOD(lremovexattr, SYS_lremovexattr,
+		      ARG(2, const char *, path, const char *, name))
+
+	DEFINE_LSYSCALL_METHOD(fremovexattr, SYS_fremovexattr,
+		      ARG(2, long long, fd, const char *, name))
+
+/**
+ * @brief		Call file system to check mmap permission, increase the
+ *		      file reference count and return the file node info
+ * @param fd		File descriptor of the mmapped file
+ * @param cnode_idx	The cnode index of the uapp which mmaps the file
+ * @param offset	Posix param in mmap describes file offset mmap starts
+ * @param len		Posix param in mmap describes file length of mapping
+ * @param prot		Posix param in mmap describes the desired memory protection
+ *		      of the mapping
+ * @param  flags	Posix param in mmap describes usage info of the mapping
+ * @return index	File index in fs svrp
+ * @return dev_id	Device id of fs mount point in fs svrp
+ * @return fid		Index of FILE struct of mmapped file in fs svrp
+ * @return err		Result of checking mmap permission, EOK means the check
+ *		      is passed, other err value shows the failure reason
+ */
+	DEFINE_SIMPLE_METHOD(vfs, iommap,
+		      ARG(9, int, fd, rref_t, vs_rref, unsigned int, vs_cnode_idx,
+			  uintptr_t, vaddr, size_t, aligned_len,
+			  unsigned int, prot, unsigned int, flags,
+			  long long, offset, bool, iomap_prepare_ahead),
+		      RET(3, unsigned long long, rvaddr, unsigned int, iomem_id, unsigned int, cnode_idx),
+		      SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(vfs, mmap_create,
+		      ARG(6, unsigned long, fd_file, long long, offset,
+			  unsigned long long, len, unsigned int, cnode_idx,
+			  unsigned int, prot, unsigned int, flags),
+		      RET(12, unsigned int, index, unsigned int, setprot, unsigned long long, dev_id,
+			  unsigned long, fid, unsigned int, pagesize, unsigned
+			  long long, magic, unsigned int, dax, unsigned int, seals,
+			  unsigned int, i_generation, unsigned int, huge, uintptr_t, vaddr,
+			  bool, is_anon),
+		      SLOWDATA_NO)
+
+/**
+ * @brief		Inform file system to decrease the FILE reference count
+ * @param fid		Index of FILE struct of mmapped file in fs svrp
+ * @param cnode_idx	The cnode index of the uapp which mmaps the file
+ * @return err		Result of release_file operation, EOK means all going well
+ */
+	DEFINE_SIMPLE_METHOD(vfs, mmap_release_file,
+		      ARG(2, unsigned long, fid, unsigned int, cnode_idx),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+/**
+ * @brief		Call file system to check mprotect permission
+ * @param fid		Index of FILE struct of mmapped file in fs svrp
+ * @param cnode_idx	The cnode index of the uapp which mmaps the file
+ * @param offset	Posix param in mmap describes file offset mmap starts
+ * @param len		Posix param in mmap describes file length of mapping
+ * @param prot		Posix param in mmap describes the desired memory protection
+ *		      of the mapping
+ * @return err		Result of checking mprotect permission, EOK means the check
+ *		      is passed, other err value shows the failure reason
+ */
+	DEFINE_SIMPLE_METHOD(vfs, mmap_change,
+		      ARG(5, unsigned long, fid, long long, offset, unsigned long long, len,
+			  unsigned int, cnode_idx,
+			  unsigned int, prot),
+		      RET_NO,
+		      SLOWDATA_NO)
+/**
+ * @brief		Call file system to check mprotect permission
+ * @param fid		Index of FILE struct of mmapped file in fs svrp
+ * @param cnode_idx	The cnode index of the uapp which mmaps the file
+ * @param prot		Posix param in mmap describes the desired memory protection
+ *		      of the mapping
+ * @param shared	Posix param in mmap describes file mapping is or not shared
+ * @return err		Result of checking mprotect permission, EOK means the check
+ *		      is passed, other err value shows the failure reason
+ */
+	DEFINE_SIMPLE_METHOD(vfs, mprotect_check,
+		      ARG(4, unsigned long, fid,
+			  unsigned int, cnode_idx,
+			  unsigned int, prot,
+			  bool, shared),
+		      RET_NO,
+		      SLOWDATA_NO)
+/**
+ * @brief		Call file system to fill the required single page using mpool
+ * @param fid		Index of FILE struct of mmapped file in fs svrp
+ * @param cnode_idx	The cnode index of the uapp which mmaps the file
+ * @param node_page_idx	The page offset of the fault page
+ * @param flags		store SHM_O_CONSUME_RESERVE which is only used when filling
+ *			huge page into fscache.
+ * @return mpool_id	The mpool_id which is used to fill in the fault page
+ * @return mpool_page_idx The page offset of the mpool to fill int the fault page
+ * @return err		Result of mmap_fill_page operation, EOK means all going well
+ */
+	DEFINE_SIMPLE_METHOD(vfs, mmap_fill_page,
+		      ARG(4, unsigned long, fid, unsigned long long, node_page_idx,
+			  unsigned int, cnode_idx, unsigned long long, flags),
+		      RET(1, unsigned long long, vaddr),
+		      SLOWDATA_NO)
+
+/**
+ * @brief		Call file system to fetch the required single page
+ * @param fid		Index of FILE struct of mmapped file in fs svrp
+ * @param cnode_idx	The cnode index of the uapp which mmaps the file
+ * @param node_page_idx	The page offset of the fault page
+ * @return vaddr	The addr of the mpool to fill int the fault page
+ * @return err		Result of mmap_query_page operation, EOK means all going well
+ */
+	DEFINE_SIMPLE_METHOD(vfs, mmap_fetch_page,
+		      ARG(4, unsigned long, fid, unsigned long long, node_page_idx,
+			  unsigned int, cnode_idx, bool, set_mmap),
+		      RET(1, unsigned long long, vaddr),
+		      SLOWDATA_NO)
+
+/**
+ * @brief		Call file system to change the status of single page in mapping
+ * @param index		File index in fs svrp
+ * @param dev_id	Device id of fs mount point in fs svrp
+ * @param fid		Index of FILE struct of mmapped file in fs svrp
+ * @param cnode_idx	The cnode index of the uapp which mmaps the file
+ * @param node_page_idx	The page offset of the fault page
+ * @param flag		The flag to indicate the change status
+ * @return err		Result of mmap_change_page operation, EOK means all going well
+ */
+	DEFINE_SIMPLE_METHOD(vfs, mmap_change_page,
+		      ARG(7, unsigned int, index, unsigned long long, dev_id,
+			  unsigned long, fid, unsigned int, cnode_idx,
+			  unsigned long long, node_page_idx, unsigned int, flag,
+			  int, mmapcnt),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+/**
+ * @brief		Call file system to do fallocate for madvise_remove
+ * @param fid		Index of FILE struct of mmapped file in fs svrp
+ * @param offset	Posix param in mmap describes file offset mmap starts
+ * @param length	Posix param in mmap describes file length of mapping
+ * @param mode		The mode of fallocate
+ * @param cnode_idx	The cnode index of the uapp which mmaps the file
+ * @return err		Result of mmap_fallocate, EOK means all going well
+ */
+	DEFINE_SIMPLE_METHOD(vfs, mmap_fallocate,
+		      ARG(5, unsigned long, fid, unsigned long long, offset,
+			  unsigned long long, length, int, mode, unsigned int, cnode_idx),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_METHOD(vfs, fdtable_acquire,
+		      ARG(4, int, start, int, type, unsigned int, cnode_idx,
+			  unsigned int, flag),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(vfs, anon_register_devhost,
+		      ARG(1, uref_t, dh_ap_uref),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(vfs, get_unused_fd,
+		      ARG(1, unsigned int, flags),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(vfs, put_unused_fd,
+		      ARG(1, int, fd),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(vfs, fd_info_update,
+		      ARG(5, int, fd, unsigned long long, file_id,
+			     const char *, user_name, unsigned int, length,
+			     unsigned int, dev_fops_flags),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(vfs, alloc_unused_fd,
+		      ARG(5, unsigned int, flags, unsigned long long, file_id,
+			     const char *, user_name, unsigned int, length,
+			     unsigned int, dev_fops_flags),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_METHOD(vfs, get_root_path,
+		      ARG(3, unsigned int, cnode_idx, char *, buf, int, buflen),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_METHOD(vfs, transfs_put_dentry,
+		      ARG(2, unsigned int, sb_index, unsigned int, d_index),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_METHOD(vfs, transfs_query_dinfo,
+		      ARG(3, int, dfd, unsigned int, flag, const char *, path),
+		      RET(2, unsigned int, s_index, unsigned int, d_index),
+		      SLOWDATA_NO)
+
+	DEFINE_METHOD(vfs, transfs_fget,
+		      ARG(1, int, fd),
+		      RET(4, unsigned int, sb_index, unsigned int, f_index,
+			     unsigned long long, hm_filp, unsigned int, me_index),
+		      SLOWDATA_NO)
+
+	DEFINE_METHOD(vfs, do_trans_fget,
+		      ARG(1, int, fd),
+		      RET(3, unsigned int, sb_index, unsigned int, f_index,
+			     unsigned long long, hm_filp),
+		      SLOWDATA_NO)
+
+	DEFINE_METHOD(vfs, transfs_fput,
+		      ARG(2, unsigned int, me_index, unsigned long long, hm_filp),
+		      RET_NO,
+		      SLOWDATA_NO)
+	DEFINE_METHOD(vfs, do_trans_fput,
+		      ARG(1, unsigned long long, hm_filp),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_METHOD(vfs, hmfsd_die,
+		      ARG_NO,
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_METHOD(vfs, get_alive_super,
+		      ARG(2, int, sb_id, int, me_idx),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_METHOD(vfs, attach_mount,
+		      ARG(3, int, me_idx, int, mp_me_idx, void *, mountpoint),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_METHOD(vfs, mntput,
+		      ARG(1, int, me_idx),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_METHOD(vfs, read_ima_measurement_list,
+		      ARG(2, void*, fsmgr_entries, size_t, entries_num),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_METHOD(vfs, get_ima_measure_list_num,
+		      ARG_NO,
+		      RET(1, unsigned long long, num),
+		      SLOWDATA_NO)
+
+	DEFINE_METHOD(vfs, register_ima_tpm,
+		      ARG(3, unsigned long long, dh_ap_uref,
+			  unsigned long long, filp,
+			  unsigned int, dev_fops_flags),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_METHOD(vfs, register_configfs_ext,
+		      ARG(3, unsigned long long, dh_ap_uref,
+			  unsigned long long, filp,
+			  unsigned int, dev_fops_flags),
+		      RET_NO,
+		      SLOWDATA_NO)
+	DEFINE_METHOD(vfs, devfs_remove_kshm,
+		      ARG(1, unsigned long long, kshm_key),
+		      RET_NO,
+		      SLOWDATA_NO)
+	DEFINE_METHOD(vfs, register_debugfs_ext,
+		      ARG(2, unsigned long long, dh_ap_uref,
+			  unsigned long long, filp),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+/*
+ * IOLimit
+ */
+        DEFINE_SIMPLE_METHOD_LONG(vfs, iolimit_offon_read,
+				  ARG(3, unsigned long, iolimit, void *, buf, size_t, count),
+				  RET_NO,
+				  SLOWDATA_NO)
+
+        DEFINE_SIMPLE_METHOD_LONG(vfs, iolimit_offon_write,
+				  ARG(3, unsigned long, iolimit, void *, buf, size_t, count),
+				  RET_NO,
+				  SLOWDATA_NO)
+
+        DEFINE_SIMPLE_METHOD_LONG(vfs, iolimit_readlimit_read,
+				  ARG(3, unsigned long, iolimit, void *, buf, size_t, count),
+				  RET_NO,
+				  SLOWDATA_NO)
+
+        DEFINE_SIMPLE_METHOD_LONG(vfs, iolimit_readlimit_write,
+				  ARG(3, unsigned long, iolimit, void *, buf, size_t, count),
+				  RET_NO,
+				  SLOWDATA_NO)
+
+        DEFINE_SIMPLE_METHOD_LONG(vfs, iolimit_writelimit_read,
+				  ARG(3, unsigned long, iolimit, void *, buf, size_t, count),
+				  RET_NO,
+				  SLOWDATA_NO)
+
+        DEFINE_SIMPLE_METHOD_LONG(vfs, iolimit_writelimit_write,
+				  ARG(3, unsigned long, iolimit, void *, buf, size_t, count),
+				  RET_NO,
+				  SLOWDATA_NO)
+
+        DEFINE_SIMPLE_METHOD(vfs, iolimit_alloc,
+			     ARG(1, unsigned long, parent_iolimit),
+			     RET(1, unsigned long, iolimit_private),
+			     SLOWDATA_NO)
+
+        DEFINE_SIMPLE_METHOD(vfs, iolimit_free,
+			     ARG(1, unsigned long, iolimit),
+			     RET_NO,
+			     SLOWDATA_NO)
+
+        DEFINE_SIMPLE_METHOD(vfs, iolimit_attach,
+			     ARG(2, unsigned int, cnode_idx, unsigned long, iolimit),
+			     RET_NO,
+			     SLOWDATA_NO)
+
+/**
+ * @brief			Async I/O
+ * @param nr_events The maximum count of events in aio context
+ * @param ctx_id	AIO context id, represents the index of event list
+ * @return errno	Result of context creating
+ */
+	DEFINE_LSYSCALL_METHOD(io_setup, SYS_io_setup,
+		      ARG(2, unsigned int, nr_events, unsigned long *, ctx_id))
+
+	DEFINE_LSYSCALL_METHOD(io_destroy, SYS_io_destroy,
+		      ARG(1, unsigned long, ctx_id))
+
+	DEFINE_LSYSCALL_METHOD(io_submit, SYS_io_submit,
+		      ARG(3, unsigned long, ctx_id, long, nr, void **, iocbpp))
+
+	DEFINE_LSYSCALL_METHOD(io_getevents, SYS_io_getevents,
+		      ARG(5, unsigned long, ctx_id, long, min_nr, long, nr,
+		      void *, events, void *, timeout))
+
+	DEFINE_LSYSCALL_METHOD(io_cancel, SYS_io_cancel,
+		      ARG(3, unsigned long, ctx_id, void *, iocb, void *, result))
+
+/**
+ * @brief		io-uring
+ * @param entries	Set up SQ and CQ with at least entries
+ * @param params	Set up ctx and return some info with params
+ * @param fd		Share buffer's fd
+ * @param min_complete	In polling mode, means waitting for at least min_complete events
+ */
+	DEFINE_LSYSCALL_METHOD_LONG(io_uring_setup, SYS_io_uring_setup,
+		      ARG(2, uint32_t, entries, struct io_uring_params *, params))
+	DEFINE_LSYSCALL_METHOD(io_uring_enter, SYS_io_uring_enter,
+		      ARG(6, unsigned long long, fd, uint32_t, to_submit,
+			     uint32_t, min_complete, uint32_t, flags,
+			     const sigset_t *, sig, size_t, sigsz))
+	DEFINE_LSYSCALL_METHOD(io_uring_register, SYS_io_uring_register,
+		      ARG(4, unsigned long long, fd, uint32_t, opcode,
+			     void *, arg, uint32_t, nr_args))
+
+/*
+ * Workingset function for exact preread control
+ */
+
+	DEFINE_SIMPLE_METHOD_LONG(vfs, ws_state_write,
+		      ARG(3, unsigned long long, ws, void *, buf, size_t, count),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD_LONG(vfs, ws_state_read,
+		      ARG(3, unsigned long long, ws, void *, buf, size_t, count),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD_LONG(vfs, ws_data_write,
+		      ARG(3, unsigned long long, ws, void *, buf, size_t, count),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD_LONG(vfs, ws_data_read,
+		      ARG(3, unsigned long long, ws, void *, buf, size_t, count),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD_LONG(vfs, ws_clear_record_write,
+		      ARG(3, unsigned long long, ws, void *, buf, size_t, count),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD_LONG(vfs, ws_clear_young_write,
+		      ARG(3, unsigned long long, ws, void *, buf, size_t, count),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD_ULONG(vfs, ws_alloc,
+		      ARG_NO,
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(vfs, ws_free,
+		      ARG(1, unsigned long long, ws),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(vfs, ws_online,
+		      ARG(1, unsigned long long, ws),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(vfs, ws_offline,
+		      ARG(1, unsigned long long, ws),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(vfs, ws_attach,
+		      ARG(1, unsigned long long, ws),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(vfs, register_devhost,
+		      ARG(1, unsigned long long, dh_ap_uref),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(vfs, timerfd_register_devhost,
+		      ARG(1, unsigned long long, dh_ap_uref),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(vfs, proc_has_binder_work,
+		      ARG(1, int, pid),
+		      RET(1, int, has_binder_work),
+		      SLOWDATA_NO)
+
+	DEFINE_LSYSCALL_METHOD(perf_event_open, SYS_perf_event_open,
+		      ARG(5, struct perf_event_attr *, attr,
+			     pid_t, pid, int, cpu, int, group_fd,
+			     unsigned long, flags))
+
+	DEFINE_LSYSCALL_METHOD(pidfd_open, SYS_pidfd_open,
+			       ARG(2, pid_t, pid, unsigned int, flags))
+
+	DEFINE_LSYSCALL_METHOD(pidfd_send_signal, SYS_pidfd_send_signal,
+			       ARG(4, long long, file, int, signum,
+				   void *, info, unsigned int, flags))
+)

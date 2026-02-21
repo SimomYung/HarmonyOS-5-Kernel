@@ -1,0 +1,142 @@
+/*
+ * Copyright (c) Huawei Technologies Co., Ltd. 2023-2023. All rights reserved.
+ * Description: Sysmgr hmpsf
+ * Author: Huawei OS Kernel Lab
+ * Create: Thu Jan 12 10:27:57 2018
+ */
+
+/*
+ * To support the mixed data model which means the client and the server
+ * may use different data model. See the comment for limitation of data type
+ * used in the sysif interfaces in <libsysif/base/api.h>.
+ */
+#ifdef SYSIF_EXPORT_API
+#include <stdint.h>
+#include <lib/hmpsf/hmpsf_def.h>
+#endif
+
+DEFINE_MANAGER(hmpsf, 24,
+	DEFINE_LSYSCALL_METHOD(xvm, SYS_xvm,
+			       ARG(2, unsigned int, cmd, unsigned long, arg),
+			       ARCH(__aarch64__))
+	DEFINE_SIMPLE_METHOD(hmpsf, load,
+		      ARG(3, struct hmpsf_module_attr_s , attr,
+			  unsigned char *, code,
+			  unsigned long, code_size),
+		      RET_NO,
+		      SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(hmpsf, release,
+		      ARG(1, unsigned int, id),
+		      RET_NO,
+		      SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(hmpsf, array_map_lookup,
+		      ARG(5, unsigned int, module_id,
+			  int, map_id,
+			  unsigned int, index,
+			  unsigned char *, value,
+			  unsigned long *, value_size),
+		      RET_NO,
+		      SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(hmpsf, array_map_update,
+		      ARG(5, unsigned int, module_id,
+			  int, map_id,
+			  unsigned int, index,
+			  unsigned char *, value,
+			  unsigned long, value_size),
+		      RET_NO,
+		      SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(hmpsf, array_map_remove,
+		      ARG(3, unsigned int, module_id,
+			  int, map_id,
+			  unsigned int, index),
+		      RET_NO,
+		      SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(hmpsf, int_hash_map_create_global_shared,
+			     ARG(1, void *, map),
+			     RET_NO,
+			     SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(hmpsf, int_hash_map_load,
+			     ARG(6, unsigned int, module_id, unsigned int, scope, unsigned int, map_id,
+				 const void *, key, unsigned int, key_size, unsigned long long *, val),
+			     RET_NO,
+			     SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(hmpsf, int_hash_map_store,
+			     ARG(6, unsigned int, module_id, unsigned int, scope, unsigned int, map_id,
+				 const void *, key, unsigned int, key_size, unsigned long long, val),
+			     RET_NO,
+			     SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(hmpsf, int_hash_map_next_key,
+			     ARG(7, unsigned int, module_id, unsigned int, scope, unsigned int, map_id,
+				 const void *, key, unsigned int, key_size,
+				 void *, next_key, unsigned int *, next_key_size),
+			     RET_NO,
+			     SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(hmpsf, int_hash_map_exchange,
+			     ARG(7, unsigned int, module_id, unsigned int, scope, unsigned int, map_id,
+				 const void *, key, unsigned int, key_size,
+				 unsigned long long, val, unsigned long long *, old),
+			     RET_NO,
+			     SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(hmpsf, int_hash_map_compare_exchange,
+			     ARG(7, unsigned int, module_id, unsigned int, scope, unsigned int, map_id,
+				 const void *, key, unsigned int, key_size,
+				 unsigned long long *, expected, unsigned long long, desired),
+			     RET_NO,
+			     SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(hmpsf, int_hash_map_add_fetch,
+			     ARG(6, unsigned int, module_id, unsigned int, scope, unsigned int, map_id,
+				 const void *, key, unsigned int, key_size, unsigned long long *, val),
+			     RET_NO,
+			     SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(hmpsf, int_hash_map_sub_fetch,
+			     ARG(6, unsigned int, module_id, unsigned int, scope, unsigned int, map_id,
+				 const void *, key, unsigned int, key_size, unsigned long long *, val),
+			     RET_NO,
+			     SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(hmpsf, int_hash_map_clear,
+			     ARG(3, unsigned int, module_id, unsigned int, scope, unsigned int, map_id),
+			     RET_NO,
+			     SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(hmpsf, map_release_global_shared,
+			     ARG(1, unsigned int, map_id),
+			     RET_NO,
+			     SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(hmpsf, bytes_hash_map_create_global_shared,
+			     ARG(1, void *, map),
+			     RET_NO,
+			     SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(hmpsf, bytes_hash_map_set,
+			     ARG(7, unsigned int, module_id, unsigned int, scope, unsigned int, map_id,
+				 const void *, key, unsigned int, key_size,
+				 const void *, val, unsigned int, val_size),
+			     RET_NO,
+			     SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(hmpsf, bytes_hash_map_get,
+			     ARG(7, unsigned int, module_id, unsigned int, scope, unsigned int, map_id,
+				 const void *, key, unsigned int, key_size,
+				 void *, val, unsigned int *, val_size),
+			     RET_NO,
+			     SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(hmpsf, bytes_hash_map_next_key,
+			     ARG(7, unsigned int, module_id, unsigned int, scope, unsigned int, map_id,
+				 const void *, key, unsigned int, key_size,
+				 void *, next_key, unsigned int *, next_key_size),
+			     RET_NO,
+			     SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(hmpsf, bytes_hash_map_clear,
+			     ARG(3, unsigned int, module_id, unsigned int, scope, unsigned int, map_id),
+			     RET_NO,
+			     SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(hmpsf, perfbuf_create,
+			     ARG(1, void *, user_pb),
+			     RET_NO,
+			     SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(hmpsf, perfbuf_elem_update,
+			     ARG(3, unsigned int, map_id, unsigned int, cpu, int, fd),
+			     RET_NO,
+			     SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(hmpsf, perfbuf_remove,
+			     ARG(1, unsigned int, map_id),
+			     RET_NO,
+			     SLOWDATA_NO)
+)

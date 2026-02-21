@@ -1,0 +1,314 @@
+# Copyright (c) Huawei Technologies Co., Ltd. 2021-2022. All rights reserved.
+# Description: Kconfig for hm-security-libs
+# Author: Huawei OS Kernel Lab
+# Create: Tue Nov 23 17:06:42 2021
+
+# HMCMAKENG_KCONFIG is injected by HongmengCMakeNG/Kconfig.cmake
+# which defines multiple config options which is useful for HMbuild.
+source "$(HMCMAKENG_KCONFIG)"
+
+config DEBUG_BUILD
+  bool "debug build mode"
+  default n
+
+choice
+  prompt "Instruction set"
+  default AARCH64
+  config AARCH64
+    bool "Arm64 instruction set"
+  config ARM
+    bool "Arm32 instruction set"
+endchoice
+
+config COMPAT
+  bool "Support for 32-bits applications at EL0"
+  default n
+
+config NO_COMPAT
+  def_bool !COMPAT
+
+config ILP32
+  bool "Support for aarch64ilp32 applications at EL0"
+  default n
+
+config NO_ILP32
+  def_bool !ILP32
+
+config HMTRACE
+  bool "libraries of hmaudit building with HMTRACE"
+  default n
+
+config HMTRACE_UNBLOCK_WRITE
+  bool "Write hmtrace events unblockly"
+  default n
+
+config AUDIT
+  bool "enable audit feature"
+  select HMTRACE
+  select HMTRACE_UNBLOCK_WRITE
+  select AUDIT_LOGINUID
+  default n
+
+config AUDIT_LOGINUID
+  bool "enable audit loginuid/sessionid feature"
+  default y
+
+config CMS_SIG_VERIF
+  bool "Enable the cms signature verification"
+  default y
+
+config DM_SIG_VERITY
+  bool "Enable the dm-verity signature verification"
+  default n
+
+# Dependency: KEYMGR_FUSION -> KEYMGR -> LIBKEYMGR
+config KEYMGR_FUSION
+  bool "enable key retention feature for sysmgr"
+  select KEYMGR
+  default n
+
+config KEYMGR
+  bool "enable key retention feature"
+  select LIBKEYMGR
+  default n
+
+config LIBKEYMGR
+  bool "compile keymgr as library"
+  default n
+
+config LIBKEYMGR_DEBUG
+  bool "enable libkeymgr debug log"
+  default n
+
+config KEYMGR_FS_ENCRYPTION
+  bool "enable fs encryption featrue for keymgr"
+  depends on LIBKEYMGR
+  default n
+
+config KEYMGR_FS_VERITY
+  bool "enable fs verity featrue for keymgr"
+  depends on LIBKEYMGR
+  default n
+
+config VFS_FUSION
+  bool "vfs fusion mode"
+  default n
+
+config VFS_KEYMGR_DIRECT
+  bool "vfs and keymgr in same process"
+  default y
+  depends on VFS_FUSION
+  depends on KEYMGR_FUSION
+
+config INNER_MAC
+  bool "Enable inner MAC access control"
+  default y
+
+config NOISE_SOURCE_DATA_COLLECT
+  bool "collect noise source data"
+  help
+    it determines whether to XOR noise source data
+  default n
+
+config PIE
+  bool "control whether add -fPIE to static libs"
+  default n
+
+config SEHARMONY_SIDTAB_LOCAL_MAX
+  int "seharmony local sidtable size"
+  default 4096
+  depends on SEHARMONY
+
+config SEHARMONY_SIDTAB_GLOBAL_MAX
+  int "seharmony global sidtable size"
+  default 4096
+  depends on SEHARMONY
+
+config SEHARMONY_POLICY_SPLIT
+  bool "seharmony policy load split"
+  default y
+  depends on SEHARMONY
+
+config SEHARMONY_LOG
+  bool "seharmony log control"
+  default y
+  depends on SEHARMONY
+
+config HMSEL_DEVELOP
+  bool "seharmony develop mode"
+  default n
+  depends on SEHARMONY
+
+config SEHARMONY_ENFORCING
+  bool "seharmony enforcing"
+  default y
+  depends on SEHARMONY
+
+config SEHARMONY_TYPE_PERMISSIVE
+  bool "seharmony support permissive avd flags"
+  default n
+  depends on SEHARMONY
+
+config TEST_SEHARMONY_ENFORCE
+  bool "seharmony log control for test enforce"
+  default n
+  depends on SEHARMONY
+
+config SEHARMONY_AC_CACHE_STAT_XPERM
+  bool "seharmony access control cache allowxperm statistics"
+  default n
+  depends on SEHARMONY_AC_CACHE
+
+config SEHARMONY_AC_CACHE_STAT
+  bool "seharmony access control cache statistics"
+  default n
+  depends on SEHARMONY_AC_CACHE
+
+config SEHARMONY_AC_CACHE
+  bool "seharmony access control cache"
+  default y
+  depends on SEHARMONY
+
+config SEHARMONY_LOG_RESTRICT
+  bool "Restricting the SEHarmony Log Generation Rate"
+  default y
+  depends on SEHARMONY_AC_CACHE
+  depends on !TEST_SEHARMONY_ENFORCE
+
+config SEHARMONY
+  bool "Enable seharmony"
+  select SEC_SERVICE_MANAGEMENT
+  default y
+
+config SEC_SERVICE_MANAGEMENT
+  bool "Enable security service management"
+  default n
+
+config SEC_DENY_LOG
+  bool "enable access control logs and backtrace"
+  default n
+
+config LOG_ENCRYPT
+  bool "encrypt panic log"
+  default n
+
+config USER_NS
+  bool "Enable user namespace"
+  default n
+
+config NET_NS
+  bool "Enable net namespace"
+  default n
+
+config SECCOMP
+  bool "Enable the secure computing feature"
+  default n
+
+config SECCOMP_CACHE_DEBUG
+  bool "Enable the proc node debugging feature of the seccomp cache."
+  default n
+  depends on SECCOMP
+
+choice
+  prompt "choose crypto lib"
+  default CRYPTO_HITLS
+  config CRYPTO_OPENSSL
+    bool "Enable use the crypto lib openssl"
+  config CRYPTO_HITLS
+    bool "Enable use the crypto lib hitls"
+endchoice
+
+# enable on Terminal by default (as same as CONFIG_CRYPTO_OPENSSL enabled on Terminal by default)
+# disable on some not ready device (kirin9000ohwgr, due to compiled by GCC)
+config CRYPTO_PART_HITLS
+  bool "Mark this part use HiTLS"
+  def_bool CRYPTO_OPENSSL
+
+config CRYPTO_PART_OPENSSL
+  bool "Mark this part use OpenSSL"
+  depends on CRYPTO_OPENSSL
+  def_bool !CRYPTO_PART_HITLS
+
+config KEY_QUOTA_ROOT_MAXKEYS
+    int "maximum number of keys for the root user"
+    default 1000000
+
+config KEY_QUOTA_ROOT_MAXBYTES
+    int "maximum bytes of keys for the root user"
+    default 25000000
+
+config KEY_QUOTA_MAXKEYS
+    int "maximum number of keys for the common user"
+    default 200
+
+config KEY_QUOTA_MAXBYTES
+    int "maximum bytes of keys for the common user"
+    default 20000
+
+config HKIP
+    bool "Enable hkip"
+    depends on AARCH64
+    default n
+
+config HKIP_PRMEM
+    bool "Enable hkip prmem"
+    depends on AARCH64
+    default n
+
+choice
+    prompt "Enable protect meta data or mprotect"
+    depends on AARCH64
+    default __ALL_OFF
+
+    config __ALL_OFF
+        bool "No select"
+    config HKIP_PROTECT_PRMEM_META
+        bool "Protect prmem pool meta data"
+    config HKIP_PRMEM_SEHARMONY_DEFAULT_PROT
+        bool "Enable mprotect to seharmony"
+endchoice
+
+config HKIP_MAC_PROT
+    bool "Enable kip mac protection"
+    depends on AARCH64
+    default n
+
+config HKIP_SEHARMONY_PROT
+    bool "Enable hkip to seharmony"
+    depends on HKIP_PRMEM
+    default n
+
+config HKIP_SEHARMONY_POLDB_SIZE_MB
+    int "size of hkip poldb \(MB\)"
+    depends on HKIP_SEHARMONY_PROT
+    default 16
+
+config HKIP_SECCOMP_PROT
+    bool "Enable hkip to seccomp"
+    depends on AARCH64
+    default n
+
+config HKIP_PRMEM_ALIGN_ENFORCE
+    bool "hkip prmem alignment enforce"
+    depends on HKIP_PRMEM
+    depends on HKIP_SELINUX_PROT
+    default y
+
+config ENCAPS
+    bool "Enable encaps"
+    default n
+    help
+        encaps means enhanced capabilities, providing an powerful access control
+        at runtime
+
+config HMSD_TREND
+  string "Security description generation trend"
+  default "performance"
+
+config SEC_KCOV
+  bool "Support kcov"
+  default n
+
+config SEC_MULTI_USER_ISO
+  bool "Enable multi user isolation"
+  default n

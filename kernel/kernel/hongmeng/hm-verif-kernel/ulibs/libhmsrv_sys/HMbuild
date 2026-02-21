@@ -1,0 +1,70 @@
+# Copyright (c) Huawei Technologies Co., Ltd. 2022-2022. All rights reserved.
+# Description: HMbuild
+# Author: Huawei OS Kernel Lab
+# Create: Thu May 26 19:00:52 2022
+
+src-y: hm_mem.c
+src-y: hm_ashm.c
+src-y: hm_kshm.c
+src-y: hm_procmgr.c
+src-y: hm_signal.c
+src-y: hm_hmsignal.c
+src-y: hmsrv_sys.c
+src-y: hm_mqueue.c
+src-y: hm_path.c
+src-y: hm_thread.c
+src-y: hm_timer.c
+src-y: hm_timer_kernel_space.c
+src-y: hm_syssrv_loadinfo.c
+src-y: hm_sysctrl.c
+src-y: hm_sysctrl_rref.c
+src-y: hm_timer_utils.c
+src-y: hm_timer_utils_public.c
+src-y: hm_futex.c
+src-y: hm_security.c
+src-y: hm_uvmm.c
+src-y: hm_vm.c
+src-y: hm_select_common.c
+src-y: hm_ctrlmem_kobjctnr.c
+src-y: hm_ipc_shm.c
+src-y: hm_log.c
+src-y: hm_ipc_msg.c
+src-y: hm_ipc_sem.c
+src-y: hm_module.c
+src-y: hm_dump.c dump_impl.c
+src-y: hm_inject_fault.c
+src-y: hm_ct_task.c
+src-y: hm_init.c
+src-y: hm_watchdog.c
+src-y: hm_proc_affinity.c
+src-y: hm_idle_state.c
+src-y: hm_vdso.c
+src-y: hm_shmec.c
+src-y: hm_event.c
+src-y: hm_coobj.c
+src-y: hm_coobj_init.c
+src-y: hm_fs_io.c
+src-y: hm_flush_cache.c
+src-y: hm_livepatch.c
+src-y: hm_hkip.c
+src-y: hm_ctrlmem_eventpoll.c
+
+src-CONFIG_SCHED_SMT_HIDE: hm_smt_hide.c
+src-CONFIG_DFC_FREQ_HIDE: hm_freq_hide.c
+src-CONFIG_AARCH64: cache.S
+src-y: hm_ufutex.c
+
+include-.-CONFIG_AARCH64: ../../ulibs/arch/aarch64/ulibs/libhmsync
+include-.-CONFIG_ARM: ../../ulibs/arch/arm/ulibs/libhmsync
+
+cflags-hm_signal.c-y: -D_GNU_SOURCE
+cflags-hm_signal.c-y: -Wno-strict-prototypes
+cflags-hm_procmgr.c-y: -D_GNU_SOURCE
+cflags-hm_procmgr.c-y: -Wno-strict-prototypes
+cflags-hm_mem.c-y: -D_GNU_SOURCE
+cflags-hm_mem.c-y: -Wno-strict-prototypes
+cflags-hm_ipc_msg.c-y: -D_GNU_SOURCE
+cflags-hm_ipc_msg.c-y: -Wno-strict-prototypes
+cflags-hm_timer_kernel_space.c-y: -Wno-type-limits
+cflags-hm_proc_affinity.c: -D_GNU_SOURCE
+cflags-hm_signal.c-y: -Wframe-larger-than=8192

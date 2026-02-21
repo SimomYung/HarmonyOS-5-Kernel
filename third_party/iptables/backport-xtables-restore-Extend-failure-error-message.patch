@@ -1,0 +1,44 @@
+From c70a33d219ccb43e6f59aa1b9bbab5dcb13f3443 Mon Sep 17 00:00:00 2001
+From: Phil Sutter <phil@nwl.cc>
+Date: Thu, 25 Aug 2022 11:53:04 +0200
+Subject: [PATCH] xtables-restore: Extend failure error message
+
+If a line causes zero 'ret' value and errno is set, call nft_strerror()
+for a more detailed error message. While not perfect, it helps with
+debugging ominous "line NN failed" messages pointing at COMMIT:
+
+| # iptables-nft-restore <<EOF
+| *filter
+| -A nonexist
+| COMMIT
+| EOF
+| iptables-nft-restore: line 3 failed: No chain/target/match by that name.
+
+Conflict: NA
+Reference: https://git.netfilter.org/iptables/commit?id=c70a33d219ccb43e6f59aa1b9bbab5dcb13f3443
+
+Signed-off-by: Phil Sutter <phil@nwl.cc>
+---
+ iptables/xtables-restore.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/iptables/xtables-restore.c b/iptables/xtables-restore.c
+index abeaf76..5940e9a 100644
+--- a/iptables/xtables-restore.c
++++ b/iptables/xtables-restore.c
+@@ -247,8 +247,11 @@ static void xtables_restore_parse_line(struct nft_handle *h,
+ 	    (strcmp(p->tablename, state->curtable->name) != 0))
+ 		return;
+ 	if (!ret) {
+-		fprintf(stderr, "%s: line %u failed\n",
++		fprintf(stderr, "%s: line %u failed",
+ 				xt_params->program_name, h->error.lineno);
++		if (errno)
++			fprintf(stderr,	": %s.", nft_strerror(errno));
++		fprintf(stderr, "\n");
+ 		exit(1);
+ 	}
+ }
+-- 
+2.33.0
+

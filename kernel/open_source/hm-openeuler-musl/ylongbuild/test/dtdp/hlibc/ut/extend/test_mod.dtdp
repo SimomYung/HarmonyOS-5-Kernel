@@ -1,0 +1,67 @@
+{
+    "root": {
+        "data": {
+            "id": "ci27l63cu8w0",
+            "created": 1645495824622,
+            "text": "HLIBC",
+            "usecase": 99
+        },
+        "children": [
+            {
+                "data": {
+                    "id": "cikg0ytrob40",
+                    "created": 1647347710730,
+                    "text": "支持mod管理"
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "ci4bwhelj680",
+                            "created": 1645711115605,
+                            "text": "DEFINE_MOD",
+                            "usecase": 1
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "cijlutk7jeg0",
+                                    "created": 1647262595786,
+                                    "text": "功能分析"
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "cijlwq609k80",
+                                            "created": 1647262745125,
+                                            "text": "资源是否初始化",
+                                            "usecase": 2
+                                        },
+                                        "children": [
+                                            {
+                                                "data": {
+                                                    "id": "cijlxndhw0w0",
+                                                    "created": 1647262817412,
+                                                    "text": "ping",
+                                                    "usecase": 4,
+                                                    "author": "z00572669",
+                                                    "showId": "00023"
+                                                },
+                                                "children": []
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    "templatePath": null,
+    "singleTemplatePath": null,
+    "testcaseFilePath": "",
+    "template": "right",
+    "theme": "fresh-blue",
+    "version": "1.4.43"
+}

@@ -1,0 +1,17 @@
+{
+    "template": "hook",
+    "server": "net",
+    "manager": "as_netd",
+    "hooks": {
+        "as_netd": {
+            "scheme": "security check/inner constraint",
+            "arguments": [],
+            "ac": {
+                "buckle": {
+                    "alias": "sec_chk_ability_as_netd",
+                    "permission": "ab_as_lwipd"
+                }
+            }
+        }
+    }
+}

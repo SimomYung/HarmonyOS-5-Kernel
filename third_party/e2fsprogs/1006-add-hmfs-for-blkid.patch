@@ -1,0 +1,50 @@
+diff --git a/lib/blkid/probe.c b/lib/blkid/probe.c
+index b8b6558..1111c93 100644
+--- a/lib/blkid/probe.c
++++ b/lib/blkid/probe.c
+@@ -1440,6 +1440,24 @@ static int probe_f2fs(struct blkid_probe *probe,
+     return 0;
+ }
+ 
++static int probe_hmfs(struct blkid_probe *probe,
++                      struct blkid_magic *id __BLKID_ATTR((unused)),
++                      unsigned char *buf)
++{
++    hmfs_super_block *bs = NULL;
++    if (buf == NULL) {
++        return 1;
++    }
++    bs = (hmfs_super_block *)buf;
++    set_uuid(probe->dev, bs->uuid, 0);
++    if (bs->volume_name[0] != 0) {
++        unsigned char vol_name_utf8[513] = {0};
++        unicode_16le_to_utf8(vol_name_utf8, 512, (const unsigned char*)bs->volume_name, 512 * sizeof(__u16));
++        blkid_set_tag(probe->dev, "LABEL", vol_name_utf8, 512);
++    }
++    return 0;
++}
++
+ static uint64_t exfat_block_to_offset(const struct exfat_super_block *sb,
+                                       uint64_t block)
+ {
+@@ -1646,6 +1664,7 @@ static struct blkid_magic type_array[] = {
+   { "lvm2pv",	 1,  0x218,  8, "LVM2 001",		probe_lvm2 },
+   { "btrfs",	 64,  0x40,  8, "_BHRfS_M",		probe_btrfs },
+   { "f2fs",	 1,      0,  4, "\x10\x20\xf5\xf2",	probe_f2fs },
++  { "hmfs",    1,      0,  4, "\x24\x20\xf5\xfe", probe_hmfs },
+   { "exfat",     0,      3,  8, "EXFAT   ",             probe_exfat },
+   {   NULL,	 0,	 0,  0, NULL,			NULL }
+ };
+diff --git a/lib/blkid/probe.h b/lib/blkid/probe.h
+index dea4081..be79c42 100644
+--- a/lib/blkid/probe.h
++++ b/lib/blkid/probe.h
+@@ -765,6 +765,8 @@ struct f2fs_super_block {
+     __u8 extension_list[F2FS_MAX_EXTENSION][8]; /* extension array */
+ } __attribute__((__packed__));
+ 
++typedef struct f2fs_super_block hmfs_super_block;
++
+ struct exfat_super_block {
+     uint8_t jump[3];
+     uint8_t oem_name[8];

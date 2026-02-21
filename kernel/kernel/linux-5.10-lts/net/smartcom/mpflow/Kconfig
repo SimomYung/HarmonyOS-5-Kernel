@@ -1,0 +1,3 @@
+menuconfig HUAWEI_SMARTCOM_MPFLOW
+    bool "Huawei smartcom mpflow feature support"
+    default n

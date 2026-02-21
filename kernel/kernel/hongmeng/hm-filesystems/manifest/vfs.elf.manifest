@@ -1,0 +1,9 @@
+system_service:bool:true
+sync_reclaimable:bool:false
+unkillable:bool:true
+coredump:bool:false
+root_fs:bool:true
+livepatchable:bool:true
+dpa_mode:uint32:1
+res_controllable:bool:false
+privilege_num:uint32:2

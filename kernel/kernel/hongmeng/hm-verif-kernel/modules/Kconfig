@@ -1,0 +1,61 @@
+menu "Modules Options"
+
+config MODULE_SCHED_CLASS
+  depends on CAP_MODULES
+  bool "Sched Class module"
+  default y
+
+choice
+  prompt "Module Timer Implementation"
+  default MODULE_TIMER_RBTREE
+  depends on MODULE_TIMER
+
+config MODULE_TIMER_RBTREE
+  bool "Rbtree timer"
+
+endchoice
+
+config TIMER_SLACK_UNIHB
+  bool "Enable timer slack's unified heart beat"
+  depends on MODULE_TIMER_RBTREE
+  depends on TIMER_SLACK
+  default y
+
+config MODULE_MISC
+  bool "Enable MISC module"
+  depends on CAP_MODULES
+  default y
+
+config MODULE_FAULT_INJECT
+  bool "Enable inject fault"
+  default y if DEBUG_BUILD
+
+config MODULE_ATFD_SMC
+  bool "atfd smc support module"
+  depends on AARCH64 || ARM
+  default n
+
+config SYSTRACE_SCHED
+  bool "Enable systrace debug"
+  depends on MODULE_SCHED_CLASS
+  depends on DEBUG_BUILD
+  default y
+
+config MODULE_UTSAN
+  depends on KERNEL_UTSAN
+  bool "Enable ustan for module"
+  default y
+
+config HMKIT_DEMOKIT
+  bool "Enable hmkit's demokit as a module"
+  default n
+
+config EINJ
+  bool "Enable einj module for kernel"
+  default n
+
+config KDP
+  bool "Enable kdp test as a module"
+  default n
+
+endmenu

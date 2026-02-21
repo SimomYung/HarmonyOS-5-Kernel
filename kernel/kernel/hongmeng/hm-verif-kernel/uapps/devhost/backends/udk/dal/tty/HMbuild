@@ -1,0 +1,17 @@
+# Copyright (c) Huawei Technologies Co., Ltd. 2022. All rights reserved.
+# Description: HMbuild for udk
+# Author: Huawei OS Kernel Lab
+# Create: Wed Feb 09 11:51:30 2022
+
+src-y: tty_chrdev.c
+src-y: tty_epoll_wrap.c
+src-y: tty_init.c
+src-y: tty_workqueue.c
+src-y: tty_convert.c
+src-y: tty_core.c
+src-y: tty_echo.c
+src-y: tty_flow.c
+src-y: tty_io.c
+src-y: tty_ioctl.c
+src-y: tty_keyboard.c
+src-y: tty_line_buf.c

@@ -1,0 +1,3 @@
+config FFRT_HTS_OHOS
+	tristate "FFRT_HTS_OHOS"
+	default n

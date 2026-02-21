@@ -1,0 +1,10 @@
+findpkg: HMNetLibs
+
+lib-dynamic-y: dhext_net
+
+cflags-dhext_net-y: -D_DH_PLUGIN_NAME=net -fvisibility=hidden
+
+src-dhext_net-y: ext_main.c
+linklib-dhext_net-y: HMNetLibs::HMNetSrvLib_static
+
+install-dhext_net-y: BASE_LIBDIR

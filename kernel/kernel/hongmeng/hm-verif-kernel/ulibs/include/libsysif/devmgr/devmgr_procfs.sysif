@@ -1,0 +1,37 @@
+/*
+ * Copyright (C) Huawei Technologies Co., Ltd. 2020. All rights reserved.
+ * Description: devmgr procfs support sysif APIs
+ * Author: Huawei OS Kernel Lab
+ * Create: Wed Feb 19 08:53:16 2020
+ */
+
+/*
+ * To support the mixed data model which means the client and the server
+ * may use different data model. See the document for limitation of data type
+ * used in the sysif interfaces in <Documentation/sysif_compat.md>.
+ */
+DEFINE_MANAGER(procfs, 4,
+	DEFINE_METHOD(procfs, create_data,
+			     ARG(4,
+				 struct hm_actv_buf, name,
+				 unsigned int, mode,
+				 struct hm_actv_buf, ops,
+				 struct hm_actv_buf, linkname),
+			     RET_NO,
+			     SLOWDATA_NO)
+
+	DEFINE_METHOD(procfs, unlink,
+			     ARG(1, struct hm_actv_buf, name),
+			     RET_NO,
+			     SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(procfs, read,
+			     ARG_NO,
+			     RET_NO,
+			     SLOWDATA)
+
+	DEFINE_SIMPLE_METHOD(procfs, write,
+			     ARG_NO,
+			     RET_NO,
+			     SLOWDATA)
+)

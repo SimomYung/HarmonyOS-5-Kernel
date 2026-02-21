@@ -1,0 +1,170 @@
+{
+    "root": {
+        "data": {
+            "id": "ci26txcan080",
+            "created": 1645493689739,
+            "text": "HLIBC",
+            "usecase": 99
+        },
+        "children": [
+            {
+                "data": {
+                    "id": "ci26yfp7p400",
+                    "created": 1645494043159,
+                    "text": "字符串排序类-qsort",
+                    "usecase": 1,
+                    "layout_mind_offset": {
+                        "x": -40,
+                        "y": -4
+                    },
+                    "layout": null
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "ci270vepp9k0",
+                            "created": 1645494234080,
+                            "text": "功能分析",
+                            "usecase": null,
+                            "expandState": "expand",
+                            "layout": null
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "ci27e5wi46o0",
+                                    "created": 1645495275658,
+                                    "text": "数组排序",
+                                    "usecase": 2,
+                                    "layout": null
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "ci27etyv5f40",
+                                            "created": 1645495328044,
+                                            "text": "传入乱序数组，排序后得到有序数组",
+                                            "usecase": 4,
+                                            "author": "x50021790",
+                                            "showId": "00003",
+                                            "layout": null
+                                        },
+                                        "children": []
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "data": {
+                            "id": "ci53607rbmo0",
+                            "created": 1645788031795,
+                            "text": "可靠性分析",
+                            "layout": null
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "ci53607rguo0",
+                                    "created": 1645788031795,
+                                    "text": "排序不一定稳定",
+                                    "usecase": 2,
+                                    "layout": null
+                                },
+                                "children": []
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "data": {
+                    "id": "ci2iwbu9ek80",
+                    "created": 1645527731347,
+                    "text": "字符串排序类-bsearch",
+                    "usecase": 1,
+                    "layout_mind_offset": {
+                        "x": 594,
+                        "y": 201
+                    },
+                    "layout": null
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "ci2iwbu9esw0",
+                            "created": 1645527731347,
+                            "text": "功能分析",
+                            "usecase": null,
+                            "expandState": "expand",
+                            "layout": null
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "ci2iwbu96i00",
+                                    "created": 1645527731347,
+                                    "text": "元素搜索",
+                                    "usecase": 2,
+                                    "layout": null
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "ci2iwbu97w80",
+                                            "created": 1645527731347,
+                                            "text": "传入有序数组，搜索数组中某元素，得到指向数组中匹配元素的指针。",
+                                            "usecase": 4,
+                                            "author": "x50021790",
+                                            "showId": "00011",
+                                            "layout": null
+                                        },
+                                        "children": []
+                                    },
+                                    {
+                                        "data": {
+                                            "id": "ci2iykttzvk0",
+                                            "created": 1645527907641,
+                                            "text": "传入有序数组，搜索数组中没有的元素，返回空指针。.",
+                                            "usecase": 4,
+                                            "author": "x50021790",
+                                            "showId": "00012",
+                                            "layout": null
+                                        },
+                                        "children": []
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "data": {
+                            "id": "ci318evbpts0",
+                            "created": 1645579458290,
+                            "text": "可靠性分析",
+                            "layout": null
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "ci318k46o140",
+                                    "created": 1645579469710,
+                                    "text": "在有序数组中查找重复出现的元素时，不能确定返回哪个元素的指针",
+                                    "usecase": 2,
+                                    "layout": null
+                                },
+                                "children": []
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    "templatePath": null,
+    "singleTemplatePath": null,
+    "testcaseFilePath": "",
+    "template": "right",
+    "theme": "fresh-blue",
+    "version": "1.4.43"
+}

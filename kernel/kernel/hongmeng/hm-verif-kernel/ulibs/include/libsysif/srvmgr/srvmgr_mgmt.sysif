@@ -1,0 +1,50 @@
+/*
+ * Copyright (C) Huawei Technologies Co., Ltd. 2019-2020. All rights reserved.
+ * Description: Generate srvmgr sysif interface
+ * Author: Huawei OS Kernel Lab
+ * Create: Mon Nov 18 09:47:33 2019
+ */
+
+/*
+ * To support the mixed data model which means the client and the server
+ * may use different data model. See the document for limitation of data type
+ * used in the sysif interfaces in <Documentation/sysif_compat.md>.
+ */
+#ifdef SYSIF_EXPORT_API
+#include <hmkernel/drivers/rebootcode.h>
+enum {
+	HMINIT_EVENT_TYPE_READY,
+};
+
+struct reboot_args {
+	unsigned int reboot_flag;
+	char reboot_reason[REBOOT_STR_MAX_LEN];
+};
+#endif
+
+DEFINE_MANAGER(srvmgr, 6,
+	 DEFINE_SIMPLE_METHOD(srvmgr, shutdown,
+			      ARG_NO,
+			      RET_NO,
+			      SLOWDATA_NO)
+	 DEFINE_SIMPLE_METHOD(srvmgr, softreboot,
+			      ARG_NO,
+			      RET_NO,
+			      SLOWDATA_NO)
+	 DEFINE_METHOD(srvmgr, notify,
+		       ARG(1, int, event),
+		       RET_NO,
+		       SLOWDATA_NO)
+	 DEFINE_METHOD(srvmgr, set_dh_pid,
+		       ARG(1, pid_t, dh_pid),
+		       RET_NO,
+		       SLOWDATA_NO)
+	 DEFINE_SIMPLE_METHOD(srvmgr, reboot,
+			      ARG(1, struct reboot_args, args),
+			      RET_NO,
+			      SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(srvmgr, kexec,
+			      ARG_NO,
+			      RET_NO,
+			      SLOWDATA_NO)
+)

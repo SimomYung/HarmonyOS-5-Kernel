@@ -1,0 +1,46 @@
+/*
+ * Copyright (C) Huawei Technologies Co., Ltd. 2024. All rights reserved.
+ * Description: Inject obj into sysmgr
+ * Author: Huawei OS Kernel Lab
+ * Create: Mon Jan 06 02:28:54 PM 2025
+ */
+
+/*
+ * To support the mixed data model which means the client and the server
+ * may use different data model. See the document for limitation of data type
+ * used in the sysif interfaces in <Documentation/sysif_compat.md>.
+ */
+#ifdef SYSIF_EXPORT_API
+enum INJECT_OBJ_TYPE {
+	INJECT_SLAB = 0,
+	INJECT_OBJ_UNKNOWN,
+};
+
+enum INJECT_SLAB_TYPE {
+	SLAB_MALLOC = 0,
+	SLAB_FREE,
+	SLAB_ALLOC_FIXED_SIZE,
+	SLAB_FREE_FIXED_SIZE,
+	SLAB_ALLOC_VAR_SIZE,
+	SLAB_FREE_VAR_SIZE,
+	SLAB_ALLOC_FLEXIBLE_SIZE,
+	SLAB_FREE_FLEXIBLE_SIZE,
+	SLAB_OBJ_IN_LINEAR_MEMORY,
+	SLAB_OBJ_IN_RECYCLABLE_MEMORY,
+	SLAB_OBJ_IN_SEQUESTERED_MEMORY,
+	SLAB_TESTS, // do tests for all types
+	INJECT_SLAB_TYPE_UNKNOWN,
+};
+#endif
+
+DEFINE_MANAGER(inject_obj, 2,
+	DEFINE_SIMPLE_METHOD(inject, obj,
+		      ARG(4,
+			  int, type,
+			  int, sub_type,
+			  const void *, args,
+			  unsigned int, length),
+		      RET(1, uintptr_t, rvaddr),
+		      SLOWDATA_NO)
+)
+

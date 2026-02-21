@@ -1,0 +1,95 @@
+From 0257293c68913dd5993c1cac44f2ee80af6d9792 Mon Sep 17 00:00:00 2001
+From: Phil Sutter <phil@nwl.cc>
+Date: Fri, 26 Aug 2022 16:53:52 +0200
+Subject: [PATCH] nft: Expand extended error reporting to nft_cmd, too
+
+Introduce the same embedded 'error' struct in nft_cmd and initialize it
+with the current value from nft_handle. Then in preparation phase,
+update nft_handle's error.lineno with the value from the current
+nft_cmd.
+
+This serves two purposes:
+
+* Allocated batch objects (obj_update) get the right lineno value
+  instead of the COMMIT one.
+
+* Any error during preparation may be reported with line number. Do this
+  and change the relevant fprintf() call to use nft_handle's lineno
+  instead of the global 'line' variable.
+
+With this change, cryptic iptables-nft-restore error messages should
+finally be gone:
+
+| # iptables-nft-restore <<EOF
+| *filter
+| -A nonexist
+| COMMIT
+| EOF
+| iptables-nft-restore: line 2 failed: No chain/target/match by that name.
+
+Conflict: NA
+Reference: https://git.netfilter.org/iptables/commit?id=0257293c68913dd5993c1cac44f2ee80af6d9792
+
+Signed-off-by: Phil Sutter <phil@nwl.cc>
+---
+ iptables/nft-cmd.c         | 1 +
+ iptables/nft-cmd.h         | 3 +++
+ iptables/nft.c             | 2 ++
+ iptables/xtables-restore.c | 2 +-
+ 4 files changed, 7 insertions(+), 1 deletion(-)
+
+diff --git a/iptables/nft-cmd.c b/iptables/nft-cmd.c
+index 9b0c964..f026c62 100644
+--- a/iptables/nft-cmd.c
++++ b/iptables/nft-cmd.c
+@@ -26,6 +26,7 @@ struct nft_cmd *nft_cmd_new(struct nft_handle *h, int command,
+ 	if (!cmd)
+ 		return NULL;
+ 
++	cmd->error.lineno = h->error.lineno;
+ 	cmd->command = command;
+ 	cmd->table = strdup(table);
+ 	if (chain)
+diff --git a/iptables/nft-cmd.h b/iptables/nft-cmd.h
+index ecf7655..3caa3ed 100644
+--- a/iptables/nft-cmd.h
++++ b/iptables/nft-cmd.h
+@@ -24,6 +24,9 @@ struct nft_cmd {
+ 	struct xt_counters		counters;
+ 	const char			*rename;
+ 	int				counters_save;
++	struct {
++		unsigned int		lineno;
++	} error;
+ };
+ 
+ struct nft_cmd *nft_cmd_new(struct nft_handle *h, int command,
+diff --git a/iptables/nft.c b/iptables/nft.c
+index 3e24c86..996d5bc 100644
+--- a/iptables/nft.c
++++ b/iptables/nft.c
+@@ -3050,6 +3050,8 @@ static int nft_prepare(struct nft_handle *h)
+ 	nft_cache_build(h);
+ 
+ 	list_for_each_entry_safe(cmd, next, &h->cmd_list, head) {
++		h->error.lineno = cmd->error.lineno;
++		
+ 		switch (cmd->command) {
+ 		case NFT_COMPAT_TABLE_FLUSH:
+ 			ret = nft_table_flush(h, cmd->table);
+diff --git a/iptables/xtables-restore.c b/iptables/xtables-restore.c
+index d273949..abeaf76 100644
+--- a/iptables/xtables-restore.c
++++ b/iptables/xtables-restore.c
+@@ -248,7 +248,7 @@ static void xtables_restore_parse_line(struct nft_handle *h,
+ 		return;
+ 	if (!ret) {
+ 		fprintf(stderr, "%s: line %u failed\n",
+-				xt_params->program_name, line);
++				xt_params->program_name, h->error.lineno);
+ 		exit(1);
+ 	}
+ }
+-- 
+2.33.0
+

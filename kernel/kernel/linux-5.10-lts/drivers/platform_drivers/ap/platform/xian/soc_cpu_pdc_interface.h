@@ -1,0 +1,1840 @@
+
+
+/*****************************************************************************
+  1 其他头文件包含
+*****************************************************************************/
+
+#ifndef __SOC_CPU_PDC_INTERFACE_H__
+#define __SOC_CPU_PDC_INTERFACE_H__
+
+#ifdef __cplusplus
+    #if __cplusplus
+        extern "C" {
+    #endif
+#endif
+
+
+
+/*****************************************************************************
+  2 宏定义
+*****************************************************************************/
+
+/****************************************************************************
+                     (1/1) reg_define
+ ****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+
+
+/* Register description: PDC控制寄存器。
+   Bit domain definition UNION:  SOC_CPU_PDC_PDCCTRL_UNION */
+#define SOC_CPU_PDC_PDCCTRL_ADDR(base)                        (base)
+
+/* Register description: 掉电子系统ISO使能寄存器。
+   Bit domain definition UNION:  SOC_CPU_PDC_ISOEN_UNION */
+#define SOC_CPU_PDC_ISOEN_ADDR(base)                          ((base) + 0x100UL)
+
+/* Register description: 掉电子系统ISO使能撤销寄存器。
+   Bit domain definition UNION:  SOC_CPU_PDC_ISODIS_UNION */
+#define SOC_CPU_PDC_ISODIS_ADDR(base)                         ((base) + 0x104UL)
+
+/* Register description: 掉电子系统ISO使能状态寄存器。
+   Bit domain definition UNION:  SOC_CPU_PDC_ISOSTAT_UNION */
+#define SOC_CPU_PDC_ISOSTAT_ADDR(base)                        ((base) + 0x108UL)
+
+/* Register description: 掉电子系统电源使能寄存器。
+   Bit domain definition UNION:  SOC_CPU_PDC_PERPWREN_UNION */
+#define SOC_CPU_PDC_PERPWREN_ADDR(base)                       ((base) + 0x110UL)
+
+/* Register description: 掉电子系统电源使能撤销寄存器。
+   Bit domain definition UNION:  SOC_CPU_PDC_PERPWRDIS_UNION */
+#define SOC_CPU_PDC_PERPWRDIS_ADDR(base)                      ((base) + 0x114UL)
+
+/* Register description: 掉电子系统电源使能状态寄存器。
+   Bit domain definition UNION:  SOC_CPU_PDC_PERPWRSTAT_UNION */
+#define SOC_CPU_PDC_PERPWRSTAT_ADDR(base)                     ((base) + 0x118UL)
+
+/* Register description: 掉电子系统最终电源状态寄存器。
+   Bit domain definition UNION:  SOC_CPU_PDC_PERPWRACK_UNION */
+#define SOC_CPU_PDC_PERPWRACK_ADDR(base)                      ((base) + 0x11CUL)
+
+/* Register description: CPU子系统时钟使能寄存器。
+   Bit domain definition UNION:  SOC_CPU_PDC_CPU_CLKEN_UNION */
+#define SOC_CPU_PDC_CPU_CLKEN_ADDR(base)                      ((base) + 0x120UL)
+
+/* Register description: CPU子系统软复位使能寄存器。
+   Bit domain definition UNION:  SOC_CPU_PDC_CPU_RSTEN_UNION */
+#define SOC_CPU_PDC_CPU_RSTEN_ADDR(base)                      ((base) + 0x124UL)
+
+/* Register description: CPU子系统软复位撤离寄存器。
+   Bit domain definition UNION:  SOC_CPU_PDC_CPU_RSTDIS_UNION */
+#define SOC_CPU_PDC_CPU_RSTDIS_ADDR(base)                     ((base) + 0x128UL)
+
+/* Register description: CPU子系统软复位使能状态寄存器。
+   Bit domain definition UNION:  SOC_CPU_PDC_CPU_RSTSTAT_UNION */
+#define SOC_CPU_PDC_CPU_RSTSTAT_ADDR(base)                    ((base) + 0x12CUL)
+
+/* Register description: CPU M0 ADB低功耗寄存器。
+   Bit domain definition UNION:  SOC_CPU_PDC_CPU_M0_ADBLPSTAT_UNION */
+#define SOC_CPU_PDC_CPU_M0_ADBLPSTAT_ADDR(base)               ((base) + 0x130UL)
+
+/* Register description: CPU M1 ADB低功耗寄存器。
+   Bit domain definition UNION:  SOC_CPU_PDC_CPU_M1_ADBLPSTAT_UNION */
+#define SOC_CPU_PDC_CPU_M1_ADBLPSTAT_ADDR(base)               ((base) + 0x134UL)
+
+/* Register description: CPU PERIPH ADB低功耗寄存器。
+   Bit domain definition UNION:  SOC_CPU_PDC_CPU_MP_ADBLPSTAT_UNION */
+#define SOC_CPU_PDC_CPU_MP_ADBLPSTAT_ADDR(base)               ((base) + 0x138UL)
+
+/* Register description: CPU ACP ADB低功耗寄存器。
+   Bit domain definition UNION:  SOC_CPU_PDC_CPU_ACP_ADBLPSTAT_UNION */
+#define SOC_CPU_PDC_CPU_ACP_ADBLPSTAT_ADDR(base)              ((base) + 0x13CUL)
+
+/* Register description: CPU ADB自动门控控制寄存器。
+   Bit domain definition UNION:  SOC_CPU_PDC_CPU_ADB_GT_CFG_UNION */
+#define SOC_CPU_PDC_CPU_ADB_GT_CFG_ADDR(base)                 ((base) + 0x140UL)
+
+/* Register description: CPU 状态寄存器0。
+   Bit domain definition UNION:  SOC_CPU_PDC_CPU_STAT0_UNION */
+#define SOC_CPU_PDC_CPU_STAT0_ADDR(base)                      ((base) + 0x144UL)
+
+/* Register description: GIC唤醒中断状态寄存器。
+   Bit domain definition UNION:  SOC_CPU_PDC_WAKEUPINT_STAT_UNION */
+#define SOC_CPU_PDC_WAKEUPINT_STAT_ADDR(base)                 ((base) + 0x148UL)
+
+/* Register description: CPU ACP ADB低功耗寄存器。
+   Bit domain definition UNION:  SOC_CPU_PDC_CPU_LIT_ADBLPSTAT_UNION */
+#define SOC_CPU_PDC_CPU_LIT_ADBLPSTAT_ADDR(base)              ((base) + 0x14CUL)
+
+/* Register description: CPU上下电状态机使能寄存器。
+   Bit domain definition UNION:  SOC_CPU_PDC_CPU_PDCEN_UNION */
+#define SOC_CPU_PDC_CPU_PDCEN_ADDR(base)                      ((base) + 0x200UL)
+
+/* Register description: CPU LITTLE核上下电完成中断使能寄存器。
+   Bit domain definition UNION:  SOC_CPU_PDC_LITTLE_COREPWRINTEN_UNION */
+#define SOC_CPU_PDC_LITTLE_COREPWRINTEN_ADDR(base)            ((base) + 0x204UL)
+
+/* Register description: CPU LITTLE核上下电完成中断状态寄存器。
+   Bit domain definition UNION:  SOC_CPU_PDC_LITTLE_COREPWRINTSTAT_UNION */
+#define SOC_CPU_PDC_LITTLE_COREPWRINTSTAT_ADDR(base)          ((base) + 0x208UL)
+
+/* Register description: CPU LITTLE核上电请求寄存器。
+   Bit domain definition UNION:  SOC_CPU_PDC_LITTLE_COREPOWERUP_UNION */
+#define SOC_CPU_PDC_LITTLE_COREPOWERUP_ADDR(base)             ((base) + 0x210UL)
+
+/* Register description: CPU LITTLE核下电请求寄存器。
+   Bit domain definition UNION:  SOC_CPU_PDC_LITTLE_COREPOWERDN_UNION */
+#define SOC_CPU_PDC_LITTLE_COREPOWERDN_ADDR(base)             ((base) + 0x214UL)
+
+/* Register description: CPU LITTLE核状态机状态寄存器。
+   Bit domain definition UNION:  SOC_CPU_PDC_LITTLE_COREPOWERSTAT_UNION */
+#define SOC_CPU_PDC_LITTLE_COREPOWERSTAT_ADDR(base)           ((base) + 0x218UL)
+
+/* Register description: CPU LITTLE核上电时间寄存器。
+   Bit domain definition UNION:  SOC_CPU_PDC_LITTLE_COREPWRUPTIME_UNION */
+#define SOC_CPU_PDC_LITTLE_COREPWRUPTIME_ADDR(base)           ((base) + 0x21CUL)
+
+/* Register description: CPU LITTLE核下电时间寄存器。
+   Bit domain definition UNION:  SOC_CPU_PDC_LITTLE_COREPWRDNTIME_UNION */
+#define SOC_CPU_PDC_LITTLE_COREPWRDNTIME_ADDR(base)           ((base) + 0x220UL)
+
+/* Register description: CPU LITTLE核钳位配置时间寄存器。
+   Bit domain definition UNION:  SOC_CPU_PDC_LITTLE_COREISOTIME_UNION */
+#define SOC_CPU_PDC_LITTLE_COREISOTIME_ADDR(base)             ((base) + 0x224UL)
+
+/* Register description: CPU LITTLE核复位时间寄存器。
+   Bit domain definition UNION:  SOC_CPU_PDC_LITTLE_CORERSTTIME_UNION */
+#define SOC_CPU_PDC_LITTLE_CORERSTTIME_ADDR(base)             ((base) + 0x228UL)
+
+/* Register description: CPU LITTLE核解复位时间寄存器。
+   Bit domain definition UNION:  SOC_CPU_PDC_LITTLE_COREURSTTIME_UNION */
+#define SOC_CPU_PDC_LITTLE_COREURSTTIME_ADDR(base)            ((base) + 0x22CUL)
+
+/* Register description: CPU middle核上电时间寄存器。
+   Bit domain definition UNION:  SOC_CPU_PDC_MID_COREPWRUPTIME_UNION */
+#define SOC_CPU_PDC_MID_COREPWRUPTIME_ADDR(base)              ((base) + 0x230UL)
+
+/* Register description: CPU middle核下电时间寄存器。
+   Bit domain definition UNION:  SOC_CPU_PDC_MID_COREPWRDNTIME_UNION */
+#define SOC_CPU_PDC_MID_COREPWRDNTIME_ADDR(base)              ((base) + 0x234UL)
+
+/* Register description: CPU middle核钳位配置时间寄存器。
+   Bit domain definition UNION:  SOC_CPU_PDC_MID_COREISOTIME_UNION */
+#define SOC_CPU_PDC_MID_COREISOTIME_ADDR(base)                ((base) + 0x238UL)
+
+/* Register description: CPU middle核复位时间寄存器。
+   Bit domain definition UNION:  SOC_CPU_PDC_MID_CORERSTTIME_UNION */
+#define SOC_CPU_PDC_MID_CORERSTTIME_ADDR(base)                ((base) + 0x23CUL)
+
+/* Register description: CPU middle核解复位时间寄存器。
+   Bit domain definition UNION:  SOC_CPU_PDC_MID_COREURSTTIME_UNION */
+#define SOC_CPU_PDC_MID_COREURSTTIME_ADDR(base)               ((base) + 0x240UL)
+
+/* Register description: CPU BIG/MIDDLE从核上下电完成中断使能寄存器。
+   Bit domain definition UNION:  SOC_CPU_PDC_BIG_COREPWRINTEN_UNION */
+#define SOC_CPU_PDC_BIG_COREPWRINTEN_ADDR(base)               ((base) + 0x304UL)
+
+/* Register description: CPU BIG/MIDDLE从核上下电完成中断状态寄存器。
+   Bit domain definition UNION:  SOC_CPU_PDC_BIG_COREPWRINTSTAT_UNION */
+#define SOC_CPU_PDC_BIG_COREPWRINTSTAT_ADDR(base)             ((base) + 0x308UL)
+
+/* Register description: CPU BIG/MIDDLE从核GIC中断屏蔽寄存器。
+   Bit domain definition UNION:  SOC_CPU_PDC_BIG_COREGICMASK_UNION */
+#define SOC_CPU_PDC_BIG_COREGICMASK_ADDR(base)                ((base) + 0x30CUL)
+
+/* Register description: CPU BIG/MIDDLE从核上电请求寄存器。
+   Bit domain definition UNION:  SOC_CPU_PDC_BIG_COREPOWERUP_UNION */
+#define SOC_CPU_PDC_BIG_COREPOWERUP_ADDR(base)                ((base) + 0x310UL)
+
+/* Register description: CPU BIG/MIDDLE从核下电请求寄存器。
+   Bit domain definition UNION:  SOC_CPU_PDC_BIG_COREPOWERDN_UNION */
+#define SOC_CPU_PDC_BIG_COREPOWERDN_ADDR(base)                ((base) + 0x314UL)
+
+/* Register description: CPU BIG/MIDDLE从核状态机状态寄存器。
+   Bit domain definition UNION:  SOC_CPU_PDC_BIG_COREPOWERSTAT_UNION */
+#define SOC_CPU_PDC_BIG_COREPOWERSTAT_ADDR(base)              ((base) + 0x318UL)
+
+/* Register description: CPU BIG/MIDDLE从核上电时间寄存器。
+   Bit domain definition UNION:  SOC_CPU_PDC_BIG_COREPWRUPTIME_UNION */
+#define SOC_CPU_PDC_BIG_COREPWRUPTIME_ADDR(base)              ((base) + 0x31CUL)
+
+/* Register description: CPU BIG/MIDDLE从核下电时间寄存器。
+   Bit domain definition UNION:  SOC_CPU_PDC_BIG_COREPWRDNTIME_UNION */
+#define SOC_CPU_PDC_BIG_COREPWRDNTIME_ADDR(base)              ((base) + 0x320UL)
+
+/* Register description: CPU BIG/MIDDLE从核钳位配置时间寄存器。
+   Bit domain definition UNION:  SOC_CPU_PDC_BIG_COREISOTIME_UNION */
+#define SOC_CPU_PDC_BIG_COREISOTIME_ADDR(base)                ((base) + 0x324UL)
+
+/* Register description: CPU BIG/MIDDLE从核复位时间寄存器。
+   Bit domain definition UNION:  SOC_CPU_PDC_BIG_CORERSTTIME_UNION */
+#define SOC_CPU_PDC_BIG_CORERSTTIME_ADDR(base)                ((base) + 0x328UL)
+
+/* Register description: CPU BIG/MIDDLE从核解复位时间寄存器。
+   Bit domain definition UNION:  SOC_CPU_PDC_BIG_COREURSTTIME_UNION */
+#define SOC_CPU_PDC_BIG_COREURSTTIME_ADDR(base)               ((base) + 0x32CUL)
+
+/* Register description: 核下电完成中断状态寄存器。
+   Bit domain definition UNION:  SOC_CPU_PDC_MERGE_COREPWRINTSTAT_UNION */
+#define SOC_CPU_PDC_MERGE_COREPWRINTSTAT_ADDR(base)           ((base) + 0x330UL)
+
+/* Register description: 小核下电完成中断等待时间寄存器。
+   Bit domain definition UNION:  SOC_CPU_PDC_LITTLE_PWRDNTIME_UNION */
+#define SOC_CPU_PDC_LITTLE_PWRDNTIME_ADDR(base)               ((base) + 0x334UL)
+
+/* Register description: 中核下电完成中断等待时间寄存器。
+   Bit domain definition UNION:  SOC_CPU_PDC_MIDDLE_PWRDNTIME_UNION */
+#define SOC_CPU_PDC_MIDDLE_PWRDNTIME_ADDR(base)               ((base) + 0x338UL)
+
+/* Register description: 大核下电完成中断等待时间寄存器。
+   Bit domain definition UNION:  SOC_CPU_PDC_BIG_PWRDNTIME_UNION */
+#define SOC_CPU_PDC_BIG_PWRDNTIME_ADDR(base)                  ((base) + 0x33CUL)
+
+
+#else
+
+
+/* Register description: PDC控制寄存器。
+   Bit domain definition UNION:  SOC_CPU_PDC_PDCCTRL_UNION */
+#define SOC_CPU_PDC_PDCCTRL_ADDR(base)                        (base)
+
+/* Register description: 掉电子系统ISO使能寄存器。
+   Bit domain definition UNION:  SOC_CPU_PDC_ISOEN_UNION */
+#define SOC_CPU_PDC_ISOEN_ADDR(base)                          ((base) + 0x100)
+
+/* Register description: 掉电子系统ISO使能撤销寄存器。
+   Bit domain definition UNION:  SOC_CPU_PDC_ISODIS_UNION */
+#define SOC_CPU_PDC_ISODIS_ADDR(base)                         ((base) + 0x104)
+
+/* Register description: 掉电子系统ISO使能状态寄存器。
+   Bit domain definition UNION:  SOC_CPU_PDC_ISOSTAT_UNION */
+#define SOC_CPU_PDC_ISOSTAT_ADDR(base)                        ((base) + 0x108)
+
+/* Register description: 掉电子系统电源使能寄存器。
+   Bit domain definition UNION:  SOC_CPU_PDC_PERPWREN_UNION */
+#define SOC_CPU_PDC_PERPWREN_ADDR(base)                       ((base) + 0x110)
+
+/* Register description: 掉电子系统电源使能撤销寄存器。
+   Bit domain definition UNION:  SOC_CPU_PDC_PERPWRDIS_UNION */
+#define SOC_CPU_PDC_PERPWRDIS_ADDR(base)                      ((base) + 0x114)
+
+/* Register description: 掉电子系统电源使能状态寄存器。
+   Bit domain definition UNION:  SOC_CPU_PDC_PERPWRSTAT_UNION */
+#define SOC_CPU_PDC_PERPWRSTAT_ADDR(base)                     ((base) + 0x118)
+
+/* Register description: 掉电子系统最终电源状态寄存器。
+   Bit domain definition UNION:  SOC_CPU_PDC_PERPWRACK_UNION */
+#define SOC_CPU_PDC_PERPWRACK_ADDR(base)                      ((base) + 0x11C)
+
+/* Register description: CPU子系统时钟使能寄存器。
+   Bit domain definition UNION:  SOC_CPU_PDC_CPU_CLKEN_UNION */
+#define SOC_CPU_PDC_CPU_CLKEN_ADDR(base)                      ((base) + 0x120)
+
+/* Register description: CPU子系统软复位使能寄存器。
+   Bit domain definition UNION:  SOC_CPU_PDC_CPU_RSTEN_UNION */
+#define SOC_CPU_PDC_CPU_RSTEN_ADDR(base)                      ((base) + 0x124)
+
+/* Register description: CPU子系统软复位撤离寄存器。
+   Bit domain definition UNION:  SOC_CPU_PDC_CPU_RSTDIS_UNION */
+#define SOC_CPU_PDC_CPU_RSTDIS_ADDR(base)                     ((base) + 0x128)
+
+/* Register description: CPU子系统软复位使能状态寄存器。
+   Bit domain definition UNION:  SOC_CPU_PDC_CPU_RSTSTAT_UNION */
+#define SOC_CPU_PDC_CPU_RSTSTAT_ADDR(base)                    ((base) + 0x12C)
+
+/* Register description: CPU M0 ADB低功耗寄存器。
+   Bit domain definition UNION:  SOC_CPU_PDC_CPU_M0_ADBLPSTAT_UNION */
+#define SOC_CPU_PDC_CPU_M0_ADBLPSTAT_ADDR(base)               ((base) + 0x130)
+
+/* Register description: CPU M1 ADB低功耗寄存器。
+   Bit domain definition UNION:  SOC_CPU_PDC_CPU_M1_ADBLPSTAT_UNION */
+#define SOC_CPU_PDC_CPU_M1_ADBLPSTAT_ADDR(base)               ((base) + 0x134)
+
+/* Register description: CPU PERIPH ADB低功耗寄存器。
+   Bit domain definition UNION:  SOC_CPU_PDC_CPU_MP_ADBLPSTAT_UNION */
+#define SOC_CPU_PDC_CPU_MP_ADBLPSTAT_ADDR(base)               ((base) + 0x138)
+
+/* Register description: CPU ACP ADB低功耗寄存器。
+   Bit domain definition UNION:  SOC_CPU_PDC_CPU_ACP_ADBLPSTAT_UNION */
+#define SOC_CPU_PDC_CPU_ACP_ADBLPSTAT_ADDR(base)              ((base) + 0x13C)
+
+/* Register description: CPU ADB自动门控控制寄存器。
+   Bit domain definition UNION:  SOC_CPU_PDC_CPU_ADB_GT_CFG_UNION */
+#define SOC_CPU_PDC_CPU_ADB_GT_CFG_ADDR(base)                 ((base) + 0x140)
+
+/* Register description: CPU 状态寄存器0。
+   Bit domain definition UNION:  SOC_CPU_PDC_CPU_STAT0_UNION */
+#define SOC_CPU_PDC_CPU_STAT0_ADDR(base)                      ((base) + 0x144)
+
+/* Register description: GIC唤醒中断状态寄存器。
+   Bit domain definition UNION:  SOC_CPU_PDC_WAKEUPINT_STAT_UNION */
+#define SOC_CPU_PDC_WAKEUPINT_STAT_ADDR(base)                 ((base) + 0x148)
+
+/* Register description: CPU ACP ADB低功耗寄存器。
+   Bit domain definition UNION:  SOC_CPU_PDC_CPU_LIT_ADBLPSTAT_UNION */
+#define SOC_CPU_PDC_CPU_LIT_ADBLPSTAT_ADDR(base)              ((base) + 0x14C)
+
+/* Register description: CPU上下电状态机使能寄存器。
+   Bit domain definition UNION:  SOC_CPU_PDC_CPU_PDCEN_UNION */
+#define SOC_CPU_PDC_CPU_PDCEN_ADDR(base)                      ((base) + 0x200)
+
+/* Register description: CPU LITTLE核上下电完成中断使能寄存器。
+   Bit domain definition UNION:  SOC_CPU_PDC_LITTLE_COREPWRINTEN_UNION */
+#define SOC_CPU_PDC_LITTLE_COREPWRINTEN_ADDR(base)            ((base) + 0x204)
+
+/* Register description: CPU LITTLE核上下电完成中断状态寄存器。
+   Bit domain definition UNION:  SOC_CPU_PDC_LITTLE_COREPWRINTSTAT_UNION */
+#define SOC_CPU_PDC_LITTLE_COREPWRINTSTAT_ADDR(base)          ((base) + 0x208)
+
+/* Register description: CPU LITTLE核上电请求寄存器。
+   Bit domain definition UNION:  SOC_CPU_PDC_LITTLE_COREPOWERUP_UNION */
+#define SOC_CPU_PDC_LITTLE_COREPOWERUP_ADDR(base)             ((base) + 0x210)
+
+/* Register description: CPU LITTLE核下电请求寄存器。
+   Bit domain definition UNION:  SOC_CPU_PDC_LITTLE_COREPOWERDN_UNION */
+#define SOC_CPU_PDC_LITTLE_COREPOWERDN_ADDR(base)             ((base) + 0x214)
+
+/* Register description: CPU LITTLE核状态机状态寄存器。
+   Bit domain definition UNION:  SOC_CPU_PDC_LITTLE_COREPOWERSTAT_UNION */
+#define SOC_CPU_PDC_LITTLE_COREPOWERSTAT_ADDR(base)           ((base) + 0x218)
+
+/* Register description: CPU LITTLE核上电时间寄存器。
+   Bit domain definition UNION:  SOC_CPU_PDC_LITTLE_COREPWRUPTIME_UNION */
+#define SOC_CPU_PDC_LITTLE_COREPWRUPTIME_ADDR(base)           ((base) + 0x21C)
+
+/* Register description: CPU LITTLE核下电时间寄存器。
+   Bit domain definition UNION:  SOC_CPU_PDC_LITTLE_COREPWRDNTIME_UNION */
+#define SOC_CPU_PDC_LITTLE_COREPWRDNTIME_ADDR(base)           ((base) + 0x220)
+
+/* Register description: CPU LITTLE核钳位配置时间寄存器。
+   Bit domain definition UNION:  SOC_CPU_PDC_LITTLE_COREISOTIME_UNION */
+#define SOC_CPU_PDC_LITTLE_COREISOTIME_ADDR(base)             ((base) + 0x224)
+
+/* Register description: CPU LITTLE核复位时间寄存器。
+   Bit domain definition UNION:  SOC_CPU_PDC_LITTLE_CORERSTTIME_UNION */
+#define SOC_CPU_PDC_LITTLE_CORERSTTIME_ADDR(base)             ((base) + 0x228)
+
+/* Register description: CPU LITTLE核解复位时间寄存器。
+   Bit domain definition UNION:  SOC_CPU_PDC_LITTLE_COREURSTTIME_UNION */
+#define SOC_CPU_PDC_LITTLE_COREURSTTIME_ADDR(base)            ((base) + 0x22C)
+
+/* Register description: CPU middle核上电时间寄存器。
+   Bit domain definition UNION:  SOC_CPU_PDC_MID_COREPWRUPTIME_UNION */
+#define SOC_CPU_PDC_MID_COREPWRUPTIME_ADDR(base)              ((base) + 0x230)
+
+/* Register description: CPU middle核下电时间寄存器。
+   Bit domain definition UNION:  SOC_CPU_PDC_MID_COREPWRDNTIME_UNION */
+#define SOC_CPU_PDC_MID_COREPWRDNTIME_ADDR(base)              ((base) + 0x234)
+
+/* Register description: CPU middle核钳位配置时间寄存器。
+   Bit domain definition UNION:  SOC_CPU_PDC_MID_COREISOTIME_UNION */
+#define SOC_CPU_PDC_MID_COREISOTIME_ADDR(base)                ((base) + 0x238)
+
+/* Register description: CPU middle核复位时间寄存器。
+   Bit domain definition UNION:  SOC_CPU_PDC_MID_CORERSTTIME_UNION */
+#define SOC_CPU_PDC_MID_CORERSTTIME_ADDR(base)                ((base) + 0x23C)
+
+/* Register description: CPU middle核解复位时间寄存器。
+   Bit domain definition UNION:  SOC_CPU_PDC_MID_COREURSTTIME_UNION */
+#define SOC_CPU_PDC_MID_COREURSTTIME_ADDR(base)               ((base) + 0x240)
+
+/* Register description: CPU BIG/MIDDLE从核上下电完成中断使能寄存器。
+   Bit domain definition UNION:  SOC_CPU_PDC_BIG_COREPWRINTEN_UNION */
+#define SOC_CPU_PDC_BIG_COREPWRINTEN_ADDR(base)               ((base) + 0x304)
+
+/* Register description: CPU BIG/MIDDLE从核上下电完成中断状态寄存器。
+   Bit domain definition UNION:  SOC_CPU_PDC_BIG_COREPWRINTSTAT_UNION */
+#define SOC_CPU_PDC_BIG_COREPWRINTSTAT_ADDR(base)             ((base) + 0x308)
+
+/* Register description: CPU BIG/MIDDLE从核GIC中断屏蔽寄存器。
+   Bit domain definition UNION:  SOC_CPU_PDC_BIG_COREGICMASK_UNION */
+#define SOC_CPU_PDC_BIG_COREGICMASK_ADDR(base)                ((base) + 0x30C)
+
+/* Register description: CPU BIG/MIDDLE从核上电请求寄存器。
+   Bit domain definition UNION:  SOC_CPU_PDC_BIG_COREPOWERUP_UNION */
+#define SOC_CPU_PDC_BIG_COREPOWERUP_ADDR(base)                ((base) + 0x310)
+
+/* Register description: CPU BIG/MIDDLE从核下电请求寄存器。
+   Bit domain definition UNION:  SOC_CPU_PDC_BIG_COREPOWERDN_UNION */
+#define SOC_CPU_PDC_BIG_COREPOWERDN_ADDR(base)                ((base) + 0x314)
+
+/* Register description: CPU BIG/MIDDLE从核状态机状态寄存器。
+   Bit domain definition UNION:  SOC_CPU_PDC_BIG_COREPOWERSTAT_UNION */
+#define SOC_CPU_PDC_BIG_COREPOWERSTAT_ADDR(base)              ((base) + 0x318)
+
+/* Register description: CPU BIG/MIDDLE从核上电时间寄存器。
+   Bit domain definition UNION:  SOC_CPU_PDC_BIG_COREPWRUPTIME_UNION */
+#define SOC_CPU_PDC_BIG_COREPWRUPTIME_ADDR(base)              ((base) + 0x31C)
+
+/* Register description: CPU BIG/MIDDLE从核下电时间寄存器。
+   Bit domain definition UNION:  SOC_CPU_PDC_BIG_COREPWRDNTIME_UNION */
+#define SOC_CPU_PDC_BIG_COREPWRDNTIME_ADDR(base)              ((base) + 0x320)
+
+/* Register description: CPU BIG/MIDDLE从核钳位配置时间寄存器。
+   Bit domain definition UNION:  SOC_CPU_PDC_BIG_COREISOTIME_UNION */
+#define SOC_CPU_PDC_BIG_COREISOTIME_ADDR(base)                ((base) + 0x324)
+
+/* Register description: CPU BIG/MIDDLE从核复位时间寄存器。
+   Bit domain definition UNION:  SOC_CPU_PDC_BIG_CORERSTTIME_UNION */
+#define SOC_CPU_PDC_BIG_CORERSTTIME_ADDR(base)                ((base) + 0x328)
+
+/* Register description: CPU BIG/MIDDLE从核解复位时间寄存器。
+   Bit domain definition UNION:  SOC_CPU_PDC_BIG_COREURSTTIME_UNION */
+#define SOC_CPU_PDC_BIG_COREURSTTIME_ADDR(base)               ((base) + 0x32C)
+
+/* Register description: 核下电完成中断状态寄存器。
+   Bit domain definition UNION:  SOC_CPU_PDC_MERGE_COREPWRINTSTAT_UNION */
+#define SOC_CPU_PDC_MERGE_COREPWRINTSTAT_ADDR(base)           ((base) + 0x330)
+
+/* Register description: 小核下电完成中断等待时间寄存器。
+   Bit domain definition UNION:  SOC_CPU_PDC_LITTLE_PWRDNTIME_UNION */
+#define SOC_CPU_PDC_LITTLE_PWRDNTIME_ADDR(base)               ((base) + 0x334)
+
+/* Register description: 中核下电完成中断等待时间寄存器。
+   Bit domain definition UNION:  SOC_CPU_PDC_MIDDLE_PWRDNTIME_UNION */
+#define SOC_CPU_PDC_MIDDLE_PWRDNTIME_ADDR(base)               ((base) + 0x338)
+
+/* Register description: 大核下电完成中断等待时间寄存器。
+   Bit domain definition UNION:  SOC_CPU_PDC_BIG_PWRDNTIME_UNION */
+#define SOC_CPU_PDC_BIG_PWRDNTIME_ADDR(base)                  ((base) + 0x33C)
+
+
+#endif
+
+
+
+
+/*****************************************************************************
+  3 枚举定义
+*****************************************************************************/
+
+
+
+/*****************************************************************************
+  4 消息头定义
+*****************************************************************************/
+
+
+/*****************************************************************************
+  5 消息定义
+*****************************************************************************/
+
+
+
+/*****************************************************************************
+  6 STRUCT定义
+*****************************************************************************/
+
+
+
+/*****************************************************************************
+  7 UNION定义
+*****************************************************************************/
+
+/****************************************************************************
+                     (1/1) reg_define
+ ****************************************************************************/
+/*****************************************************************************
+ struct               : SOC_CPU_PDC_PDCCTRL_UNION
+ struct description   : PDCCTRL Register structure definition
+                        Address Offset:0x000 Initial:0x00000010 Width:32
+ register description : PDC控制寄存器。
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  bitmasken_000 : 32; /* bit[0-31]:  */
+    } reg;
+} SOC_CPU_PDC_PDCCTRL_UNION;
+#endif
+#define SOC_CPU_PDC_PDCCTRL_bitmasken_000_START  (0)
+#define SOC_CPU_PDC_PDCCTRL_bitmasken_000_END    (31)
+
+
+/*****************************************************************************
+ struct               : SOC_CPU_PDC_ISOEN_UNION
+ struct description   : ISOEN Register structure definition
+                        Address Offset:0x100 Initial:0x00000000 Width:32
+ register description : 掉电子系统ISO使能寄存器。
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  reserved : 32; /* bit[0-31]: 保留。 */
+    } reg;
+} SOC_CPU_PDC_ISOEN_UNION;
+#endif
+
+
+/*****************************************************************************
+ struct               : SOC_CPU_PDC_ISODIS_UNION
+ struct description   : ISODIS Register structure definition
+                        Address Offset:0x104 Initial:0x00000000 Width:32
+ register description : 掉电子系统ISO使能撤销寄存器。
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  reserved : 32; /* bit[0-31]: 保留。 */
+    } reg;
+} SOC_CPU_PDC_ISODIS_UNION;
+#endif
+
+
+/*****************************************************************************
+ struct               : SOC_CPU_PDC_ISOSTAT_UNION
+ struct description   : ISOSTAT Register structure definition
+                        Address Offset:0x108 Initial:0x000000 Width:32
+ register description : 掉电子系统ISO使能状态寄存器。
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  core_0_iso_stat   : 1;  /* bit[0]   : core0 ISO单元使能状态：
+                                                            0：不使能；1：使能。 */
+        unsigned int  core_1_iso_stat   : 1;  /* bit[1]   : core1 ISO单元使能状态：
+                                                            0：不使能；1：使能。 */
+        unsigned int  core_2_iso_stat   : 1;  /* bit[2]   : core2 ISO单元使能状态：
+                                                            0：不使能；1：使能。 */
+        unsigned int  core_3_iso_stat   : 1;  /* bit[3]   : core3 ISO单元使能状态：
+                                                            0：不使能；1：使能。 */
+        unsigned int  core_4_iso_stat   : 1;  /* bit[4]   : core4 ISO单元使能状态：
+                                                            0：不使能；1：使能。 */
+        unsigned int  core_5_iso_stat   : 1;  /* bit[5]   : core5 ISO单元使能状态：
+                                                            0：不使能；1：使能。 */
+        unsigned int  core_6_iso_stat   : 1;  /* bit[6]   : core6 ISO单元使能状态：
+                                                            0：不使能；1：使能。 */
+        unsigned int  core_7_iso_stat   : 1;  /* bit[7]   : core7 ISO单元使能状态：
+                                                            0：不使能；1：使能。 */
+        unsigned int  core_sl2_iso_stat : 1;  /* bit[8]   : coreshare L2 ISO单元使能状态：
+                                                            0：不使能；1：使能。 */
+        unsigned int  reserved          : 23; /* bit[9-31]: 保留。 */
+    } reg;
+} SOC_CPU_PDC_ISOSTAT_UNION;
+#endif
+#define SOC_CPU_PDC_ISOSTAT_core_0_iso_stat_START    (0)
+#define SOC_CPU_PDC_ISOSTAT_core_0_iso_stat_END      (0)
+#define SOC_CPU_PDC_ISOSTAT_core_1_iso_stat_START    (1)
+#define SOC_CPU_PDC_ISOSTAT_core_1_iso_stat_END      (1)
+#define SOC_CPU_PDC_ISOSTAT_core_2_iso_stat_START    (2)
+#define SOC_CPU_PDC_ISOSTAT_core_2_iso_stat_END      (2)
+#define SOC_CPU_PDC_ISOSTAT_core_3_iso_stat_START    (3)
+#define SOC_CPU_PDC_ISOSTAT_core_3_iso_stat_END      (3)
+#define SOC_CPU_PDC_ISOSTAT_core_4_iso_stat_START    (4)
+#define SOC_CPU_PDC_ISOSTAT_core_4_iso_stat_END      (4)
+#define SOC_CPU_PDC_ISOSTAT_core_5_iso_stat_START    (5)
+#define SOC_CPU_PDC_ISOSTAT_core_5_iso_stat_END      (5)
+#define SOC_CPU_PDC_ISOSTAT_core_6_iso_stat_START    (6)
+#define SOC_CPU_PDC_ISOSTAT_core_6_iso_stat_END      (6)
+#define SOC_CPU_PDC_ISOSTAT_core_7_iso_stat_START    (7)
+#define SOC_CPU_PDC_ISOSTAT_core_7_iso_stat_END      (7)
+#define SOC_CPU_PDC_ISOSTAT_core_sl2_iso_stat_START  (8)
+#define SOC_CPU_PDC_ISOSTAT_core_sl2_iso_stat_END    (8)
+
+
+/*****************************************************************************
+ struct               : SOC_CPU_PDC_PERPWREN_UNION
+ struct description   : PERPWREN Register structure definition
+                        Address Offset:0x110 Initial:0x00000000 Width:32
+ register description : 掉电子系统电源使能寄存器。
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  reserved : 32; /* bit[0-31]: 保留。 */
+    } reg;
+} SOC_CPU_PDC_PERPWREN_UNION;
+#endif
+
+
+/*****************************************************************************
+ struct               : SOC_CPU_PDC_PERPWRDIS_UNION
+ struct description   : PERPWRDIS Register structure definition
+                        Address Offset:0x114 Initial:0x00000000 Width:32
+ register description : 掉电子系统电源使能撤销寄存器。
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  reserved : 32; /* bit[0-31]: 保留。 */
+    } reg;
+} SOC_CPU_PDC_PERPWRDIS_UNION;
+#endif
+
+
+/*****************************************************************************
+ struct               : SOC_CPU_PDC_PERPWRSTAT_UNION
+ struct description   : PERPWRSTAT Register structure definition
+                        Address Offset:0x118 Initial:0x000000 Width:32
+ register description : 掉电子系统电源使能状态寄存器。
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  core_0_mtcmos_stat     : 1;  /* bit[0]   : core0 电源使能状态：
+                                                                 0：子系统电源使能撤销；
+                                                                 1：子系统电源使能。 */
+        unsigned int  core_1_mtcmos_stat     : 1;  /* bit[1]   : core1 电源使能状态：
+                                                                 0：子系统电源使能撤销；
+                                                                 1：子系统电源使能。 */
+        unsigned int  core_2_mtcmos_stat     : 1;  /* bit[2]   : core2 电源使能状态：
+                                                                 0：子系统电源使能撤销；
+                                                                 1：子系统电源使能。 */
+        unsigned int  core_3_mtcmos_stat     : 1;  /* bit[3]   : core3 电源使能状态：
+                                                                 0：子系统电源使能撤销；
+                                                                 1：子系统电源使能。 */
+        unsigned int  core_4_mtcmos_stat     : 1;  /* bit[4]   : core4 电源使能状态：
+                                                                 0：子系统电源使能撤销；
+                                                                 1：子系统电源使能。 */
+        unsigned int  core_5_mtcmos_stat     : 1;  /* bit[5]   : core5 电源使能状态：
+                                                                 0：子系统电源使能撤销；
+                                                                 1：子系统电源使能。 */
+        unsigned int  core_6_mtcmos_stat     : 1;  /* bit[6]   : core6 电源使能状态：
+                                                                 0：子系统电源使能撤销；
+                                                                 1：子系统电源使能。 */
+        unsigned int  core_7_mtcmos_stat     : 1;  /* bit[7]   : core7 电源使能状态：
+                                                                 0：子系统电源使能撤销；
+                                                                 1：子系统电源使能。 */
+        unsigned int  core_01_l2_mtcmos_stat : 1;  /* bit[8]   : core01 L2 电源使能状态：
+                                                                 0：子系统电源使能撤销；
+                                                                 1：子系统电源使能。 */
+        unsigned int  reserved               : 23; /* bit[9-31]: 保留。 */
+    } reg;
+} SOC_CPU_PDC_PERPWRSTAT_UNION;
+#endif
+#define SOC_CPU_PDC_PERPWRSTAT_core_0_mtcmos_stat_START      (0)
+#define SOC_CPU_PDC_PERPWRSTAT_core_0_mtcmos_stat_END        (0)
+#define SOC_CPU_PDC_PERPWRSTAT_core_1_mtcmos_stat_START      (1)
+#define SOC_CPU_PDC_PERPWRSTAT_core_1_mtcmos_stat_END        (1)
+#define SOC_CPU_PDC_PERPWRSTAT_core_2_mtcmos_stat_START      (2)
+#define SOC_CPU_PDC_PERPWRSTAT_core_2_mtcmos_stat_END        (2)
+#define SOC_CPU_PDC_PERPWRSTAT_core_3_mtcmos_stat_START      (3)
+#define SOC_CPU_PDC_PERPWRSTAT_core_3_mtcmos_stat_END        (3)
+#define SOC_CPU_PDC_PERPWRSTAT_core_4_mtcmos_stat_START      (4)
+#define SOC_CPU_PDC_PERPWRSTAT_core_4_mtcmos_stat_END        (4)
+#define SOC_CPU_PDC_PERPWRSTAT_core_5_mtcmos_stat_START      (5)
+#define SOC_CPU_PDC_PERPWRSTAT_core_5_mtcmos_stat_END        (5)
+#define SOC_CPU_PDC_PERPWRSTAT_core_6_mtcmos_stat_START      (6)
+#define SOC_CPU_PDC_PERPWRSTAT_core_6_mtcmos_stat_END        (6)
+#define SOC_CPU_PDC_PERPWRSTAT_core_7_mtcmos_stat_START      (7)
+#define SOC_CPU_PDC_PERPWRSTAT_core_7_mtcmos_stat_END        (7)
+#define SOC_CPU_PDC_PERPWRSTAT_core_01_l2_mtcmos_stat_START  (8)
+#define SOC_CPU_PDC_PERPWRSTAT_core_01_l2_mtcmos_stat_END    (8)
+
+
+/*****************************************************************************
+ struct               : SOC_CPU_PDC_PERPWRACK_UNION
+ struct description   : PERPWRACK Register structure definition
+                        Address Offset:0x11C Initial:0x00 Width:32
+ register description : 掉电子系统最终电源状态寄存器。
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  core_0_mtcmos_ack_and     : 1;  /* bit[0]    : core0 各mtcmos链与状态，为1表示所有mtcmos都已打开。 */
+        unsigned int  core_1_mtcmos_ack_and     : 1;  /* bit[1]    : core1各mtcmos链与状态，为1表示所有mtcmos都已打开。 */
+        unsigned int  core_2_mtcmos_ack_and     : 1;  /* bit[2]    : core2 各mtcmos链与状态，为1表示所有mtcmos都已打开。 */
+        unsigned int  core_3_mtcmos_ack_and     : 1;  /* bit[3]    : core3 各mtcmos链与状态，为1表示所有mtcmos都已打开。 */
+        unsigned int  core_4_mtcmos_ack_and     : 1;  /* bit[4]    : core4 各mtcmos链与状态，为1表示所有mtcmos都已打开。 */
+        unsigned int  core_5_mtcmos_ack_and     : 1;  /* bit[5]    : core5 各mtcmos链与状态，为1表示所有mtcmos都已打开。 */
+        unsigned int  core_6_mtcmos_ack_and     : 1;  /* bit[6]    : core6 各mtcmos链与状态，为1表示所有mtcmos都已打开。 */
+        unsigned int  core_7_mtcmos_ack_and     : 1;  /* bit[7]    : core7 各mtcmos链与状态，为1表示所有mtcmos都已打开。 */
+        unsigned int  core_01_l2_mtcmos_ack_and : 1;  /* bit[8]    : core01 L2 各mtcmos链与状态，为1表示所有mtcmos都已打开。 */
+        unsigned int  reserved_0                : 7;  /* bit[9-15] : 保留。 */
+        unsigned int  core_0_mtcmos_ack_or      : 1;  /* bit[16]   : core0 各mtcmos链或状态，为0表示所有mtcmos都已关闭。 */
+        unsigned int  core_1_mtcmos_ack_or      : 1;  /* bit[17]   : core1 各mtcmos链或状态，为0表示所有mtcmos都已关闭。 */
+        unsigned int  core_2_mtcmos_ack_or      : 1;  /* bit[18]   : core2 各mtcmos链或状态，为0表示所有mtcmos都已关闭。 */
+        unsigned int  core_3_mtcmos_ack_or      : 1;  /* bit[19]   : core3 各mtcmos链或状态，为0表示所有mtcmos都已关闭。 */
+        unsigned int  core_4_mtcmos_ack_or      : 1;  /* bit[20]   : core4 各mtcmos链或状态，为0表示所有mtcmos都已关闭。 */
+        unsigned int  core_5_mtcmos_ack_or      : 1;  /* bit[21]   : core5 各mtcmos链或状态，为0表示所有mtcmos都已关闭。 */
+        unsigned int  core_6_mtcmos_ack_or      : 1;  /* bit[22]   : core6 各mtcmos链或状态，为0表示所有mtcmos都已关闭。 */
+        unsigned int  core_7_mtcmos_ack_or      : 1;  /* bit[23]   : core7 各mtcmos链或状态，为0表示所有mtcmos都已关闭。 */
+        unsigned int  core_01_l2_mtcmos_ack_or  : 1;  /* bit[24]   : core01 L2 各mtcmos链或状态，为0表示所有mtcmos都已关闭。 */
+        unsigned int  reserved_1                : 7;  /* bit[25-31]: 保留。 */
+    } reg;
+} SOC_CPU_PDC_PERPWRACK_UNION;
+#endif
+#define SOC_CPU_PDC_PERPWRACK_core_0_mtcmos_ack_and_START      (0)
+#define SOC_CPU_PDC_PERPWRACK_core_0_mtcmos_ack_and_END        (0)
+#define SOC_CPU_PDC_PERPWRACK_core_1_mtcmos_ack_and_START      (1)
+#define SOC_CPU_PDC_PERPWRACK_core_1_mtcmos_ack_and_END        (1)
+#define SOC_CPU_PDC_PERPWRACK_core_2_mtcmos_ack_and_START      (2)
+#define SOC_CPU_PDC_PERPWRACK_core_2_mtcmos_ack_and_END        (2)
+#define SOC_CPU_PDC_PERPWRACK_core_3_mtcmos_ack_and_START      (3)
+#define SOC_CPU_PDC_PERPWRACK_core_3_mtcmos_ack_and_END        (3)
+#define SOC_CPU_PDC_PERPWRACK_core_4_mtcmos_ack_and_START      (4)
+#define SOC_CPU_PDC_PERPWRACK_core_4_mtcmos_ack_and_END        (4)
+#define SOC_CPU_PDC_PERPWRACK_core_5_mtcmos_ack_and_START      (5)
+#define SOC_CPU_PDC_PERPWRACK_core_5_mtcmos_ack_and_END        (5)
+#define SOC_CPU_PDC_PERPWRACK_core_6_mtcmos_ack_and_START      (6)
+#define SOC_CPU_PDC_PERPWRACK_core_6_mtcmos_ack_and_END        (6)
+#define SOC_CPU_PDC_PERPWRACK_core_7_mtcmos_ack_and_START      (7)
+#define SOC_CPU_PDC_PERPWRACK_core_7_mtcmos_ack_and_END        (7)
+#define SOC_CPU_PDC_PERPWRACK_core_01_l2_mtcmos_ack_and_START  (8)
+#define SOC_CPU_PDC_PERPWRACK_core_01_l2_mtcmos_ack_and_END    (8)
+#define SOC_CPU_PDC_PERPWRACK_core_0_mtcmos_ack_or_START       (16)
+#define SOC_CPU_PDC_PERPWRACK_core_0_mtcmos_ack_or_END         (16)
+#define SOC_CPU_PDC_PERPWRACK_core_1_mtcmos_ack_or_START       (17)
+#define SOC_CPU_PDC_PERPWRACK_core_1_mtcmos_ack_or_END         (17)
+#define SOC_CPU_PDC_PERPWRACK_core_2_mtcmos_ack_or_START       (18)
+#define SOC_CPU_PDC_PERPWRACK_core_2_mtcmos_ack_or_END         (18)
+#define SOC_CPU_PDC_PERPWRACK_core_3_mtcmos_ack_or_START       (19)
+#define SOC_CPU_PDC_PERPWRACK_core_3_mtcmos_ack_or_END         (19)
+#define SOC_CPU_PDC_PERPWRACK_core_4_mtcmos_ack_or_START       (20)
+#define SOC_CPU_PDC_PERPWRACK_core_4_mtcmos_ack_or_END         (20)
+#define SOC_CPU_PDC_PERPWRACK_core_5_mtcmos_ack_or_START       (21)
+#define SOC_CPU_PDC_PERPWRACK_core_5_mtcmos_ack_or_END         (21)
+#define SOC_CPU_PDC_PERPWRACK_core_6_mtcmos_ack_or_START       (22)
+#define SOC_CPU_PDC_PERPWRACK_core_6_mtcmos_ack_or_END         (22)
+#define SOC_CPU_PDC_PERPWRACK_core_7_mtcmos_ack_or_START       (23)
+#define SOC_CPU_PDC_PERPWRACK_core_7_mtcmos_ack_or_END         (23)
+#define SOC_CPU_PDC_PERPWRACK_core_01_l2_mtcmos_ack_or_START   (24)
+#define SOC_CPU_PDC_PERPWRACK_core_01_l2_mtcmos_ack_or_END     (24)
+
+
+/*****************************************************************************
+ struct               : SOC_CPU_PDC_CPU_CLKEN_UNION
+ struct description   : CPU_CLKEN Register structure definition
+                        Address Offset:0x120 Initial:0x0000 Width:32
+ register description : CPU子系统时钟使能寄存器。
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  gt_hc_gicclk_en       : 1;  /* bit[0]    : hc_cpu cluster gicclk时钟门控使能。 */
+        unsigned int  gt_periphclk_top_en   : 1;  /* bit[1]    : cpu subchip periphclk时钟门控使能。 */
+        unsigned int  gt_clk_ananke_en      : 1;  /* bit[2]    : cpu cluster clk_ananke时钟门控使能。暂无用 */
+        unsigned int  gt_clk_scu_en         : 1;  /* bit[3]    : cpu cluster clk_scu时钟门控使能。暂无用 */
+        unsigned int  gt_hc_atclk_top_en    : 1;  /* bit[4]    : hc_cpu cluster atclk_top时钟门控使能。 */
+        unsigned int  gt_hc_pclkdbg_top_en  : 1;  /* bit[5]    : hc_cpu cluster pclkdbg_top时钟门控使能。 */
+        unsigned int  reserved_0            : 2;  /* bit[6-7]  : 保留。 */
+        unsigned int  gt_top_pclkdbg_top_en : 1;  /* bit[8]    : cpu subchip pclkdbg_top时钟门控使能。 */
+        unsigned int  gt_atclk_top_en       : 1;  /* bit[9]    : cpu subchip atclk_top时钟门控使能。 */
+        unsigned int  gt_lit_gicclk_en      : 1;  /* bit[10]   : lit_cpu cluster gicclk时钟门控使能。 */
+        unsigned int  reserved_1            : 3;  /* bit[11-13]: 保留。 */
+        unsigned int  gt_lit_atclk_top_en   : 1;  /* bit[14]   : lit_cpu cluster atclk_top时钟门控使能。 */
+        unsigned int  gt_lit_pclkdbg_top_en : 1;  /* bit[15]   : lit_cpu cluster pclkdbg_top时钟门控使能。 */
+        unsigned int  bitmasken_120         : 16; /* bit[16-31]: clken每个比特位的使能位：
+                                                                 只有当bitmasken对应的比特位为1'b1，clken相应的比特位才起作用。bitmasken[0]就是clken[0]的mask使能位。写1有效。 */
+    } reg;
+} SOC_CPU_PDC_CPU_CLKEN_UNION;
+#endif
+#define SOC_CPU_PDC_CPU_CLKEN_gt_hc_gicclk_en_START        (0)
+#define SOC_CPU_PDC_CPU_CLKEN_gt_hc_gicclk_en_END          (0)
+#define SOC_CPU_PDC_CPU_CLKEN_gt_periphclk_top_en_START    (1)
+#define SOC_CPU_PDC_CPU_CLKEN_gt_periphclk_top_en_END      (1)
+#define SOC_CPU_PDC_CPU_CLKEN_gt_clk_ananke_en_START       (2)
+#define SOC_CPU_PDC_CPU_CLKEN_gt_clk_ananke_en_END         (2)
+#define SOC_CPU_PDC_CPU_CLKEN_gt_clk_scu_en_START          (3)
+#define SOC_CPU_PDC_CPU_CLKEN_gt_clk_scu_en_END            (3)
+#define SOC_CPU_PDC_CPU_CLKEN_gt_hc_atclk_top_en_START     (4)
+#define SOC_CPU_PDC_CPU_CLKEN_gt_hc_atclk_top_en_END       (4)
+#define SOC_CPU_PDC_CPU_CLKEN_gt_hc_pclkdbg_top_en_START   (5)
+#define SOC_CPU_PDC_CPU_CLKEN_gt_hc_pclkdbg_top_en_END     (5)
+#define SOC_CPU_PDC_CPU_CLKEN_gt_top_pclkdbg_top_en_START  (8)
+#define SOC_CPU_PDC_CPU_CLKEN_gt_top_pclkdbg_top_en_END    (8)
+#define SOC_CPU_PDC_CPU_CLKEN_gt_atclk_top_en_START        (9)
+#define SOC_CPU_PDC_CPU_CLKEN_gt_atclk_top_en_END          (9)
+#define SOC_CPU_PDC_CPU_CLKEN_gt_lit_gicclk_en_START       (10)
+#define SOC_CPU_PDC_CPU_CLKEN_gt_lit_gicclk_en_END         (10)
+#define SOC_CPU_PDC_CPU_CLKEN_gt_lit_atclk_top_en_START    (14)
+#define SOC_CPU_PDC_CPU_CLKEN_gt_lit_atclk_top_en_END      (14)
+#define SOC_CPU_PDC_CPU_CLKEN_gt_lit_pclkdbg_top_en_START  (15)
+#define SOC_CPU_PDC_CPU_CLKEN_gt_lit_pclkdbg_top_en_END    (15)
+#define SOC_CPU_PDC_CPU_CLKEN_bitmasken_120_START          (16)
+#define SOC_CPU_PDC_CPU_CLKEN_bitmasken_120_END            (31)
+
+
+/*****************************************************************************
+ struct               : SOC_CPU_PDC_CPU_RSTEN_UNION
+ struct description   : CPU_RSTEN Register structure definition
+                        Address Offset:0x124 Initial:0x000 Width:32
+ register description : CPU子系统软复位使能寄存器。
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  reserved_0                        : 4;  /* bit[0-3]  : CPU LITTLE单核上电复位请求，电平复位，高有效。有效时将会复位所有的处理器逻辑，包括core、NEON和VFP、debug、PTM及breakpoint、watchpoint等CLK时钟域的全部逻辑。 */
+        unsigned int  reserved_1                        : 3;  /* bit[4-6]  : CPU MIDDLE单核上电复位请求，电平复位，高有效。有效时将会复位所有的处理器逻辑，包括core、NEON和VFP、debug、PTM及breakpoint、watchpoint等CLK时钟域的全部逻辑。 */
+        unsigned int  reserved_2                        : 1;  /* bit[7]    : CPU BIG单核上电复位请求，电平复位，高有效。有效时将会复位所有的处理器逻辑，包括core、NEON和VFP、debug、PTM及breakpoint、watchpoint等CLK时钟域的全部逻辑。 */
+        unsigned int  hc_presetdbg_rst_req_en           : 1;  /* bit[8]    : debug时钟域软复位请求。 */
+        unsigned int  hc_coresight_soft_rst_req_en      : 1;  /* bit[9]    : coresight部分软复位请求。 */
+        unsigned int  reserved_3                        : 1;  /* bit[10]   : cpu cluster harden层次整体软复位请求。 */
+        unsigned int  hc_scu_soft_rst_req_en            : 1;  /* bit[11]   : LINX_CLUSTER单独软复位请求。 */
+        unsigned int  lit_presetdbg_rst_req_en          : 1;  /* bit[12]   : debug时钟域软复位请求。 */
+        unsigned int  lit_coresight_soft_rst_req_en     : 1;  /* bit[13]   : coresight部分软复位请求。 */
+        unsigned int  reserved_4                        : 1;  /* bit[14]   : cpu cluster harden层次整体软复位请求。 */
+        unsigned int  lit_scu_soft_rst_req_en           : 1;  /* bit[15]   : LINX_CLUSTER单独软复位请求。 */
+        unsigned int  subchip_atreset_top_req_en        : 1;  /* bit[16]   : klein_comlplex0软复位请求。 */
+        unsigned int  subchip_preset_top_req_en         : 1;  /* bit[17]   : klein_comlplex0软复位请求。 */
+        unsigned int  subchip_coresightreset_top_req_en : 1;  /* bit[18]   : klein_comlplex1软复位请求。 */
+        unsigned int  reserved_5                        : 1;  /* bit[19]   :  */
+        unsigned int  hc_cluster_soft_rst_req_en        : 1;  /* bit[20]   : cpu cluster harden层次整体软复位请求。 */
+        unsigned int  lit_cluster_soft_rst_req_en       : 1;  /* bit[21]   : cpu cluster harden层次整体软复位请求。 */
+        unsigned int  top_cluster_soft_rst_req_en       : 1;  /* bit[22]   : cpu subchip 层次整体软复位请求。 */
+        unsigned int  reserved_6                        : 9;  /* bit[23-31]: IP软复位使能：
+                                                                             0：IP软复位使能状态不变；
+                                                                             1：IP软复位使能。 */
+    } reg;
+} SOC_CPU_PDC_CPU_RSTEN_UNION;
+#endif
+#define SOC_CPU_PDC_CPU_RSTEN_hc_presetdbg_rst_req_en_START            (8)
+#define SOC_CPU_PDC_CPU_RSTEN_hc_presetdbg_rst_req_en_END              (8)
+#define SOC_CPU_PDC_CPU_RSTEN_hc_coresight_soft_rst_req_en_START       (9)
+#define SOC_CPU_PDC_CPU_RSTEN_hc_coresight_soft_rst_req_en_END         (9)
+#define SOC_CPU_PDC_CPU_RSTEN_hc_scu_soft_rst_req_en_START             (11)
+#define SOC_CPU_PDC_CPU_RSTEN_hc_scu_soft_rst_req_en_END               (11)
+#define SOC_CPU_PDC_CPU_RSTEN_lit_presetdbg_rst_req_en_START           (12)
+#define SOC_CPU_PDC_CPU_RSTEN_lit_presetdbg_rst_req_en_END             (12)
+#define SOC_CPU_PDC_CPU_RSTEN_lit_coresight_soft_rst_req_en_START      (13)
+#define SOC_CPU_PDC_CPU_RSTEN_lit_coresight_soft_rst_req_en_END        (13)
+#define SOC_CPU_PDC_CPU_RSTEN_lit_scu_soft_rst_req_en_START            (15)
+#define SOC_CPU_PDC_CPU_RSTEN_lit_scu_soft_rst_req_en_END              (15)
+#define SOC_CPU_PDC_CPU_RSTEN_subchip_atreset_top_req_en_START         (16)
+#define SOC_CPU_PDC_CPU_RSTEN_subchip_atreset_top_req_en_END           (16)
+#define SOC_CPU_PDC_CPU_RSTEN_subchip_preset_top_req_en_START          (17)
+#define SOC_CPU_PDC_CPU_RSTEN_subchip_preset_top_req_en_END            (17)
+#define SOC_CPU_PDC_CPU_RSTEN_subchip_coresightreset_top_req_en_START  (18)
+#define SOC_CPU_PDC_CPU_RSTEN_subchip_coresightreset_top_req_en_END    (18)
+#define SOC_CPU_PDC_CPU_RSTEN_hc_cluster_soft_rst_req_en_START         (20)
+#define SOC_CPU_PDC_CPU_RSTEN_hc_cluster_soft_rst_req_en_END           (20)
+#define SOC_CPU_PDC_CPU_RSTEN_lit_cluster_soft_rst_req_en_START        (21)
+#define SOC_CPU_PDC_CPU_RSTEN_lit_cluster_soft_rst_req_en_END          (21)
+#define SOC_CPU_PDC_CPU_RSTEN_top_cluster_soft_rst_req_en_START        (22)
+#define SOC_CPU_PDC_CPU_RSTEN_top_cluster_soft_rst_req_en_END          (22)
+
+
+/*****************************************************************************
+ struct               : SOC_CPU_PDC_CPU_RSTDIS_UNION
+ struct description   : CPU_RSTDIS Register structure definition
+                        Address Offset:0x128 Initial:0x000 Width:32
+ register description : CPU子系统软复位撤离寄存器。
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  reserved_0                         : 4;  /* bit[0-3]  : CPU LITTLE单核上电复位请求，电平复位，高有效。有效时将会复位所有的处理器逻辑，包括core、NEON和VFP、debug、PTM及breakpoint、watchpoint等CLK时钟域的全部逻辑。 */
+        unsigned int  reserved_1                         : 3;  /* bit[4-6]  : CPU MIDDLE单核上电复位请求，电平复位，高有效。有效时将会复位所有的处理器逻辑，包括core、NEON和VFP、debug、PTM及breakpoint、watchpoint等CLK时钟域的全部逻辑。 */
+        unsigned int  reserved_2                         : 1;  /* bit[7]    : CPU BIG单核上电复位请求，电平复位，高有效。有效时将会复位所有的处理器逻辑，包括core、NEON和VFP、debug、PTM及breakpoint、watchpoint等CLK时钟域的全部逻辑。 */
+        unsigned int  hc_presetdbg_rst_req_dis           : 1;  /* bit[8]    : debug时钟域软复位请求。 */
+        unsigned int  hc_coresight_soft_rst_req_dis      : 1;  /* bit[9]    : coresight部分软复位请求。 */
+        unsigned int  reserved_3                         : 1;  /* bit[10]   : cpu cluster harden层次整体软复位请求。 */
+        unsigned int  hc_scu_soft_rst_req_dis            : 1;  /* bit[11]   : LINX_CLUSTER单独软复位请求。 */
+        unsigned int  lit_presetdbg_rst_req_dis          : 1;  /* bit[12]   : debug时钟域软复位请求。 */
+        unsigned int  lit_coresight_soft_rst_req_dis     : 1;  /* bit[13]   : coresight部分软复位请求。 */
+        unsigned int  reserved_4                         : 1;  /* bit[14]   : cpu cluster harden层次整体软复位请求。 */
+        unsigned int  lit_scu_soft_rst_req_dis           : 1;  /* bit[15]   : LINX_CLUSTER单独软复位请求。 */
+        unsigned int  subchip_atreset_top_req_dis        : 1;  /* bit[16]   : klein_comlplex0软复位请求。 */
+        unsigned int  subchip_preset_top_req_dis         : 1;  /* bit[17]   : klein_comlplex0软复位请求。 */
+        unsigned int  subchip_coresightreset_top_req_dis : 1;  /* bit[18]   : klein_comlplex1软复位请求。 */
+        unsigned int  reserved_5                         : 1;  /* bit[19]   :  */
+        unsigned int  hc_cluster_soft_rst_req_dis        : 1;  /* bit[20]   : cpu cluster harden层次整体软复位请求。 */
+        unsigned int  lit_cluster_soft_rst_req_dis       : 1;  /* bit[21]   : cpu cluster harden层次整体软复位请求。 */
+        unsigned int  top_cluster_soft_rst_req_dis       : 1;  /* bit[22]   : cpu subchip 层次整体软复位请求。 */
+        unsigned int  reserved_6                         : 9;  /* bit[23-31]: IP软复位撤离：
+                                                                              0：IP软复位使能状态不变；
+                                                                              1：IP软复位撤离。 */
+    } reg;
+} SOC_CPU_PDC_CPU_RSTDIS_UNION;
+#endif
+#define SOC_CPU_PDC_CPU_RSTDIS_hc_presetdbg_rst_req_dis_START            (8)
+#define SOC_CPU_PDC_CPU_RSTDIS_hc_presetdbg_rst_req_dis_END              (8)
+#define SOC_CPU_PDC_CPU_RSTDIS_hc_coresight_soft_rst_req_dis_START       (9)
+#define SOC_CPU_PDC_CPU_RSTDIS_hc_coresight_soft_rst_req_dis_END         (9)
+#define SOC_CPU_PDC_CPU_RSTDIS_hc_scu_soft_rst_req_dis_START             (11)
+#define SOC_CPU_PDC_CPU_RSTDIS_hc_scu_soft_rst_req_dis_END               (11)
+#define SOC_CPU_PDC_CPU_RSTDIS_lit_presetdbg_rst_req_dis_START           (12)
+#define SOC_CPU_PDC_CPU_RSTDIS_lit_presetdbg_rst_req_dis_END             (12)
+#define SOC_CPU_PDC_CPU_RSTDIS_lit_coresight_soft_rst_req_dis_START      (13)
+#define SOC_CPU_PDC_CPU_RSTDIS_lit_coresight_soft_rst_req_dis_END        (13)
+#define SOC_CPU_PDC_CPU_RSTDIS_lit_scu_soft_rst_req_dis_START            (15)
+#define SOC_CPU_PDC_CPU_RSTDIS_lit_scu_soft_rst_req_dis_END              (15)
+#define SOC_CPU_PDC_CPU_RSTDIS_subchip_atreset_top_req_dis_START         (16)
+#define SOC_CPU_PDC_CPU_RSTDIS_subchip_atreset_top_req_dis_END           (16)
+#define SOC_CPU_PDC_CPU_RSTDIS_subchip_preset_top_req_dis_START          (17)
+#define SOC_CPU_PDC_CPU_RSTDIS_subchip_preset_top_req_dis_END            (17)
+#define SOC_CPU_PDC_CPU_RSTDIS_subchip_coresightreset_top_req_dis_START  (18)
+#define SOC_CPU_PDC_CPU_RSTDIS_subchip_coresightreset_top_req_dis_END    (18)
+#define SOC_CPU_PDC_CPU_RSTDIS_hc_cluster_soft_rst_req_dis_START         (20)
+#define SOC_CPU_PDC_CPU_RSTDIS_hc_cluster_soft_rst_req_dis_END           (20)
+#define SOC_CPU_PDC_CPU_RSTDIS_lit_cluster_soft_rst_req_dis_START        (21)
+#define SOC_CPU_PDC_CPU_RSTDIS_lit_cluster_soft_rst_req_dis_END          (21)
+#define SOC_CPU_PDC_CPU_RSTDIS_top_cluster_soft_rst_req_dis_START        (22)
+#define SOC_CPU_PDC_CPU_RSTDIS_top_cluster_soft_rst_req_dis_END          (22)
+
+
+/*****************************************************************************
+ struct               : SOC_CPU_PDC_CPU_RSTSTAT_UNION
+ struct description   : CPU_RSTSTAT Register structure definition
+                        Address Offset:0x12C Initial:0x1FF Width:32
+ register description : CPU子系统软复位使能状态寄存器。
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  reserved_0                          : 4;  /* bit[0-3]  : CPU LITTLE单核上电复位请求，电平复位，高有效。有效时将会复位所有的处理器逻辑，包括core、NEON和VFP、debug、PTM及breakpoint、watchpoint等CLK时钟域的全部逻辑。 */
+        unsigned int  reserved_1                          : 3;  /* bit[4-6]  : CPU MIDDLE单核上电复位请求，电平复位，高有效。有效时将会复位所有的处理器逻辑，包括core、NEON和VFP、debug、PTM及breakpoint、watchpoint等CLK时钟域的全部逻辑。 */
+        unsigned int  reserved_2                          : 1;  /* bit[7]    : CPU BIG单核上电复位请求，电平复位，高有效。有效时将会复位所有的处理器逻辑，包括core、NEON和VFP、debug、PTM及breakpoint、watchpoint等CLK时钟域的全部逻辑。 */
+        unsigned int  hc_presetdbg_rst_req_stat           : 1;  /* bit[8]    : debug时钟域软复位请求。 */
+        unsigned int  hc_coresight_soft_rst_req_stat      : 1;  /* bit[9]    : coresight部分软复位请求。 */
+        unsigned int  reserved_3                          : 1;  /* bit[10]   : cpu cluster harden层次整体软复位请求。 */
+        unsigned int  hc_scu_soft_rst_req_stat            : 1;  /* bit[11]   : LINX_CLUSTER单独软复位请求。 */
+        unsigned int  lit_presetdbg_rst_req_stat          : 1;  /* bit[12]   : debug时钟域软复位请求。 */
+        unsigned int  lit_coresight_soft_rst_req_stat     : 1;  /* bit[13]   : coresight部分软复位请求。 */
+        unsigned int  reserved_4                          : 1;  /* bit[14]   : cpu cluster harden层次整体软复位请求。 */
+        unsigned int  lit_scu_soft_rst_req_stat           : 1;  /* bit[15]   : LINX_CLUSTER单独软复位请求。 */
+        unsigned int  subchip_atreset_top_req_stat        : 1;  /* bit[16]   : klein_comlplex0软复位请求。 */
+        unsigned int  subchip_preset_top_req_stat         : 1;  /* bit[17]   : klein_comlplex0软复位请求。 */
+        unsigned int  subchip_coresightreset_top_req_stat : 1;  /* bit[18]   : klein_comlplex1软复位请求。 */
+        unsigned int  reserved_5                          : 1;  /* bit[19]   :  */
+        unsigned int  hc_cluster_soft_rst_req_stat        : 1;  /* bit[20]   : cpu cluster harden层次整体软复位请求。 */
+        unsigned int  lit_cluster_soft_rst_req_stat       : 1;  /* bit[21]   : cpu cluster harden层次整体软复位请求。 */
+        unsigned int  top_cluster_soft_rst_req_stat       : 1;  /* bit[22]   : cpu subchip 层次整体软复位请求。 */
+        unsigned int  reserved_6                          : 9;  /* bit[23-31]: IP复位使能状态：
+                                                                               0：IP软复位不使能；
+                                                                               1：IP软复位使能； */
+    } reg;
+} SOC_CPU_PDC_CPU_RSTSTAT_UNION;
+#endif
+#define SOC_CPU_PDC_CPU_RSTSTAT_hc_presetdbg_rst_req_stat_START            (8)
+#define SOC_CPU_PDC_CPU_RSTSTAT_hc_presetdbg_rst_req_stat_END              (8)
+#define SOC_CPU_PDC_CPU_RSTSTAT_hc_coresight_soft_rst_req_stat_START       (9)
+#define SOC_CPU_PDC_CPU_RSTSTAT_hc_coresight_soft_rst_req_stat_END         (9)
+#define SOC_CPU_PDC_CPU_RSTSTAT_hc_scu_soft_rst_req_stat_START             (11)
+#define SOC_CPU_PDC_CPU_RSTSTAT_hc_scu_soft_rst_req_stat_END               (11)
+#define SOC_CPU_PDC_CPU_RSTSTAT_lit_presetdbg_rst_req_stat_START           (12)
+#define SOC_CPU_PDC_CPU_RSTSTAT_lit_presetdbg_rst_req_stat_END             (12)
+#define SOC_CPU_PDC_CPU_RSTSTAT_lit_coresight_soft_rst_req_stat_START      (13)
+#define SOC_CPU_PDC_CPU_RSTSTAT_lit_coresight_soft_rst_req_stat_END        (13)
+#define SOC_CPU_PDC_CPU_RSTSTAT_lit_scu_soft_rst_req_stat_START            (15)
+#define SOC_CPU_PDC_CPU_RSTSTAT_lit_scu_soft_rst_req_stat_END              (15)
+#define SOC_CPU_PDC_CPU_RSTSTAT_subchip_atreset_top_req_stat_START         (16)
+#define SOC_CPU_PDC_CPU_RSTSTAT_subchip_atreset_top_req_stat_END           (16)
+#define SOC_CPU_PDC_CPU_RSTSTAT_subchip_preset_top_req_stat_START          (17)
+#define SOC_CPU_PDC_CPU_RSTSTAT_subchip_preset_top_req_stat_END            (17)
+#define SOC_CPU_PDC_CPU_RSTSTAT_subchip_coresightreset_top_req_stat_START  (18)
+#define SOC_CPU_PDC_CPU_RSTSTAT_subchip_coresightreset_top_req_stat_END    (18)
+#define SOC_CPU_PDC_CPU_RSTSTAT_hc_cluster_soft_rst_req_stat_START         (20)
+#define SOC_CPU_PDC_CPU_RSTSTAT_hc_cluster_soft_rst_req_stat_END           (20)
+#define SOC_CPU_PDC_CPU_RSTSTAT_lit_cluster_soft_rst_req_stat_START        (21)
+#define SOC_CPU_PDC_CPU_RSTSTAT_lit_cluster_soft_rst_req_stat_END          (21)
+#define SOC_CPU_PDC_CPU_RSTSTAT_top_cluster_soft_rst_req_stat_START        (22)
+#define SOC_CPU_PDC_CPU_RSTSTAT_top_cluster_soft_rst_req_stat_END          (22)
+
+
+/*****************************************************************************
+ struct               : SOC_CPU_PDC_CPU_M0_ADBLPSTAT_UNION
+ struct description   : CPU_M0_ADBLPSTAT Register structure definition
+                        Address Offset:0x130 Initial:0x0000000 Width:32
+ register description : CPU M0 ADB低功耗寄存器。
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  pwrqreq_adb_m0    : 1;  /* bit[0]   : ADB-400异步桥下电低功耗高握手请求信号，低有效 */
+        unsigned int  reserved_0        : 1;  /* bit[1]   : 保留。 */
+        unsigned int  pwrqactive_adb_m0 : 1;  /* bit[2]   : 指示ADB-400异步桥中是否尚有活动的transaction。
+                                                            0：异步桥中所有transaction都已完成
+                                                            1：异步桥中尚存在活动的transaction */
+        unsigned int  pwrqaccept_adb_m0 : 1;  /* bit[3]   : ADB-400异步桥下电低功耗握手请求接受应答信号，低有效 */
+        unsigned int  pwrqdeney_adb_m0  : 1;  /* bit[4]   : ADB-400异步桥上下电低功耗握手请求拒绝应答信号。如果为1，则需要撤销请求，同时再重新发起握手。 */
+        unsigned int  reserved_1        : 27; /* bit[5-31]: 保留。 */
+    } reg;
+} SOC_CPU_PDC_CPU_M0_ADBLPSTAT_UNION;
+#endif
+#define SOC_CPU_PDC_CPU_M0_ADBLPSTAT_pwrqreq_adb_m0_START     (0)
+#define SOC_CPU_PDC_CPU_M0_ADBLPSTAT_pwrqreq_adb_m0_END       (0)
+#define SOC_CPU_PDC_CPU_M0_ADBLPSTAT_pwrqactive_adb_m0_START  (2)
+#define SOC_CPU_PDC_CPU_M0_ADBLPSTAT_pwrqactive_adb_m0_END    (2)
+#define SOC_CPU_PDC_CPU_M0_ADBLPSTAT_pwrqaccept_adb_m0_START  (3)
+#define SOC_CPU_PDC_CPU_M0_ADBLPSTAT_pwrqaccept_adb_m0_END    (3)
+#define SOC_CPU_PDC_CPU_M0_ADBLPSTAT_pwrqdeney_adb_m0_START   (4)
+#define SOC_CPU_PDC_CPU_M0_ADBLPSTAT_pwrqdeney_adb_m0_END     (4)
+
+
+/*****************************************************************************
+ struct               : SOC_CPU_PDC_CPU_M1_ADBLPSTAT_UNION
+ struct description   : CPU_M1_ADBLPSTAT Register structure definition
+                        Address Offset:0x134 Initial:0x0000000 Width:32
+ register description : CPU M1 ADB低功耗寄存器。
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  pwrqreq_adb_m1    : 1;  /* bit[0]   : ADB-400异步桥下电低功耗高握手请求信号，低有效 */
+        unsigned int  reserved_0        : 1;  /* bit[1]   : 保留。 */
+        unsigned int  pwrqactive_adb_m1 : 1;  /* bit[2]   : 指示ADB-400异步桥中是否尚有活动的transaction。
+                                                            0：异步桥中所有transaction都已完成
+                                                            1：异步桥中尚存在活动的transaction */
+        unsigned int  pwrqaccept_adb_m1 : 1;  /* bit[3]   : ADB-400异步桥下电低功耗握手请求接受应答信号，低有效 */
+        unsigned int  pwrqdeney_adb_m1  : 1;  /* bit[4]   : ADB-400异步桥上下电低功耗握手请求拒绝应答信号。如果为1，则需要撤销请求，同时再重新发起握手。 */
+        unsigned int  reserved_1        : 27; /* bit[5-31]: 保留。 */
+    } reg;
+} SOC_CPU_PDC_CPU_M1_ADBLPSTAT_UNION;
+#endif
+#define SOC_CPU_PDC_CPU_M1_ADBLPSTAT_pwrqreq_adb_m1_START     (0)
+#define SOC_CPU_PDC_CPU_M1_ADBLPSTAT_pwrqreq_adb_m1_END       (0)
+#define SOC_CPU_PDC_CPU_M1_ADBLPSTAT_pwrqactive_adb_m1_START  (2)
+#define SOC_CPU_PDC_CPU_M1_ADBLPSTAT_pwrqactive_adb_m1_END    (2)
+#define SOC_CPU_PDC_CPU_M1_ADBLPSTAT_pwrqaccept_adb_m1_START  (3)
+#define SOC_CPU_PDC_CPU_M1_ADBLPSTAT_pwrqaccept_adb_m1_END    (3)
+#define SOC_CPU_PDC_CPU_M1_ADBLPSTAT_pwrqdeney_adb_m1_START   (4)
+#define SOC_CPU_PDC_CPU_M1_ADBLPSTAT_pwrqdeney_adb_m1_END     (4)
+
+
+/*****************************************************************************
+ struct               : SOC_CPU_PDC_CPU_MP_ADBLPSTAT_UNION
+ struct description   : CPU_MP_ADBLPSTAT Register structure definition
+                        Address Offset:0x138 Initial:0x0000000 Width:32
+ register description : CPU PERIPH ADB低功耗寄存器。
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  pwrqreq_adb_mp    : 1;  /* bit[0]   : ADB-400异步桥下电低功耗高握手请求信号，低有效 */
+        unsigned int  reserved_0        : 1;  /* bit[1]   : 保留。 */
+        unsigned int  pwrqactive_adb_mp : 1;  /* bit[2]   : 指示ADB-400异步桥中是否尚有活动的transaction。
+                                                            0：异步桥中所有transaction都已完成
+                                                            1：异步桥中尚存在活动的transaction */
+        unsigned int  pwrqaccept_adb_mp : 1;  /* bit[3]   : ADB-400异步桥下电低功耗握手请求接受应答信号，低有效 */
+        unsigned int  pwrqdeney_adb_mp  : 1;  /* bit[4]   : ADB-400异步桥上下电低功耗握手请求拒绝应答信号。如果为1，则需要撤销请求，同时再重新发起握手。 */
+        unsigned int  reserved_1        : 27; /* bit[5-31]: 保留。 */
+    } reg;
+} SOC_CPU_PDC_CPU_MP_ADBLPSTAT_UNION;
+#endif
+#define SOC_CPU_PDC_CPU_MP_ADBLPSTAT_pwrqreq_adb_mp_START     (0)
+#define SOC_CPU_PDC_CPU_MP_ADBLPSTAT_pwrqreq_adb_mp_END       (0)
+#define SOC_CPU_PDC_CPU_MP_ADBLPSTAT_pwrqactive_adb_mp_START  (2)
+#define SOC_CPU_PDC_CPU_MP_ADBLPSTAT_pwrqactive_adb_mp_END    (2)
+#define SOC_CPU_PDC_CPU_MP_ADBLPSTAT_pwrqaccept_adb_mp_START  (3)
+#define SOC_CPU_PDC_CPU_MP_ADBLPSTAT_pwrqaccept_adb_mp_END    (3)
+#define SOC_CPU_PDC_CPU_MP_ADBLPSTAT_pwrqdeney_adb_mp_START   (4)
+#define SOC_CPU_PDC_CPU_MP_ADBLPSTAT_pwrqdeney_adb_mp_END     (4)
+
+
+/*****************************************************************************
+ struct               : SOC_CPU_PDC_CPU_ACP_ADBLPSTAT_UNION
+ struct description   : CPU_ACP_ADBLPSTAT Register structure definition
+                        Address Offset:0x13C Initial:0x0000000 Width:32
+ register description : CPU ACP ADB低功耗寄存器。
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  pwrqreq_adb_acp    : 1;  /* bit[0]   : ADB-400异步桥下电低功耗高握手请求信号，低有效 */
+        unsigned int  reserved_0         : 1;  /* bit[1]   : 保留。 */
+        unsigned int  pwrqactive_adb_acp : 1;  /* bit[2]   : 指示ADB-400异步桥中是否尚有活动的transaction。
+                                                             0：异步桥中所有transaction都已完成
+                                                             1：异步桥中尚存在活动的transaction */
+        unsigned int  pwrqaccept_adb_acp : 1;  /* bit[3]   : ADB-400异步桥下电低功耗握手请求接受应答信号，低有效 */
+        unsigned int  pwrqdeney_adb_acp  : 1;  /* bit[4]   : ADB-400异步桥上下电低功耗握手请求拒绝应答信号。如果为1，则需要撤销请求，同时再重新发起握手。 */
+        unsigned int  reserved_1         : 27; /* bit[5-31]: 保留。 */
+    } reg;
+} SOC_CPU_PDC_CPU_ACP_ADBLPSTAT_UNION;
+#endif
+#define SOC_CPU_PDC_CPU_ACP_ADBLPSTAT_pwrqreq_adb_acp_START     (0)
+#define SOC_CPU_PDC_CPU_ACP_ADBLPSTAT_pwrqreq_adb_acp_END       (0)
+#define SOC_CPU_PDC_CPU_ACP_ADBLPSTAT_pwrqactive_adb_acp_START  (2)
+#define SOC_CPU_PDC_CPU_ACP_ADBLPSTAT_pwrqactive_adb_acp_END    (2)
+#define SOC_CPU_PDC_CPU_ACP_ADBLPSTAT_pwrqaccept_adb_acp_START  (3)
+#define SOC_CPU_PDC_CPU_ACP_ADBLPSTAT_pwrqaccept_adb_acp_END    (3)
+#define SOC_CPU_PDC_CPU_ACP_ADBLPSTAT_pwrqdeney_adb_acp_START   (4)
+#define SOC_CPU_PDC_CPU_ACP_ADBLPSTAT_pwrqdeney_adb_acp_END     (4)
+
+
+/*****************************************************************************
+ struct               : SOC_CPU_PDC_CPU_ADB_GT_CFG_UNION
+ struct description   : CPU_ADB_GT_CFG Register structure definition
+                        Address Offset:0x140 Initial:0x000000 Width:32
+ register description : CPU ADB自动门控控制寄存器。
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  qactive_cfgcnt : 7;  /* bit[0-6] : CPU ADB桥自动门控过滤时间配置。 */
+        unsigned int  gt_clk_bypass  : 1;  /* bit[7]   : CPU ADB桥自动门控bypass控制。 */
+        unsigned int  reserved       : 24; /* bit[8-31]: 保留。 */
+    } reg;
+} SOC_CPU_PDC_CPU_ADB_GT_CFG_UNION;
+#endif
+#define SOC_CPU_PDC_CPU_ADB_GT_CFG_qactive_cfgcnt_START  (0)
+#define SOC_CPU_PDC_CPU_ADB_GT_CFG_qactive_cfgcnt_END    (6)
+#define SOC_CPU_PDC_CPU_ADB_GT_CFG_gt_clk_bypass_START   (7)
+#define SOC_CPU_PDC_CPU_ADB_GT_CFG_gt_clk_bypass_END     (7)
+
+
+/*****************************************************************************
+ struct               : SOC_CPU_PDC_CPU_STAT0_UNION
+ struct description   : CPU_STAT0 Register structure definition
+                        Address Offset:0x144 Initial:0x0 Width:32
+ register description : CPU 状态寄存器0。
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  reserved_0    : 9;  /* bit[0-8]  : 保留。 */
+        unsigned int  reserved_1    : 9;  /* bit[9-17] : 保留。 */
+        unsigned int  reserved_2    : 2;  /* bit[18-19]: 保留。 */
+        unsigned int  core_idle     : 8;  /* bit[20-27]: core进入RET或OFF状态 */
+        unsigned int  l3_idle       : 1;  /* bit[28]   : LINX_CLUSTER进入RET或OFF状态 */
+        unsigned int  dbgack        : 1;  /* bit[29]   : cpu debug halt状态。 */
+        unsigned int  etf_full      : 1;  /* bit[30]   : cpu etf buffer满状态。 */
+        unsigned int  share_l2_idle : 1;  /* bit[31]   : share l2 cluster idle指示 */
+    } reg;
+} SOC_CPU_PDC_CPU_STAT0_UNION;
+#endif
+#define SOC_CPU_PDC_CPU_STAT0_core_idle_START      (20)
+#define SOC_CPU_PDC_CPU_STAT0_core_idle_END        (27)
+#define SOC_CPU_PDC_CPU_STAT0_l3_idle_START        (28)
+#define SOC_CPU_PDC_CPU_STAT0_l3_idle_END          (28)
+#define SOC_CPU_PDC_CPU_STAT0_dbgack_START         (29)
+#define SOC_CPU_PDC_CPU_STAT0_dbgack_END           (29)
+#define SOC_CPU_PDC_CPU_STAT0_etf_full_START       (30)
+#define SOC_CPU_PDC_CPU_STAT0_etf_full_END         (30)
+#define SOC_CPU_PDC_CPU_STAT0_share_l2_idle_START  (31)
+#define SOC_CPU_PDC_CPU_STAT0_share_l2_idle_END    (31)
+
+
+/*****************************************************************************
+ struct               : SOC_CPU_PDC_WAKEUPINT_STAT_UNION
+ struct description   : WAKEUPINT_STAT Register structure definition
+                        Address Offset:0x148 Initial:0x00000 Width:32
+ register description : GIC唤醒中断状态寄存器。
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  intr_gic_wake_request_0    : 1;  /* bit[0]    : core0 原始gic唤醒中断状态。 */
+        unsigned int  intr_gic_wake_request_1    : 1;  /* bit[1]    : core1 原始gic唤醒中断状态。 */
+        unsigned int  intr_gic_wake_request_2    : 1;  /* bit[2]    : core2 原始gic唤醒中断状态。 */
+        unsigned int  intr_gic_wake_request_3    : 1;  /* bit[3]    : core3 原始gic唤醒中断状态。 */
+        unsigned int  intr_gic_wake_request_4_t0 : 1;  /* bit[4]    : core4_t0 原始gic唤醒中断状态。 */
+        unsigned int  intr_gic_wake_request_4_t1 : 1;  /* bit[5]    : core4_t1 原始gic唤醒中断状态。 */
+        unsigned int  intr_gic_wake_request_5_t0 : 1;  /* bit[6]    : core5_t0 原始gic唤醒中断状态。 */
+        unsigned int  intr_gic_wake_request_5_t1 : 1;  /* bit[7]    : core5_t1 原始gic唤醒中断状态。 */
+        unsigned int  intr_gic_wake_request_6_t0 : 1;  /* bit[8]    : core6_t0 原始gic唤醒中断状态。 */
+        unsigned int  intr_gic_wake_request_6_t1 : 1;  /* bit[9]    : core6_t1 原始gic唤醒中断状态。 */
+        unsigned int  intr_gic_wake_request_7_t0 : 1;  /* bit[10]   : core7_t0 原始gic唤醒中断状态。 */
+        unsigned int  intr_gic_wake_request_7_t1 : 1;  /* bit[11]   : core7_t1 原始gic唤醒中断状态。 */
+        unsigned int  reserved                   : 20; /* bit[12-31]: 保留。 */
+    } reg;
+} SOC_CPU_PDC_WAKEUPINT_STAT_UNION;
+#endif
+#define SOC_CPU_PDC_WAKEUPINT_STAT_intr_gic_wake_request_0_START     (0)
+#define SOC_CPU_PDC_WAKEUPINT_STAT_intr_gic_wake_request_0_END       (0)
+#define SOC_CPU_PDC_WAKEUPINT_STAT_intr_gic_wake_request_1_START     (1)
+#define SOC_CPU_PDC_WAKEUPINT_STAT_intr_gic_wake_request_1_END       (1)
+#define SOC_CPU_PDC_WAKEUPINT_STAT_intr_gic_wake_request_2_START     (2)
+#define SOC_CPU_PDC_WAKEUPINT_STAT_intr_gic_wake_request_2_END       (2)
+#define SOC_CPU_PDC_WAKEUPINT_STAT_intr_gic_wake_request_3_START     (3)
+#define SOC_CPU_PDC_WAKEUPINT_STAT_intr_gic_wake_request_3_END       (3)
+#define SOC_CPU_PDC_WAKEUPINT_STAT_intr_gic_wake_request_4_t0_START  (4)
+#define SOC_CPU_PDC_WAKEUPINT_STAT_intr_gic_wake_request_4_t0_END    (4)
+#define SOC_CPU_PDC_WAKEUPINT_STAT_intr_gic_wake_request_4_t1_START  (5)
+#define SOC_CPU_PDC_WAKEUPINT_STAT_intr_gic_wake_request_4_t1_END    (5)
+#define SOC_CPU_PDC_WAKEUPINT_STAT_intr_gic_wake_request_5_t0_START  (6)
+#define SOC_CPU_PDC_WAKEUPINT_STAT_intr_gic_wake_request_5_t0_END    (6)
+#define SOC_CPU_PDC_WAKEUPINT_STAT_intr_gic_wake_request_5_t1_START  (7)
+#define SOC_CPU_PDC_WAKEUPINT_STAT_intr_gic_wake_request_5_t1_END    (7)
+#define SOC_CPU_PDC_WAKEUPINT_STAT_intr_gic_wake_request_6_t0_START  (8)
+#define SOC_CPU_PDC_WAKEUPINT_STAT_intr_gic_wake_request_6_t0_END    (8)
+#define SOC_CPU_PDC_WAKEUPINT_STAT_intr_gic_wake_request_6_t1_START  (9)
+#define SOC_CPU_PDC_WAKEUPINT_STAT_intr_gic_wake_request_6_t1_END    (9)
+#define SOC_CPU_PDC_WAKEUPINT_STAT_intr_gic_wake_request_7_t0_START  (10)
+#define SOC_CPU_PDC_WAKEUPINT_STAT_intr_gic_wake_request_7_t0_END    (10)
+#define SOC_CPU_PDC_WAKEUPINT_STAT_intr_gic_wake_request_7_t1_START  (11)
+#define SOC_CPU_PDC_WAKEUPINT_STAT_intr_gic_wake_request_7_t1_END    (11)
+
+
+/*****************************************************************************
+ struct               : SOC_CPU_PDC_CPU_LIT_ADBLPSTAT_UNION
+ struct description   : CPU_LIT_ADBLPSTAT Register structure definition
+                        Address Offset:0x14C Initial:0x0000000 Width:32
+ register description : CPU ACP ADB低功耗寄存器。
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  pwrqreq_adb_lit    : 1;  /* bit[0]   : ADB-400异步桥下电低功耗高握手请求信号，低有效 */
+        unsigned int  reserved_0         : 1;  /* bit[1]   : 保留。 */
+        unsigned int  pwrqactive_adb_lit : 1;  /* bit[2]   : 指示ADB-400异步桥中是否尚有活动的transaction。
+                                                             0：异步桥中所有transaction都已完成
+                                                             1：异步桥中尚存在活动的transaction */
+        unsigned int  pwrqaccept_adb_lit : 1;  /* bit[3]   : ADB-400异步桥下电低功耗握手请求接受应答信号，低有效 */
+        unsigned int  pwrqdeney_adb_lit  : 1;  /* bit[4]   : ADB-400异步桥上下电低功耗握手请求拒绝应答信号。如果为1，则需要撤销请求，同时再重新发起握手。 */
+        unsigned int  reserved_1         : 27; /* bit[5-31]: 保留。 */
+    } reg;
+} SOC_CPU_PDC_CPU_LIT_ADBLPSTAT_UNION;
+#endif
+#define SOC_CPU_PDC_CPU_LIT_ADBLPSTAT_pwrqreq_adb_lit_START     (0)
+#define SOC_CPU_PDC_CPU_LIT_ADBLPSTAT_pwrqreq_adb_lit_END       (0)
+#define SOC_CPU_PDC_CPU_LIT_ADBLPSTAT_pwrqactive_adb_lit_START  (2)
+#define SOC_CPU_PDC_CPU_LIT_ADBLPSTAT_pwrqactive_adb_lit_END    (2)
+#define SOC_CPU_PDC_CPU_LIT_ADBLPSTAT_pwrqaccept_adb_lit_START  (3)
+#define SOC_CPU_PDC_CPU_LIT_ADBLPSTAT_pwrqaccept_adb_lit_END    (3)
+#define SOC_CPU_PDC_CPU_LIT_ADBLPSTAT_pwrqdeney_adb_lit_START   (4)
+#define SOC_CPU_PDC_CPU_LIT_ADBLPSTAT_pwrqdeney_adb_lit_END     (4)
+
+
+/*****************************************************************************
+ struct               : SOC_CPU_PDC_CPU_PDCEN_UNION
+ struct description   : CPU_PDCEN Register structure definition
+                        Address Offset:0x200 Initial:0x00000000 Width:32
+ register description : CPU上下电状态机使能寄存器。
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  bitmasken_200 : 32; /* bit[0-31]: CPU_PDCEN每个比特位的使能位：
+                                                        只有当bitmasken对应的比特位为1'b1，core_pwr_en相应的比特位才起作用。bitmasken[0]就是core_pwr_en[0]的mask使能位。写1有效。 */
+    } reg;
+} SOC_CPU_PDC_CPU_PDCEN_UNION;
+#endif
+#define SOC_CPU_PDC_CPU_PDCEN_bitmasken_200_START  (0)
+#define SOC_CPU_PDC_CPU_PDCEN_bitmasken_200_END    (31)
+
+
+/*****************************************************************************
+ struct               : SOC_CPU_PDC_LITTLE_COREPWRINTEN_UNION
+ struct description   : LITTLE_COREPWRINTEN Register structure definition
+                        Address Offset:0x204 Initial:0x00000000 Width:32
+ register description : CPU LITTLE核上下电完成中断使能寄存器。
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  bitmasken_204 : 32; /* bit[0-31]: COREPWRINTEN每个比特位的使能位：
+                                                        只有当bitmasken对应的比特位为1'b1，core_pwr_en相应的比特位才起作用。bitmasken[0]就是core_pwr_en[0]的mask使能位。写1有效。 */
+    } reg;
+} SOC_CPU_PDC_LITTLE_COREPWRINTEN_UNION;
+#endif
+#define SOC_CPU_PDC_LITTLE_COREPWRINTEN_bitmasken_204_START  (0)
+#define SOC_CPU_PDC_LITTLE_COREPWRINTEN_bitmasken_204_END    (31)
+
+
+/*****************************************************************************
+ struct               : SOC_CPU_PDC_LITTLE_COREPWRINTSTAT_UNION
+ struct description   : LITTLE_COREPWRINTSTAT Register structure definition
+                        Address Offset:0x208 Initial:0x00000000 Width:32
+ register description : CPU LITTLE核上下电完成中断状态寄存器。
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  reserved : 32; /* bit[0-31]: 保留。 */
+    } reg;
+} SOC_CPU_PDC_LITTLE_COREPWRINTSTAT_UNION;
+#endif
+
+
+/*****************************************************************************
+ struct               : SOC_CPU_PDC_LITTLE_COREPOWERUP_UNION
+ struct description   : LITTLE_COREPOWERUP Register structure definition
+                        Address Offset:0x210 Initial:0x00000000 Width:32
+ register description : CPU LITTLE核上电请求寄存器。
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  reserved : 32; /* bit[0-31]: 保留。 */
+    } reg;
+} SOC_CPU_PDC_LITTLE_COREPOWERUP_UNION;
+#endif
+
+
+/*****************************************************************************
+ struct               : SOC_CPU_PDC_LITTLE_COREPOWERDN_UNION
+ struct description   : LITTLE_COREPOWERDN Register structure definition
+                        Address Offset:0x214 Initial:0x00000000 Width:32
+ register description : CPU LITTLE核下电请求寄存器。
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  reserved : 32; /* bit[0-31]: 保留。 */
+    } reg;
+} SOC_CPU_PDC_LITTLE_COREPOWERDN_UNION;
+#endif
+
+
+/*****************************************************************************
+ struct               : SOC_CPU_PDC_LITTLE_COREPOWERSTAT_UNION
+ struct description   : LITTLE_COREPOWERSTAT Register structure definition
+                        Address Offset:0x218 Initial:0x00000000 Width:32
+ register description : CPU LITTLE核状态机状态寄存器。
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  reserved : 32; /* bit[0-31]: 保留。 */
+    } reg;
+} SOC_CPU_PDC_LITTLE_COREPOWERSTAT_UNION;
+#endif
+
+
+/*****************************************************************************
+ struct               : SOC_CPU_PDC_LITTLE_COREPWRUPTIME_UNION
+ struct description   : LITTLE_COREPWRUPTIME Register structure definition
+                        Address Offset:0x21C Initial:0x0000 Width:32
+ register description : CPU LITTLE核上电时间寄存器。
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  cpu_little_core_pwrup_time : 16; /* bit[0-15] : 小核从核上电时间，默认100us */
+        unsigned int  reserved                   : 16; /* bit[16-31]: 保留。 */
+    } reg;
+} SOC_CPU_PDC_LITTLE_COREPWRUPTIME_UNION;
+#endif
+#define SOC_CPU_PDC_LITTLE_COREPWRUPTIME_cpu_little_core_pwrup_time_START  (0)
+#define SOC_CPU_PDC_LITTLE_COREPWRUPTIME_cpu_little_core_pwrup_time_END    (15)
+
+
+/*****************************************************************************
+ struct               : SOC_CPU_PDC_LITTLE_COREPWRDNTIME_UNION
+ struct description   : LITTLE_COREPWRDNTIME Register structure definition
+                        Address Offset:0x220 Initial:0x0000 Width:32
+ register description : CPU LITTLE核下电时间寄存器。
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  cpu_little_core_pwrdn_time : 16; /* bit[0-15] : 小核从核下电时间，默认10us */
+        unsigned int  reserved                   : 16; /* bit[16-31]: 保留。 */
+    } reg;
+} SOC_CPU_PDC_LITTLE_COREPWRDNTIME_UNION;
+#endif
+#define SOC_CPU_PDC_LITTLE_COREPWRDNTIME_cpu_little_core_pwrdn_time_START  (0)
+#define SOC_CPU_PDC_LITTLE_COREPWRDNTIME_cpu_little_core_pwrdn_time_END    (15)
+
+
+/*****************************************************************************
+ struct               : SOC_CPU_PDC_LITTLE_COREISOTIME_UNION
+ struct description   : LITTLE_COREISOTIME Register structure definition
+                        Address Offset:0x224 Initial:0x0000 Width:32
+ register description : CPU LITTLE核钳位配置时间寄存器。
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  cpu_little_core_iso_time : 16; /* bit[0-15] : 小核从核钳位和解钳位时间，默认16个pclk */
+        unsigned int  reserved                 : 16; /* bit[16-31]: 保留。 */
+    } reg;
+} SOC_CPU_PDC_LITTLE_COREISOTIME_UNION;
+#endif
+#define SOC_CPU_PDC_LITTLE_COREISOTIME_cpu_little_core_iso_time_START  (0)
+#define SOC_CPU_PDC_LITTLE_COREISOTIME_cpu_little_core_iso_time_END    (15)
+
+
+/*****************************************************************************
+ struct               : SOC_CPU_PDC_LITTLE_CORERSTTIME_UNION
+ struct description   : LITTLE_CORERSTTIME Register structure definition
+                        Address Offset:0x228 Initial:0x0000 Width:32
+ register description : CPU LITTLE核复位时间寄存器。
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  cpu_little_core_rst_time : 16; /* bit[0-15] : 小核从核复位时间，默认8个pclk */
+        unsigned int  reserved                 : 16; /* bit[16-31]: 保留。 */
+    } reg;
+} SOC_CPU_PDC_LITTLE_CORERSTTIME_UNION;
+#endif
+#define SOC_CPU_PDC_LITTLE_CORERSTTIME_cpu_little_core_rst_time_START  (0)
+#define SOC_CPU_PDC_LITTLE_CORERSTTIME_cpu_little_core_rst_time_END    (15)
+
+
+/*****************************************************************************
+ struct               : SOC_CPU_PDC_LITTLE_COREURSTTIME_UNION
+ struct description   : LITTLE_COREURSTTIME Register structure definition
+                        Address Offset:0x22C Initial:0x0000 Width:32
+ register description : CPU LITTLE核解复位时间寄存器。
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  cpu_little_core_urst_time : 16; /* bit[0-15] : 小核从核解复位时间，默认16个pclk */
+        unsigned int  reserved                  : 16; /* bit[16-31]: 保留。 */
+    } reg;
+} SOC_CPU_PDC_LITTLE_COREURSTTIME_UNION;
+#endif
+#define SOC_CPU_PDC_LITTLE_COREURSTTIME_cpu_little_core_urst_time_START  (0)
+#define SOC_CPU_PDC_LITTLE_COREURSTTIME_cpu_little_core_urst_time_END    (15)
+
+
+/*****************************************************************************
+ struct               : SOC_CPU_PDC_MID_COREPWRUPTIME_UNION
+ struct description   : MID_COREPWRUPTIME Register structure definition
+                        Address Offset:0x230 Initial:0x0000 Width:32
+ register description : CPU middle核上电时间寄存器。
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  cpu_middle_core_pwrup_time : 16; /* bit[0-15] : 中核从核上电时间，默认100us */
+        unsigned int  reserved                   : 16; /* bit[16-31]: 保留。 */
+    } reg;
+} SOC_CPU_PDC_MID_COREPWRUPTIME_UNION;
+#endif
+#define SOC_CPU_PDC_MID_COREPWRUPTIME_cpu_middle_core_pwrup_time_START  (0)
+#define SOC_CPU_PDC_MID_COREPWRUPTIME_cpu_middle_core_pwrup_time_END    (15)
+
+
+/*****************************************************************************
+ struct               : SOC_CPU_PDC_MID_COREPWRDNTIME_UNION
+ struct description   : MID_COREPWRDNTIME Register structure definition
+                        Address Offset:0x234 Initial:0x0000 Width:32
+ register description : CPU middle核下电时间寄存器。
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  cpu_middle_core_pwrdn_time : 16; /* bit[0-15] : 中核从核下电时间，默认10us */
+        unsigned int  reserved                   : 16; /* bit[16-31]: 保留。 */
+    } reg;
+} SOC_CPU_PDC_MID_COREPWRDNTIME_UNION;
+#endif
+#define SOC_CPU_PDC_MID_COREPWRDNTIME_cpu_middle_core_pwrdn_time_START  (0)
+#define SOC_CPU_PDC_MID_COREPWRDNTIME_cpu_middle_core_pwrdn_time_END    (15)
+
+
+/*****************************************************************************
+ struct               : SOC_CPU_PDC_MID_COREISOTIME_UNION
+ struct description   : MID_COREISOTIME Register structure definition
+                        Address Offset:0x238 Initial:0x0000 Width:32
+ register description : CPU middle核钳位配置时间寄存器。
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  cpu_middle_core_iso_time : 16; /* bit[0-15] : 中核从核钳位和解钳位时间，默认16个pclk */
+        unsigned int  reserved                 : 16; /* bit[16-31]: 保留。 */
+    } reg;
+} SOC_CPU_PDC_MID_COREISOTIME_UNION;
+#endif
+#define SOC_CPU_PDC_MID_COREISOTIME_cpu_middle_core_iso_time_START  (0)
+#define SOC_CPU_PDC_MID_COREISOTIME_cpu_middle_core_iso_time_END    (15)
+
+
+/*****************************************************************************
+ struct               : SOC_CPU_PDC_MID_CORERSTTIME_UNION
+ struct description   : MID_CORERSTTIME Register structure definition
+                        Address Offset:0x23C Initial:0x0000 Width:32
+ register description : CPU middle核复位时间寄存器。
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  cpu_middle_core_rst_time : 16; /* bit[0-15] : 中核从核复位时间，默认8个pclk */
+        unsigned int  reserved                 : 16; /* bit[16-31]: 保留。 */
+    } reg;
+} SOC_CPU_PDC_MID_CORERSTTIME_UNION;
+#endif
+#define SOC_CPU_PDC_MID_CORERSTTIME_cpu_middle_core_rst_time_START  (0)
+#define SOC_CPU_PDC_MID_CORERSTTIME_cpu_middle_core_rst_time_END    (15)
+
+
+/*****************************************************************************
+ struct               : SOC_CPU_PDC_MID_COREURSTTIME_UNION
+ struct description   : MID_COREURSTTIME Register structure definition
+                        Address Offset:0x240 Initial:0x0000 Width:32
+ register description : CPU middle核解复位时间寄存器。
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  cpu_middle_core_urst_time : 16; /* bit[0-15] : 中核从核解复位时间，默认16个pclk */
+        unsigned int  reserved                  : 16; /* bit[16-31]: 保留。 */
+    } reg;
+} SOC_CPU_PDC_MID_COREURSTTIME_UNION;
+#endif
+#define SOC_CPU_PDC_MID_COREURSTTIME_cpu_middle_core_urst_time_START  (0)
+#define SOC_CPU_PDC_MID_COREURSTTIME_cpu_middle_core_urst_time_END    (15)
+
+
+/*****************************************************************************
+ struct               : SOC_CPU_PDC_BIG_COREPWRINTEN_UNION
+ struct description   : BIG_COREPWRINTEN Register structure definition
+                        Address Offset:0x304 Initial:0x00000000 Width:32
+ register description : CPU BIG/MIDDLE从核上下电完成中断使能寄存器。
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  bitmasken_304 : 32; /* bit[0-31]: COREPWRINTEN每个比特位的使能位：
+                                                        只有当bitmasken对应的比特位为1'b1，corepwren相应的比特位才起作用。bitmasken[0]就是corepwren[0]的mask使能位。写1有效。 */
+    } reg;
+} SOC_CPU_PDC_BIG_COREPWRINTEN_UNION;
+#endif
+#define SOC_CPU_PDC_BIG_COREPWRINTEN_bitmasken_304_START  (0)
+#define SOC_CPU_PDC_BIG_COREPWRINTEN_bitmasken_304_END    (31)
+
+
+/*****************************************************************************
+ struct               : SOC_CPU_PDC_BIG_COREPWRINTSTAT_UNION
+ struct description   : BIG_COREPWRINTSTAT Register structure definition
+                        Address Offset:0x308 Initial:0x00000000 Width:32
+ register description : CPU BIG/MIDDLE从核上下电完成中断状态寄存器。
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  reserved : 32; /* bit[0-31]: 保留。 */
+    } reg;
+} SOC_CPU_PDC_BIG_COREPWRINTSTAT_UNION;
+#endif
+
+
+/*****************************************************************************
+ struct               : SOC_CPU_PDC_BIG_COREGICMASK_UNION
+ struct description   : BIG_COREGICMASK Register structure definition
+                        Address Offset:0x30C Initial:0x00000000 Width:32
+ register description : CPU BIG/MIDDLE从核GIC中断屏蔽寄存器。
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  bitmasken_30C : 32; /* bit[0-31]: 只有当bitmasken对应的比特位为1'b1，core_pwr_en相应的比特位才起作用。bitmasken[0]就是core_pwr_en[0]的mask使能位。写1有效。 */
+    } reg;
+} SOC_CPU_PDC_BIG_COREGICMASK_UNION;
+#endif
+#define SOC_CPU_PDC_BIG_COREGICMASK_bitmasken_30C_START  (0)
+#define SOC_CPU_PDC_BIG_COREGICMASK_bitmasken_30C_END    (31)
+
+
+/*****************************************************************************
+ struct               : SOC_CPU_PDC_BIG_COREPOWERUP_UNION
+ struct description   : BIG_COREPOWERUP Register structure definition
+                        Address Offset:0x310 Initial:0x00000000 Width:32
+ register description : CPU BIG/MIDDLE从核上电请求寄存器。
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  reserved : 32; /* bit[0-31]: 保留。 */
+    } reg;
+} SOC_CPU_PDC_BIG_COREPOWERUP_UNION;
+#endif
+
+
+/*****************************************************************************
+ struct               : SOC_CPU_PDC_BIG_COREPOWERDN_UNION
+ struct description   : BIG_COREPOWERDN Register structure definition
+                        Address Offset:0x314 Initial:0x00000000 Width:32
+ register description : CPU BIG/MIDDLE从核下电请求寄存器。
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  reserved : 32; /* bit[0-31]: 保留。 */
+    } reg;
+} SOC_CPU_PDC_BIG_COREPOWERDN_UNION;
+#endif
+
+
+/*****************************************************************************
+ struct               : SOC_CPU_PDC_BIG_COREPOWERSTAT_UNION
+ struct description   : BIG_COREPOWERSTAT Register structure definition
+                        Address Offset:0x318 Initial:0x00000000 Width:32
+ register description : CPU BIG/MIDDLE从核状态机状态寄存器。
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  reserved : 32; /* bit[0-31]: 保留。 */
+    } reg;
+} SOC_CPU_PDC_BIG_COREPOWERSTAT_UNION;
+#endif
+
+
+/*****************************************************************************
+ struct               : SOC_CPU_PDC_BIG_COREPWRUPTIME_UNION
+ struct description   : BIG_COREPWRUPTIME Register structure definition
+                        Address Offset:0x31C Initial:0x0000 Width:32
+ register description : CPU BIG/MIDDLE从核上电时间寄存器。
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  cpu_big_core_pwrup_time : 16; /* bit[0-15] : 大核从核上电时间，默认100us */
+        unsigned int  reserved                : 16; /* bit[16-31]: 保留。 */
+    } reg;
+} SOC_CPU_PDC_BIG_COREPWRUPTIME_UNION;
+#endif
+#define SOC_CPU_PDC_BIG_COREPWRUPTIME_cpu_big_core_pwrup_time_START  (0)
+#define SOC_CPU_PDC_BIG_COREPWRUPTIME_cpu_big_core_pwrup_time_END    (15)
+
+
+/*****************************************************************************
+ struct               : SOC_CPU_PDC_BIG_COREPWRDNTIME_UNION
+ struct description   : BIG_COREPWRDNTIME Register structure definition
+                        Address Offset:0x320 Initial:0x0000 Width:32
+ register description : CPU BIG/MIDDLE从核下电时间寄存器。
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  cpu_big_core_pwrdn_time : 16; /* bit[0-15] : 大核从核下电时间，默认10us */
+        unsigned int  reserved                : 16; /* bit[16-31]: 保留。 */
+    } reg;
+} SOC_CPU_PDC_BIG_COREPWRDNTIME_UNION;
+#endif
+#define SOC_CPU_PDC_BIG_COREPWRDNTIME_cpu_big_core_pwrdn_time_START  (0)
+#define SOC_CPU_PDC_BIG_COREPWRDNTIME_cpu_big_core_pwrdn_time_END    (15)
+
+
+/*****************************************************************************
+ struct               : SOC_CPU_PDC_BIG_COREISOTIME_UNION
+ struct description   : BIG_COREISOTIME Register structure definition
+                        Address Offset:0x324 Initial:0x0000 Width:32
+ register description : CPU BIG/MIDDLE从核钳位配置时间寄存器。
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  cpu_big_core_iso_time : 16; /* bit[0-15] : 大核从核钳位和解钳位时间，默认16个pclk */
+        unsigned int  reserved              : 16; /* bit[16-31]: 保留。 */
+    } reg;
+} SOC_CPU_PDC_BIG_COREISOTIME_UNION;
+#endif
+#define SOC_CPU_PDC_BIG_COREISOTIME_cpu_big_core_iso_time_START  (0)
+#define SOC_CPU_PDC_BIG_COREISOTIME_cpu_big_core_iso_time_END    (15)
+
+
+/*****************************************************************************
+ struct               : SOC_CPU_PDC_BIG_CORERSTTIME_UNION
+ struct description   : BIG_CORERSTTIME Register structure definition
+                        Address Offset:0x328 Initial:0x0000 Width:32
+ register description : CPU BIG/MIDDLE从核复位时间寄存器。
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  cpu_big_core_rst_time : 16; /* bit[0-15] : 大核从核复位时间，默认8个pclk */
+        unsigned int  reserved              : 16; /* bit[16-31]: 保留。 */
+    } reg;
+} SOC_CPU_PDC_BIG_CORERSTTIME_UNION;
+#endif
+#define SOC_CPU_PDC_BIG_CORERSTTIME_cpu_big_core_rst_time_START  (0)
+#define SOC_CPU_PDC_BIG_CORERSTTIME_cpu_big_core_rst_time_END    (15)
+
+
+/*****************************************************************************
+ struct               : SOC_CPU_PDC_BIG_COREURSTTIME_UNION
+ struct description   : BIG_COREURSTTIME Register structure definition
+                        Address Offset:0x32C Initial:0x0000 Width:32
+ register description : CPU BIG/MIDDLE从核解复位时间寄存器。
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  cpu_big_core_urst_time : 16; /* bit[0-15] : 大核从核解复位时间，默认16个pclk */
+        unsigned int  reserved               : 16; /* bit[16-31]: 保留。 */
+    } reg;
+} SOC_CPU_PDC_BIG_COREURSTTIME_UNION;
+#endif
+#define SOC_CPU_PDC_BIG_COREURSTTIME_cpu_big_core_urst_time_START  (0)
+#define SOC_CPU_PDC_BIG_COREURSTTIME_cpu_big_core_urst_time_END    (15)
+
+
+/*****************************************************************************
+ struct               : SOC_CPU_PDC_MERGE_COREPWRINTSTAT_UNION
+ struct description   : MERGE_COREPWRINTSTAT Register structure definition
+                        Address Offset:0x330 Initial:0x00000000 Width:32
+ register description : 核下电完成中断状态寄存器。
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  intr_little_pwrdn_stat : 1;  /* bit[0]   : 小核下电完成中断状态，写1清除中断状态
+                                                                 0：下电没有完成
+                                                                 1：下电完成 */
+        unsigned int  intr_middle_pwrdn_stat : 1;  /* bit[1]   : 中核下电完成中断状态，写1清除中断状态
+                                                                 0：下电没有完成
+                                                                 1：下电完成 */
+        unsigned int  intr_big_pwrdn_stat    : 1;  /* bit[2]   : 大核下电完成中断状态，写1清除中断状态
+                                                                 0：下电没有完成
+                                                                 1：下电完成 */
+        unsigned int  reserved               : 29; /* bit[3-31]: 保留。 */
+    } reg;
+} SOC_CPU_PDC_MERGE_COREPWRINTSTAT_UNION;
+#endif
+#define SOC_CPU_PDC_MERGE_COREPWRINTSTAT_intr_little_pwrdn_stat_START  (0)
+#define SOC_CPU_PDC_MERGE_COREPWRINTSTAT_intr_little_pwrdn_stat_END    (0)
+#define SOC_CPU_PDC_MERGE_COREPWRINTSTAT_intr_middle_pwrdn_stat_START  (1)
+#define SOC_CPU_PDC_MERGE_COREPWRINTSTAT_intr_middle_pwrdn_stat_END    (1)
+#define SOC_CPU_PDC_MERGE_COREPWRINTSTAT_intr_big_pwrdn_stat_START     (2)
+#define SOC_CPU_PDC_MERGE_COREPWRINTSTAT_intr_big_pwrdn_stat_END       (2)
+
+
+/*****************************************************************************
+ struct               : SOC_CPU_PDC_LITTLE_PWRDNTIME_UNION
+ struct description   : LITTLE_PWRDNTIME Register structure definition
+                        Address Offset:0x334 Initial:0x000 Width:32
+ register description : 小核下电完成中断等待时间寄存器。
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  little_pwrdn_time_cfgcnt : 20; /* bit[0-19] : 小核下电完成中断等待时间，默认32个pclk */
+        unsigned int  reserved                 : 12; /* bit[20-31]: 保留。 */
+    } reg;
+} SOC_CPU_PDC_LITTLE_PWRDNTIME_UNION;
+#endif
+#define SOC_CPU_PDC_LITTLE_PWRDNTIME_little_pwrdn_time_cfgcnt_START  (0)
+#define SOC_CPU_PDC_LITTLE_PWRDNTIME_little_pwrdn_time_cfgcnt_END    (19)
+
+
+/*****************************************************************************
+ struct               : SOC_CPU_PDC_MIDDLE_PWRDNTIME_UNION
+ struct description   : MIDDLE_PWRDNTIME Register structure definition
+                        Address Offset:0x338 Initial:0x000 Width:32
+ register description : 中核下电完成中断等待时间寄存器。
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  middle_pwrdn_time_cfgcnt : 20; /* bit[0-19] : 中核下电完成中断等待时间，默认32个pclk */
+        unsigned int  reserved                 : 12; /* bit[20-31]: 保留。 */
+    } reg;
+} SOC_CPU_PDC_MIDDLE_PWRDNTIME_UNION;
+#endif
+#define SOC_CPU_PDC_MIDDLE_PWRDNTIME_middle_pwrdn_time_cfgcnt_START  (0)
+#define SOC_CPU_PDC_MIDDLE_PWRDNTIME_middle_pwrdn_time_cfgcnt_END    (19)
+
+
+/*****************************************************************************
+ struct               : SOC_CPU_PDC_BIG_PWRDNTIME_UNION
+ struct description   : BIG_PWRDNTIME Register structure definition
+                        Address Offset:0x33C Initial:0x000 Width:32
+ register description : 大核下电完成中断等待时间寄存器。
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  big_pwrdn_time_cfgcnt : 20; /* bit[0-19] : 大核下电完成中断等待时间，默认32个pclk */
+        unsigned int  reserved              : 12; /* bit[20-31]: 保留。 */
+    } reg;
+} SOC_CPU_PDC_BIG_PWRDNTIME_UNION;
+#endif
+#define SOC_CPU_PDC_BIG_PWRDNTIME_big_pwrdn_time_cfgcnt_START  (0)
+#define SOC_CPU_PDC_BIG_PWRDNTIME_big_pwrdn_time_cfgcnt_END    (19)
+
+
+
+
+
+
+/*****************************************************************************
+  8 OTHERS定义
+*****************************************************************************/
+
+
+
+/*****************************************************************************
+  9 全局变量声明
+*****************************************************************************/
+
+
+/*****************************************************************************
+  10 函数声明
+*****************************************************************************/
+
+
+#ifdef __cplusplus
+    #if __cplusplus
+        }
+    #endif
+#endif
+
+#endif /* end of soc_cpu_pdc_interface.h */

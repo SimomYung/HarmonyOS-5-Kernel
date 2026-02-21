@@ -1,0 +1,7 @@
+system_service:bool:true
+sync_reclaimable:bool:false
+unkillable:bool:true
+coredump:bool:true
+livepatchable:bool:true
+dpa_mode:uint32:1
+res_controllable:bool:false

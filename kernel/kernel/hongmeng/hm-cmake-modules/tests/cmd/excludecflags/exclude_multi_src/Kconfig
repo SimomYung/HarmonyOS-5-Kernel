@@ -1,0 +1,6 @@
+# Copyright (c) Huawei Technologies Co., Ltd. 2022. All rights reserved.
+# Description: Kconfig for testcase exclude_multi_src
+# Author: Huawei OS Kernel Lab
+# Create: Mon Jul 25 13:11:40 2022
+
+source "$(HMCMAKENG_KCONFIG)"

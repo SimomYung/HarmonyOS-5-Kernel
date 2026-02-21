@@ -1,0 +1,37 @@
+# Copyright (c) Huawei Technologies Co., Ltd. 2021-2021. All rights reserved.
+# Description: HMbuild for libkasan
+# Author: Huawei OS Kernel Lab
+# Create: Mon Aug 09 15:19:23 2021
+
+src-y: kasan.c
+src-y: shadow.c
+src-y: wrapper_libc.c
+src-y: wrapper_hm.c
+src-y: asan_env.c
+src-y: asan_options_def.c
+src-y: asan_print.c
+
+cflags-.-y: -ffunction-sections
+cflags-.-y: -fdata-sections
+cflags-.-y: -rdynamic
+cflags-.-y: -fno-omit-frame-pointer
+cflags-.-y: -funwind-tables
+
+include-y: ../../include
+inclib: HMUlibs::HMUlibs_sysif_sysmgr_include
+
+# libkasan.a
+lib-static-y: kasan
+install-kasan-y: LIBDIR
+
+# libkasan.so
+lib-dynamic-y: kasan_shared
+output-kasan_shared: kasan
+
+src-kasan_shared-y: wrapper_ldk.c
+include-kasan_shared: ../../include
+linklib-kasan_shared: -nodefaultlibs
+
+install-kasan_shared-y: LIBDIR
+
+# vim:ts=4:sw=4:expandtab

@@ -1,0 +1,6 @@
+# Copyright (c) Huawei Technologies Co., Ltd. 2021. All rights reserved.
+# Description: HMbuild
+# Author: Huawei OS Kernel Lab
+# Create: Mon Dec 20 09:57:15 2021
+
+src-y: ux_uev.c

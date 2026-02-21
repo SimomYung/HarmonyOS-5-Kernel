@@ -1,0 +1,6 @@
+config SEC_AUTH_LIB
+	bool "secauth_img module support"
+	default n
+	depends on TZDRIVER
+	help
+	  This driver supports sec_auth

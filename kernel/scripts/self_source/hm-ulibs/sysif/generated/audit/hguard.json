@@ -1,0 +1,1 @@
+{"server_name": "hguard", "methods": ["hguard_procfs_get_config", "hguard_procfs_set_config", "hguard_procfs_get_hungtask", "hguard_procfs_set_hungtask", "hguard_procfs_stop_watchdog_for_reboot", "hguard_service_notify", "hguard_service_process_exit", "hguard_service_start", "hguard_service_subscribe", "hguard_pac_cfi"]}

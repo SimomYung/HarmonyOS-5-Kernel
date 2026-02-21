@@ -1,0 +1,41 @@
+# SPDX-License-Identifier: GPL-2.0
+menu "Android"
+
+if ANDROID
+
+config ASHMEM
+	bool "Enable the Anonymous Shared Memory Subsystem"
+	depends on SHMEM
+	help
+	  The ashmem subsystem is a new shared memory allocator, similar to
+	  POSIX SHM but with different behavior and sporting a simpler
+	  file-based API.
+
+	  It is, in theory, a good memory allocator for low-memory devices,
+	  because it can discard shared memory units when under memory pressure.
+
+config ANDROID_LOW_MEMORY_KILLER
+	bool "Android Low Memory Killer"
+	help
+	  Registers processes to be killed when low memory conditions, this is useful
+	  as there is no particular swap space on android.
+
+	  The registered process will kill according to the priorities in android init
+	  scripts (/init.rc), and it defines priority values with minimum free memory size
+	  for each priority.
+
+config ANDROID_LOW_MEMORY_KILLER_DAEMON
+	bool "Android Low Memory Killer Daemon"
+	depends on !ANDROID_LOW_MEMORY_KILLER
+	default n
+	help
+	  This is a userspace daemon process used to kill processes in low-memory situations.
+	  ANDROID_LOW_MEMORY_KILLER_DAEMON and ANDROID_LOW_MEMORY_KILLER can only choose one.
+
+source "drivers/staging/android/ion/Kconfig"
+
+source "drivers/staging/android/hwlogger/Kconfig"
+
+endif # if ANDROID
+
+endmenu

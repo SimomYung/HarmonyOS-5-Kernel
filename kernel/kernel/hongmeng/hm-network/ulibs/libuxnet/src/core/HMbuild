@@ -1,0 +1,35 @@
+# Copyright (C) Huawei Technologies Co., Ltd. 2021. All rights reserved.
+# Description: HMbuild
+# Author: Huawei OS Kernel Lab
+# Create: Wed Nov 03 14:45:42 2021
+
+
+src-y: ux_sockmgr.c
+src-y: ux_socket.c
+src-y: ux_sock.c
+src-y: ux_netdev.c
+src-y: ux_domain.c
+src-y: ux_demux.c
+src-y: ux_ioctl.c
+src-y: ux_statistic.c
+src-y: ux_sockopt.c
+src-y: ux_eventpoll.c
+src-y: ux_phy_mem.c
+src-y: ux_pktbuf.c
+src-y: ux_netlog.c
+src-y: ux_compat.c
+src-y: ux_vlan.c
+src-y: ux_revoke_handler.c
+src-y: ux_fdtable.c
+src-y: ucopy.c
+src-y: osal.c
+src-y: ux_hash.c
+src-y: ux_procfs.c
+src-y: ux_ringbuffer.c
+src-CONFIG_WORKQUEUE: ux_workqueue.c
+src-CONFIG_NET_NS: ux_namespace.c
+src-CONFIG_NET_FUSION: ux_fusion_ops.c
+
+cflags-ux_netdev.c-y: -Wno-unused-parameter
+cflags-ux_sockmgr.c-y: -Wframe-larger-than=8192
+cflags-ux_revoke_handler.c-y: -Wframe-larger-than=8192

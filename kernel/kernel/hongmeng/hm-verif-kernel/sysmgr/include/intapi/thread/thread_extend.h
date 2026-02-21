@@ -1,0 +1,28 @@
+/*
+ * Copyright (c) Huawei Technologies Co., Ltd. 2023. All rights reserved.
+ * Description: Extend interfaces of operation on thread in sysmgr
+ * Author: Huawei OS Kernel Lab
+ * Create: Sun Oct 8 11:16:28 2023
+ */
+
+#ifndef SYSMGR_INCLUDE_THREAD_EXTEND_H
+#define SYSMGR_INCLUDE_THREAD_EXTEND_H
+
+#include <intapi/thread/thread.h>
+#include <libmem/debug.h>
+
+static inline struct thread_s *spinhdlr_caller_thread_of(void)
+{
+	raw_thread_t raw_thread = raw_thread_self();
+	void *rt_private = raw_thread_private_of(raw_thread);
+	if (unlikely(rt_private == NULL)) {
+		dump_mem_content(ALIGN_DOWN((uintptr_t)raw_thread, PAGE_SIZE), PAGE_SIZE);
+	}
+	return ptr_from_void(rt_private, struct thread_s);
+}
+
+static inline unsigned long spinhdlr_caller_thread_cred_of(void)
+{
+	return sysif_actv_current_callinfo()->credential;
+}
+#endif /* SYSMGR_INCLUDE_THREAD_EXTEND_H */

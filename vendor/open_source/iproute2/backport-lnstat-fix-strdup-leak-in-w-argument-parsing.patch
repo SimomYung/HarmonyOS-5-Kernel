@@ -1,0 +1,32 @@
+From cc143bda6bcec20d073f42162f06dde8998551d4 Mon Sep 17 00:00:00 2001
+From: Maxim Petrov <mmrmaximuzz@gmail.com>
+Date: Tue, 15 Feb 2022 23:53:47 +0300
+Subject: [PATCH] lnstat: fix strdup leak in -w argument parsing
+
+'tmp' string is used for safe tokenizing, but it is not required after
+getting all the widths in -w option. As 'tmp' string is obtained by strdup
+call, the caller has to deallocate it to avoid memory leak.
+
+Signed-off-by: Maxim Petrov <mmrmaximuzz@gmail.com>
+Signed-off-by: Stephen Hemminger <stephen@networkplumber.org>
+Conflict: NA
+Reference: https://git.kernel.org/pub/scm/network/iproute2/iproute2.git/commit?id=cc143bda6bc
+---
+ misc/lnstat.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/misc/lnstat.c b/misc/lnstat.c
+index 98904d45..c3293a8e 100644
+--- a/misc/lnstat.c
++++ b/misc/lnstat.c
+@@ -331,6 +331,7 @@ int main(int argc, char **argv)
+ 				for (i = 0; i < MAX_FIELDS; i++)
+ 					fp.params[i].print.width = len;
+ 			}
++			free(tmp);
+ 			break;
+ 		default:
+ 			usage(argv[0], 1);
+-- 
+2.23.0
+

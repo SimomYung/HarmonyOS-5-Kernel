@@ -1,0 +1,24 @@
+# Copyright (c) Huawei Technologies Co., Ltd. 2022-2022. All rights reserved.
+# Description: HMbuild for libucfi
+# Author: Huawei OS Kernel Lab
+# Create: Thu Mar 31 10:19:23 2022
+
+src-y: ucfi.c
+
+cflags-.-y: -ffunction-sections
+cflags-.-y: -fdata-sections
+
+include-y: ../../include
+inclib: HMUlibs::HMUlibs_sysif_sysmgr_include
+
+# libucfi.so
+lib-dynamic-y: ucfi_shared
+output-ucfi_shared: ucfi
+
+src-ucfi_shared-y: wrapper_hm.c
+
+include-ucfi_shared: ../../include
+linklib-ucfi_shared: -nodefaultlibs
+
+install-ucfi_shared-y: LIBDIR
+# vim:ts=4:sw=4:expandtab

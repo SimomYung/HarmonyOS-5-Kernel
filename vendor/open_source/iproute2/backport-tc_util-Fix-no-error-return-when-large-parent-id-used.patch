@@ -1,0 +1,35 @@
+From e0ecee3a33af57e01fe5d15f1a436216412f2d96 Mon Sep 17 00:00:00 2001
+From: Lai Peter Jun Ann <jun.ann.lai@intel.com>
+Date: Thu, 17 Nov 2022 13:33:17 +0800
+Subject: [PATCH] tc_util: Fix no error return when large parent id used
+
+This patch is to fix the issue where there is no error return
+when large value of parent ID is being used. The return value by
+stroul() is unsigned long int. Hence the datatype for maj and min
+should defined as unsigned long to avoid overflow issue.
+
+Conflict:NA
+Reference:https://git.kernel.org/pub/scm/network/iproute2/iproute2.git/commit?id=e0ecee3a33af57e01fe5d15f1a436216412f2d96
+
+Signed-off-by: Muhammad Husaini Zulkifli <muhammad.husaini.zulkifli@intel.com>
+Signed-off-by: Lai Peter Jun Ann <jun.ann.lai@intel.com>
+Signed-off-by: Stephen Hemminger <stephen@networkplumber.org>
+---
+ tc/tc_util.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/tc/tc_util.c b/tc/tc_util.c
+index 44137adb..334334db 100644
+--- a/tc/tc_util.c
++++ b/tc/tc_util.c
+@@ -93,7 +93,7 @@ ok:
+ 
+ int get_tc_classid(__u32 *h, const char *str)
+ {
+-	__u32 maj, min;
++	unsigned long maj, min;
+ 	char *p;
+ 
+ 	maj = TC_H_ROOT;
+-- 
+2.23.0

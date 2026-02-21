@@ -1,0 +1,89 @@
+# SPDX-License-Identifier: GPL-2.0
+#
+# This file provide features to override symbols marked by `__override`
+#
+-include include/config/auto.conf
+include scripts/Kbuild.include
+
+#
+# helper to list objects in archive (a.k.a. built-in.a)
+archive-objs = $(shell $(AR) t $(1))
+word-colon = $(foreach m,$(1), $(word $2,$(subst :, ,$m)))
+
+#
+# build override symbols&objects
+#  - only global symbols can be used to override others
+gen_override_data = $(NM) --defined-only -A -g -f sysv $(1) \
+				| grep '.text.override' | cut -d'|' -f1
+gen_override_data_fileinput = $(shell $(srctree)/arch/liblinux/scripts/gen_override_data.sh $(NM) $(2) $(1))
+
+vmlinux-objs = $(foreach m,$(KBUILD_VMLINUX_OBJS),$(call archive-objs,$m))
+$(file >vmlinux-objs.txt,$(vmlinux-objs))
+override-objs := $(sort $(call gen_override_data_fileinput,vmlinux-objs.txt,obj))
+override-syms := $(sort $(call gen_override_data_fileinput,vmlinux-objs.txt,syms))
+
+#
+# buid override-target list
+#  - we can override non-inline local symbols by make it global first
+override-target = $(filter $(addprefix %:,$(override-syms)), \
+	$(shell $(NM) --defined-only -A \
+		$(filter-out $(override-objs),$(1)) \
+	| sed 's/:.* /:/g'))
+
+target-full := $(shell $(srctree)/arch/liblinux/scripts/override_target.sh $(NM) vmlinux-objs.txt)
+target-objs := $(sort $(call word-colon, $(target-full), 1))
+target-syms := $(sort $(call word-colon, $(target-full), 2))
+
+get-syms = $(call word-colon,$(call override-target, $(1)),2)
+
+#
+# Validate override symbols
+non-global-syms := $(shell $(NM) --defined-only -A -f sysv $(vmlinux-objs) \
+				| grep '.text.override' | grep -v 'T' | cut -d'|' -f1)
+unused-syms = $(filter-out $(target-syms), $(override-syms))
+# warn non-global __override symbols
+$(foreach s, $(non-global-syms), \
+	$(error Non-global override symbol: "$(s)"))
+# failed for unused override symbols
+$(if $(unused-syms), $(error Found unused override symbols: \
+			     $(patsubst %,"%",$(unused-syms))))
+
+#
+# generate list of all override symbols
+#  TODO: howto cleanup *.ovsyms
+OVERRIDE_LIST = $(objtree)/vmlinux.ovsyms
+quiet_cmd_gen_ov_syms = CHK     $@
+      cmd_gen_ov_syms = $(call gen_override_data,$(KBUILD_VMLINUX_OBJS)) \
+				| cut -d':' -f3 | sed 's/ //g' > .tmp.$@ && \
+				cmp -s .tmp.$@ $@ || \
+				  (echo "  UPD     $@" && mv .tmp.$@ $@) && \
+				  rm -f .tmp.$@
+$(OVERRIDE_LIST): $(override-objs) FORCE
+	$(call if_changed,gen_ov_syms)
+targets += $(patsubst $(objtree)/%,%,$(OVERRIDE_LIST))
+
+#
+# apply override to target objects
+quiet_cmd_ov_apply = OVFIXUP $<
+      cmd_ov_apply = $(OBJCOPY) -p --weaken-symbols=$(OVERRIDE_LIST) $<
+target-ovsyms := $(patsubst %.o,%.o.ovsyms,$(target-objs))
+$(target-ovsyms): %.o.ovsyms: %.o $(OVERRIDE_LIST) FORCE
+	$(call if_changed,ov_apply)
+	$(Q)echo $(call get-syms, $<) | sed 's/ /\n/g' > $@
+targets += $(target-ovsyms)
+
+do_override: $(target-ovsyms) FORCE
+	@true
+
+clean:
+	@true
+
+PHONY += FORCE clean
+
+FORCE:
+
+.PHONY: $(PHONY)
+
+# read saved command lines for existing targets
+existing-targets := $(wildcard $(sort $(targets)))
+-include $(foreach f,$(existing-targets),$(dir $(f)).$(notdir $(f)).cmd)

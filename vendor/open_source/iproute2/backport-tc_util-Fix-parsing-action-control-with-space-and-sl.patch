@@ -1,0 +1,54 @@
+From 7f70eb2a8b2c451683c801b23b25f34071a8882f Mon Sep 17 00:00:00 2001
+From: Roi Dayan <roid@nvidia.com>
+Date: Thu, 3 Feb 2022 14:20:46 +0200
+Subject: [PATCH] tc_util: Fix parsing action control with space and slash
+
+For action police there is an conform-exceed action control
+which can be for example "jump 2 / pipe".
+The current parsing loop is doing one more iteration than necessary
+and results in ok var being 3.
+
+Example filter:
+
+tc filter add dev enp8s0f0_0 ingress protocol ip prio 2 flower \
+    verbose action police rate 100mbit burst 12m \
+    conform-exceed jump 1 / pipe mirred egress redirect dev enp8s0f0_1 action drop
+
+Before this change the command will fail.
+Trying to add another "pipe" before mirred as a workaround for the stopping the loop
+in ok var 3 resulting in result2 not being saved and wrong filter.
+
+... conform-exceed jump 1 / pipe pipe mirred ...
+
+Example dump of the action part:
+... action order 1:  police 0x1 rate 100Mbit burst 12Mb mtu 2Kb action jump 1 overhead 0b  ...
+
+Fix the behavior by removing redundant case 2 handling, either argc is over or breaking.
+
+Example dump of the action part with the fix:
+... action order 1:  police 0x1 rate 100Mbit burst 12Mb mtu 2Kb action jump 1/pipe overhead 0b ...
+
+Signed-off-by: Roi Dayan <roid@nvidia.com>
+Reviewed-by: Maor Dickman <maord@nvidia.com>
+Signed-off-by: Stephen Hemminger <stephen@networkplumber.org>
+Conflict: NA
+Reference: https://git.kernel.org/pub/scm/network/iproute2/iproute2.git/commit?id=7f70eb2a8b2
+---
+ tc/tc_util.c | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/tc/tc_util.c b/tc/tc_util.c
+index 48065897..b82dbd5d 100644
+--- a/tc/tc_util.c
++++ b/tc/tc_util.c
+@@ -476,7 +476,6 @@ static int parse_action_control_slash_spaces(int *argc_p, char ***argv_p,
+ 			NEXT_ARG();
+ 			/* fall-through */
+ 		case 0: /* fall-through */
+-		case 2:
+ 			ret = parse_action_control(&argc, &argv,
+ 						   result_p, allow_num);
+ 			if (ret)
+-- 
+2.23.0
+

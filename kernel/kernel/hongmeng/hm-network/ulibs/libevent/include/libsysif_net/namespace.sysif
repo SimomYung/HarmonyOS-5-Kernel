@@ -1,0 +1,17 @@
+/*
+ * Copyright (c) Huawei Technologies Co., Ltd. 2023-2023. All rights reserved.
+ * Description: Header of namespace interface for sysif
+ * Author: Huawei OS Kernel Lab
+ * Create: Tue Feb  7 17:19:54 2023
+ */
+
+DEFINE_MANAGER(namespace, 2,
+	DEFINE_SIMPLE_METHOD(namespace, new_ns,
+			     ARG(2, unsigned int, cnode_idx, unsigned int, nsid),
+			     RET_NO,
+			     SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(namespace, destroy_ns,
+			     ARG(1, unsigned int, nsid),
+			     RET_NO,
+			     SLOWDATA_NO)
+)

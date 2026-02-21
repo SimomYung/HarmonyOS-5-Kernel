@@ -1,0 +1,43 @@
+/*
+ * Copyright (C) Huawei Technologies Co., Ltd. 2019-2020. All rights reserved.
+ * Description: Generate for net cfg sysif api
+ * Author: Huawei OS Kernel Lab
+ * Create: Sat Oct 05 08:58:29 2019
+ */
+
+#ifdef SYSIF_EXPORT_API
+
+#include <netinet/in.h>
+#include <net/if.h>
+
+#define PROTOCOL_NAME_LEN_MAX	16
+struct sysif_netif {
+	char ifname[IF_NAMESIZE];
+};
+
+struct sysif_protocol {
+	char protocol[PROTOCOL_NAME_LEN_MAX];
+};
+
+#endif
+
+/*
+ * To support the mixed data model which means the client and the server
+ * may use different data model. See the comment for limitation of data type
+ * used in the sysif interfaces in <libsysif/base/api.h>.
+ */
+DEFINE_MANAGER(cfg, 4,
+	DEFINE_SIMPLE_METHOD(cfg, loglevel,
+			     ARG(1, unsigned int, loglevel),
+			     RET_NO,
+			     SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(cfg, show_stats,
+			     ARG(2, struct sysif_protocol, ss_protocol,
+                                 unsigned long long, shm_key),
+			     RET_NO,
+			     SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(cfg, getifaddrs,
+			     ARG(1, unsigned long long, shm_key),
+			     RET_NO,
+			     SLOWDATA_NO)
+)

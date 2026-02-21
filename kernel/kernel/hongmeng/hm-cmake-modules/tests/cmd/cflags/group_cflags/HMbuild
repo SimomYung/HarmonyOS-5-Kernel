@@ -1,0 +1,15 @@
+# Copyright (c) Huawei Technologies Co., Ltd. 2021. All rights reserved.
+# Description: HMbuild
+# Author: Huawei OS Kernel Lab
+# Create: Wed Sep 22 16:29:49 2021
+
+exec-dynamic-y: test.elf
+src-test.elf-y: group_main.c
+src-y: foo.c
+
+cflags-.: '-D HAVE_DIR' '-D HAVE_DIR_MUTI'
+cflags-test.elf: '-D HAVE_TARGET' '-D HAVE_TARGET_MUTI'
+cflags-foo.c: '-D HAVE_SRC' -D HAVE_SRC_MUTI '--param asan-stack=1'
+include-test.elf: ./
+include: ./
+# vim:ts=4:sw=4:expandtab

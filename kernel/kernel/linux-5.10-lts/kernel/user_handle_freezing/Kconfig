@@ -1,0 +1,6 @@
+config USER_HANDLE_FREEZING
+    bool "back to user space before freeze"
+    depends on FREEZER
+    help
+        Try to choose one thread back to user space do something
+        when application is going to freeze.

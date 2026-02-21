@@ -1,0 +1,19 @@
+# Copyright (c) Huawei Technologies Co., Ltd. 2023. All rights reserved.
+# Description: HMbuild for devhost
+# Author: Huawei OS Kernel Lab
+# Create: Mon Jun 12 16:56:07 2023
+
+cflags-async.c-y: -D_GNU_SOURCE
+
+# For buddy sources, kasan cflags should be removed
+excludecflags-buddy.c-y: -fsanitize=kernel-address
+excludecflags-buddy.c-y: -fasan-shadow-offset=0x6666666000
+excludecflags-buddy.c-y: -fasan-shadow-offset=0x66666000
+excludecflags-buddy.c-y: "--param asan-stack=1"
+excludecflags-buddy.c-y: "--param asan-globals=1"
+excludecflags-buddy.c-y: -DENABLE_KASAN
+excludecflags-buddy.c-y: -fno-omit-frame-pointer
+excludecflags-buddy.c-y: -funwind-tables
+
+src-y: async.c
+src-y: buddy.c

@@ -1,0 +1,5 @@
+config DFX_EFR
+	bool "DFX EFR"
+	default n
+	help
+		Say 'Y' here if you want to use enable dfx efr stimulate

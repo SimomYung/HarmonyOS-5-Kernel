@@ -1,0 +1,76 @@
+{
+    "template": "hook",
+    "server": "devhost",
+    "manager": "fops",
+    "generation": {
+        "header": {
+            "embedded_code": {
+                "hook": ""
+            }
+        }
+    },
+    "hooks": {
+        "fops_mmap": {
+            "scheme": "security check/inner constraint",
+            "credential": {
+                "transaction": true
+            },
+            "arguments": [],
+            "ac": {
+                "buckle": {
+                    "alias": "sec_chk_ability_fops_mmap",
+                    "permission": "ab_devhost_fops_mmap"
+                }
+            }
+        },
+        "fops_close": {
+            "scheme": "security check/inner constraint",
+            "credential": {
+                "transaction": true
+            },
+            "arguments": [],
+            "ac": {
+                "buckle": {
+                    "alias": "sec_chk_ability_fops_close",
+                    "permission": "ab_devhost_fops"
+                }
+            }
+        },
+        "fops_sysfs": {
+            "scheme": "security check/inner constraint",
+            "arguments": [],
+            "ac": {
+                "buckle": {
+                    "alias": "sec_chk_ability_fops_sysfs",
+                    "permission": "ab_devhost_fops_sysfs"
+                }
+            }
+        },
+        "fops_transfs": {
+            "scheme": "security check/inner constraint",
+            "credential": {
+                "transaction": true
+            },
+            "arguments": [],
+            "ac": {
+                "buckle": {
+                    "alias": "sec_chk_ability_as_vfs",
+                    "permission": "ab_as_vfs"
+                }
+            }
+        },
+        "fops_open_sync_sec": {
+            "scheme": "security check/inner constraint",
+            "credential": {
+                "transaction": true
+            },
+            "arguments": [],
+            "ac": {
+                "buckle": {
+                    "alias": "sec_chk_ability_as_vfs",
+                    "permission": "ab_as_vfs"
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,12 @@
+# Copyright (c) Huawei Technologies Co., Ltd. 2022-2022. All rights reserved.
+# Description: HMbuild
+# Author: Huawei OS Kernel Lab
+# Create: Wed Apr 20 12:44:28 2022
+
+src-y: safe_copy.S
+src-y: safe_copy_nopf.S
+src-y: signal.S
+src-y: vvar.S
+src-y: vgettime.c
+src-y: vgettimeofday.c
+src-y: vgettimeudata.c

@@ -1,0 +1,98 @@
+/* SPDX-License-Identifier: GPL-2.0 */
+/*
+ * DMA BUF PagePool implementation
+ * Based on earlier ION code by Google
+ *
+ * Copyright (C) 2011 Google, Inc.
+ * Copyright (C) 2020 Linaro Ltd.
+ */
+
+#ifndef _DMABUF_PAGE_POOL_H
+#define _DMABUF_PAGE_POOL_H
+
+#include <linux/device.h>
+#include <linux/kref.h>
+#include <linux/mm_types.h>
+#include <linux/mutex.h>
+#include <linux/shrinker.h>
+#include <linux/types.h>
+
+/* page types we track in the pool */
+enum {
+	POOL_LOWPAGE,      /* Clean lowmem pages */
+	POOL_HIGHPAGE,     /* Clean highmem pages */
+
+	POOL_TYPE_SIZE,
+};
+
+#define DMABUF_PAGE_POOL_RECLAME_ALL 	1
+#define ZONE_EXTEND_FROM_IOFAST_ONLY 0x1U  /* indicate buddy extend from iofast only */
+#define HIGH_MISS_RATIO_ORDER 4
+
+/**
+ * struct dmabuf_page_pool - pagepool struct
+ * @count[]:		array of number of pages of that type in the pool
+ * @items[]:		array of list of pages of the specific type
+ * @mutex:		lock protecting this struct and especially the count
+ *			item list
+ * @gfp_mask:		gfp_mask to use from alloc
+ * @order:		order of pages in the pool
+ * @list:		list node for list of pools
+ *
+ * Allows you to keep a pool of pre allocated pages to use
+ */
+struct dmabuf_page_pool {
+	int count[POOL_TYPE_SIZE];
+	struct list_head items[POOL_TYPE_SIZE];
+	struct mutex mutex;
+	gfp_t gfp_mask;
+	unsigned int order;
+	struct list_head list;
+	unsigned long reclaim_flag;
+	unsigned long extend_flag;
+};
+
+struct dmabuf_page_pool *dmabuf_page_pool_create(gfp_t gfp_mask,
+						 unsigned int order);
+void dmabuf_page_pool_destroy(struct dmabuf_page_pool *pool);
+
+#ifdef CONFIG_DMABUF_HEAPS_SYSTEM_MULTI_WMARK
+#define DMA_POOL_WMARK_MIN  2560  /* 10MB */
+#define DMA_POOL_WMARK_LOW  12800 /* 50MB */
+#define DMA_POOL_WMARK_HIGH 25600 /* 100MB */
+
+s64 get_dma_pool_empty_value(void);
+s64 get_dma_pool_wmark_high_value(void);
+void dmabuf_page_pool_list_del(struct dmabuf_page_pool *pool);
+void dmabuf_page_pool_list_add_sys(struct dmabuf_page_pool *pool);
+int system_heap_sys_pool_wmark_high(void);
+int system_heap_sys_pool_count(void);
+#endif
+
+#ifdef CONFIG_LIBLINUX
+extern unsigned int dma_zone_only;
+
+int dmabuf_page_pool_get_shrink_waterline(struct dmabuf_page_pool *pool);
+struct page *liblinux_dmabuf_page_pool_remove(struct dmabuf_page_pool *pool, int index);
+struct page *dmabuf_page_pool_alloc_fill(struct dmabuf_page_pool *pool, unsigned long *count);
+#else
+static inline struct page *dmabuf_page_pool_alloc_fill(struct dmabuf_page_pool *pool, unsigned long *count) { return NULL; }
+#endif
+
+#ifdef CONFIG_DMABUF_HEAPS_SYSTEM_BATCH
+unsigned long liblinux_dmabuf_page_pool_remove_batch(struct dmabuf_page_pool *pool,
+					int index, unsigned long nr_pages, struct list_head *batch_pages);
+unsigned long dmabuf_page_pool_alloc_batch(struct dmabuf_page_pool *pool,
+					unsigned long nr_pages, struct list_head *batch_pages);
+#endif
+
+struct page *dmabuf_page_pool_alloc(struct dmabuf_page_pool *pool);
+#ifdef CONFIG_DMABUF_NPU_HUGE_POOL
+unsigned long dmabuf_page_pool_npu_huge_alloc_batch(struct dmabuf_page_pool *huge_pool,
+		struct dmabuf_page_pool *pool, unsigned long nr_pages, struct list_head *batch_pages);
+struct page *dmabuf_page_npu_huge_pool_alloc(struct dmabuf_page_pool *huge_pool, struct dmabuf_page_pool *pool);
+#endif
+void dmabuf_page_pool_free(struct dmabuf_page_pool *pool, struct page *page);
+int dmabuf_page_pool_do_shrink(struct dmabuf_page_pool *pool, gfp_t gfp_mask,
+				      int nr_to_scan);
+#endif /* _DMABUF_PAGE_POOL_H */

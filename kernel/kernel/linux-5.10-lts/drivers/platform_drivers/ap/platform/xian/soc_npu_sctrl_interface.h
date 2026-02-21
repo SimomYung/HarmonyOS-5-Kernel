@@ -1,0 +1,1799 @@
+
+
+/*****************************************************************************
+  1 其他头文件包含
+*****************************************************************************/
+
+#ifndef __SOC_NPU_SCTRL_INTERFACE_H__
+#define __SOC_NPU_SCTRL_INTERFACE_H__
+
+#ifdef __cplusplus
+    #if __cplusplus
+        extern "C" {
+    #endif
+#endif
+
+
+
+/*****************************************************************************
+  2 宏定义
+*****************************************************************************/
+
+/****************************************************************************
+                     (1/1) reg_define
+ ****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+
+
+/* Register description: AIC0 spram memory控制寄存器
+   Bit domain definition UNION:  SOC_NPU_SCTRL_npu_ctrl0_UNION */
+#define SOC_NPU_SCTRL_npu_ctrl0_ADDR(base)                    (base)
+
+/* Register description: AIC0 tpram memory控制寄存器
+   Bit domain definition UNION:  SOC_NPU_SCTRL_npu_ctrl1_UNION */
+#define SOC_NPU_SCTRL_npu_ctrl1_ADDR(base)                    ((base) + 0x004UL)
+
+/* Register description: AIC1 spram memory控制寄存器
+   Bit domain definition UNION:  SOC_NPU_SCTRL_npu_ctrl2_UNION */
+#define SOC_NPU_SCTRL_npu_ctrl2_ADDR(base)                    ((base) + 0x008UL)
+
+/* Register description: AIC1 tpram memory控制寄存器
+   Bit domain definition UNION:  SOC_NPU_SCTRL_npu_ctrl3_UNION */
+#define SOC_NPU_SCTRL_npu_ctrl3_ADDR(base)                    ((base) + 0x00CUL)
+
+/* Register description: AIC COMMON spram memory控制寄存器
+   Bit domain definition UNION:  SOC_NPU_SCTRL_npu_ctrl4_UNION */
+#define SOC_NPU_SCTRL_npu_ctrl4_ADDR(base)                    ((base) + 0x010UL)
+
+/* Register description: AIC COMMON tpram memory控制寄存器
+   Bit domain definition UNION:  SOC_NPU_SCTRL_npu_ctrl5_UNION */
+#define SOC_NPU_SCTRL_npu_ctrl5_ADDR(base)                    ((base) + 0x014UL)
+
+/* Register description: HPM控制寄存器12
+   Bit domain definition UNION:  SOC_NPU_SCTRL_npu_ctrl6_UNION */
+#define SOC_NPU_SCTRL_npu_ctrl6_ADDR(base)                    ((base) + 0x018UL)
+
+/* Register description: HPM_OPC_MIN使能寄存器
+   Bit domain definition UNION:  SOC_NPU_SCTRL_npu_ctrl7_UNION */
+#define SOC_NPU_SCTRL_npu_ctrl7_ADDR(base)                    ((base) + 0x01CUL)
+
+/* Register description: atgm配置总线选择寄存器
+   Bit domain definition UNION:  SOC_NPU_SCTRL_npu_ctrl8_UNION */
+#define SOC_NPU_SCTRL_npu_ctrl8_ADDR(base)                    ((base) + 0x020UL)
+
+/* Register description: TS读带宽限流控制寄存器
+   Bit domain definition UNION:  SOC_NPU_SCTRL_npu_ctrl9_UNION */
+#define SOC_NPU_SCTRL_npu_ctrl9_ADDR(base)                    ((base) + 0x024UL)
+
+/* Register description: TS写带宽限流控制寄存器
+   Bit domain definition UNION:  SOC_NPU_SCTRL_npu_ctrl10_UNION */
+#define SOC_NPU_SCTRL_npu_ctrl10_ADDR(base)                   ((base) + 0x028UL)
+
+/* Register description: BC控制寄存器
+   Bit domain definition UNION:  SOC_NPU_SCTRL_npu_ctrl11_UNION */
+#define SOC_NPU_SCTRL_npu_ctrl11_ADDR(base)                   ((base) + 0x02CUL)
+
+/* Register description: NPU pasensor控制寄存器
+   Bit domain definition UNION:  SOC_NPU_SCTRL_npu_ctrl12_UNION */
+#define SOC_NPU_SCTRL_npu_ctrl12_ADDR(base)                   ((base) + 0x030UL)
+
+/* Register description: NPU PI错峰使能寄存器
+   Bit domain definition UNION:  SOC_NPU_SCTRL_npu_ctrl13_UNION */
+#define SOC_NPU_SCTRL_npu_ctrl13_ADDR(base)                   ((base) + 0x034UL)
+
+/* Register description: NPU PI错峰计数器阈值配置寄存器
+   Bit domain definition UNION:  SOC_NPU_SCTRL_npu_ctrl14_UNION */
+#define SOC_NPU_SCTRL_npu_ctrl14_ADDR(base)                   ((base) + 0x038UL)
+
+/* Register description: cube启动时刻配置寄存器
+   Bit domain definition UNION:  SOC_NPU_SCTRL_npu_ctrl15_UNION */
+#define SOC_NPU_SCTRL_npu_ctrl15_ADDR(base)                   ((base) + 0x03CUL)
+
+/* Register description: fixp启动时刻配置寄存器
+   Bit domain definition UNION:  SOC_NPU_SCTRL_npu_ctrl16_UNION */
+#define SOC_NPU_SCTRL_npu_ctrl16_ADDR(base)                   ((base) + 0x040UL)
+
+/* Register description: mte启动时刻配置寄存器
+   Bit domain definition UNION:  SOC_NPU_SCTRL_npu_ctrl17_UNION */
+#define SOC_NPU_SCTRL_npu_ctrl17_ADDR(base)                   ((base) + 0x044UL)
+
+/* Register description: vec启动时刻配置寄存器
+   Bit domain definition UNION:  SOC_NPU_SCTRL_npu_ctrl18_UNION */
+#define SOC_NPU_SCTRL_npu_ctrl18_ADDR(base)                   ((base) + 0x048UL)
+
+/* Register description: 启动脉冲宽度配置寄存器
+   Bit domain definition UNION:  SOC_NPU_SCTRL_npu_ctrl19_UNION */
+#define SOC_NPU_SCTRL_npu_ctrl19_ADDR(base)                   ((base) + 0x04CUL)
+
+/* Register description: AXI mst信号控制寄存器
+   Bit domain definition UNION:  SOC_NPU_SCTRL_npu_ctrl20_UNION */
+#define SOC_NPU_SCTRL_npu_ctrl20_ADDR(base)                   ((base) + 0x050UL)
+
+/* Register description: 总线桥自动门控控制寄存器
+   Bit domain definition UNION:  SOC_NPU_SCTRL_npu_ctrl21_UNION */
+#define SOC_NPU_SCTRL_npu_ctrl21_ADDR(base)                   ((base) + 0x054UL)
+
+/* Register description: 总线桥控制寄存器
+   Bit domain definition UNION:  SOC_NPU_SCTRL_npu_ctrl22_UNION */
+#define SOC_NPU_SCTRL_npu_ctrl22_ADDR(base)                   ((base) + 0x058UL)
+
+/* Register description: QSP rd ostd monitor控制寄存器
+   Bit domain definition UNION:  SOC_NPU_SCTRL_npu_ctrl23_UNION */
+#define SOC_NPU_SCTRL_npu_ctrl23_ADDR(base)                   ((base) + 0x060UL)
+
+/* Register description: TDE控制寄存器0
+   Bit domain definition UNION:  SOC_NPU_SCTRL_npu_ctrl24_UNION */
+#define SOC_NPU_SCTRL_npu_ctrl24_ADDR(base)                   ((base) + 0x070UL)
+
+/* Register description: TDE控制寄存器1
+   Bit domain definition UNION:  SOC_NPU_SCTRL_npu_ctrl25_UNION */
+#define SOC_NPU_SCTRL_npu_ctrl25_ADDR(base)                   ((base) + 0x074UL)
+
+/* Register description: 预留控制寄存器
+   Bit domain definition UNION:  SOC_NPU_SCTRL_npu_ctrl30_UNION */
+#define SOC_NPU_SCTRL_npu_ctrl30_ADDR(base)                   ((base) + 0x080UL)
+
+/* Register description: 预留控制寄存器
+   Bit domain definition UNION:  SOC_NPU_SCTRL_npu_ctrl31_UNION */
+#define SOC_NPU_SCTRL_npu_ctrl31_ADDR(base)                   ((base) + 0x084UL)
+
+/* Register description: ec寄存器
+   Bit domain definition UNION:  SOC_NPU_SCTRL_npu_ctrl40_UNION */
+#define SOC_NPU_SCTRL_npu_ctrl40_ADDR(base)                   ((base) + 0x090UL)
+
+/* Register description: 状态寄存器0
+   Bit domain definition UNION:  SOC_NPU_SCTRL_npu_stat0_UNION */
+#define SOC_NPU_SCTRL_npu_stat0_ADDR(base)                    ((base) + 0x800UL)
+
+/* Register description: 状态寄存器1
+   Bit domain definition UNION:  SOC_NPU_SCTRL_npu_stat1_UNION */
+#define SOC_NPU_SCTRL_npu_stat1_ADDR(base)                    ((base) + 0x804UL)
+
+/* Register description: 状态寄存器2
+   Bit domain definition UNION:  SOC_NPU_SCTRL_npu_stat2_UNION */
+#define SOC_NPU_SCTRL_npu_stat2_ADDR(base)                    ((base) + 0x808UL)
+
+/* Register description: 状态寄存器3
+   Bit domain definition UNION:  SOC_NPU_SCTRL_npu_stat3_UNION */
+#define SOC_NPU_SCTRL_npu_stat3_ADDR(base)                    ((base) + 0x80CUL)
+
+/* Register description: 状态寄存器4
+   Bit domain definition UNION:  SOC_NPU_SCTRL_npu_stat4_UNION */
+#define SOC_NPU_SCTRL_npu_stat4_ADDR(base)                    ((base) + 0x810UL)
+
+/* Register description: 状态寄存器5
+   Bit domain definition UNION:  SOC_NPU_SCTRL_npu_stat5_UNION */
+#define SOC_NPU_SCTRL_npu_stat5_ADDR(base)                    ((base) + 0x814UL)
+
+/* Register description: 状态寄存器6
+   Bit domain definition UNION:  SOC_NPU_SCTRL_npu_stat6_UNION */
+#define SOC_NPU_SCTRL_npu_stat6_ADDR(base)                    ((base) + 0x818UL)
+
+/* Register description: 状态寄存器7
+   Bit domain definition UNION:  SOC_NPU_SCTRL_npu_stat7_UNION */
+#define SOC_NPU_SCTRL_npu_stat7_ADDR(base)                    ((base) + 0x81CUL)
+
+/* Register description: 总线桥状态寄存器0
+   Bit domain definition UNION:  SOC_NPU_SCTRL_npu_stat8_UNION */
+#define SOC_NPU_SCTRL_npu_stat8_ADDR(base)                    ((base) + 0x820UL)
+
+/* Register description: 总线桥状态寄存器1
+   Bit domain definition UNION:  SOC_NPU_SCTRL_npu_stat9_UNION */
+#define SOC_NPU_SCTRL_npu_stat9_ADDR(base)                    ((base) + 0x824UL)
+
+/* Register description: 总线桥状态寄存器2
+   Bit domain definition UNION:  SOC_NPU_SCTRL_npu_stat10_UNION */
+#define SOC_NPU_SCTRL_npu_stat10_ADDR(base)                   ((base) + 0x828UL)
+
+/* Register description: 总线桥状态寄存器3
+   Bit domain definition UNION:  SOC_NPU_SCTRL_npu_stat11_UNION */
+#define SOC_NPU_SCTRL_npu_stat11_ADDR(base)                   ((base) + 0x82CUL)
+
+/* Register description: NPU LITE CORE DS
+   Bit domain definition UNION:  SOC_NPU_SCTRL_npu_stat12_UNION */
+#define SOC_NPU_SCTRL_npu_stat12_ADDR(base)                   ((base) + 0x830UL)
+
+/* Register description: TDE状态寄存器0
+   Bit domain definition UNION:  SOC_NPU_SCTRL_npu_stat13_UNION */
+#define SOC_NPU_SCTRL_npu_stat13_ADDR(base)                   ((base) + 0x834UL)
+
+/* Register description: TDE状态寄存器1
+   Bit domain definition UNION:  SOC_NPU_SCTRL_npu_stat14_UNION */
+#define SOC_NPU_SCTRL_npu_stat14_ADDR(base)                   ((base) + 0x838UL)
+
+/* Register description: AICORE idle状态寄存器
+   Bit domain definition UNION:  SOC_NPU_SCTRL_npu_stat15_UNION */
+#define SOC_NPU_SCTRL_npu_stat15_ADDR(base)                   ((base) + 0x83CUL)
+
+/* Register description: ec上报寄存器
+   Bit domain definition UNION:  SOC_NPU_SCTRL_npu_stat20_UNION */
+#define SOC_NPU_SCTRL_npu_stat20_ADDR(base)                   ((base) + 0x850UL)
+
+
+#else
+
+
+/* Register description: AIC0 spram memory控制寄存器
+   Bit domain definition UNION:  SOC_NPU_SCTRL_npu_ctrl0_UNION */
+#define SOC_NPU_SCTRL_npu_ctrl0_ADDR(base)                    (base)
+
+/* Register description: AIC0 tpram memory控制寄存器
+   Bit domain definition UNION:  SOC_NPU_SCTRL_npu_ctrl1_UNION */
+#define SOC_NPU_SCTRL_npu_ctrl1_ADDR(base)                    ((base) + 0x004)
+
+/* Register description: AIC1 spram memory控制寄存器
+   Bit domain definition UNION:  SOC_NPU_SCTRL_npu_ctrl2_UNION */
+#define SOC_NPU_SCTRL_npu_ctrl2_ADDR(base)                    ((base) + 0x008)
+
+/* Register description: AIC1 tpram memory控制寄存器
+   Bit domain definition UNION:  SOC_NPU_SCTRL_npu_ctrl3_UNION */
+#define SOC_NPU_SCTRL_npu_ctrl3_ADDR(base)                    ((base) + 0x00C)
+
+/* Register description: AIC COMMON spram memory控制寄存器
+   Bit domain definition UNION:  SOC_NPU_SCTRL_npu_ctrl4_UNION */
+#define SOC_NPU_SCTRL_npu_ctrl4_ADDR(base)                    ((base) + 0x010)
+
+/* Register description: AIC COMMON tpram memory控制寄存器
+   Bit domain definition UNION:  SOC_NPU_SCTRL_npu_ctrl5_UNION */
+#define SOC_NPU_SCTRL_npu_ctrl5_ADDR(base)                    ((base) + 0x014)
+
+/* Register description: HPM控制寄存器12
+   Bit domain definition UNION:  SOC_NPU_SCTRL_npu_ctrl6_UNION */
+#define SOC_NPU_SCTRL_npu_ctrl6_ADDR(base)                    ((base) + 0x018)
+
+/* Register description: HPM_OPC_MIN使能寄存器
+   Bit domain definition UNION:  SOC_NPU_SCTRL_npu_ctrl7_UNION */
+#define SOC_NPU_SCTRL_npu_ctrl7_ADDR(base)                    ((base) + 0x01C)
+
+/* Register description: atgm配置总线选择寄存器
+   Bit domain definition UNION:  SOC_NPU_SCTRL_npu_ctrl8_UNION */
+#define SOC_NPU_SCTRL_npu_ctrl8_ADDR(base)                    ((base) + 0x020)
+
+/* Register description: TS读带宽限流控制寄存器
+   Bit domain definition UNION:  SOC_NPU_SCTRL_npu_ctrl9_UNION */
+#define SOC_NPU_SCTRL_npu_ctrl9_ADDR(base)                    ((base) + 0x024)
+
+/* Register description: TS写带宽限流控制寄存器
+   Bit domain definition UNION:  SOC_NPU_SCTRL_npu_ctrl10_UNION */
+#define SOC_NPU_SCTRL_npu_ctrl10_ADDR(base)                   ((base) + 0x028)
+
+/* Register description: BC控制寄存器
+   Bit domain definition UNION:  SOC_NPU_SCTRL_npu_ctrl11_UNION */
+#define SOC_NPU_SCTRL_npu_ctrl11_ADDR(base)                   ((base) + 0x02C)
+
+/* Register description: NPU pasensor控制寄存器
+   Bit domain definition UNION:  SOC_NPU_SCTRL_npu_ctrl12_UNION */
+#define SOC_NPU_SCTRL_npu_ctrl12_ADDR(base)                   ((base) + 0x030)
+
+/* Register description: NPU PI错峰使能寄存器
+   Bit domain definition UNION:  SOC_NPU_SCTRL_npu_ctrl13_UNION */
+#define SOC_NPU_SCTRL_npu_ctrl13_ADDR(base)                   ((base) + 0x034)
+
+/* Register description: NPU PI错峰计数器阈值配置寄存器
+   Bit domain definition UNION:  SOC_NPU_SCTRL_npu_ctrl14_UNION */
+#define SOC_NPU_SCTRL_npu_ctrl14_ADDR(base)                   ((base) + 0x038)
+
+/* Register description: cube启动时刻配置寄存器
+   Bit domain definition UNION:  SOC_NPU_SCTRL_npu_ctrl15_UNION */
+#define SOC_NPU_SCTRL_npu_ctrl15_ADDR(base)                   ((base) + 0x03C)
+
+/* Register description: fixp启动时刻配置寄存器
+   Bit domain definition UNION:  SOC_NPU_SCTRL_npu_ctrl16_UNION */
+#define SOC_NPU_SCTRL_npu_ctrl16_ADDR(base)                   ((base) + 0x040)
+
+/* Register description: mte启动时刻配置寄存器
+   Bit domain definition UNION:  SOC_NPU_SCTRL_npu_ctrl17_UNION */
+#define SOC_NPU_SCTRL_npu_ctrl17_ADDR(base)                   ((base) + 0x044)
+
+/* Register description: vec启动时刻配置寄存器
+   Bit domain definition UNION:  SOC_NPU_SCTRL_npu_ctrl18_UNION */
+#define SOC_NPU_SCTRL_npu_ctrl18_ADDR(base)                   ((base) + 0x048)
+
+/* Register description: 启动脉冲宽度配置寄存器
+   Bit domain definition UNION:  SOC_NPU_SCTRL_npu_ctrl19_UNION */
+#define SOC_NPU_SCTRL_npu_ctrl19_ADDR(base)                   ((base) + 0x04C)
+
+/* Register description: AXI mst信号控制寄存器
+   Bit domain definition UNION:  SOC_NPU_SCTRL_npu_ctrl20_UNION */
+#define SOC_NPU_SCTRL_npu_ctrl20_ADDR(base)                   ((base) + 0x050)
+
+/* Register description: 总线桥自动门控控制寄存器
+   Bit domain definition UNION:  SOC_NPU_SCTRL_npu_ctrl21_UNION */
+#define SOC_NPU_SCTRL_npu_ctrl21_ADDR(base)                   ((base) + 0x054)
+
+/* Register description: 总线桥控制寄存器
+   Bit domain definition UNION:  SOC_NPU_SCTRL_npu_ctrl22_UNION */
+#define SOC_NPU_SCTRL_npu_ctrl22_ADDR(base)                   ((base) + 0x058)
+
+/* Register description: QSP rd ostd monitor控制寄存器
+   Bit domain definition UNION:  SOC_NPU_SCTRL_npu_ctrl23_UNION */
+#define SOC_NPU_SCTRL_npu_ctrl23_ADDR(base)                   ((base) + 0x060)
+
+/* Register description: TDE控制寄存器0
+   Bit domain definition UNION:  SOC_NPU_SCTRL_npu_ctrl24_UNION */
+#define SOC_NPU_SCTRL_npu_ctrl24_ADDR(base)                   ((base) + 0x070)
+
+/* Register description: TDE控制寄存器1
+   Bit domain definition UNION:  SOC_NPU_SCTRL_npu_ctrl25_UNION */
+#define SOC_NPU_SCTRL_npu_ctrl25_ADDR(base)                   ((base) + 0x074)
+
+/* Register description: 预留控制寄存器
+   Bit domain definition UNION:  SOC_NPU_SCTRL_npu_ctrl30_UNION */
+#define SOC_NPU_SCTRL_npu_ctrl30_ADDR(base)                   ((base) + 0x080)
+
+/* Register description: 预留控制寄存器
+   Bit domain definition UNION:  SOC_NPU_SCTRL_npu_ctrl31_UNION */
+#define SOC_NPU_SCTRL_npu_ctrl31_ADDR(base)                   ((base) + 0x084)
+
+/* Register description: ec寄存器
+   Bit domain definition UNION:  SOC_NPU_SCTRL_npu_ctrl40_UNION */
+#define SOC_NPU_SCTRL_npu_ctrl40_ADDR(base)                   ((base) + 0x090)
+
+/* Register description: 状态寄存器0
+   Bit domain definition UNION:  SOC_NPU_SCTRL_npu_stat0_UNION */
+#define SOC_NPU_SCTRL_npu_stat0_ADDR(base)                    ((base) + 0x800)
+
+/* Register description: 状态寄存器1
+   Bit domain definition UNION:  SOC_NPU_SCTRL_npu_stat1_UNION */
+#define SOC_NPU_SCTRL_npu_stat1_ADDR(base)                    ((base) + 0x804)
+
+/* Register description: 状态寄存器2
+   Bit domain definition UNION:  SOC_NPU_SCTRL_npu_stat2_UNION */
+#define SOC_NPU_SCTRL_npu_stat2_ADDR(base)                    ((base) + 0x808)
+
+/* Register description: 状态寄存器3
+   Bit domain definition UNION:  SOC_NPU_SCTRL_npu_stat3_UNION */
+#define SOC_NPU_SCTRL_npu_stat3_ADDR(base)                    ((base) + 0x80C)
+
+/* Register description: 状态寄存器4
+   Bit domain definition UNION:  SOC_NPU_SCTRL_npu_stat4_UNION */
+#define SOC_NPU_SCTRL_npu_stat4_ADDR(base)                    ((base) + 0x810)
+
+/* Register description: 状态寄存器5
+   Bit domain definition UNION:  SOC_NPU_SCTRL_npu_stat5_UNION */
+#define SOC_NPU_SCTRL_npu_stat5_ADDR(base)                    ((base) + 0x814)
+
+/* Register description: 状态寄存器6
+   Bit domain definition UNION:  SOC_NPU_SCTRL_npu_stat6_UNION */
+#define SOC_NPU_SCTRL_npu_stat6_ADDR(base)                    ((base) + 0x818)
+
+/* Register description: 状态寄存器7
+   Bit domain definition UNION:  SOC_NPU_SCTRL_npu_stat7_UNION */
+#define SOC_NPU_SCTRL_npu_stat7_ADDR(base)                    ((base) + 0x81C)
+
+/* Register description: 总线桥状态寄存器0
+   Bit domain definition UNION:  SOC_NPU_SCTRL_npu_stat8_UNION */
+#define SOC_NPU_SCTRL_npu_stat8_ADDR(base)                    ((base) + 0x820)
+
+/* Register description: 总线桥状态寄存器1
+   Bit domain definition UNION:  SOC_NPU_SCTRL_npu_stat9_UNION */
+#define SOC_NPU_SCTRL_npu_stat9_ADDR(base)                    ((base) + 0x824)
+
+/* Register description: 总线桥状态寄存器2
+   Bit domain definition UNION:  SOC_NPU_SCTRL_npu_stat10_UNION */
+#define SOC_NPU_SCTRL_npu_stat10_ADDR(base)                   ((base) + 0x828)
+
+/* Register description: 总线桥状态寄存器3
+   Bit domain definition UNION:  SOC_NPU_SCTRL_npu_stat11_UNION */
+#define SOC_NPU_SCTRL_npu_stat11_ADDR(base)                   ((base) + 0x82C)
+
+/* Register description: NPU LITE CORE DS
+   Bit domain definition UNION:  SOC_NPU_SCTRL_npu_stat12_UNION */
+#define SOC_NPU_SCTRL_npu_stat12_ADDR(base)                   ((base) + 0x830)
+
+/* Register description: TDE状态寄存器0
+   Bit domain definition UNION:  SOC_NPU_SCTRL_npu_stat13_UNION */
+#define SOC_NPU_SCTRL_npu_stat13_ADDR(base)                   ((base) + 0x834)
+
+/* Register description: TDE状态寄存器1
+   Bit domain definition UNION:  SOC_NPU_SCTRL_npu_stat14_UNION */
+#define SOC_NPU_SCTRL_npu_stat14_ADDR(base)                   ((base) + 0x838)
+
+/* Register description: AICORE idle状态寄存器
+   Bit domain definition UNION:  SOC_NPU_SCTRL_npu_stat15_UNION */
+#define SOC_NPU_SCTRL_npu_stat15_ADDR(base)                   ((base) + 0x83C)
+
+/* Register description: ec上报寄存器
+   Bit domain definition UNION:  SOC_NPU_SCTRL_npu_stat20_UNION */
+#define SOC_NPU_SCTRL_npu_stat20_ADDR(base)                   ((base) + 0x850)
+
+
+#endif
+
+
+
+
+/*****************************************************************************
+  3 枚举定义
+*****************************************************************************/
+
+
+
+/*****************************************************************************
+  4 消息头定义
+*****************************************************************************/
+
+
+/*****************************************************************************
+  5 消息定义
+*****************************************************************************/
+
+
+
+/*****************************************************************************
+  6 STRUCT定义
+*****************************************************************************/
+
+
+
+/*****************************************************************************
+  7 UNION定义
+*****************************************************************************/
+
+/****************************************************************************
+                     (1/1) reg_define
+ ****************************************************************************/
+/*****************************************************************************
+ struct               : SOC_NPU_SCTRL_npu_ctrl0_UNION
+ struct description   : npu_ctrl0 Register structure definition
+                        Address Offset:0x000 Initial:0x00 Width:32
+ register description : AIC0 spram memory控制寄存器
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  aic_gen_mem_ctrl_s : 26; /* bit[0-25] : 保留 */
+        unsigned int  reserved           : 6;  /* bit[26-31]: 保留。 */
+    } reg;
+} SOC_NPU_SCTRL_npu_ctrl0_UNION;
+#endif
+#define SOC_NPU_SCTRL_npu_ctrl0_aic_gen_mem_ctrl_s_START  (0)
+#define SOC_NPU_SCTRL_npu_ctrl0_aic_gen_mem_ctrl_s_END    (25)
+
+
+/*****************************************************************************
+ struct               : SOC_NPU_SCTRL_npu_ctrl1_UNION
+ struct description   : npu_ctrl1 Register structure definition
+                        Address Offset:0x004 Initial:0x0000 Width:32
+ register description : AIC0 tpram memory控制寄存器
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  aic_gen_mem_ctrl_d1w2r : 16; /* bit[0-15] : 保留 */
+        unsigned int  reserved               : 16; /* bit[16-31]: 保留。 */
+    } reg;
+} SOC_NPU_SCTRL_npu_ctrl1_UNION;
+#endif
+#define SOC_NPU_SCTRL_npu_ctrl1_aic_gen_mem_ctrl_d1w2r_START  (0)
+#define SOC_NPU_SCTRL_npu_ctrl1_aic_gen_mem_ctrl_d1w2r_END    (15)
+
+
+/*****************************************************************************
+ struct               : SOC_NPU_SCTRL_npu_ctrl2_UNION
+ struct description   : npu_ctrl2 Register structure definition
+                        Address Offset:0x008 Initial:0x00 Width:32
+ register description : AIC1 spram memory控制寄存器
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  aic_eff_mem_ctrl_s : 26; /* bit[0-25] : 保留 */
+        unsigned int  reserved           : 6;  /* bit[26-31]: 保留。 */
+    } reg;
+} SOC_NPU_SCTRL_npu_ctrl2_UNION;
+#endif
+#define SOC_NPU_SCTRL_npu_ctrl2_aic_eff_mem_ctrl_s_START  (0)
+#define SOC_NPU_SCTRL_npu_ctrl2_aic_eff_mem_ctrl_s_END    (25)
+
+
+/*****************************************************************************
+ struct               : SOC_NPU_SCTRL_npu_ctrl3_UNION
+ struct description   : npu_ctrl3 Register structure definition
+                        Address Offset:0x00C Initial:0x0000 Width:32
+ register description : AIC1 tpram memory控制寄存器
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  aic_eff_mem_ctrl_d1w2r : 16; /* bit[0-15] : 保留 */
+        unsigned int  reserved               : 16; /* bit[16-31]: 保留。 */
+    } reg;
+} SOC_NPU_SCTRL_npu_ctrl3_UNION;
+#endif
+#define SOC_NPU_SCTRL_npu_ctrl3_aic_eff_mem_ctrl_d1w2r_START  (0)
+#define SOC_NPU_SCTRL_npu_ctrl3_aic_eff_mem_ctrl_d1w2r_END    (15)
+
+
+/*****************************************************************************
+ struct               : SOC_NPU_SCTRL_npu_ctrl4_UNION
+ struct description   : npu_ctrl4 Register structure definition
+                        Address Offset:0x010 Initial:0x00 Width:32
+ register description : AIC COMMON spram memory控制寄存器
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  aic_com_mem_ctrl_s : 26; /* bit[0-25] : bit[17:16] TRA 读assist，仅针对DR类型mem，默认值01
+                                                              bit[15:14] TSELW,调节写，默认值01
+                                                              bit[13:11] TSELR,调节写，默认值011
+                                                              bit[10:8] TEST，测试pin，默认值000
+                                                              bit[7:6] TSELW,调节写，默认值01
+                                                              bit[5:3] TSELR,调节读，默认值011
+                                                              bit[2] shut down mode，active high
+                                                              bit[1] deep sleep mode，active high
+                                                              bit[0] light sleep mode，active high
+                                                              注：Charlotte SDMA内无spram，该寄存器未控制任何memory */
+        unsigned int  reserved           : 6;  /* bit[26-31]: 保留。 */
+    } reg;
+} SOC_NPU_SCTRL_npu_ctrl4_UNION;
+#endif
+#define SOC_NPU_SCTRL_npu_ctrl4_aic_com_mem_ctrl_s_START  (0)
+#define SOC_NPU_SCTRL_npu_ctrl4_aic_com_mem_ctrl_s_END    (25)
+
+
+/*****************************************************************************
+ struct               : SOC_NPU_SCTRL_npu_ctrl5_UNION
+ struct description   : npu_ctrl5 Register structure definition
+                        Address Offset:0x014 Initial:0x0000 Width:32
+ register description : AIC COMMON tpram memory控制寄存器
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  aic_com_mem_ctrl_d1w2r : 16; /* bit[0-15] : bit[12:11] TRA,读assist，仅针对DR类型mem，默认值01
+                                                                  bit[10:8] TEST，测试pin，默认值000
+                                                                  bit[7:6] TSELW,调节写，默认值01
+                                                                  bit[5:4] TSELR,调节读，默认值01
+                                                                  bit[2] shut down mode，active high
+                                                                  bit[1] deep sleep mode，active high
+                                                                  bit[0] light sleep mode，active high */
+        unsigned int  reserved               : 16; /* bit[16-31]: 保留。 */
+    } reg;
+} SOC_NPU_SCTRL_npu_ctrl5_UNION;
+#endif
+#define SOC_NPU_SCTRL_npu_ctrl5_aic_com_mem_ctrl_d1w2r_START  (0)
+#define SOC_NPU_SCTRL_npu_ctrl5_aic_com_mem_ctrl_d1w2r_END    (15)
+
+
+/*****************************************************************************
+ struct               : SOC_NPU_SCTRL_npu_ctrl6_UNION
+ struct description   : npu_ctrl6 Register structure definition
+                        Address Offset:0x018 Initial:0x00 Width:32
+ register description : HPM控制寄存器12
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  hpm0_clk_div : 6;  /* bit[0-5]  : HPM0时钟分频比设置 */
+        unsigned int  hpm0_en      : 1;  /* bit[6]    : hpm0使能，高有效 */
+        unsigned int  hpmx0_en     : 1;  /* bit[7]    : hpmx0使能，高有效 */
+        unsigned int  hpm1_clk_div : 6;  /* bit[8-13] : reserve */
+        unsigned int  hpm1_en      : 1;  /* bit[14]   : reserve */
+        unsigned int  hpmx1_en     : 1;  /* bit[15]   : reserve */
+        unsigned int  hpm2_clk_div : 6;  /* bit[16-21]: HPM2时钟分频比设置 */
+        unsigned int  hpm2_en      : 1;  /* bit[22]   : hpm2使能，高有效 */
+        unsigned int  hpmx2_en     : 1;  /* bit[23]   : hpmx2使能，高有效 */
+        unsigned int  reserved     : 8;  /* bit[24-31]: 保留。
+                                                        对应关系：
+                                                        hpm0 -- aicore
+                                                        hpm1 -- rsv
+                                                        hpm2 -- nputop */
+    } reg;
+} SOC_NPU_SCTRL_npu_ctrl6_UNION;
+#endif
+#define SOC_NPU_SCTRL_npu_ctrl6_hpm0_clk_div_START  (0)
+#define SOC_NPU_SCTRL_npu_ctrl6_hpm0_clk_div_END    (5)
+#define SOC_NPU_SCTRL_npu_ctrl6_hpm0_en_START       (6)
+#define SOC_NPU_SCTRL_npu_ctrl6_hpm0_en_END         (6)
+#define SOC_NPU_SCTRL_npu_ctrl6_hpmx0_en_START      (7)
+#define SOC_NPU_SCTRL_npu_ctrl6_hpmx0_en_END        (7)
+#define SOC_NPU_SCTRL_npu_ctrl6_hpm1_clk_div_START  (8)
+#define SOC_NPU_SCTRL_npu_ctrl6_hpm1_clk_div_END    (13)
+#define SOC_NPU_SCTRL_npu_ctrl6_hpm1_en_START       (14)
+#define SOC_NPU_SCTRL_npu_ctrl6_hpm1_en_END         (14)
+#define SOC_NPU_SCTRL_npu_ctrl6_hpmx1_en_START      (15)
+#define SOC_NPU_SCTRL_npu_ctrl6_hpmx1_en_END        (15)
+#define SOC_NPU_SCTRL_npu_ctrl6_hpm2_clk_div_START  (16)
+#define SOC_NPU_SCTRL_npu_ctrl6_hpm2_clk_div_END    (21)
+#define SOC_NPU_SCTRL_npu_ctrl6_hpm2_en_START       (22)
+#define SOC_NPU_SCTRL_npu_ctrl6_hpm2_en_END         (22)
+#define SOC_NPU_SCTRL_npu_ctrl6_hpmx2_en_START      (23)
+#define SOC_NPU_SCTRL_npu_ctrl6_hpmx2_en_END        (23)
+
+
+/*****************************************************************************
+ struct               : SOC_NPU_SCTRL_npu_ctrl7_UNION
+ struct description   : npu_ctrl7 Register structure definition
+                        Address Offset:0x01C Initial:0x0000000 Width:32
+ register description : HPM_OPC_MIN使能寄存器
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  hpm0_opc_min_en  : 1;  /* bit[0]   : hpm0_opc_min使能，高有效 */
+        unsigned int  hpmx0_opc_min_en : 1;  /* bit[1]   : hpmx0_opc_min使能，高有效 */
+        unsigned int  hpm1_opc_min_en  : 1;  /* bit[2]   : reserve */
+        unsigned int  hpmx1_opc_min_en : 1;  /* bit[3]   : reserve */
+        unsigned int  hpm2_opc_min_en  : 1;  /* bit[4]   : hpm2_opc_min使能，高有效 */
+        unsigned int  hpmx2_opc_min_en : 1;  /* bit[5]   : hpmx2_opc_min使能，高有效 */
+        unsigned int  reserved         : 26; /* bit[6-31]: 保留。
+                                                           对应关系：
+                                                           hpm0 -- aicore0
+                                                           hpm1 -- rsv
+                                                           hpm2 -- nputop */
+    } reg;
+} SOC_NPU_SCTRL_npu_ctrl7_UNION;
+#endif
+#define SOC_NPU_SCTRL_npu_ctrl7_hpm0_opc_min_en_START   (0)
+#define SOC_NPU_SCTRL_npu_ctrl7_hpm0_opc_min_en_END     (0)
+#define SOC_NPU_SCTRL_npu_ctrl7_hpmx0_opc_min_en_START  (1)
+#define SOC_NPU_SCTRL_npu_ctrl7_hpmx0_opc_min_en_END    (1)
+#define SOC_NPU_SCTRL_npu_ctrl7_hpm1_opc_min_en_START   (2)
+#define SOC_NPU_SCTRL_npu_ctrl7_hpm1_opc_min_en_END     (2)
+#define SOC_NPU_SCTRL_npu_ctrl7_hpmx1_opc_min_en_START  (3)
+#define SOC_NPU_SCTRL_npu_ctrl7_hpmx1_opc_min_en_END    (3)
+#define SOC_NPU_SCTRL_npu_ctrl7_hpm2_opc_min_en_START   (4)
+#define SOC_NPU_SCTRL_npu_ctrl7_hpm2_opc_min_en_END     (4)
+#define SOC_NPU_SCTRL_npu_ctrl7_hpmx2_opc_min_en_START  (5)
+#define SOC_NPU_SCTRL_npu_ctrl7_hpmx2_opc_min_en_END    (5)
+
+
+/*****************************************************************************
+ struct               : SOC_NPU_SCTRL_npu_ctrl8_UNION
+ struct description   : npu_ctrl8 Register structure definition
+                        Address Offset:0x020 Initial:0x00000000 Width:32
+ register description : atgm配置总线选择寄存器
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  atgm_aicore_sel : 1;  /* bit[0]   : atgm 配置组选择
+                                                          //256总线位宽组 -- atgm_aicore_sel
+                                                          0: cfg_bus_atgm_aicore0
+                                                          1: cfg_bus_atgm_aicore1 */
+        unsigned int  reserved        : 31; /* bit[1-31]: 保留。 */
+    } reg;
+} SOC_NPU_SCTRL_npu_ctrl8_UNION;
+#endif
+#define SOC_NPU_SCTRL_npu_ctrl8_atgm_aicore_sel_START  (0)
+#define SOC_NPU_SCTRL_npu_ctrl8_atgm_aicore_sel_END    (0)
+
+
+/*****************************************************************************
+ struct               : SOC_NPU_SCTRL_npu_ctrl9_UNION
+ struct description   : npu_ctrl9 Register structure definition
+                        Address Offset:0x024 Initial:0x0 Width:32
+ register description : TS读带宽限流控制寄存器
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  ts_rd_bwc_saturation : 14; /* bit[0-13] : 带宽容限：
+                                                                配置值=带宽容限(B)/16；
+                                                                说明：
+                                                                可以将本带宽控制方式等效成基于滑动窗口的流量控制，带宽容限决定了滑窗宽度以及滑窗内的允许流量：带宽容限(B)/允许平均带宽(B/Hz)=滑窗宽度（cycle）。即在配置的允许平均带宽固定的情况下，带宽容限越大，滑窗越宽，对控制前的瞬时带宽变化越不敏感，长时间控制后的平均带宽也越接近配置的允许平均带宽，但控制后的瞬时带宽的变化也可能会越剧烈。
+                                                                例如，当允许带宽为理论带宽的1/3时（为便于说明，假设一个命令对应一拍数据，数据总线位宽16B。带宽控制实际是控制命令而非数据）：若带宽容限配置值为1，则任意连续的3拍内最多允许1拍数据通过；若带宽容限配置值为2，则任意连续的6拍内最多允许2拍数据通过，而这2拍数据就可能连续通过；以此类推。（由于硬件延迟等因素，建议带宽容限的有效配置值至少为2）
+                                                                注意：带宽限流使能时，不可以配置为0。 */
+        unsigned int  reserved_0           : 2;  /* bit[14-15]: 保留。 */
+        unsigned int  ts_rd_bwc_bandwidth  : 13; /* bit[16-28]: 允许平均带宽：
+                                                                配置值=允许平均带宽(B/Hz)*256=允许带宽(MB/s)/工作频率（MHz）*256。
+                                                                例如：工作频率为400MHz，当前端口的允许带宽为1400MB/s，则带宽配置值为1400/400*256=896=0x380
+                                                                说明：
+                                                                1.乘256的目的是保留允许平均带宽的高8位小数；
+                                                                2.控制后的瞬时带宽可能会超过允许带宽，超过的范围取决于带宽容限的配置；
+                                                                3.控制后的长时间平均带宽小于等于允许平均带宽。 */
+        unsigned int  reserved_1           : 2;  /* bit[29-30]: 保留。 */
+        unsigned int  ts_rd_bwc_en         : 1;  /* bit[31]   : 针对ts mst的读带宽限流使能控制，高有效。 */
+    } reg;
+} SOC_NPU_SCTRL_npu_ctrl9_UNION;
+#endif
+#define SOC_NPU_SCTRL_npu_ctrl9_ts_rd_bwc_saturation_START  (0)
+#define SOC_NPU_SCTRL_npu_ctrl9_ts_rd_bwc_saturation_END    (13)
+#define SOC_NPU_SCTRL_npu_ctrl9_ts_rd_bwc_bandwidth_START   (16)
+#define SOC_NPU_SCTRL_npu_ctrl9_ts_rd_bwc_bandwidth_END     (28)
+#define SOC_NPU_SCTRL_npu_ctrl9_ts_rd_bwc_en_START          (31)
+#define SOC_NPU_SCTRL_npu_ctrl9_ts_rd_bwc_en_END            (31)
+
+
+/*****************************************************************************
+ struct               : SOC_NPU_SCTRL_npu_ctrl10_UNION
+ struct description   : npu_ctrl10 Register structure definition
+                        Address Offset:0x028 Initial:0x0 Width:32
+ register description : TS写带宽限流控制寄存器
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  ts_wr_bwc_saturation : 14; /* bit[0-13] : 带宽容限：
+                                                                配置值=带宽容限(B)/16；
+                                                                说明：
+                                                                可以将本带宽控制方式等效成基于滑动窗口的流量控制，带宽容限决定了滑窗宽度以及滑窗内的允许流量：带宽容限(B)/允许平均带宽(B/Hz)=滑窗宽度（cycle）。即在配置的允许平均带宽固定的情况下，带宽容限越大，滑窗越宽，对控制前的瞬时带宽变化越不敏感，长时间控制后的平均带宽也越接近配置的允许平均带宽，但控制后的瞬时带宽的变化也可能会越剧烈。
+                                                                例如，当允许带宽为理论带宽的1/3时（为便于说明，假设一个命令对应一拍数据，数据总线位宽16B。带宽控制实际是控制命令而非数据）：若带宽容限配置值为1，则任意连续的3拍内最多允许1拍数据通过；若带宽容限配置值为2，则任意连续的6拍内最多允许2拍数据通过，而这2拍数据就可能连续通过；以此类推。（由于硬件延迟等因素，建议带宽容限的有效配置值至少为2）
+                                                                注意：带宽限流使能时，不可以配置为0。 */
+        unsigned int  reserved_0           : 2;  /* bit[14-15]: 保留。 */
+        unsigned int  ts_wr_bwc_bandwidth  : 13; /* bit[16-28]: 允许平均带宽：
+                                                                配置值=允许平均带宽(B/Hz)*256=允许带宽(MB/s)/工作频率（MHz）*256。
+                                                                例如：工作频率为400MHz，当前端口的允许带宽为1400MB/s，则带宽配置值为1400/400*256=896=0x380
+                                                                说明：
+                                                                1.乘256的目的是保留允许平均带宽的高8位小数；
+                                                                2.控制后的瞬时带宽可能会超过允许带宽，超过的范围取决于带宽容限的配置；
+                                                                3.控制后的长时间平均带宽小于等于允许平均带宽。 */
+        unsigned int  reserved_1           : 2;  /* bit[29-30]: 保留。 */
+        unsigned int  ts_wr_bwc_en         : 1;  /* bit[31]   : 针对ts mst的写带宽限流使能控制，高有效。 */
+    } reg;
+} SOC_NPU_SCTRL_npu_ctrl10_UNION;
+#endif
+#define SOC_NPU_SCTRL_npu_ctrl10_ts_wr_bwc_saturation_START  (0)
+#define SOC_NPU_SCTRL_npu_ctrl10_ts_wr_bwc_saturation_END    (13)
+#define SOC_NPU_SCTRL_npu_ctrl10_ts_wr_bwc_bandwidth_START   (16)
+#define SOC_NPU_SCTRL_npu_ctrl10_ts_wr_bwc_bandwidth_END     (28)
+#define SOC_NPU_SCTRL_npu_ctrl10_ts_wr_bwc_en_START          (31)
+#define SOC_NPU_SCTRL_npu_ctrl10_ts_wr_bwc_en_END            (31)
+
+
+/*****************************************************************************
+ struct               : SOC_NPU_SCTRL_npu_ctrl11_UNION
+ struct description   : npu_ctrl11 Register structure definition
+                        Address Offset:0x02C Initial:0x0 Width:32
+ register description : BC控制寄存器
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  ts_icfg_ostd0_lvl  : 8;  /* bit[0-7]  : ostd0配置阈值 */
+        unsigned int  ts_icfg_ostd1_lvl  : 8;  /* bit[8-15] : ostd1配置阈值 */
+        unsigned int  flux_en_aicore0    : 1;  /* bit[16]   : 控制aicore0基于dmss flux的流控开关。0：不使能流控 1：使能流控 */
+        unsigned int  ostd_en_aicore0    : 1;  /* bit[17]   : 控制aicore0基于outstanding的流控开关。0：不使能流控 1：使能流控 */
+        unsigned int  flux_en_ts         : 1;  /* bit[18]   : 控制ts基于dmss flux的流控开关。0：不使能流控 1：使能流控 */
+        unsigned int  ostd_en_ts         : 1;  /* bit[19]   : 控制ts基于outstanding的流控开关。0：不使能流控 1：使能流控 */
+        unsigned int  reserved_0         : 4;  /* bit[20-23]: 保留。 */
+        unsigned int  flux_en_aicore1    : 1;  /* bit[24]   : 保留。 */
+        unsigned int  ostd_en_aicore1    : 1;  /* bit[25]   : 保留。 */
+        unsigned int  reserved_1         : 4;  /* bit[26-29]: 保留。 */
+        unsigned int  ts_icfg_ostd0_type : 1;  /* bit[30]   : 控制ostd0是基于读ostd还是基于读写ostd进行流控：
+                                                              0：基于读ostd
+                                                              1：基于读写ostd总数 */
+        unsigned int  reserved_2         : 1;  /* bit[31]   : 保留。 */
+    } reg;
+} SOC_NPU_SCTRL_npu_ctrl11_UNION;
+#endif
+#define SOC_NPU_SCTRL_npu_ctrl11_ts_icfg_ostd0_lvl_START   (0)
+#define SOC_NPU_SCTRL_npu_ctrl11_ts_icfg_ostd0_lvl_END     (7)
+#define SOC_NPU_SCTRL_npu_ctrl11_ts_icfg_ostd1_lvl_START   (8)
+#define SOC_NPU_SCTRL_npu_ctrl11_ts_icfg_ostd1_lvl_END     (15)
+#define SOC_NPU_SCTRL_npu_ctrl11_flux_en_aicore0_START     (16)
+#define SOC_NPU_SCTRL_npu_ctrl11_flux_en_aicore0_END       (16)
+#define SOC_NPU_SCTRL_npu_ctrl11_ostd_en_aicore0_START     (17)
+#define SOC_NPU_SCTRL_npu_ctrl11_ostd_en_aicore0_END       (17)
+#define SOC_NPU_SCTRL_npu_ctrl11_flux_en_ts_START          (18)
+#define SOC_NPU_SCTRL_npu_ctrl11_flux_en_ts_END            (18)
+#define SOC_NPU_SCTRL_npu_ctrl11_ostd_en_ts_START          (19)
+#define SOC_NPU_SCTRL_npu_ctrl11_ostd_en_ts_END            (19)
+#define SOC_NPU_SCTRL_npu_ctrl11_flux_en_aicore1_START     (24)
+#define SOC_NPU_SCTRL_npu_ctrl11_flux_en_aicore1_END       (24)
+#define SOC_NPU_SCTRL_npu_ctrl11_ostd_en_aicore1_START     (25)
+#define SOC_NPU_SCTRL_npu_ctrl11_ostd_en_aicore1_END       (25)
+#define SOC_NPU_SCTRL_npu_ctrl11_ts_icfg_ostd0_type_START  (30)
+#define SOC_NPU_SCTRL_npu_ctrl11_ts_icfg_ostd0_type_END    (30)
+
+
+/*****************************************************************************
+ struct               : SOC_NPU_SCTRL_npu_ctrl12_UNION
+ struct description   : npu_ctrl12 Register structure definition
+                        Address Offset:0x030 Initial:0x0000 Width:32
+ register description : NPU pasensor控制寄存器
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  npu_wrap_pa_cfg_valid : 1;  /* bit[0]    : npu_wrap_pasensor_cfg_valid */
+        unsigned int  npu_wrap_pa_en        : 1;  /* bit[1]    : npu_wrap_pasensor_en */
+        unsigned int  reserved_0            : 2;  /* bit[2-3]  : 保留。 */
+        unsigned int  npu_wrap_pa_cmd       : 2;  /* bit[4-5]  : npu_wrap_pasensor_cmd[1:0] */
+        unsigned int  reserved_1            : 2;  /* bit[6-7]  : 保留。 */
+        unsigned int  npu_wrap_pa_ctrl      : 6;  /* bit[8-13] : npu_wrap_pasensor_ctrl[5:0] */
+        unsigned int  reserved_2            : 2;  /* bit[14-15]: 保留。 */
+        unsigned int  npu_wrap_pa_msg       : 16; /* bit[16-31]: npu_wrap0_pasensor_msg[15:0] */
+    } reg;
+} SOC_NPU_SCTRL_npu_ctrl12_UNION;
+#endif
+#define SOC_NPU_SCTRL_npu_ctrl12_npu_wrap_pa_cfg_valid_START  (0)
+#define SOC_NPU_SCTRL_npu_ctrl12_npu_wrap_pa_cfg_valid_END    (0)
+#define SOC_NPU_SCTRL_npu_ctrl12_npu_wrap_pa_en_START         (1)
+#define SOC_NPU_SCTRL_npu_ctrl12_npu_wrap_pa_en_END           (1)
+#define SOC_NPU_SCTRL_npu_ctrl12_npu_wrap_pa_cmd_START        (4)
+#define SOC_NPU_SCTRL_npu_ctrl12_npu_wrap_pa_cmd_END          (5)
+#define SOC_NPU_SCTRL_npu_ctrl12_npu_wrap_pa_ctrl_START       (8)
+#define SOC_NPU_SCTRL_npu_ctrl12_npu_wrap_pa_ctrl_END         (13)
+#define SOC_NPU_SCTRL_npu_ctrl12_npu_wrap_pa_msg_START        (16)
+#define SOC_NPU_SCTRL_npu_ctrl12_npu_wrap_pa_msg_END          (31)
+
+
+/*****************************************************************************
+ struct               : SOC_NPU_SCTRL_npu_ctrl13_UNION
+ struct description   : npu_ctrl13 Register structure definition
+                        Address Offset:0x034 Initial:0x00000000 Width:32
+ register description : NPU PI错峰使能寄存器
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  npu_pi_en : 1;  /* bit[0]   : npu pi 保护使能寄存器
+                                                    0：不使能
+                                                    1：使能
+                                                    使能情况下NPU PI保护计数器才会开始循环计数，使能配置要在所有阈值配置完成之后再进行配置，如果改变配置需要先关闭使能开关，待配置寄存器完成配置后再打开使能开关 */
+        unsigned int  reserved  : 31; /* bit[1-31]: 保留。 */
+    } reg;
+} SOC_NPU_SCTRL_npu_ctrl13_UNION;
+#endif
+#define SOC_NPU_SCTRL_npu_ctrl13_npu_pi_en_START  (0)
+#define SOC_NPU_SCTRL_npu_ctrl13_npu_pi_en_END    (0)
+
+
+/*****************************************************************************
+ struct               : SOC_NPU_SCTRL_npu_ctrl14_UNION
+ struct description   : npu_ctrl14 Register structure definition
+                        Address Offset:0x038 Initial:0x0000 Width:32
+ register description : NPU PI错峰计数器阈值配置寄存器
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  npu_pi_prot_cnt_th : 16; /* bit[0-15] : NPU PI 保护计数器的计数最大值配置，计数器从0到该配置值之间循环计数，受npu_pi_en配置约束，此值必须配置为大于aicore1_cube_start_cfg和aicore0_cube_start_cfg中最大的值，配置范围[2~256] */
+        unsigned int  reserved           : 16; /* bit[16-31]: 保留。 */
+    } reg;
+} SOC_NPU_SCTRL_npu_ctrl14_UNION;
+#endif
+#define SOC_NPU_SCTRL_npu_ctrl14_npu_pi_prot_cnt_th_START  (0)
+#define SOC_NPU_SCTRL_npu_ctrl14_npu_pi_prot_cnt_th_END    (15)
+
+
+/*****************************************************************************
+ struct               : SOC_NPU_SCTRL_npu_ctrl15_UNION
+ struct description   : npu_ctrl15 Register structure definition
+                        Address Offset:0x03C Initial:0x0010 Width:32
+ register description : cube启动时刻配置寄存器
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  aicore0_cube_start_cfg : 16; /* bit[0-15] : aicore0的cube启动时刻配置寄存器，NPU PI保护计数器的值与之相等时,产生高电平脉冲给AICORE0的cube，受npu_pi_en配置约束 */
+        unsigned int  aicore1_cube_start_cfg : 16; /* bit[16-31]: 保留 */
+    } reg;
+} SOC_NPU_SCTRL_npu_ctrl15_UNION;
+#endif
+#define SOC_NPU_SCTRL_npu_ctrl15_aicore0_cube_start_cfg_START  (0)
+#define SOC_NPU_SCTRL_npu_ctrl15_aicore0_cube_start_cfg_END    (15)
+#define SOC_NPU_SCTRL_npu_ctrl15_aicore1_cube_start_cfg_START  (16)
+#define SOC_NPU_SCTRL_npu_ctrl15_aicore1_cube_start_cfg_END    (31)
+
+
+/*****************************************************************************
+ struct               : SOC_NPU_SCTRL_npu_ctrl16_UNION
+ struct description   : npu_ctrl16 Register structure definition
+                        Address Offset:0x040 Initial:0x0010 Width:32
+ register description : fixp启动时刻配置寄存器
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  aicore0_fixp_start_cfg : 16; /* bit[0-15] : rsv */
+        unsigned int  aicore1_fixp_start_cfg : 16; /* bit[16-31]: 保留 */
+    } reg;
+} SOC_NPU_SCTRL_npu_ctrl16_UNION;
+#endif
+#define SOC_NPU_SCTRL_npu_ctrl16_aicore0_fixp_start_cfg_START  (0)
+#define SOC_NPU_SCTRL_npu_ctrl16_aicore0_fixp_start_cfg_END    (15)
+#define SOC_NPU_SCTRL_npu_ctrl16_aicore1_fixp_start_cfg_START  (16)
+#define SOC_NPU_SCTRL_npu_ctrl16_aicore1_fixp_start_cfg_END    (31)
+
+
+/*****************************************************************************
+ struct               : SOC_NPU_SCTRL_npu_ctrl17_UNION
+ struct description   : npu_ctrl17 Register structure definition
+                        Address Offset:0x044 Initial:0x0010 Width:32
+ register description : mte启动时刻配置寄存器
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  aicore0_mte_start_cfg : 16; /* bit[0-15] : rsv */
+        unsigned int  aicore1_mte_start_cfg : 16; /* bit[16-31]: 保留 */
+    } reg;
+} SOC_NPU_SCTRL_npu_ctrl17_UNION;
+#endif
+#define SOC_NPU_SCTRL_npu_ctrl17_aicore0_mte_start_cfg_START  (0)
+#define SOC_NPU_SCTRL_npu_ctrl17_aicore0_mte_start_cfg_END    (15)
+#define SOC_NPU_SCTRL_npu_ctrl17_aicore1_mte_start_cfg_START  (16)
+#define SOC_NPU_SCTRL_npu_ctrl17_aicore1_mte_start_cfg_END    (31)
+
+
+/*****************************************************************************
+ struct               : SOC_NPU_SCTRL_npu_ctrl18_UNION
+ struct description   : npu_ctrl18 Register structure definition
+                        Address Offset:0x048 Initial:0x0010 Width:32
+ register description : vec启动时刻配置寄存器
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  aicore0_vec_start_cfg : 16; /* bit[0-15] : rsv */
+        unsigned int  aicore1_vec_start_cfg : 16; /* bit[16-31]: 保留 */
+    } reg;
+} SOC_NPU_SCTRL_npu_ctrl18_UNION;
+#endif
+#define SOC_NPU_SCTRL_npu_ctrl18_aicore0_vec_start_cfg_START  (0)
+#define SOC_NPU_SCTRL_npu_ctrl18_aicore0_vec_start_cfg_END    (15)
+#define SOC_NPU_SCTRL_npu_ctrl18_aicore1_vec_start_cfg_START  (16)
+#define SOC_NPU_SCTRL_npu_ctrl18_aicore1_vec_start_cfg_END    (31)
+
+
+/*****************************************************************************
+ struct               : SOC_NPU_SCTRL_npu_ctrl19_UNION
+ struct description   : npu_ctrl19 Register structure definition
+                        Address Offset:0x04C Initial:0x0000 Width:32
+ register description : 启动脉冲宽度配置寄存器
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  cube_start_pulse_width_cfg : 4;  /* bit[0-3]  : cube启动脉宽配置寄存器。配置值为N，配置范围[1~15],脉冲宽度配置要小于两个核启动的时间间隔差，受npu_pi_en配置约束 */
+        unsigned int  fixp_start_pulse_width_cfg : 4;  /* bit[4-7]  : rsv */
+        unsigned int  mte_start_pulse_width_cfg  : 4;  /* bit[8-11] : rsv */
+        unsigned int  vec_start_pulse_width_cfg  : 4;  /* bit[12-15]: rsv */
+        unsigned int  reserved                   : 16; /* bit[16-31]: 保留。 */
+    } reg;
+} SOC_NPU_SCTRL_npu_ctrl19_UNION;
+#endif
+#define SOC_NPU_SCTRL_npu_ctrl19_cube_start_pulse_width_cfg_START  (0)
+#define SOC_NPU_SCTRL_npu_ctrl19_cube_start_pulse_width_cfg_END    (3)
+#define SOC_NPU_SCTRL_npu_ctrl19_fixp_start_pulse_width_cfg_START  (4)
+#define SOC_NPU_SCTRL_npu_ctrl19_fixp_start_pulse_width_cfg_END    (7)
+#define SOC_NPU_SCTRL_npu_ctrl19_mte_start_pulse_width_cfg_START   (8)
+#define SOC_NPU_SCTRL_npu_ctrl19_mte_start_pulse_width_cfg_END     (11)
+#define SOC_NPU_SCTRL_npu_ctrl19_vec_start_pulse_width_cfg_START   (12)
+#define SOC_NPU_SCTRL_npu_ctrl19_vec_start_pulse_width_cfg_END     (15)
+
+
+/*****************************************************************************
+ struct               : SOC_NPU_SCTRL_npu_ctrl20_UNION
+ struct description   : npu_ctrl20 Register structure definition
+                        Address Offset:0x050 Initial:0x0 Width:32
+ register description : AXI mst信号控制寄存器
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  npu_arcache       : 4;  /* bit[0-3]  : NPU内除TCU/AIC/TS data/SDMA外axi mst的arcache控制寄存器 */
+        unsigned int  npu_awcache       : 4;  /* bit[4-7]  : NPU内除TCU/AIC/TS data/SDMA外axi mst的awcache控制寄存器 */
+        unsigned int  npu_arhint        : 4;  /* bit[8-11] : NPU内除TCU外axi mst的arhint控制寄存器 */
+        unsigned int  npu_awhint        : 4;  /* bit[12-15]: NPU内除TCU外axi mst的awhint控制寄存器 */
+        unsigned int  npu_ardomain      : 2;  /* bit[16-17]: NPU内除TCU/AIC/TS data/SDMA外axi mst的ardomain控制寄存器 */
+        unsigned int  reserved_0        : 2;  /* bit[18-19]: 保留。 */
+        unsigned int  npu_awdomain      : 2;  /* bit[20-21]: NPU内除TCU/AIC/TS data/SDMA外axi mst的awdomain控制寄存器 */
+        unsigned int  reserved_1        : 2;  /* bit[22-23]: 保留。 */
+        unsigned int  npu_ptl_as_full_r : 1;  /* bit[24]   : NPU内除TCU外axi mst的ptl_as_full_r控制寄存器 */
+        unsigned int  reserved_2        : 3;  /* bit[25-27]: 保留。 */
+        unsigned int  npu_ptl_as_full_w : 1;  /* bit[28]   : NPU内除TCU外axi mst的ptl_as_full_w控制寄存器 */
+        unsigned int  reserved_3        : 3;  /* bit[29-31]:  */
+    } reg;
+} SOC_NPU_SCTRL_npu_ctrl20_UNION;
+#endif
+#define SOC_NPU_SCTRL_npu_ctrl20_npu_arcache_START        (0)
+#define SOC_NPU_SCTRL_npu_ctrl20_npu_arcache_END          (3)
+#define SOC_NPU_SCTRL_npu_ctrl20_npu_awcache_START        (4)
+#define SOC_NPU_SCTRL_npu_ctrl20_npu_awcache_END          (7)
+#define SOC_NPU_SCTRL_npu_ctrl20_npu_arhint_START         (8)
+#define SOC_NPU_SCTRL_npu_ctrl20_npu_arhint_END           (11)
+#define SOC_NPU_SCTRL_npu_ctrl20_npu_awhint_START         (12)
+#define SOC_NPU_SCTRL_npu_ctrl20_npu_awhint_END           (15)
+#define SOC_NPU_SCTRL_npu_ctrl20_npu_ardomain_START       (16)
+#define SOC_NPU_SCTRL_npu_ctrl20_npu_ardomain_END         (17)
+#define SOC_NPU_SCTRL_npu_ctrl20_npu_awdomain_START       (20)
+#define SOC_NPU_SCTRL_npu_ctrl20_npu_awdomain_END         (21)
+#define SOC_NPU_SCTRL_npu_ctrl20_npu_ptl_as_full_r_START  (24)
+#define SOC_NPU_SCTRL_npu_ctrl20_npu_ptl_as_full_r_END    (24)
+#define SOC_NPU_SCTRL_npu_ctrl20_npu_ptl_as_full_w_START  (28)
+#define SOC_NPU_SCTRL_npu_ctrl20_npu_ptl_as_full_w_END    (28)
+
+
+/*****************************************************************************
+ struct               : SOC_NPU_SCTRL_npu_ctrl21_UNION
+ struct description   : npu_ctrl21 Register structure definition
+                        Address Offset:0x054 Initial:0x000000 Width:32
+ register description : 总线桥自动门控控制寄存器
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  hiaxi_ckg_en_aic_1to2_0      : 1;  /* bit[0]   : 0：时钟常开
+                                                                       1：时钟自动门控 */
+        unsigned int  hiaxi_ckg_en_aic_1to2_1      : 1;  /* bit[1]   : 0：时钟常开
+                                                                       1：时钟自动门控 */
+        unsigned int  hiaxi_ckg_en_aic_2to1_0      : 1;  /* bit[2]   : 0：时钟常开
+                                                                       1：时钟自动门控 */
+        unsigned int  hiaxi_ckg_en_aic_2to1_1      : 1;  /* bit[3]   : 0：时钟常开
+                                                                       1：时钟自动门控 */
+        unsigned int  hiaxi_ckg_en_aic0_top_1to2   : 1;  /* bit[4]   : 0：时钟常开
+                                                                       1：时钟自动门控 */
+        unsigned int  himinibus_ckg_en_axi2gs_aic0 : 1;  /* bit[5]   : 0：时钟常开
+                                                                       1：时钟自动门控 */
+        unsigned int  himinibus_ckg_en_axi2gs_aic1 : 1;  /* bit[6]   : 保留 */
+        unsigned int  himinibus_ckg_en_axi2gs_aiv0 : 1;  /* bit[7]   : 0：时钟常开
+                                                                       1：时钟自动门控 */
+        unsigned int  hiaxi_ckg_en_ts_2to1         : 1;  /* bit[8]   : 0：时钟常开
+                                                                       1：时钟自动门控 */
+        unsigned int  reserved                     : 23; /* bit[9-31]:  */
+    } reg;
+} SOC_NPU_SCTRL_npu_ctrl21_UNION;
+#endif
+#define SOC_NPU_SCTRL_npu_ctrl21_hiaxi_ckg_en_aic_1to2_0_START       (0)
+#define SOC_NPU_SCTRL_npu_ctrl21_hiaxi_ckg_en_aic_1to2_0_END         (0)
+#define SOC_NPU_SCTRL_npu_ctrl21_hiaxi_ckg_en_aic_1to2_1_START       (1)
+#define SOC_NPU_SCTRL_npu_ctrl21_hiaxi_ckg_en_aic_1to2_1_END         (1)
+#define SOC_NPU_SCTRL_npu_ctrl21_hiaxi_ckg_en_aic_2to1_0_START       (2)
+#define SOC_NPU_SCTRL_npu_ctrl21_hiaxi_ckg_en_aic_2to1_0_END         (2)
+#define SOC_NPU_SCTRL_npu_ctrl21_hiaxi_ckg_en_aic_2to1_1_START       (3)
+#define SOC_NPU_SCTRL_npu_ctrl21_hiaxi_ckg_en_aic_2to1_1_END         (3)
+#define SOC_NPU_SCTRL_npu_ctrl21_hiaxi_ckg_en_aic0_top_1to2_START    (4)
+#define SOC_NPU_SCTRL_npu_ctrl21_hiaxi_ckg_en_aic0_top_1to2_END      (4)
+#define SOC_NPU_SCTRL_npu_ctrl21_himinibus_ckg_en_axi2gs_aic0_START  (5)
+#define SOC_NPU_SCTRL_npu_ctrl21_himinibus_ckg_en_axi2gs_aic0_END    (5)
+#define SOC_NPU_SCTRL_npu_ctrl21_himinibus_ckg_en_axi2gs_aic1_START  (6)
+#define SOC_NPU_SCTRL_npu_ctrl21_himinibus_ckg_en_axi2gs_aic1_END    (6)
+#define SOC_NPU_SCTRL_npu_ctrl21_himinibus_ckg_en_axi2gs_aiv0_START  (7)
+#define SOC_NPU_SCTRL_npu_ctrl21_himinibus_ckg_en_axi2gs_aiv0_END    (7)
+#define SOC_NPU_SCTRL_npu_ctrl21_hiaxi_ckg_en_ts_2to1_START          (8)
+#define SOC_NPU_SCTRL_npu_ctrl21_hiaxi_ckg_en_ts_2to1_END            (8)
+
+
+/*****************************************************************************
+ struct               : SOC_NPU_SCTRL_npu_ctrl22_UNION
+ struct description   : npu_ctrl22 Register structure definition
+                        Address Offset:0x058 Initial:0x0000000 Width:32
+ register description : 总线桥控制寄存器
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  hiaxi_dlock_clr_aic_1to2_0    : 1;  /* bit[0]   : 配置dlock_and_dbg_clr为1再配置dlock_and_dbg_clr为0，则dlock_mst，dlock_slv, dbg*全部清0 */
+        unsigned int  hiaxi_dlock_clr_aic_1to2_1    : 1;  /* bit[1]   : 配置dlock_and_dbg_clr为1再配置dlock_and_dbg_clr为0，则dlock_mst，dlock_slv, dbg*全部清0 */
+        unsigned int  hiaxi_dlock_clr_aic_2to1_0    : 1;  /* bit[2]   : 配置dlock_and_dbg_clr为1再配置dlock_and_dbg_clr为0，则dlock_mst，dlock_slv, dbg*全部清0 */
+        unsigned int  hiaxi_dlock_clr_aic_2to1_1    : 1;  /* bit[3]   : 配置dlock_and_dbg_clr为1再配置dlock_and_dbg_clr为0，则dlock_mst，dlock_slv, dbg*全部清0 */
+        unsigned int  hiaxi_dlock_clr_aic0_top_1to2 : 1;  /* bit[4]   : 配置dlock_and_dbg_clr为1再配置dlock_and_dbg_clr为0，则dlock_mst，dlock_slv, dbg*全部清0 */
+        unsigned int  hiaxi_dlock_clr_ts_2to1       : 1;  /* bit[5]   : 配置dlock_and_dbg_clr为1再配置dlock_and_dbg_clr为0，则dlock_mst，dlock_slv, dbg*全部清0 */
+        unsigned int  reserved                      : 26; /* bit[6-31]: 保留。 */
+    } reg;
+} SOC_NPU_SCTRL_npu_ctrl22_UNION;
+#endif
+#define SOC_NPU_SCTRL_npu_ctrl22_hiaxi_dlock_clr_aic_1to2_0_START     (0)
+#define SOC_NPU_SCTRL_npu_ctrl22_hiaxi_dlock_clr_aic_1to2_0_END       (0)
+#define SOC_NPU_SCTRL_npu_ctrl22_hiaxi_dlock_clr_aic_1to2_1_START     (1)
+#define SOC_NPU_SCTRL_npu_ctrl22_hiaxi_dlock_clr_aic_1to2_1_END       (1)
+#define SOC_NPU_SCTRL_npu_ctrl22_hiaxi_dlock_clr_aic_2to1_0_START     (2)
+#define SOC_NPU_SCTRL_npu_ctrl22_hiaxi_dlock_clr_aic_2to1_0_END       (2)
+#define SOC_NPU_SCTRL_npu_ctrl22_hiaxi_dlock_clr_aic_2to1_1_START     (3)
+#define SOC_NPU_SCTRL_npu_ctrl22_hiaxi_dlock_clr_aic_2to1_1_END       (3)
+#define SOC_NPU_SCTRL_npu_ctrl22_hiaxi_dlock_clr_aic0_top_1to2_START  (4)
+#define SOC_NPU_SCTRL_npu_ctrl22_hiaxi_dlock_clr_aic0_top_1to2_END    (4)
+#define SOC_NPU_SCTRL_npu_ctrl22_hiaxi_dlock_clr_ts_2to1_START        (5)
+#define SOC_NPU_SCTRL_npu_ctrl22_hiaxi_dlock_clr_ts_2to1_END          (5)
+
+
+/*****************************************************************************
+ struct               : SOC_NPU_SCTRL_npu_ctrl23_UNION
+ struct description   : npu_ctrl23 Register structure definition
+                        Address Offset:0x060 Initial:0x000000 Width:32
+ register description : QSP rd ostd monitor控制寄存器
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  icfg_ostd_lvl   : 8;  /* bit[0-7] : npu2ddr数据通路上读outstanding监控模块的阈值设置 */
+        unsigned int  ostd_monitor_en : 1;  /* bit[8]   : npu2ddr数据通路上读outstanding监控模块使能控制 */
+        unsigned int  reserved        : 23; /* bit[9-31]: 保留。 */
+    } reg;
+} SOC_NPU_SCTRL_npu_ctrl23_UNION;
+#endif
+#define SOC_NPU_SCTRL_npu_ctrl23_icfg_ostd_lvl_START    (0)
+#define SOC_NPU_SCTRL_npu_ctrl23_icfg_ostd_lvl_END      (7)
+#define SOC_NPU_SCTRL_npu_ctrl23_ostd_monitor_en_START  (8)
+#define SOC_NPU_SCTRL_npu_ctrl23_ostd_monitor_en_END    (8)
+
+
+/*****************************************************************************
+ struct               : SOC_NPU_SCTRL_npu_ctrl24_UNION
+ struct description   : npu_ctrl24 Register structure definition
+                        Address Offset:0x070 Initial:0x00000000 Width:32
+ register description : TDE控制寄存器0
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  tde_cfg_rst_n : 1;  /* bit[0]   : tde 控制寄存器 */
+        unsigned int  tde_cfg_vld   : 1;  /* bit[1]   : tde 控制寄存器 */
+        unsigned int  reserved      : 30; /* bit[2-31]:  */
+    } reg;
+} SOC_NPU_SCTRL_npu_ctrl24_UNION;
+#endif
+#define SOC_NPU_SCTRL_npu_ctrl24_tde_cfg_rst_n_START  (0)
+#define SOC_NPU_SCTRL_npu_ctrl24_tde_cfg_rst_n_END    (0)
+#define SOC_NPU_SCTRL_npu_ctrl24_tde_cfg_vld_START    (1)
+#define SOC_NPU_SCTRL_npu_ctrl24_tde_cfg_vld_END      (1)
+
+
+/*****************************************************************************
+ struct               : SOC_NPU_SCTRL_npu_ctrl25_UNION
+ struct description   : npu_ctrl25 Register structure definition
+                        Address Offset:0x074 Initial:0x00000000 Width:32
+ register description : TDE控制寄存器1
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  tde_cfg_info : 32; /* bit[0-31]: tde 控制寄存器 */
+    } reg;
+} SOC_NPU_SCTRL_npu_ctrl25_UNION;
+#endif
+#define SOC_NPU_SCTRL_npu_ctrl25_tde_cfg_info_START  (0)
+#define SOC_NPU_SCTRL_npu_ctrl25_tde_cfg_info_END    (31)
+
+
+/*****************************************************************************
+ struct               : SOC_NPU_SCTRL_npu_ctrl30_UNION
+ struct description   : npu_ctrl30 Register structure definition
+                        Address Offset:0x080 Initial:0x0000FFFF Width:32
+ register description : 预留控制寄存器
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  rsv_ctrl_0 : 32; /* bit[0-31]: 预留控制寄存器 */
+    } reg;
+} SOC_NPU_SCTRL_npu_ctrl30_UNION;
+#endif
+#define SOC_NPU_SCTRL_npu_ctrl30_rsv_ctrl_0_START  (0)
+#define SOC_NPU_SCTRL_npu_ctrl30_rsv_ctrl_0_END    (31)
+
+
+/*****************************************************************************
+ struct               : SOC_NPU_SCTRL_npu_ctrl31_UNION
+ struct description   : npu_ctrl31 Register structure definition
+                        Address Offset:0x084 Initial:0x0000FFFF Width:32
+ register description : 预留控制寄存器
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  rsv_ctrl_1 : 32; /* bit[0-31]: 预留控制寄存器 */
+    } reg;
+} SOC_NPU_SCTRL_npu_ctrl31_UNION;
+#endif
+#define SOC_NPU_SCTRL_npu_ctrl31_rsv_ctrl_1_START  (0)
+#define SOC_NPU_SCTRL_npu_ctrl31_rsv_ctrl_1_END    (31)
+
+
+/*****************************************************************************
+ struct               : SOC_NPU_SCTRL_npu_ctrl40_UNION
+ struct description   : npu_ctrl40 Register structure definition
+                        Address Offset:0x090 Initial:0x00000000 Width:32
+ register description : ec寄存器
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  ec_cfg : 32; /* bit[0-31]: 保留。 */
+    } reg;
+} SOC_NPU_SCTRL_npu_ctrl40_UNION;
+#endif
+#define SOC_NPU_SCTRL_npu_ctrl40_ec_cfg_START  (0)
+#define SOC_NPU_SCTRL_npu_ctrl40_ec_cfg_END    (31)
+
+
+/*****************************************************************************
+ struct               : SOC_NPU_SCTRL_npu_stat0_UNION
+ struct description   : npu_stat0 Register structure definition
+                        Address Offset:0x800 Initial:0x00 Width:32
+ register description : 状态寄存器0
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  hpm0_opc      : 10; /* bit[0-9]  : hpm0的码字 */
+        unsigned int  hpm0_opc_vld  : 1;  /* bit[10]   : 高电平表示hpm0的码字有效 */
+        unsigned int  reserved_0    : 5;  /* bit[11-15]: 保留。 */
+        unsigned int  hpmx0_opc     : 10; /* bit[16-25]: hpm0x的码字 */
+        unsigned int  hpmx0_opc_vld : 1;  /* bit[26]   : 高电平表示hpm0x的码字有效 */
+        unsigned int  reserved_1    : 5;  /* bit[27-31]: 保留。
+                                                         对应关系：
+                                                         hpm0 -- aicore0
+                                                         hpm1 -- 保留
+                                                         hpm2 -- nputop */
+    } reg;
+} SOC_NPU_SCTRL_npu_stat0_UNION;
+#endif
+#define SOC_NPU_SCTRL_npu_stat0_hpm0_opc_START       (0)
+#define SOC_NPU_SCTRL_npu_stat0_hpm0_opc_END         (9)
+#define SOC_NPU_SCTRL_npu_stat0_hpm0_opc_vld_START   (10)
+#define SOC_NPU_SCTRL_npu_stat0_hpm0_opc_vld_END     (10)
+#define SOC_NPU_SCTRL_npu_stat0_hpmx0_opc_START      (16)
+#define SOC_NPU_SCTRL_npu_stat0_hpmx0_opc_END        (25)
+#define SOC_NPU_SCTRL_npu_stat0_hpmx0_opc_vld_START  (26)
+#define SOC_NPU_SCTRL_npu_stat0_hpmx0_opc_vld_END    (26)
+
+
+/*****************************************************************************
+ struct               : SOC_NPU_SCTRL_npu_stat1_UNION
+ struct description   : npu_stat1 Register structure definition
+                        Address Offset:0x804 Initial:0x00 Width:32
+ register description : 状态寄存器1
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  hpm0_opc_min  : 10; /* bit[0-9]  : hpm0一段时间内最小码字 */
+        unsigned int  reserved_0    : 6;  /* bit[10-15]: 保留。 */
+        unsigned int  hpmx0_opc_min : 10; /* bit[16-25]: hpm0x一段时间内最小码字 */
+        unsigned int  reserved_1    : 6;  /* bit[26-31]: 保留。
+                                                         对应关系：
+                                                         hpm0 -- aicore0
+                                                         hpm1 -- 保留
+                                                         hpm2 -- nputop */
+    } reg;
+} SOC_NPU_SCTRL_npu_stat1_UNION;
+#endif
+#define SOC_NPU_SCTRL_npu_stat1_hpm0_opc_min_START   (0)
+#define SOC_NPU_SCTRL_npu_stat1_hpm0_opc_min_END     (9)
+#define SOC_NPU_SCTRL_npu_stat1_hpmx0_opc_min_START  (16)
+#define SOC_NPU_SCTRL_npu_stat1_hpmx0_opc_min_END    (25)
+
+
+/*****************************************************************************
+ struct               : SOC_NPU_SCTRL_npu_stat2_UNION
+ struct description   : npu_stat2 Register structure definition
+                        Address Offset:0x808 Initial:0x00 Width:32
+ register description : 状态寄存器2
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  hpm1_opc      : 10; /* bit[0-9]  : reserve */
+        unsigned int  hpm1_opc_vld  : 1;  /* bit[10]   : reserve */
+        unsigned int  reserved_0    : 5;  /* bit[11-15]: 保留。 */
+        unsigned int  hpmx1_opc     : 10; /* bit[16-25]: reserve */
+        unsigned int  hpmx1_opc_vld : 1;  /* bit[26]   : reserve */
+        unsigned int  reserved_1    : 5;  /* bit[27-31]: 保留。
+                                                         对应关系：
+                                                         hpm0 -- aicore0
+                                                         hpm1 -- 保留
+                                                         hpm2 -- nputop */
+    } reg;
+} SOC_NPU_SCTRL_npu_stat2_UNION;
+#endif
+#define SOC_NPU_SCTRL_npu_stat2_hpm1_opc_START       (0)
+#define SOC_NPU_SCTRL_npu_stat2_hpm1_opc_END         (9)
+#define SOC_NPU_SCTRL_npu_stat2_hpm1_opc_vld_START   (10)
+#define SOC_NPU_SCTRL_npu_stat2_hpm1_opc_vld_END     (10)
+#define SOC_NPU_SCTRL_npu_stat2_hpmx1_opc_START      (16)
+#define SOC_NPU_SCTRL_npu_stat2_hpmx1_opc_END        (25)
+#define SOC_NPU_SCTRL_npu_stat2_hpmx1_opc_vld_START  (26)
+#define SOC_NPU_SCTRL_npu_stat2_hpmx1_opc_vld_END    (26)
+
+
+/*****************************************************************************
+ struct               : SOC_NPU_SCTRL_npu_stat3_UNION
+ struct description   : npu_stat3 Register structure definition
+                        Address Offset:0x80C Initial:0x00 Width:32
+ register description : 状态寄存器3
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  hpm1_opc_min  : 10; /* bit[0-9]  : reserve */
+        unsigned int  reserved_0    : 6;  /* bit[10-15]: reserve */
+        unsigned int  hpmx1_opc_min : 10; /* bit[16-25]: reserve */
+        unsigned int  reserved_1    : 6;  /* bit[26-31]: 保留。
+                                                         对应关系：
+                                                         hpm0 -- aicore0
+                                                         hpm1 -- aicore1
+                                                         hpm2 -- nputop */
+    } reg;
+} SOC_NPU_SCTRL_npu_stat3_UNION;
+#endif
+#define SOC_NPU_SCTRL_npu_stat3_hpm1_opc_min_START   (0)
+#define SOC_NPU_SCTRL_npu_stat3_hpm1_opc_min_END     (9)
+#define SOC_NPU_SCTRL_npu_stat3_hpmx1_opc_min_START  (16)
+#define SOC_NPU_SCTRL_npu_stat3_hpmx1_opc_min_END    (25)
+
+
+/*****************************************************************************
+ struct               : SOC_NPU_SCTRL_npu_stat4_UNION
+ struct description   : npu_stat4 Register structure definition
+                        Address Offset:0x810 Initial:0x00 Width:32
+ register description : 状态寄存器4
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  hpm2_opc      : 10; /* bit[0-9]  : hpm2的码字 */
+        unsigned int  hpm2_opc_vld  : 1;  /* bit[10]   : 高电平表示hpm2的码字有效 */
+        unsigned int  reserved_0    : 5;  /* bit[11-15]: 保留。 */
+        unsigned int  hpmx2_opc     : 10; /* bit[16-25]: hpm2x的码字 */
+        unsigned int  hpmx2_opc_vld : 1;  /* bit[26]   : 高电平表示hpm2x的码字有效 */
+        unsigned int  reserved_1    : 5;  /* bit[27-31]: 保留。
+                                                         对应关系：
+                                                         hpm0 -- aicore0
+                                                         hpm1 -- aicore1
+                                                         hpm2 -- nputop */
+    } reg;
+} SOC_NPU_SCTRL_npu_stat4_UNION;
+#endif
+#define SOC_NPU_SCTRL_npu_stat4_hpm2_opc_START       (0)
+#define SOC_NPU_SCTRL_npu_stat4_hpm2_opc_END         (9)
+#define SOC_NPU_SCTRL_npu_stat4_hpm2_opc_vld_START   (10)
+#define SOC_NPU_SCTRL_npu_stat4_hpm2_opc_vld_END     (10)
+#define SOC_NPU_SCTRL_npu_stat4_hpmx2_opc_START      (16)
+#define SOC_NPU_SCTRL_npu_stat4_hpmx2_opc_END        (25)
+#define SOC_NPU_SCTRL_npu_stat4_hpmx2_opc_vld_START  (26)
+#define SOC_NPU_SCTRL_npu_stat4_hpmx2_opc_vld_END    (26)
+
+
+/*****************************************************************************
+ struct               : SOC_NPU_SCTRL_npu_stat5_UNION
+ struct description   : npu_stat5 Register structure definition
+                        Address Offset:0x814 Initial:0x00 Width:32
+ register description : 状态寄存器5
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  hpm2_opc_min  : 10; /* bit[0-9]  : hpm2一段时间内最小码字 */
+        unsigned int  reserved_0    : 6;  /* bit[10-15]: 保留。 */
+        unsigned int  hpmx2_opc_min : 10; /* bit[16-25]: hpm2x一段时间内最小码字 */
+        unsigned int  reserved_1    : 6;  /* bit[26-31]: 保留。
+                                                         对应关系：
+                                                         hpm0 -- aicore0
+                                                         hpm1 -- aicore1
+                                                         hpm2 -- nputop */
+    } reg;
+} SOC_NPU_SCTRL_npu_stat5_UNION;
+#endif
+#define SOC_NPU_SCTRL_npu_stat5_hpm2_opc_min_START   (0)
+#define SOC_NPU_SCTRL_npu_stat5_hpm2_opc_min_END     (9)
+#define SOC_NPU_SCTRL_npu_stat5_hpmx2_opc_min_START  (16)
+#define SOC_NPU_SCTRL_npu_stat5_hpmx2_opc_min_END    (25)
+
+
+/*****************************************************************************
+ struct               : SOC_NPU_SCTRL_npu_stat6_UNION
+ struct description   : npu_stat6 Register structure definition
+                        Address Offset:0x818 Initial:0x0 Width:32
+ register description : 状态寄存器6
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  npu_pasensor_hci_a_out : 9;  /* bit[0-8]  : npu_pasensor_hci_a_out[8:0] */
+        unsigned int  reserved_0             : 3;  /* bit[9-11] : 保留。 */
+        unsigned int  npu_pasensor_hci_o_out : 9;  /* bit[12-20]: npu_pasensor_hci_o_out[8:0] */
+        unsigned int  reserved_1             : 3;  /* bit[21-23]: 保留。 */
+        unsigned int  npu_pasensor_valid     : 1;  /* bit[24]   : npu_pasensor_valid */
+        unsigned int  reserved_2             : 3;  /* bit[25-27]: 保留。 */
+        unsigned int  npu_pasensor_cfg_ready : 1;  /* bit[28]   : npu_pasensor_cfg_ready */
+        unsigned int  reserved_3             : 3;  /* bit[29-31]: 保留。 */
+    } reg;
+} SOC_NPU_SCTRL_npu_stat6_UNION;
+#endif
+#define SOC_NPU_SCTRL_npu_stat6_npu_pasensor_hci_a_out_START  (0)
+#define SOC_NPU_SCTRL_npu_stat6_npu_pasensor_hci_a_out_END    (8)
+#define SOC_NPU_SCTRL_npu_stat6_npu_pasensor_hci_o_out_START  (12)
+#define SOC_NPU_SCTRL_npu_stat6_npu_pasensor_hci_o_out_END    (20)
+#define SOC_NPU_SCTRL_npu_stat6_npu_pasensor_valid_START      (24)
+#define SOC_NPU_SCTRL_npu_stat6_npu_pasensor_valid_END        (24)
+#define SOC_NPU_SCTRL_npu_stat6_npu_pasensor_cfg_ready_START  (28)
+#define SOC_NPU_SCTRL_npu_stat6_npu_pasensor_cfg_ready_END    (28)
+
+
+/*****************************************************************************
+ struct               : SOC_NPU_SCTRL_npu_stat7_UNION
+ struct description   : npu_stat7 Register structure definition
+                        Address Offset:0x81C Initial:0x000 Width:32
+ register description : 状态寄存器7
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  npu_pasensor_nbti_a_out : 9;  /* bit[0-8]  : npu_pasensor_nbti_a_out[8:0] */
+        unsigned int  reserved_0              : 3;  /* bit[9-11] : 保留。 */
+        unsigned int  npu_pasensor_nbti_o_out : 9;  /* bit[12-20]: npu_pasensor_nbti_o_out[8:0] */
+        unsigned int  reserved_1              : 11; /* bit[21-31]: 保留。 */
+    } reg;
+} SOC_NPU_SCTRL_npu_stat7_UNION;
+#endif
+#define SOC_NPU_SCTRL_npu_stat7_npu_pasensor_nbti_a_out_START  (0)
+#define SOC_NPU_SCTRL_npu_stat7_npu_pasensor_nbti_a_out_END    (8)
+#define SOC_NPU_SCTRL_npu_stat7_npu_pasensor_nbti_o_out_START  (12)
+#define SOC_NPU_SCTRL_npu_stat7_npu_pasensor_nbti_o_out_END    (20)
+
+
+/*****************************************************************************
+ struct               : SOC_NPU_SCTRL_npu_stat8_UNION
+ struct description   : npu_stat8 Register structure definition
+                        Address Offset:0x820 Initial:0x000000 Width:32
+ register description : 总线桥状态寄存器0
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  hiaxi_idle_aic_1to2_0      : 1;  /* bit[0]   : idle指示 */
+        unsigned int  hiaxi_idle_aic_1to2_1      : 1;  /* bit[1]   : idle指示 */
+        unsigned int  hiaxi_idle_aic_2to1_0      : 1;  /* bit[2]   : idle指示 */
+        unsigned int  hiaxi_idle_aic_2to1_1      : 1;  /* bit[3]   : idle指示 */
+        unsigned int  hiaxi_idle_aic0_top_1to2   : 1;  /* bit[4]   : idle指示 */
+        unsigned int  hiaxi_idle_ts_2to1         : 1;  /* bit[5]   : idle指示 */
+        unsigned int  himinibus_idle_axi2gs_aic0 : 1;  /* bit[6]   : idle指示 */
+        unsigned int  himinibus_idle_axi2gs_aic1 : 1;  /* bit[7]   : 保留 */
+        unsigned int  himinibus_idle_axi2gs_aiv0 : 1;  /* bit[8]   : idle指示 */
+        unsigned int  reserved                   : 23; /* bit[9-31]: 保留。 */
+    } reg;
+} SOC_NPU_SCTRL_npu_stat8_UNION;
+#endif
+#define SOC_NPU_SCTRL_npu_stat8_hiaxi_idle_aic_1to2_0_START       (0)
+#define SOC_NPU_SCTRL_npu_stat8_hiaxi_idle_aic_1to2_0_END         (0)
+#define SOC_NPU_SCTRL_npu_stat8_hiaxi_idle_aic_1to2_1_START       (1)
+#define SOC_NPU_SCTRL_npu_stat8_hiaxi_idle_aic_1to2_1_END         (1)
+#define SOC_NPU_SCTRL_npu_stat8_hiaxi_idle_aic_2to1_0_START       (2)
+#define SOC_NPU_SCTRL_npu_stat8_hiaxi_idle_aic_2to1_0_END         (2)
+#define SOC_NPU_SCTRL_npu_stat8_hiaxi_idle_aic_2to1_1_START       (3)
+#define SOC_NPU_SCTRL_npu_stat8_hiaxi_idle_aic_2to1_1_END         (3)
+#define SOC_NPU_SCTRL_npu_stat8_hiaxi_idle_aic0_top_1to2_START    (4)
+#define SOC_NPU_SCTRL_npu_stat8_hiaxi_idle_aic0_top_1to2_END      (4)
+#define SOC_NPU_SCTRL_npu_stat8_hiaxi_idle_ts_2to1_START          (5)
+#define SOC_NPU_SCTRL_npu_stat8_hiaxi_idle_ts_2to1_END            (5)
+#define SOC_NPU_SCTRL_npu_stat8_himinibus_idle_axi2gs_aic0_START  (6)
+#define SOC_NPU_SCTRL_npu_stat8_himinibus_idle_axi2gs_aic0_END    (6)
+#define SOC_NPU_SCTRL_npu_stat8_himinibus_idle_axi2gs_aic1_START  (7)
+#define SOC_NPU_SCTRL_npu_stat8_himinibus_idle_axi2gs_aic1_END    (7)
+#define SOC_NPU_SCTRL_npu_stat8_himinibus_idle_axi2gs_aiv0_START  (8)
+#define SOC_NPU_SCTRL_npu_stat8_himinibus_idle_axi2gs_aiv0_END    (8)
+
+
+/*****************************************************************************
+ struct               : SOC_NPU_SCTRL_npu_stat9_UNION
+ struct description   : npu_stat9 Register structure definition
+                        Address Offset:0x824 Initial:0x0 Width:32
+ register description : 总线桥状态寄存器1
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  hiaxi_dlock_mst_aic_1to2_0  : 2;  /* bit[0-1]  : dlock_mst读出任意bit为1表明hiaxi mst出现timeout挂死； 
+                                                                       举例dlock_mst=6’b010001,表示MST1读挂死，MST3读挂死 */
+        unsigned int  reserved_0                  : 2;  /* bit[2-3]  : 保留。 */
+        unsigned int  hiaxi_dlock_slv_aic_1to2_0  : 4;  /* bit[4-7]  : dlock_slv读出任意bit为1表明hiaxi slv出现timeout挂死； 
+                                                                       举例dlock_slv=6’b010001,表示SLV1读挂死，SLV3读挂死 */
+        unsigned int  hiaxi_dbg_ar_err_aic_1to2_0 : 4;  /* bit[8-11] : bit0:vis_err ,1表示命令发往INVISIBLE的slv被拦截 ，0表示没发生过拦截
+                                                                       bit1:slv_err ,1表示命令发往disable的slv被拦截 ，0表示没发生过拦截
+                                                                       bit2:sec_err ,1表示非安全命令发往安全slv被拦截 ，0表示没发生过拦截
+                                                                       bit3:dcdr_err ,1表示命令根据译码发往default slv 4K空间 ，0表示无命令根据译码发往default slv 4K空间 */
+        unsigned int  hiaxi_dbg_aw_err_aic_1to2_0 : 4;  /* bit[12-15]: bit0:vis_err ,1表示命令发往INVISIBLE的slv被拦截 ，0表示没发生过拦截
+                                                                       bit1:slv_err ,1表示命令发往disable的slv被拦截 ，0表示没发生过拦截
+                                                                       bit2:sec_err ,1表示非安全命令发往安全slv被拦截 ，0表示没发生过拦截
+                                                                       bit3:dcdr_err ,1表示命令根据译码发往default slv 4K空间 ，0表示无命令根据译码发往default slv 4K空间 */
+        unsigned int  hiaxi_dlock_mst_aic_1to2_1  : 2;  /* bit[16-17]: dlock_mst读出任意bit为1表明hiaxi mst出现timeout挂死； 
+                                                                       举例dlock_mst=6’b010001,表示MST1读挂死，MST3读挂死 */
+        unsigned int  reserved_1                  : 2;  /* bit[18-19]: 保留。 */
+        unsigned int  hiaxi_dlock_slv_aic_1to2_1  : 4;  /* bit[20-23]: dlock_slv读出任意bit为1表明hiaxi slv出现timeout挂死； 
+                                                                       举例dlock_slv=6’b010001,表示SLV1读挂死，SLV3读挂死 */
+        unsigned int  hiaxi_dbg_ar_err_aic_1to2_1 : 4;  /* bit[24-27]: bit0:vis_err ,1表示命令发往INVISIBLE的slv被拦截 ，0表示没发生过拦截
+                                                                       bit1:slv_err ,1表示命令发往disable的slv被拦截 ，0表示没发生过拦截
+                                                                       bit2:sec_err ,1表示非安全命令发往安全slv被拦截 ，0表示没发生过拦截
+                                                                       bit3:dcdr_err ,1表示命令根据译码发往default slv 4K空间 ，0表示无命令根据译码发往default slv 4K空间 */
+        unsigned int  hiaxi_dbg_aw_err_aic_1to2_1 : 4;  /* bit[28-31]: bit0:vis_err ,1表示命令发往INVISIBLE的slv被拦截 ，0表示没发生过拦截
+                                                                       bit1:slv_err ,1表示命令发往disable的slv被拦截 ，0表示没发生过拦截
+                                                                       bit2:sec_err ,1表示非安全命令发往安全slv被拦截 ，0表示没发生过拦截
+                                                                       bit3:dcdr_err ,1表示命令根据译码发往default slv 4K空间 ，0表示无命令根据译码发往default slv 4K空间 */
+    } reg;
+} SOC_NPU_SCTRL_npu_stat9_UNION;
+#endif
+#define SOC_NPU_SCTRL_npu_stat9_hiaxi_dlock_mst_aic_1to2_0_START   (0)
+#define SOC_NPU_SCTRL_npu_stat9_hiaxi_dlock_mst_aic_1to2_0_END     (1)
+#define SOC_NPU_SCTRL_npu_stat9_hiaxi_dlock_slv_aic_1to2_0_START   (4)
+#define SOC_NPU_SCTRL_npu_stat9_hiaxi_dlock_slv_aic_1to2_0_END     (7)
+#define SOC_NPU_SCTRL_npu_stat9_hiaxi_dbg_ar_err_aic_1to2_0_START  (8)
+#define SOC_NPU_SCTRL_npu_stat9_hiaxi_dbg_ar_err_aic_1to2_0_END    (11)
+#define SOC_NPU_SCTRL_npu_stat9_hiaxi_dbg_aw_err_aic_1to2_0_START  (12)
+#define SOC_NPU_SCTRL_npu_stat9_hiaxi_dbg_aw_err_aic_1to2_0_END    (15)
+#define SOC_NPU_SCTRL_npu_stat9_hiaxi_dlock_mst_aic_1to2_1_START   (16)
+#define SOC_NPU_SCTRL_npu_stat9_hiaxi_dlock_mst_aic_1to2_1_END     (17)
+#define SOC_NPU_SCTRL_npu_stat9_hiaxi_dlock_slv_aic_1to2_1_START   (20)
+#define SOC_NPU_SCTRL_npu_stat9_hiaxi_dlock_slv_aic_1to2_1_END     (23)
+#define SOC_NPU_SCTRL_npu_stat9_hiaxi_dbg_ar_err_aic_1to2_1_START  (24)
+#define SOC_NPU_SCTRL_npu_stat9_hiaxi_dbg_ar_err_aic_1to2_1_END    (27)
+#define SOC_NPU_SCTRL_npu_stat9_hiaxi_dbg_aw_err_aic_1to2_1_START  (28)
+#define SOC_NPU_SCTRL_npu_stat9_hiaxi_dbg_aw_err_aic_1to2_1_END    (31)
+
+
+/*****************************************************************************
+ struct               : SOC_NPU_SCTRL_npu_stat10_UNION
+ struct description   : npu_stat10 Register structure definition
+                        Address Offset:0x828 Initial:0x0 Width:32
+ register description : 总线桥状态寄存器2
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  hiaxi_dlock_mst_aic_2to1_0  : 4;  /* bit[0-3]  : dlock_mst读出任意bit为1表明hiaxi mst出现timeout挂死； 
+                                                                       举例dlock_mst=6’b010001,表示MST1读挂死，MST3读挂死 */
+        unsigned int  hiaxi_dlock_slv_aic_2to1_0  : 2;  /* bit[4-5]  : dlock_slv读出任意bit为1表明hiaxi slv出现timeout挂死； 
+                                                                       举例dlock_slv=6’b010001,表示SLV1读挂死，SLV3读挂死 */
+        unsigned int  reserved_0                  : 2;  /* bit[6-7]  : 保留。 */
+        unsigned int  hiaxi_dbg_ar_err_aic_2to1_0 : 4;  /* bit[8-11] : bit0:vis_err ,1表示命令发往INVISIBLE的slv被拦截 ，0表示没发生过拦截
+                                                                       bit1:slv_err ,1表示命令发往disable的slv被拦截 ，0表示没发生过拦截
+                                                                       bit2:sec_err ,1表示非安全命令发往安全slv被拦截 ，0表示没发生过拦截
+                                                                       bit3:dcdr_err ,1表示命令根据译码发往default slv 4K空间 ，0表示无命令根据译码发往default slv 4K空间 */
+        unsigned int  hiaxi_dbg_aw_err_aic_2to1_0 : 4;  /* bit[12-15]: bit0:vis_err ,1表示命令发往INVISIBLE的slv被拦截 ，0表示没发生过拦截
+                                                                       bit1:slv_err ,1表示命令发往disable的slv被拦截 ，0表示没发生过拦截
+                                                                       bit2:sec_err ,1表示非安全命令发往安全slv被拦截 ，0表示没发生过拦截
+                                                                       bit3:dcdr_err ,1表示命令根据译码发往default slv 4K空间 ，0表示无命令根据译码发往default slv 4K空间 */
+        unsigned int  hiaxi_dlock_mst_aic_2to1_1  : 4;  /* bit[16-19]: dlock_mst读出任意bit为1表明hiaxi mst出现timeout挂死； 
+                                                                       举例dlock_mst=6’b010001,表示MST1读挂死，MST3读挂死 */
+        unsigned int  hiaxi_dlock_slv_aic_2to1_1  : 2;  /* bit[20-21]: dlock_slv读出任意bit为1表明hiaxi slv出现timeout挂死； 
+                                                                       举例dlock_slv=6’b010001,表示SLV1读挂死，SLV3读挂死 */
+        unsigned int  reserved_1                  : 2;  /* bit[22-23]: 保留。 */
+        unsigned int  hiaxi_dbg_ar_err_aic_2to1_1 : 4;  /* bit[24-27]: bit0:vis_err ,1表示命令发往INVISIBLE的slv被拦截 ，0表示没发生过拦截
+                                                                       bit1:slv_err ,1表示命令发往disable的slv被拦截 ，0表示没发生过拦截
+                                                                       bit2:sec_err ,1表示非安全命令发往安全slv被拦截 ，0表示没发生过拦截
+                                                                       bit3:dcdr_err ,1表示命令根据译码发往default slv 4K空间 ，0表示无命令根据译码发往default slv 4K空间 */
+        unsigned int  hiaxi_dbg_aw_err_aic_2to1_1 : 4;  /* bit[28-31]: bit0:vis_err ,1表示命令发往INVISIBLE的slv被拦截 ，0表示没发生过拦截
+                                                                       bit1:slv_err ,1表示命令发往disable的slv被拦截 ，0表示没发生过拦截
+                                                                       bit2:sec_err ,1表示非安全命令发往安全slv被拦截 ，0表示没发生过拦截
+                                                                       bit3:dcdr_err ,1表示命令根据译码发往default slv 4K空间 ，0表示无命令根据译码发往default slv 4K空间 */
+    } reg;
+} SOC_NPU_SCTRL_npu_stat10_UNION;
+#endif
+#define SOC_NPU_SCTRL_npu_stat10_hiaxi_dlock_mst_aic_2to1_0_START   (0)
+#define SOC_NPU_SCTRL_npu_stat10_hiaxi_dlock_mst_aic_2to1_0_END     (3)
+#define SOC_NPU_SCTRL_npu_stat10_hiaxi_dlock_slv_aic_2to1_0_START   (4)
+#define SOC_NPU_SCTRL_npu_stat10_hiaxi_dlock_slv_aic_2to1_0_END     (5)
+#define SOC_NPU_SCTRL_npu_stat10_hiaxi_dbg_ar_err_aic_2to1_0_START  (8)
+#define SOC_NPU_SCTRL_npu_stat10_hiaxi_dbg_ar_err_aic_2to1_0_END    (11)
+#define SOC_NPU_SCTRL_npu_stat10_hiaxi_dbg_aw_err_aic_2to1_0_START  (12)
+#define SOC_NPU_SCTRL_npu_stat10_hiaxi_dbg_aw_err_aic_2to1_0_END    (15)
+#define SOC_NPU_SCTRL_npu_stat10_hiaxi_dlock_mst_aic_2to1_1_START   (16)
+#define SOC_NPU_SCTRL_npu_stat10_hiaxi_dlock_mst_aic_2to1_1_END     (19)
+#define SOC_NPU_SCTRL_npu_stat10_hiaxi_dlock_slv_aic_2to1_1_START   (20)
+#define SOC_NPU_SCTRL_npu_stat10_hiaxi_dlock_slv_aic_2to1_1_END     (21)
+#define SOC_NPU_SCTRL_npu_stat10_hiaxi_dbg_ar_err_aic_2to1_1_START  (24)
+#define SOC_NPU_SCTRL_npu_stat10_hiaxi_dbg_ar_err_aic_2to1_1_END    (27)
+#define SOC_NPU_SCTRL_npu_stat10_hiaxi_dbg_aw_err_aic_2to1_1_START  (28)
+#define SOC_NPU_SCTRL_npu_stat10_hiaxi_dbg_aw_err_aic_2to1_1_END    (31)
+
+
+/*****************************************************************************
+ struct               : SOC_NPU_SCTRL_npu_stat11_UNION
+ struct description   : npu_stat11 Register structure definition
+                        Address Offset:0x82C Initial:0x0 Width:32
+ register description : 总线桥状态寄存器3
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  hiaxi_dlock_mst_aic0_top_1to2  : 2;  /* bit[0-1]  : dlock_mst读出任意bit为1表明hiaxi mst出现timeout挂死； 
+                                                                          举例dlock_mst=6’b010001,表示MST1读挂死，MST3读挂死 */
+        unsigned int  reserved_0                     : 2;  /* bit[2-3]  : 保留。 */
+        unsigned int  hiaxi_dlock_slv_aic0_top_1to2  : 4;  /* bit[4-7]  : dlock_slv读出任意bit为1表明hiaxi slv出现timeout挂死； 
+                                                                          举例dlock_slv=6’b010001,表示SLV1读挂死，SLV3读挂死 */
+        unsigned int  hiaxi_dbg_ar_err_aic0_top_1to2 : 4;  /* bit[8-11] : bit0:vis_err ,1表示命令发往INVISIBLE的slv被拦截 ，0表示没发生过拦截
+                                                                          bit1:slv_err ,1表示命令发往disable的slv被拦截 ，0表示没发生过拦截
+                                                                          bit2:sec_err ,1表示非安全命令发往安全slv被拦截 ，0表示没发生过拦截
+                                                                          bit3:dcdr_err ,1表示命令根据译码发往default slv 4K空间 ，0表示无命令根据译码发往default slv 4K空间 */
+        unsigned int  hiaxi_dbg_aw_err_aic0_top_1to2 : 4;  /* bit[12-15]: bit0:vis_err ,1表示命令发往INVISIBLE的slv被拦截 ，0表示没发生过拦截
+                                                                          bit1:slv_err ,1表示命令发往disable的slv被拦截 ，0表示没发生过拦截
+                                                                          bit2:sec_err ,1表示非安全命令发往安全slv被拦截 ，0表示没发生过拦截
+                                                                          bit3:dcdr_err ,1表示命令根据译码发往default slv 4K空间 ，0表示无命令根据译码发往default slv 4K空间 */
+        unsigned int  hiaxi_dlock_mst_ts_2to1        : 4;  /* bit[16-19]: dlock_mst读出任意bit为1表明hiaxi mst出现timeout挂死； 
+                                                                          举例dlock_mst=6’b010001,表示MST1读挂死，MST3读挂死 */
+        unsigned int  hiaxi_dlock_slv_ts_2to1        : 2;  /* bit[20-21]: dlock_slv读出任意bit为1表明hiaxi slv出现timeout挂死； 
+                                                                          举例dlock_slv=6’b010001,表示SLV1读挂死，SLV3读挂死 */
+        unsigned int  reserved_1                     : 2;  /* bit[22-23]: 保留。 */
+        unsigned int  hiaxi_dbg_ar_err_ts_2to1       : 4;  /* bit[24-27]: bit0:vis_err ,1表示命令发往INVISIBLE的slv被拦截 ，0表示没发生过拦截
+                                                                          bit1:slv_err ,1表示命令发往disable的slv被拦截 ，0表示没发生过拦截
+                                                                          bit2:sec_err ,1表示非安全命令发往安全slv被拦截 ，0表示没发生过拦截
+                                                                          bit3:dcdr_err ,1表示命令根据译码发往default slv 4K空间 ，0表示无命令根据译码发往default slv 4K空间 */
+        unsigned int  hiaxi_dbg_aw_err_ts_2to1       : 4;  /* bit[28-31]: bit0:vis_err ,1表示命令发往INVISIBLE的slv被拦截 ，0表示没发生过拦截
+                                                                          bit1:slv_err ,1表示命令发往disable的slv被拦截 ，0表示没发生过拦截
+                                                                          bit2:sec_err ,1表示非安全命令发往安全slv被拦截 ，0表示没发生过拦截
+                                                                          bit3:dcdr_err ,1表示命令根据译码发往default slv 4K空间 ，0表示无命令根据译码发往default slv 4K空间 */
+    } reg;
+} SOC_NPU_SCTRL_npu_stat11_UNION;
+#endif
+#define SOC_NPU_SCTRL_npu_stat11_hiaxi_dlock_mst_aic0_top_1to2_START   (0)
+#define SOC_NPU_SCTRL_npu_stat11_hiaxi_dlock_mst_aic0_top_1to2_END     (1)
+#define SOC_NPU_SCTRL_npu_stat11_hiaxi_dlock_slv_aic0_top_1to2_START   (4)
+#define SOC_NPU_SCTRL_npu_stat11_hiaxi_dlock_slv_aic0_top_1to2_END     (7)
+#define SOC_NPU_SCTRL_npu_stat11_hiaxi_dbg_ar_err_aic0_top_1to2_START  (8)
+#define SOC_NPU_SCTRL_npu_stat11_hiaxi_dbg_ar_err_aic0_top_1to2_END    (11)
+#define SOC_NPU_SCTRL_npu_stat11_hiaxi_dbg_aw_err_aic0_top_1to2_START  (12)
+#define SOC_NPU_SCTRL_npu_stat11_hiaxi_dbg_aw_err_aic0_top_1to2_END    (15)
+#define SOC_NPU_SCTRL_npu_stat11_hiaxi_dlock_mst_ts_2to1_START         (16)
+#define SOC_NPU_SCTRL_npu_stat11_hiaxi_dlock_mst_ts_2to1_END           (19)
+#define SOC_NPU_SCTRL_npu_stat11_hiaxi_dlock_slv_ts_2to1_START         (20)
+#define SOC_NPU_SCTRL_npu_stat11_hiaxi_dlock_slv_ts_2to1_END           (21)
+#define SOC_NPU_SCTRL_npu_stat11_hiaxi_dbg_ar_err_ts_2to1_START        (24)
+#define SOC_NPU_SCTRL_npu_stat11_hiaxi_dbg_ar_err_ts_2to1_END          (27)
+#define SOC_NPU_SCTRL_npu_stat11_hiaxi_dbg_aw_err_ts_2to1_START        (28)
+#define SOC_NPU_SCTRL_npu_stat11_hiaxi_dbg_aw_err_ts_2to1_END          (31)
+
+
+/*****************************************************************************
+ struct               : SOC_NPU_SCTRL_npu_stat12_UNION
+ struct description   : npu_stat12 Register structure definition
+                        Address Offset:0x830 Initial:0x00000000 Width:32
+ register description : NPU LITE CORE DS
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  npu_lite_aicore0_ds_state : 1;  /* bit[0]   : 保留 */
+        unsigned int  npu_lite_aicore1_ds_state : 1;  /* bit[1]   : 保留 */
+        unsigned int  reserved                  : 30; /* bit[2-31]: 保留。 */
+    } reg;
+} SOC_NPU_SCTRL_npu_stat12_UNION;
+#endif
+#define SOC_NPU_SCTRL_npu_stat12_npu_lite_aicore0_ds_state_START  (0)
+#define SOC_NPU_SCTRL_npu_stat12_npu_lite_aicore0_ds_state_END    (0)
+#define SOC_NPU_SCTRL_npu_stat12_npu_lite_aicore1_ds_state_START  (1)
+#define SOC_NPU_SCTRL_npu_stat12_npu_lite_aicore1_ds_state_END    (1)
+
+
+/*****************************************************************************
+ struct               : SOC_NPU_SCTRL_npu_stat13_UNION
+ struct description   : npu_stat13 Register structure definition
+                        Address Offset:0x834 Initial:0x00000000 Width:32
+ register description : TDE状态寄存器0
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  tde_cfg_ready    : 1;  /* bit[0]   : tde 状态寄存器 */
+        unsigned int  tde_final_result : 1;  /* bit[1]   : tde 状态寄存器 */
+        unsigned int  reserved         : 30; /* bit[2-31]: 保留。 */
+    } reg;
+} SOC_NPU_SCTRL_npu_stat13_UNION;
+#endif
+#define SOC_NPU_SCTRL_npu_stat13_tde_cfg_ready_START     (0)
+#define SOC_NPU_SCTRL_npu_stat13_tde_cfg_ready_END       (0)
+#define SOC_NPU_SCTRL_npu_stat13_tde_final_result_START  (1)
+#define SOC_NPU_SCTRL_npu_stat13_tde_final_result_END    (1)
+
+
+/*****************************************************************************
+ struct               : SOC_NPU_SCTRL_npu_stat14_UNION
+ struct description   : npu_stat14 Register structure definition
+                        Address Offset:0x838 Initial:0x00000000 Width:32
+ register description : TDE状态寄存器1
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  tde_chk_status : 32; /* bit[0-31]: tde 状态寄存器 */
+    } reg;
+} SOC_NPU_SCTRL_npu_stat14_UNION;
+#endif
+#define SOC_NPU_SCTRL_npu_stat14_tde_chk_status_START  (0)
+#define SOC_NPU_SCTRL_npu_stat14_tde_chk_status_END    (31)
+
+
+/*****************************************************************************
+ struct               : SOC_NPU_SCTRL_npu_stat15_UNION
+ struct description   : npu_stat15 Register structure definition
+                        Address Offset:0x83C Initial:0x00000000 Width:32
+ register description : AICORE idle状态寄存器
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  aic_gen_core_idle : 1;  /* bit[0]   : 保留 */
+        unsigned int  aic_eff_core_idle : 1;  /* bit[1]   : 保留 */
+        unsigned int  reserved          : 30; /* bit[2-31]: 保留。 */
+    } reg;
+} SOC_NPU_SCTRL_npu_stat15_UNION;
+#endif
+#define SOC_NPU_SCTRL_npu_stat15_aic_gen_core_idle_START  (0)
+#define SOC_NPU_SCTRL_npu_stat15_aic_gen_core_idle_END    (0)
+#define SOC_NPU_SCTRL_npu_stat15_aic_eff_core_idle_START  (1)
+#define SOC_NPU_SCTRL_npu_stat15_aic_eff_core_idle_END    (1)
+
+
+/*****************************************************************************
+ struct               : SOC_NPU_SCTRL_npu_stat20_UNION
+ struct description   : npu_stat20 Register structure definition
+                        Address Offset:0x850 Initial:0x00000000 Width:32
+ register description : ec上报寄存器
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  ec_rpt : 32; /* bit[0-31]: 保留。 */
+    } reg;
+} SOC_NPU_SCTRL_npu_stat20_UNION;
+#endif
+#define SOC_NPU_SCTRL_npu_stat20_ec_rpt_START  (0)
+#define SOC_NPU_SCTRL_npu_stat20_ec_rpt_END    (31)
+
+
+
+
+
+
+/*****************************************************************************
+  8 OTHERS定义
+*****************************************************************************/
+
+
+
+/*****************************************************************************
+  9 全局变量声明
+*****************************************************************************/
+
+
+/*****************************************************************************
+  10 函数声明
+*****************************************************************************/
+
+
+#ifdef __cplusplus
+    #if __cplusplus
+        }
+    #endif
+#endif
+
+#endif /* end of soc_npu_sctrl_interface.h */

@@ -1,0 +1,53 @@
+{
+    "name": "@ohos/backends",
+    "description": "SANE(Scanner Access Now Easy) is a framework for standardized access to any raster scanner",
+    "version": "1.2.1",
+    "license": "GPL v2",
+    "publishAs":"code-segment",
+    "segment":{
+        "destPath":"third_party/backends"
+    },
+    "dirs":{},
+    "scripts":{},
+    "licensePath": "COPYING",
+    "component": {
+        "name": "backends",
+        "subsystem": "thirdparty",
+        "syscap": [],
+        "features": [],
+        "adapted_system_type": [
+			"standard"
+		],
+        "rom": "10KB",
+        "ram": "10KB",
+        "deps": {
+            "components": [
+                "hilog",
+                "libusb"
+            ],
+            "third_party": [
+                "libxml2",
+                "libpng",
+                "libjpeg-turbo"
+            ]
+        },
+        "build": {
+            "sub_component": [
+                "//third_party/backends:third_sane"
+            ],
+            "inner_kits": [
+                {
+                    "name": "//third_party/backends:sane",
+                    "header": {
+                        "header_files": [
+                            "sane/sane.h",
+                            "sane/saneopts.h"
+                        ],
+                        "header_base": "//third_party/backends/include"
+                    }
+                }
+            ],
+            "test": []
+        }
+    }
+}

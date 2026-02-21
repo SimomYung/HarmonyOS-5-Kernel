@@ -1,0 +1,33 @@
+category TLCore
+depend hyphen-base
+depend hyph-utf8
+shortdesc Modern Greek hyphenation patterns.
+longdesc Hyphenation patterns for Modern Greek in monotonic and polytonic
+longdesc spelling in LGR and UTF-8 encodings.  Patterns in UTF-8 use two code
+longdesc positions for each of the vowels with acute accent (a.k.a tonos,
+longdesc oxia), e.g., U+03AC, U+1F71 for alpha.
+execute AddHyphen \
+	name=monogreek \
+	lefthyphenmin=1 \
+	righthyphenmin=1 \
+	file=loadhyph-el-monoton.tex \
+	file_patterns=hyph-el-monoton.pat.txt \
+	file_exceptions=
+execute AddHyphen \
+	name=greek synonyms=polygreek \
+	lefthyphenmin=1 \
+	righthyphenmin=1 \
+	file=loadhyph-el-polyton.tex \
+	file_patterns=hyph-el-polyton.pat.txt \
+	file_exceptions=
+docpattern d texmf-dist/doc/generic/elhyphen
+runpattern f texmf-dist/tex/generic/hyph-utf8/loadhyph/loadhyph-el-monoton.tex
+runpattern f texmf-dist/tex/generic/hyph-utf8/loadhyph/loadhyph-el-polyton.tex
+runpattern f texmf-dist/tex/generic/hyph-utf8/patterns/tex/hyph-el-monoton.tex
+runpattern f texmf-dist/tex/generic/hyph-utf8/patterns/tex/hyph-el-polyton.tex
+runpattern f texmf-dist/tex/generic/hyph-utf8/patterns/txt/hyph-el-monoton.hyp.txt
+runpattern f texmf-dist/tex/generic/hyph-utf8/patterns/txt/hyph-el-monoton.pat.txt
+runpattern f texmf-dist/tex/generic/hyph-utf8/patterns/txt/hyph-el-polyton.hyp.txt
+runpattern f texmf-dist/tex/generic/hyph-utf8/patterns/txt/hyph-el-polyton.pat.txt
+runpattern f texmf-dist/tex/generic/hyphen/grmhyph5.tex
+runpattern f texmf-dist/tex/generic/hyphen/grphyph5.tex

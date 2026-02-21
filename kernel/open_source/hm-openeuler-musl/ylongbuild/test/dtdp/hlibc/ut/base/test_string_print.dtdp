@@ -1,0 +1,357 @@
+{
+    "root": {
+        "data": {
+            "id": "ci26txcan080",
+            "created": 1645493689739,
+            "text": "HLIBC",
+            "usecase": 99,
+            "expandState": "expand"
+        },
+        "children": [
+            {
+                "data": {
+                    "id": "ci26yfp7p400",
+                    "created": 1645494043159,
+                    "text": "字符串打印类-sprintf，vsprintf",
+                    "usecase": 1
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "ci270vepp9k0",
+                            "created": 1645494234080,
+                            "text": "功能分析",
+                            "usecase": null,
+                            "layout_right_offset": {
+                                "x": 4,
+                                "y": -13
+                            },
+                            "expandState": "expand"
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "ci27e5wi46o0",
+                                    "created": 1645495275658,
+                                    "text": "将格式化的数据写入字符串",
+                                    "usecase": 2,
+                                    "layout_right_offset": {
+                                        "x": 10,
+                                        "y": -6
+                                    }
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "ci27etyv5f40",
+                                            "created": 1645495328044,
+                                            "text": "格式化输出十进制整数",
+                                            "usecase": 4,
+                                            "author": "x50021790",
+                                            "showId": "00003",
+                                            "layout_right_offset": {
+                                                "x": -5,
+                                                "y": 0
+                                            }
+                                        },
+                                        "children": []
+                                    },
+                                    {
+                                        "data": {
+                                            "id": "ci27jmhj8lk0",
+                                            "created": 1645495703579,
+                                            "text": "格式化输出八进制整数",
+                                            "usecase": 4,
+                                            "author": "x50021790",
+                                            "showId": "00008",
+                                            "layout_right_offset": {
+                                                "x": 4,
+                                                "y": 19
+                                            }
+                                        },
+                                        "children": []
+                                    },
+                                    {
+                                        "data": {
+                                            "id": "ci27jq6kdeo0",
+                                            "created": 1645495711623,
+                                            "text": "格式化输出十六进制整数",
+                                            "usecase": 4,
+                                            "author": "x50021790",
+                                            "showId": "00009",
+                                            "layout_right_offset": {
+                                                "x": -2,
+                                                "y": 35
+                                            }
+                                        },
+                                        "children": []
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "data": {
+                            "id": "ci52jux90mo0",
+                            "created": 1645786296264,
+                            "text": "可靠性分析"
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "ci52kl6fyow0",
+                                    "created": 1645786353416,
+                                    "text": "格式化后的字符串长度需要小于输入的字符数组长度，预留1个位置给结束符",
+                                    "usecase": 2
+                                },
+                                "children": []
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "data": {
+                    "id": "ci52l2jy44w0",
+                    "created": 1645786391238,
+                    "text": "字符串打印类-snprintf，vsnprintf",
+                    "usecase": 1
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "ci52l2jxrww0",
+                            "created": 1645786391238,
+                            "text": "入参分析"
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "ci52l2jy6200",
+                                    "created": 1645786391238,
+                                    "text": "写入长度 ",
+                                    "usecase": 2
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "ci53lhpcmlk0",
+                                            "created": 1645789245327,
+                                            "text": "写入长度4，得到的字符串长度为3",
+                                            "usecase": 4,
+                                            "author": "x50021790",
+                                            "showId": "00016"
+                                        },
+                                        "children": []
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "data": {
+                            "id": "ci52l2jxvm80",
+                            "created": 1645786391238,
+                            "text": "功能分析",
+                            "usecase": null,
+                            "layout_right_offset": {
+                                "x": 4,
+                                "y": -13
+                            },
+                            "expandState": "expand"
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "ci52l2jxs8w0",
+                                    "created": 1645786391238,
+                                    "text": "将格式化的数据写入字符串",
+                                    "usecase": 2,
+                                    "layout_right_offset": {
+                                        "x": 10,
+                                        "y": -6
+                                    }
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "ci52l2jy70o0",
+                                            "created": 1645786391238,
+                                            "text": "格式化输出十进制整数",
+                                            "usecase": 4,
+                                            "author": "x50021790",
+                                            "showId": "00013",
+                                            "layout_right_offset": {
+                                                "x": -5,
+                                                "y": 0
+                                            }
+                                        },
+                                        "children": []
+                                    },
+                                    {
+                                        "data": {
+                                            "id": "ci52l2jy01s0",
+                                            "created": 1645786391238,
+                                            "text": "格式化输出八进制整数",
+                                            "usecase": 4,
+                                            "author": "x50021790",
+                                            "showId": "00014",
+                                            "layout_right_offset": {
+                                                "x": 4,
+                                                "y": 19
+                                            }
+                                        },
+                                        "children": []
+                                    },
+                                    {
+                                        "data": {
+                                            "id": "ci52l2jylg80",
+                                            "created": 1645786391239,
+                                            "text": "格式化输出十六进制整数",
+                                            "usecase": 4,
+                                            "author": "x50021790",
+                                            "showId": "00015",
+                                            "layout_right_offset": {
+                                                "x": -2,
+                                                "y": 35
+                                            }
+                                        },
+                                        "children": []
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "data": {
+                            "id": "ci53m61xhxs0",
+                            "created": 1645789298330,
+                            "text": "可靠性分析"
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "ci53m61xnw00",
+                                    "created": 1645789298330,
+                                    "text": "写入长度需要小于输入的字符数组长度，预留1个位置给结束符",
+                                    "usecase": 2
+                                },
+                                "children": []
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "data": {
+                    "id": "ci2j076rfy80",
+                    "created": 1645528034676,
+                    "text": "字符串打印类-strerror",
+                    "usecase": 1
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "ci2j076s2js0",
+                            "created": 1645528034677,
+                            "text": "入参分析"
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "ci2j076rzc00",
+                                    "created": 1645528034677,
+                                    "text": "输入的错误码不存在",
+                                    "usecase": 2,
+                                    "layout_right_offset": {
+                                        "x": 28,
+                                        "y": 0
+                                    }
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "ci2j076sfh40",
+                                            "created": 1645528034677,
+                                            "text": "输入999，返回No error information",
+                                            "usecase": 4,
+                                            "author": "x50021790",
+                                            "showId": "00010",
+                                            "priority": null
+                                        },
+                                        "children": []
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "data": {
+                            "id": "ci2j076s3ps0",
+                            "created": 1645528034677,
+                            "text": "功能分析",
+                            "usecase": null,
+                            "layout_right_offset": {
+                                "x": 4,
+                                "y": -13
+                            },
+                            "expandState": "expand"
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "ci2j076s2i00",
+                                    "created": 1645528034677,
+                                    "text": "回错误码对应的字符数组",
+                                    "usecase": 2,
+                                    "layout_right_offset": {
+                                        "x": 41,
+                                        "y": 1
+                                    }
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "ci2j076sabc0",
+                                            "created": 1645528034677,
+                                            "text": "输入错误码EACCES，返回Permission denied",
+                                            "usecase": 4,
+                                            "author": "x50021790",
+                                            "showId": "00011",
+                                            "layout_right_offset": {
+                                                "x": -5,
+                                                "y": 0
+                                            }
+                                        },
+                                        "children": []
+                                    },
+                                    {
+                                        "data": {
+                                            "id": "ci2j076s2cg0",
+                                            "created": 1645528034677,
+                                            "text": "输入错误码EAGAIN，返回Resource temporarily unavailable",
+                                            "usecase": 4,
+                                            "author": "x50021790",
+                                            "showId": "00012",
+                                            "layout_right_offset": {
+                                                "x": 4,
+                                                "y": 19
+                                            }
+                                        },
+                                        "children": []
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    "templatePath": null,
+    "singleTemplatePath": null,
+    "testcaseFilePath": "",
+    "template": "right",
+    "theme": "fresh-blue",
+    "version": "1.4.43"
+}

@@ -1,0 +1,14 @@
+<hwlcd>
+	<PanelEntry>
+
+	<!-- Panel Infomation -->
+	<PanelCompatible>"auo-def-11p45"</PanelCompatible>
+	<PanelName>"auo-def-11p45 11.45' VIDEO TFT 1080 x 1920 DEFAULT"</PanelName>
+	<PanelType>0x01</PanelType>
+	<PanelXres>1440</PanelXres>
+	<PanelYres>2200</PanelYres>
+	<PanelWidth>136</PanelWidth>
+	<PanelHeight>226</PanelHeight>
+
+</PanelEntry>
+</hwlcd>

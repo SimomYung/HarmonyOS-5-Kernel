@@ -1,0 +1,13 @@
+# Copyright (c) Huawei Technologies Co., Ltd. 2023-2023. All rights reserved.
+# Description: HMbuild
+# Author: Huawei OS Kernel Lab
+# Create: Fri Dec 29 08:02:36 2023
+
+# Add __HM_ENTIRE_RMQK__ macro to enable rmqk algorithm
+cflags-.-CONFIG_TRACEMGR: -D__HM_ENTIRE_RMQK__
+
+src-y: hmtrace.c
+src-y: hmtrace_shm.c
+src-y: hmtrace_event.c
+src-y: hmtrace_output.c
+src-y: hmtrace_rmqk.c

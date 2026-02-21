@@ -1,0 +1,17 @@
+# Copyright (c) Huawei Technologies Co., Ltd. 2021. All rights reserved.
+# Description: HMbuild for lnxbase
+# Author: Huawei OS Kernel Lab
+# Create: Thu Dec 16 17:20:01 2021
+
+lib-dynamic-y: dh_lnxbase
+
+output-dh_lnxbase: dh-lnxbase
+libversion-dh_lnxbase: 1.0
+
+linklib-dh_lnxbase-y: -Tksymtab.lds
+
+subdir-y: lnxbase
+
+installinc-lnxbase: include/lnxbase/
+installinc-liblinux: include/liblinux/
+install-dh_lnxbase-y: BASE_LIBDIR

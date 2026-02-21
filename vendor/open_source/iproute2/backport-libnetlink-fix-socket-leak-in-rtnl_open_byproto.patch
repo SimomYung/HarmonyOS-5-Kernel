@@ -1,0 +1,75 @@
+From f8beda6e00e57b8f875442351f91e5c01530ad8e Mon Sep 17 00:00:00 2001
+From: Maxim Petrov <mmrmaximuzz@gmail.com>
+Date: Tue, 8 Feb 2022 20:20:45 +0300
+Subject: [PATCH] libnetlink: fix socket leak in rtnl_open_byproto()
+
+rtnl_open_byproto() does not close the opened socket in case of
+errors, and the socket is returned to the caller in the `fd` field of
+the struct. However, none of the callers care about the socket, so
+close it in the function immediately to avoid any potential resource
+leaks.
+
+Signed-off-by: Maxim Petrov <mmrmaximuzz@gmail.com>
+Signed-off-by: Stephen Hemminger <stephen@networkplumber.org>
+Conflict: NA
+Reference: https://git.kernel.org/pub/scm/network/iproute2/iproute2.git/commit?id=f8beda6e00e
+---
+ lib/libnetlink.c | 15 +++++++++------
+ 1 file changed, 9 insertions(+), 6 deletions(-)
+
+diff --git a/lib/libnetlink.c b/lib/libnetlink.c
+index 7e977a67..6d1b1187 100644
+--- a/lib/libnetlink.c
++++ b/lib/libnetlink.c
+@@ -210,13 +210,13 @@ int rtnl_open_byproto(struct rtnl_handle *rth, unsigned int subscriptions,
+ 	if (setsockopt(rth->fd, SOL_SOCKET, SO_SNDBUF,
+ 		       &sndbuf, sizeof(sndbuf)) < 0) {
+ 		perror("SO_SNDBUF");
+-		return -1;
++		goto err;
+ 	}
+ 
+ 	if (setsockopt(rth->fd, SOL_SOCKET, SO_RCVBUF,
+ 		       &rcvbuf, sizeof(rcvbuf)) < 0) {
+ 		perror("SO_RCVBUF");
+-		return -1;
++		goto err;
+ 	}
+ 
+ 	/* Older kernels may no support extended ACK reporting */
+@@ -230,25 +230,28 @@ int rtnl_open_byproto(struct rtnl_handle *rth, unsigned int subscriptions,
+ 	if (bind(rth->fd, (struct sockaddr *)&rth->local,
+ 		 sizeof(rth->local)) < 0) {
+ 		perror("Cannot bind netlink socket");
+-		return -1;
++		goto err;
+ 	}
+ 	addr_len = sizeof(rth->local);
+ 	if (getsockname(rth->fd, (struct sockaddr *)&rth->local,
+ 			&addr_len) < 0) {
+ 		perror("Cannot getsockname");
+-		return -1;
++		goto err;
+ 	}
+ 	if (addr_len != sizeof(rth->local)) {
+ 		fprintf(stderr, "Wrong address length %d\n", addr_len);
+-		return -1;
++		goto err;
+ 	}
+ 	if (rth->local.nl_family != AF_NETLINK) {
+ 		fprintf(stderr, "Wrong address family %d\n",
+ 			rth->local.nl_family);
+-		return -1;
++		goto err;
+ 	}
+ 	rth->seq = time(NULL);
+ 	return 0;
++err:
++	rtnl_close(rth);
++	return -1;
+ }
+ 
+ int rtnl_open(struct rtnl_handle *rth, unsigned int subscriptions)
+-- 
+2.23.0
+

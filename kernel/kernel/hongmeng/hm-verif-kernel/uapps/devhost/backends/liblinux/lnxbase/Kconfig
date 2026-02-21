@@ -1,0 +1,129 @@
+# Copyright (c) Huawei Technologies Co., Ltd. 2021. All rights reserved.
+# Description: Kconfig for lnxbase
+# Author: Huawei OS Kernel Lab
+# Create: Fri Dec 31 15:00:06 2021
+source "$(HMCMAKENG_KCONFIG)"
+
+config DEBUG_BUILD
+	bool "debug build"
+	default n
+
+config DEVHOST_NETLINK
+	bool "devhost netlink support"
+	default y
+
+config DEVHOST_PM_PLUGIN
+	bool "devhost pm plugin"
+	default y
+
+config FILEGUARD
+  bool "Enable file guard"
+  default n
+  help
+    Enable file guard if available. This
+    feature is only supported on PC.
+
+config PM_WAKELOCK
+	bool "PM wakelock support"
+	default n
+
+config PM_SUSPEND
+	bool "PM suspend support"
+	default n
+
+config HKIP
+	bool "Add HKIP support"
+	default n
+
+config HKIP_LDK_PRMEM
+	bool "Enable prmem to ldk"
+	default n
+
+config HKIP_LDK_SEHARMONY_PROT
+	bool "Enable hkip to ldk seharmony"
+	default n
+
+config HKIP_LDK_SEHARMONY_POLDB_SIZE_MB
+    int "size of hkip poldb \(MB\)"
+    depends on HKIP_LDK_SEHARMONY_PROT
+    default 8
+
+config LNXBASE_MEMSTAT
+	bool "enable lnxbase memstat support"
+	default n
+
+config LNXBASE_VERIFY_SIG
+	bool "wrapper function for cmscbb sig-verify"
+	default n
+
+config PAGE_ALLOC_VMAP
+	bool "page alloc vmap support"
+	default y
+
+config MEMPOOL_RANGE_MMAP
+	bool "use mmap to create mempool range"
+	default n
+
+config LNXBASE_BUDDYPOOL
+	bool "enable lnxbase buddypool support"
+	default n
+
+config LNXBASE_DISCRETEPOOL
+	bool "enable lnxbase discretepool support"
+	default n
+
+config KEVTD_SCHED_RR
+	bool "kevtd sched RR"
+	default n
+
+config SEHARMONY
+	bool "Enable seharmony"
+	default n
+
+config VMALLOC_VIRT_PAGES
+	bool "vmallocinfo nr_pages is virtual pages or physical pages"
+	default n
+
+config USER_FUTEX
+	bool "Enable user space futex support"
+	default n
+
+config DEVHOST_PERI_DMA
+	bool "devhost peri dma support"
+	default n
+
+config LIBLINUX_EXT_HISI_SMMU
+	bool "smmu series support"
+	default n
+	help
+	  Enable this option to support the construction of a SMMU.
+
+config TIMER_HARDEN_S4
+	bool "Support timer on harden S4"
+	default n
+
+config SUPPORT_GETPROCNAME
+    bool "Enable obtaining process_name by tid as the devhost user"
+    default n
+
+config DEVHOST_HVC
+	bool "Enable HVC CALL for ldk"
+	default n
+
+config BIG_MODEL_MONITOR
+	bool "big model monitor"
+	default n
+config DFC_FREQ_HIDE
+	bool "Freq-Info hide"
+	default n
+
+config SUPPORT_CDC_ACE_VTIMER
+  bool "Support CDC_ACE VTIMER"
+  default n
+
+config HISI_THERMAL_INTELLIGENT_FREQ_CTRL
+	bool "nonkey task freq ctrl based on shell_frame"
+	default n
+
+source "lnxbase/exts/hisi/Kconfig"
+

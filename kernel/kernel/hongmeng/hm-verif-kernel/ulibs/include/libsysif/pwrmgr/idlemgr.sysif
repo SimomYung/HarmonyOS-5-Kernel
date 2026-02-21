@@ -1,0 +1,19 @@
+/*
+ * Copyright (C) Huawei Technologies Co., Ltd. 2022-2022. All rights reserved.
+ * Description: Definition for idlemgr sysif
+ * Author: Huawei OS Kernel Lab
+ * Create: Tue Sep 26 09:46:47 2022
+ */
+
+/*
+ * To support the mixed data model which means the client and the server
+ * may use different data model. See the comment for limitation of data type
+ * used in the sysif interfaces in <libsysif/base/api.h>.
+ */
+
+DEFINE_MANAGER(idlemgr, 1,
+	DEFINE_METHOD(idlemgr, stat,
+		      ARG(1, struct bunch_ipc_attr, attr),
+		      RET_NO,
+		      SLOWDATA_NO)
+)

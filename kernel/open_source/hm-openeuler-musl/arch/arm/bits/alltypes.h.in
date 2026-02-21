@@ -1,0 +1,28 @@
+#define _REDIR_TIME64 0
+#define _Addr int
+#define _Int64 long long
+#define _Reg int
+
+#ifdef __ARMEB__
+#define __BYTE_ORDER 4321
+#else
+#define __BYTE_ORDER 1234
+#endif
+
+#define __LONG_MAX 0x7fffffffL
+
+#ifndef __cplusplus
+#if defined(__NEED_wchar_t) && !defined(__DEFINED_wchar_t)
+#if defined(__WCHAR_TYPE__)
+typedef __WCHAR_TYPE__ wchar_t;
+#else
+typedef unsigned wchar_t;
+#endif
+#define __DEFINED_wchar_t
+#endif
+#endif
+
+TYPEDEF float float_t;
+TYPEDEF double double_t;
+
+TYPEDEF struct { long long __ll; long double __ld; } max_align_t;

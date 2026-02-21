@@ -1,0 +1,7 @@
+config VM_PRESET
+	bool "vm preset module support"
+	default n
+
+config RESET_VM_SOLO
+	bool "reset vm solo"
+	default n

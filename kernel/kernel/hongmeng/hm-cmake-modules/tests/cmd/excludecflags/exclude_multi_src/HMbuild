@@ -1,0 +1,18 @@
+# Copyright (c) Huawei Technologies Co., Ltd. 2022. All rights reserved.
+# Description: HMbuild for testcase exclude_multi_src
+# Author: Huawei OS Kernel Lab
+# Create: Mon Jul 25 12:57:54 2022
+
+exec-dynamic-y: test.elf
+
+src-test.elf-y: fooa.c
+src-test.elf-y: foob.c
+src-test.elf-y: fooc.c
+src-test.elf-y: exclude_main.c
+
+include-.-y: include
+
+excludecflags-fooa.c: -DHAVE_FOO
+excludecflags-fooc.c: -DHAVE_FOO
+
+# vim:ts=4:sw=4:expandtab

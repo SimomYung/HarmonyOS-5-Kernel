@@ -1,0 +1,8 @@
+# SPDX-License-Identifier: GPL-2.0
+obj-$(CONFIG_WIRELESS_MT5788) += mt5788.o
+obj-$(CONFIG_WIRELESS_MT5788) += mt5788_dts.o
+obj-$(CONFIG_WIRELESS_MT5788) += mt5788_rx.o
+obj-$(CONFIG_WIRELESS_MT5788) += mt5788_tx.o
+obj-$(CONFIG_WIRELESS_MT5788) += mt5788_fw.o
+obj-$(CONFIG_WIRELESS_MT5788) += mt5788_qi.o
+obj-$(CONFIG_WIRELESS_MT5788) += mt5788_hw_test.o

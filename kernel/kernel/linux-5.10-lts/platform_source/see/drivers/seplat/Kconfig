@@ -1,0 +1,26 @@
+config SEPLAT
+	bool "seplat"
+	default n
+	help
+	  seplat driver
+
+config SEPLAT_MNTN
+	bool "seplat_mntn"
+	depends on SEPLAT
+	default n
+	help
+	  seplat maintain upload option
+
+config SEPLAT_FMD_REPORT
+	bool "seplat_fmd_report"
+	depends on SEPLAT
+	default n
+	help
+	  seplat fmd report big-data
+
+config SEPLAT_TPM
+	bool "seplat_tpm"
+	depends on SEPLAT
+	default n
+	help
+	  seplat tpm option

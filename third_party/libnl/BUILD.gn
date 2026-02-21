@@ -1,0 +1,282 @@
+#This library is free software; you can redistribute it and/or
+#modify it under the terms of the GNU Lesser General Public
+#License as published by the Free Software Foundation version 2.1
+#of the License.
+#
+#Copyright(c) 2021-2023 Huawei Device Co., Ltd.
+
+if (!defined(ohos_lite)) {
+  import("//build/ohos.gni")
+}
+
+libnl_path = rebase_path("//third_party/libnl")
+exec_script("install.sh", [ "$libnl_path" ])
+
+config("libnl_share_public_config") {
+  include_dirs = [ "//third_party/libnl/libnl-3.7.0/include/" ]
+}
+
+action("build_grammar") {
+  script = "/usr/bin/env"
+  outputs = [ "$target_out_dir/gen/lib/route/pktloc_grammar.c" ]
+  grammer_hh = rebase_path("$target_out_dir/gen/lib/route/pktloc_grammar.h")
+  args = [
+    "flex",
+    "--header-file=$grammer_hh",
+    "-o",
+    rebase_path("$target_out_dir/gen/lib/route/pktloc_grammar.c"),
+    rebase_path("libnl-3.7.0/lib/route/pktloc_grammar.l"),
+  ]
+}
+
+action("pktloc_syntax") {
+  script = "/usr/bin/env"
+  outputs = [ "$target_out_dir/gen/lib/route/pktloc_syntax.c" ]
+  args = [
+    "bison",
+    "-y",
+    "-d",
+    "-o",
+    rebase_path("$target_out_dir/gen/lib/route/pktloc_syntax.c"),
+    rebase_path("libnl-3.7.0/lib/route/pktloc_syntax.y"),
+  ]
+}
+
+action("ematch_grammar") {
+  script = "/usr/bin/env"
+  outputs = [ "$target_out_dir/gen/lib/route/cls/ematch_grammar.c" ]
+  grammer_hh = rebase_path("$target_out_dir/gen/lib/route/cls/ematch_grammar.h")
+  args = [
+    "flex",
+    "--header-file=$grammer_hh",
+    "-o",
+    rebase_path("$target_out_dir/gen/lib/route/cls/ematch_grammar.c"),
+    rebase_path("libnl-3.7.0/lib/route/cls/ematch_grammar.l"),
+  ]
+}
+
+action("ematch_syntax") {
+  script = "/usr/bin/env"
+  outputs = [ "$target_out_dir/gen/lib/route/cls/ematch_syntax.c" ]
+  args = [
+    "bison",
+    "-y",
+    "-d",
+    "-o",
+    rebase_path("$target_out_dir/gen/lib/route/cls/ematch_syntax.c"),
+    rebase_path("libnl-3.7.0/lib/route/cls/ematch_syntax.y"),
+  ]
+}
+if (!defined(ohos_lite)) {
+  ohos_shared_library("libnl_share") {
+    branch_protector_ret = "pac_ret"
+    grammer_outputs = get_target_outputs(":build_grammar")
+    grammer_path = get_path_info(grammer_outputs[0], "dir")
+    pktloc_outputs = get_target_outputs(":pktloc_syntax")
+    pktloc_path = get_path_info(pktloc_outputs[0], "dir")
+    ematch_outputs = get_target_outputs(":ematch_grammar")
+    ematch_path = get_path_info(ematch_outputs[0], "dir")
+    syntax_outputs = get_target_outputs(":ematch_syntax")
+    syntax_path = get_path_info(syntax_outputs[0], "dir")
+
+    include_dirs = [
+      "libnl-3.7.0",
+      "libnl-3.7.0/include",
+      "libnl-3.7.0/lib",
+      "libnl-3.7.0/lib/route/cls",
+      "libnl-3.7.0/lib/route",
+    ]
+
+    include_dirs += [
+      rebase_path("$grammer_path"),
+      rebase_path("$pktloc_path"),
+      rebase_path("$ematch_path"),
+      rebase_path("$syntax_path"),
+    ]
+
+    public_configs = [ ":libnl_share_public_config" ]
+
+    sources = [
+      "libnl-3.7.0/lib/addr.c",
+      "libnl-3.7.0/lib/attr.c",
+      "libnl-3.7.0/lib/cache.c",
+      "libnl-3.7.0/lib/cache_mngr.c",
+      "libnl-3.7.0/lib/cache_mngt.c",
+      "libnl-3.7.0/lib/data.c",
+      "libnl-3.7.0/lib/error.c",
+      "libnl-3.7.0/lib/handlers.c",
+      "libnl-3.7.0/lib/hash.c",
+      "libnl-3.7.0/lib/hashtable.c",
+      "libnl-3.7.0/lib/mpls.c",
+      "libnl-3.7.0/lib/msg.c",
+      "libnl-3.7.0/lib/nl.c",
+      "libnl-3.7.0/lib/object.c",
+      "libnl-3.7.0/lib/socket.c",
+      "libnl-3.7.0/lib/utils.c",
+      "libnl-3.7.0/lib/version.c",
+      "libnl-3.7.0/lib/fib_lookup/lookup.c",
+      "libnl-3.7.0/lib/fib_lookup/request.c",
+      "libnl-3.7.0/lib/genl/ctrl.c",
+      "libnl-3.7.0/lib/genl/family.c",
+      "libnl-3.7.0/lib/genl/genl.c",
+      "libnl-3.7.0/lib/genl/mngt.c",
+      "libnl-3.7.0/lib/idiag/idiag.c",
+      "libnl-3.7.0/lib/idiag/idiag_meminfo_obj.c",
+      "libnl-3.7.0/lib/idiag/idiag_msg_obj.c",
+      "libnl-3.7.0/lib/idiag/idiag_req_obj.c",
+      "libnl-3.7.0/lib/idiag/idiag_vegasinfo_obj.c",
+      "libnl-3.7.0/lib/netfilter/ct.c",
+      "libnl-3.7.0/lib/netfilter/ct_obj.c",
+      "libnl-3.7.0/lib/netfilter/exp.c",
+      "libnl-3.7.0/lib/netfilter/exp_obj.c",
+      "libnl-3.7.0/lib/netfilter/log.c",
+      "libnl-3.7.0/lib/netfilter/log_msg.c",
+      "libnl-3.7.0/lib/netfilter/log_msg_obj.c",
+      "libnl-3.7.0/lib/netfilter/log_obj.c",
+      "libnl-3.7.0/lib/netfilter/netfilter.c",
+      "libnl-3.7.0/lib/netfilter/nfnl.c",
+      "libnl-3.7.0/lib/netfilter/queue.c",
+      "libnl-3.7.0/lib/netfilter/queue_msg.c",
+      "libnl-3.7.0/lib/netfilter/queue_msg_obj.c",
+      "libnl-3.7.0/lib/netfilter/queue_obj.c",
+      "libnl-3.7.0/lib/route/act.c",
+      "libnl-3.7.0/lib/route/addr.c",
+      "libnl-3.7.0/lib/route/class.c",
+      "libnl-3.7.0/lib/route/classid.c",
+      "libnl-3.7.0/lib/route/cls.c",
+      "libnl-3.7.0/lib/route/link.c",
+      "libnl-3.7.0/lib/route/mdb.c",
+      "libnl-3.7.0/lib/route/neigh.c",
+      "libnl-3.7.0/lib/route/neightbl.c",
+      "libnl-3.7.0/lib/route/netconf.c",
+      "libnl-3.7.0/lib/route/nexthop.c",
+      "libnl-3.7.0/lib/route/nexthop_encap.c",
+      "libnl-3.7.0/lib/route/nh_encap_mpls.c",
+      "libnl-3.7.0/lib/route/pktloc.c",
+      rebase_path("$grammer_path/pktloc_grammar.c"),
+      rebase_path("$pktloc_path/pktloc_syntax.c"),
+      "libnl-3.7.0/lib/route/qdisc.c",
+      "libnl-3.7.0/lib/route/route.c",
+      "libnl-3.7.0/lib/route/route_obj.c",
+      "libnl-3.7.0/lib/route/route_utils.c",
+      "libnl-3.7.0/lib/route/rtnl.c",
+      "libnl-3.7.0/lib/route/rule.c",
+      "libnl-3.7.0/lib/route/tc.c",
+      "libnl-3.7.0/lib/route/act/gact.c",
+      "libnl-3.7.0/lib/route/act/mirred.c",
+      "libnl-3.7.0/lib/route/act/nat.c",
+      "libnl-3.7.0/lib/route/act/skbedit.c",
+      "libnl-3.7.0/lib/route/act/vlan.c",
+      "libnl-3.7.0/lib/route/cls/basic.c",
+      "libnl-3.7.0/lib/route/cls/cgroup.c",
+      "libnl-3.7.0/lib/route/cls/ematch.c",
+      rebase_path("$ematch_path/ematch_grammar.c"),
+      rebase_path("$syntax_path/ematch_syntax.c"),
+      "libnl-3.7.0/lib/route/cls/flower.c",
+      "libnl-3.7.0/lib/route/cls/fw.c",
+      "libnl-3.7.0/lib/route/cls/mall.c",
+      "libnl-3.7.0/lib/route/cls/police.c",
+      "libnl-3.7.0/lib/route/cls/u32.c",
+      "libnl-3.7.0/lib/route/cls/ematch/cmp.c",
+      "libnl-3.7.0/lib/route/cls/ematch/container.c",
+      "libnl-3.7.0/lib/route/cls/ematch/meta.c",
+      "libnl-3.7.0/lib/route/cls/ematch/nbyte.c",
+      "libnl-3.7.0/lib/route/cls/ematch/text.c",
+      "libnl-3.7.0/lib/route/link/api.c",
+      "libnl-3.7.0/lib/route/link/bonding.c",
+      "libnl-3.7.0/lib/route/link/bridge.c",
+      "libnl-3.7.0/lib/route/link/can.c",
+      "libnl-3.7.0/lib/route/link/dummy.c",
+      "libnl-3.7.0/lib/route/link/geneve.c",
+      "libnl-3.7.0/lib/route/link/ifb.c",
+      "libnl-3.7.0/lib/route/link/inet6.c",
+      "libnl-3.7.0/lib/route/link/inet.c",
+      "libnl-3.7.0/lib/route/link/ip6gre.c",
+      "libnl-3.7.0/lib/route/link/ip6tnl.c",
+      "libnl-3.7.0/lib/route/link/ip6vti.c",
+      "libnl-3.7.0/lib/route/link/ipgre.c",
+      "libnl-3.7.0/lib/route/link/ipip.c",
+      "libnl-3.7.0/lib/route/link/ipvlan.c",
+      "libnl-3.7.0/lib/route/link/ipvti.c",
+      "libnl-3.7.0/lib/route/link/macsec.c",
+      "libnl-3.7.0/lib/route/link/macvlan.c",
+      "libnl-3.7.0/lib/route/link/ppp.c",
+      "libnl-3.7.0/lib/route/link/sit.c",
+      "libnl-3.7.0/lib/route/link/sriov.c",
+      "libnl-3.7.0/lib/route/link/team.c",
+      "libnl-3.7.0/lib/route/link/veth.c",
+      "libnl-3.7.0/lib/route/link/vlan.c",
+      "libnl-3.7.0/lib/route/link/vrf.c",
+      "libnl-3.7.0/lib/route/link/vxlan.c",
+      "libnl-3.7.0/lib/route/link/xfrmi.c",
+      "libnl-3.7.0/lib/route/qdisc/blackhole.c",
+      "libnl-3.7.0/lib/route/qdisc/cbq.c",
+      "libnl-3.7.0/lib/route/qdisc/dsmark.c",
+      "libnl-3.7.0/lib/route/qdisc/fifo.c",
+      "libnl-3.7.0/lib/route/qdisc/fq_codel.c",
+      "libnl-3.7.0/lib/route/qdisc/hfsc.c",
+      "libnl-3.7.0/lib/route/qdisc/htb.c",
+      "libnl-3.7.0/lib/route/qdisc/ingress.c",
+      "libnl-3.7.0/lib/route/qdisc/mqprio.c",
+      "libnl-3.7.0/lib/route/qdisc/netem.c",
+      "libnl-3.7.0/lib/route/qdisc/plug.c",
+      "libnl-3.7.0/lib/route/qdisc/prio.c",
+      "libnl-3.7.0/lib/route/qdisc/red.c",
+      "libnl-3.7.0/lib/route/qdisc/sfq.c",
+      "libnl-3.7.0/lib/route/qdisc/tbf.c",
+      "libnl-3.7.0/lib/xfrm/ae.c",
+      "libnl-3.7.0/lib/xfrm/lifetime.c",
+      "libnl-3.7.0/lib/xfrm/sa.c",
+      "libnl-3.7.0/lib/xfrm/selector.c",
+      "libnl-3.7.0/lib/xfrm/sp.c",
+      "libnl-3.7.0/lib/xfrm/template.c",
+      "libnl-3.7.0/lib/cli/cls/basic.c",
+      "libnl-3.7.0/lib/cli/cls/cgroup.c",
+      "libnl-3.7.0/lib/cli/qdisc/bfifo.c",
+      "libnl-3.7.0/lib/cli/qdisc/blackhole.c",
+      "libnl-3.7.0/lib/cli/qdisc/fq_codel.c",
+      "libnl-3.7.0/lib/cli/qdisc/hfsc.c",
+      "libnl-3.7.0/lib/cli/qdisc/htb.c",
+      "libnl-3.7.0/lib/cli/qdisc/ingress.c",
+      "libnl-3.7.0/lib/cli/qdisc/pfifo.c",
+      "libnl-3.7.0/lib/cli/qdisc/plug.c",
+      "libnl-3.7.0/src/lib/addr.c",
+      "libnl-3.7.0/src/lib/class.c",
+      "libnl-3.7.0/src/lib/cls.c",
+      "libnl-3.7.0/src/lib/ct.c",
+      "libnl-3.7.0/src/lib/exp.c",
+      "libnl-3.7.0/src/lib/link.c",
+      "libnl-3.7.0/src/lib/neigh.c",
+      "libnl-3.7.0/src/lib/qdisc.c",
+      "libnl-3.7.0/src/lib/route.c",
+      "libnl-3.7.0/src/lib/rule.c",
+      "libnl-3.7.0/src/lib/tc.c",
+      "libnl-3.7.0/src/lib/utils.c",
+    ]
+
+    deps = [
+      ":build_grammar",
+      ":ematch_grammar",
+      ":ematch_syntax",
+      ":pktloc_syntax",
+    ]
+    defines = [ "NL_DEBUG" ]
+    cflags = [
+      "-Wno-error",
+      "-D_BSD_SOURCE",
+      "-D_GNU_SOURCE",
+      "-DNL_DEBUG",
+
+      #"-UNDEBUG",
+      "-DSYSCONFDIR=\"\\\"/etc/libnl\\\"\"",
+    ]
+
+    install_images = [
+      "system",
+      "updater",
+    ]
+    innerapi_tags = [ "chipsetsdk" ]
+    part_name = "libnl"
+    subsystem_name = "thirdparty"
+  }
+}

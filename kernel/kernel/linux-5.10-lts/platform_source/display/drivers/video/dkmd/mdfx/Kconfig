@@ -1,0 +1,18 @@
+config MDFX_KMD
+	tristate "hisi multimedia dfx"
+	default n
+	help
+	  This is multimedia module dfx driver
+
+config MDFX_KMD_ENG_MODE
+	tristate "config mdfx kmd is eng mode or user mode"
+	default n
+	depends on MDFX_KMD
+	help
+		this is mdfx kmd driver eng mode or user mode
+
+config MDFX_KMD_CALL_STACK
+	bool "mdfx ohos adapter feature switch"
+	default n
+	help
+	  ohos adapter features be opened by setting y

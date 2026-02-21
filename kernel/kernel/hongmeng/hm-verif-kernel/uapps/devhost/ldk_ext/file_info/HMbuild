@@ -1,0 +1,14 @@
+lib-dynamic-y: dhext_file_info
+
+cflags-dhext_file_info-y: -D_DH_PLUGIN_NAME=file_info -fvisibility=hidden
+linklib-dhext_file_info-y: -Tksymtab.lds
+linklib-dhext_file_info-y: -Tdhext_file_info_hdlr.lds
+
+src-dhext_file_info-CONFIG_DFX_MEMCHECK: vmalloc_info.c
+src-dhext_file_info-y: file_info_if.c
+src-dhext_file_info-y: ext_main.c
+
+include-.-y: include/
+
+installinc: include/
+install-dhext_file_info-y: BASE_LIBDIR

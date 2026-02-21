@@ -1,0 +1,6 @@
+config UVMM_LOAD_BOOT
+	bool "uvmm load boot img support"
+	default n
+	depends on TZDRIVER
+	help
+	  This driver supports load boot image

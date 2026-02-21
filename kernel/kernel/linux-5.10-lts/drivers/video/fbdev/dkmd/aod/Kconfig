@@ -1,0 +1,7 @@
+
+config DKMD_AOD_DEBUG
+	bool "support DKMD aod debug function"
+	default n
+	help
+	  This feature driver supports aod debug function.
+

@@ -1,0 +1,21 @@
+#ifndef _FFRT_CONFIGS_H_
+#define _FFRT_CONFIGS_H_
+ 
+typedef enum {
+	SOC_NONE = -1,
+	SOC_HTS = 0,
+	SOC_FFTS,
+	SOC_GPU,
+	SOC_HWTS,
+	SOC_TSCPU,
+	SOC_ISP,
+	SOC_DSS,
+	SOC_VENC,
+	SOC_VDEC,
+	SOC_AUDIO,
+	SOC_SENSORHUB,
+	SOC_IPP,
+	SOC_IPMAX,
+} soc_ip;
+ 
+#endif

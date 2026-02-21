@@ -1,0 +1,5 @@
+config HW_RF
+	tristate "kernel space hw_rf communicate with user space use vcom."
+    default n
+    help
+	  rf kernel driver.

@@ -1,0 +1,15 @@
+lib-dynamic-y: dhext_iaware_notify
+
+cflags-dhext_iaware_notify-y: -D_DH_PLUGIN_NAME=iaware_notify -fvisibility=hidden
+linklib-dhext_iaware_notify-y: -Tksymtab.lds
+linklib-dhext_iaware_notify-y: -Tdhext_iaware_notify_hdlr.lds
+
+src-dhext_iaware_notify-y: iaware_notify_if.c
+src-dhext_iaware_notify-y: ext_main.c
+src-dhext_iaware_notify-y: iaware_notify_policy.c
+src-dhext_iaware_notify-y: iaware_notify_procfs.c
+
+include-.-y: include/
+
+installinc: include/
+install-dhext_iaware_notify-y: BASE_LIBDIR

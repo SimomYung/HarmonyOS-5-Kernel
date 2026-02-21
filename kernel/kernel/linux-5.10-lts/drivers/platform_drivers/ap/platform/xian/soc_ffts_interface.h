@@ -1,0 +1,3174 @@
+
+
+/*****************************************************************************
+  1 其他头文件包含
+*****************************************************************************/
+
+#ifndef __SOC_FFTS_INTERFACE_H__
+#define __SOC_FFTS_INTERFACE_H__
+
+#ifdef __cplusplus
+    #if __cplusplus
+        extern "C" {
+    #endif
+#endif
+
+
+
+/*****************************************************************************
+  2 宏定义
+*****************************************************************************/
+
+/****************************************************************************
+                     (1/2) USER_REG
+ ****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+
+
+/* Register description: RTB指针寄存器
+   Bit domain definition UNION:  SOC_FFTS_RDYTASKQ_PTR_UNION */
+#define SOC_FFTS_RDYTASKQ_PTR_ADDR(base, QOS_NUM)             ((base) + (QOS_NUM) * 4 + 0x1000UL)
+
+/* Register description: SQ指针寄存器
+   Bit domain definition UNION:  SOC_FFTS_SQ_PTR_UNION */
+#define SOC_FFTS_SQ_PTR_ADDR(base)                            ((base) + 0x1020UL)
+
+/* Register description: 唤醒中断开启寄存器
+   Bit domain definition UNION:  SOC_FFTS_INTR_WK_SET_UNION */
+#define SOC_FFTS_INTR_WK_SET_ADDR(base)                       ((base) + 0x1024UL)
+
+/* Register description: DOORBELL寄存器
+   Bit domain definition UNION:  SOC_FFTS_DOORBELL_UNION */
+#define SOC_FFTS_DOORBELL_ADDR(base)                          ((base) + 0x102CUL)
+
+/* Register description: TaskRequest寄存器
+   Bit domain definition UNION:  SOC_FFTS_TASKREQUEST_UNION */
+#define SOC_FFTS_TASKREQUEST_ADDR(base)                       ((base) + 0x1030UL)
+
+/* Register description: TaskRelease寄存器
+   Bit domain definition UNION:  SOC_FFTS_TASKRELEASE_UNION */
+#define SOC_FFTS_TASKRELEASE_ADDR(base)                       ((base) + 0x1034UL)
+
+/* Register description: TaskStart寄存器
+   Bit domain definition UNION:  SOC_FFTS_TASKSTART_UNION */
+#define SOC_FFTS_TASKSTART_ADDR(base)                         ((base) + 0x1038UL)
+
+/* Register description: TaskDone寄存器
+   Bit domain definition UNION:  SOC_FFTS_TASKDONE_UNION */
+#define SOC_FFTS_TASKDONE_ADDR(base)                          ((base) + 0x103CUL)
+
+/* Register description: TASKCNT总占用个数
+   Bit domain definition UNION:  SOC_FFTS_PROC_TASKCNT_UNION */
+#define SOC_FFTS_PROC_TASKCNT_ADDR(base)                      ((base) + 0x1040UL)
+
+/* Register description: VERCNT总占用个数
+   Bit domain definition UNION:  SOC_FFTS_PROC_VERCNT_UNION */
+#define SOC_FFTS_PROC_VERCNT_ADDR(base)                       ((base) + 0x1044UL)
+
+/* Register description: SIGCNT总占用个数
+   Bit domain definition UNION:  SOC_FFTS_PROC_SIGCNT_UNION */
+#define SOC_FFTS_PROC_SIGCNT_ADDR(base)                       ((base) + 0x1048UL)
+
+/* Register description: SEND_EVENT寄存器
+   Bit domain definition UNION:  SOC_FFTS_SEND_EVENT_UNION */
+#define SOC_FFTS_SEND_EVENT_ADDR(base)                        ((base) + 0x104CUL)
+
+
+#else
+
+
+/* Register description: RTB指针寄存器
+   Bit domain definition UNION:  SOC_FFTS_RDYTASKQ_PTR_UNION */
+#define SOC_FFTS_RDYTASKQ_PTR_ADDR(base, QOS_NUM)             ((base) + (QOS_NUM) * 4 + 0x1000)
+
+/* Register description: SQ指针寄存器
+   Bit domain definition UNION:  SOC_FFTS_SQ_PTR_UNION */
+#define SOC_FFTS_SQ_PTR_ADDR(base)                            ((base) + 0x1020)
+
+/* Register description: 唤醒中断开启寄存器
+   Bit domain definition UNION:  SOC_FFTS_INTR_WK_SET_UNION */
+#define SOC_FFTS_INTR_WK_SET_ADDR(base)                       ((base) + 0x1024)
+
+/* Register description: DOORBELL寄存器
+   Bit domain definition UNION:  SOC_FFTS_DOORBELL_UNION */
+#define SOC_FFTS_DOORBELL_ADDR(base)                          ((base) + 0x102C)
+
+/* Register description: TaskRequest寄存器
+   Bit domain definition UNION:  SOC_FFTS_TASKREQUEST_UNION */
+#define SOC_FFTS_TASKREQUEST_ADDR(base)                       ((base) + 0x1030)
+
+/* Register description: TaskRelease寄存器
+   Bit domain definition UNION:  SOC_FFTS_TASKRELEASE_UNION */
+#define SOC_FFTS_TASKRELEASE_ADDR(base)                       ((base) + 0x1034)
+
+/* Register description: TaskStart寄存器
+   Bit domain definition UNION:  SOC_FFTS_TASKSTART_UNION */
+#define SOC_FFTS_TASKSTART_ADDR(base)                         ((base) + 0x1038)
+
+/* Register description: TaskDone寄存器
+   Bit domain definition UNION:  SOC_FFTS_TASKDONE_UNION */
+#define SOC_FFTS_TASKDONE_ADDR(base)                          ((base) + 0x103C)
+
+/* Register description: TASKCNT总占用个数
+   Bit domain definition UNION:  SOC_FFTS_PROC_TASKCNT_UNION */
+#define SOC_FFTS_PROC_TASKCNT_ADDR(base)                      ((base) + 0x1040)
+
+/* Register description: VERCNT总占用个数
+   Bit domain definition UNION:  SOC_FFTS_PROC_VERCNT_UNION */
+#define SOC_FFTS_PROC_VERCNT_ADDR(base)                       ((base) + 0x1044)
+
+/* Register description: SIGCNT总占用个数
+   Bit domain definition UNION:  SOC_FFTS_PROC_SIGCNT_UNION */
+#define SOC_FFTS_PROC_SIGCNT_ADDR(base)                       ((base) + 0x1048)
+
+/* Register description: SEND_EVENT寄存器
+   Bit domain definition UNION:  SOC_FFTS_SEND_EVENT_UNION */
+#define SOC_FFTS_SEND_EVENT_ADDR(base)                        ((base) + 0x104C)
+
+
+#endif
+
+
+/****************************************************************************
+                     (2/2) KERNEL_REG
+ ****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+
+
+/* Register description: FFTS初始化控制寄存器
+   Bit domain definition UNION:  SOC_FFTS_INITIAL_CTRL_UNION */
+#define SOC_FFTS_INITIAL_CTRL_ADDR(base)                      ((base) + 0x2000UL)
+
+/* Register description: FFTS下电备份控制寄存器
+   Bit domain definition UNION:  SOC_FFTS_SR_BACKUP_CTRL_UNION */
+#define SOC_FFTS_SR_BACKUP_CTRL_ADDR(base)                    ((base) + 0x2004UL)
+
+/* Register description: FFTS上电恢复控制寄存器
+   Bit domain definition UNION:  SOC_FFTS_SR_RESUME_CTRL_UNION */
+#define SOC_FFTS_SR_RESUME_CTRL_ADDR(base)                    ((base) + 0x2008UL)
+
+/* Register description: DDR空间基地址高位
+   Bit domain definition UNION:  SOC_FFTS_BASE_H_UNION */
+#define SOC_FFTS_BASE_H_ADDR(base, ADDR_NUM)                  ((base) + (ADDR_NUM) * 8 + 0x2010UL)
+
+/* Register description: DDR空间基地址低32位
+   Bit domain definition UNION:  SOC_FFTS_BASE_L_UNION */
+#define SOC_FFTS_BASE_L_ADDR(base, ADDR_NUM)                  ((base) + (ADDR_NUM) * 8 + 0x2014UL)
+
+/* Register description: FFTS访问属性设置
+   Bit domain definition UNION:  SOC_FFTS_DDR_ATTR_CTRL_UNION */
+#define SOC_FFTS_DDR_ATTR_CTRL_ADDR(base, ATTR_NUM)           ((base) + (ATTR_NUM) * 4 + 0x2080UL)
+
+/* Register description: ACPU_LPID的TID/UID配置寄存器
+   Bit domain definition UNION:  SOC_FFTS_LPID_MAP_UNION */
+#define SOC_FFTS_LPID_MAP_ADDR(base, LPID_NUM)                ((base) + (LPID_NUM) * 4 + 0x2100UL)
+
+/* Register description: ISP的TID/UID
+   Bit domain definition UNION:  SOC_FFTS_ISP_MAP_UNION */
+#define SOC_FFTS_ISP_MAP_ADDR(base)                           ((base) + 0x2130UL)
+
+/* Register description: TaskCtx占用阈值配置
+   Bit domain definition UNION:  SOC_FFTS_TASK_CNT_TH_UNION */
+#define SOC_FFTS_TASK_CNT_TH_ADDR(base)                       ((base) + 0x2134UL)
+
+/* Register description: VerCtx占用阈值配置
+   Bit domain definition UNION:  SOC_FFTS_VER_CNT_TH_UNION */
+#define SOC_FFTS_VER_CNT_TH_ADDR(base)                        ((base) + 0x2138UL)
+
+/* Register description: SigCtx占用阈值配置
+   Bit domain definition UNION:  SOC_FFTS_SIG_CNT_TH_UNION */
+#define SOC_FFTS_SIG_CNT_TH_ADDR(base)                        ((base) + 0x213CUL)
+
+/* Register description: TASK_VER空间大小配置
+   Bit domain definition UNION:  SOC_FFTS_TASKVER_SIZE_UNION */
+#define SOC_FFTS_TASKVER_SIZE_ADDR(base)                      ((base) + 0x2140UL)
+
+/* Register description: SigHash空间大小配置
+   Bit domain definition UNION:  SOC_FFTS_SIGHASH_SIZE_UNION */
+#define SOC_FFTS_SIGHASH_SIZE_ADDR(base)                      ((base) + 0x2144UL)
+
+/* Register description: 队列大小配置
+   Bit domain definition UNION:  SOC_FFTS_QUEUE_SIZE_CTRL_UNION */
+#define SOC_FFTS_QUEUE_SIZE_CTRL_ADDR(base)                   ((base) + 0x2148UL)
+
+/* Register description: ReadyTask队列深度告警深度
+   Bit domain definition UNION:  SOC_FFTS_RTB_INTR_TH_UNION */
+#define SOC_FFTS_RTB_INTR_TH_ADDR(base)                       ((base) + 0x214CUL)
+
+/* Register description: FFTS TASKVER释放寄存器
+   Bit domain definition UNION:  SOC_FFTS_TASKIDX_REL_UNION */
+#define SOC_FFTS_TASKIDX_REL_ADDR(base)                       ((base) + 0x2150UL)
+
+/* Register description: FFTS VERIDX释放寄存器
+   Bit domain definition UNION:  SOC_FFTS_VERIDX_REL_UNION */
+#define SOC_FFTS_VERIDX_REL_ADDR(base)                        ((base) + 0x2154UL)
+
+/* Register description: SIGCNT更新
+   Bit domain definition UNION:  SOC_FFTS_SIGCNT_UPD_UNION */
+#define SOC_FFTS_SIGCNT_UPD_ADDR(base)                        ((base) + 0x2158UL)
+
+/* Register description: FFTS碰撞重试寄存器
+   Bit domain definition UNION:  SOC_FFTS_TH_RETRY_UNION */
+#define SOC_FFTS_TH_RETRY_ADDR(base)                          ((base) + 0x215CUL)
+
+/* Register description: 进程封锁控制寄存器
+   Bit domain definition UNION:  SOC_FFTS_PROC_BLOCK_CTRL_UNION */
+#define SOC_FFTS_PROC_BLOCK_CTRL_ADDR(base)                   ((base) + 0x2160UL)
+
+/* Register description: 进程封锁启动寄存器
+   Bit domain definition UNION:  SOC_FFTS_PROC_BLOCK_START_UNION */
+#define SOC_FFTS_PROC_BLOCK_START_ADDR(base)                  ((base) + 0x2164UL)
+
+/* Register description: 进程封锁取消寄存器
+   Bit domain definition UNION:  SOC_FFTS_PROC_BLOCK_DIS_UNION */
+#define SOC_FFTS_PROC_BLOCK_DIS_ADDR(base)                    ((base) + 0x2168UL)
+
+/* Register description: 进程封锁状态寄存器
+   Bit domain definition UNION:  SOC_FFTS_PROC_BLOCK_ST_UNION */
+#define SOC_FFTS_PROC_BLOCK_ST_ADDR(base)                     ((base) + 0x216CUL)
+
+/* Register description: HW封锁控制寄存器
+   Bit domain definition UNION:  SOC_FFTS_HW_BLOCK_CTRL_UNION */
+#define SOC_FFTS_HW_BLOCK_CTRL_ADDR(base, HW_NUM)             ((base) + (HW_NUM) * 4 + 0x2170UL)
+
+/* Register description: HW封锁状态寄存器
+   Bit domain definition UNION:  SOC_FFTS_HW_BLOCK_ST_UNION */
+#define SOC_FFTS_HW_BLOCK_ST_ADDR(base, HW_NUM)               ((base) + (HW_NUM) * 4 + 0x2178UL)
+
+/* Register description: HW建链状态寄存器
+   Bit domain definition UNION:  SOC_FFTS_HW_LINK_ST_UNION */
+#define SOC_FFTS_HW_LINK_ST_ADDR(base, HW_NUM)                ((base) + (HW_NUM) * 4 + 0x2180UL)
+
+/* Register description: HWRTB读写指针寄存器
+   Bit domain definition UNION:  SOC_FFTS_HWRTB_PTR_UNION */
+#define SOC_FFTS_HWRTB_PTR_ADDR(base, HW_NUM)                 ((base) + (HW_NUM) * 4 + 0x2188UL)
+
+/* Register description: HWRTB读写指针控制寄存器
+   Bit domain definition UNION:  SOC_FFTS_HWRTB_PTR_CTRL_UNION */
+#define SOC_FFTS_HWRTB_PTR_CTRL_ADDR(base, HW_NUM)            ((base) + (HW_NUM) * 4 + 0x2190UL)
+
+/* Register description: FFTS Cache CMO控制寄存器
+   Bit domain definition UNION:  SOC_FFTS_CACHE_CMO_CTRL_UNION */
+#define SOC_FFTS_CACHE_CMO_CTRL_ADDR(base)                    ((base) + 0x2198UL)
+
+/* Register description: FFTS Cache CMO状态寄存器
+   Bit domain definition UNION:  SOC_FFTS_CACHE_CMO_ST_UNION */
+#define SOC_FFTS_CACHE_CMO_ST_ADDR(base)                      ((base) + 0x219CUL)
+
+/* Register description: FFTS EVENT封锁
+   Bit domain definition UNION:  SOC_FFTS_EVENT_BLOCK_UNION */
+#define SOC_FFTS_EVENT_BLOCK_ADDR(base)                       ((base) + 0x21A0UL)
+
+/* Register description: FFTS下发EVENT到RTB
+   Bit domain definition UNION:  SOC_FFTS_EVENT2RTB_CTRL_UNION */
+#define SOC_FFTS_EVENT2RTB_CTRL_ADDR(base)                    ((base) + 0x21A4UL)
+
+/* Register description: FFTS 下发EVENT到RTB状态
+   Bit domain definition UNION:  SOC_FFTS_EVENT2RTB_ST_UNION */
+#define SOC_FFTS_EVENT2RTB_ST_ADDR(base)                      ((base) + 0x21A8UL)
+
+/* Register description: RTB搜索启动阈值设置
+   Bit domain definition UNION:  SOC_FFTS_RTB_SERACH_TH_UNION */
+#define SOC_FFTS_RTB_SERACH_TH_ADDR(base)                     ((base) + 0x21ACUL)
+
+/* Register description: FFTS总线访问QOS控制
+   Bit domain definition UNION:  SOC_FFTS_BUS_QOS_CTRL_UNION */
+#define SOC_FFTS_BUS_QOS_CTRL_ADDR(base)                      ((base) + 0x21B0UL)
+
+/* Register description: MEM控制寄存器
+   Bit domain definition UNION:  SOC_FFTS_SPMEM_CTRL_UNION */
+#define SOC_FFTS_SPMEM_CTRL_ADDR(base)                        ((base) + 0x21B4UL)
+
+/* Register description: FFTS门控延迟控制
+   Bit domain definition UNION:  SOC_FFTS_CKG_EXT_CTRL_UNION */
+#define SOC_FFTS_CKG_EXT_CTRL_ADDR(base)                      ((base) + 0x21B8UL)
+
+/* Register description: FFTS门控开关控制
+   Bit domain definition UNION:  SOC_FFTS_CKG_BYP_CTRL_UNION */
+#define SOC_FFTS_CKG_BYP_CTRL_ADDR(base)                      ((base) + 0x21BCUL)
+
+/* Register description: FFTS相关控制寄存器
+   Bit domain definition UNION:  SOC_FFTS_MISC_CTRL_UNION */
+#define SOC_FFTS_MISC_CTRL_ADDR(base)                         ((base) + 0x21C0UL)
+
+/* Register description: FFTS相关控制寄存器
+   Bit domain definition UNION:  SOC_FFTS_MISC_CTRL2_UNION */
+#define SOC_FFTS_MISC_CTRL2_ADDR(base)                        ((base) + 0x21C4UL)
+
+/* Register description: TASKCNT总占用个数
+   Bit domain definition UNION:  SOC_FFTS_DFX_TASKCNT_UNION */
+#define SOC_FFTS_DFX_TASKCNT_ADDR(base)                       ((base) + 0x21C8UL)
+
+/* Register description: VERCNT总占用个数
+   Bit domain definition UNION:  SOC_FFTS_DFX_VERCNT_UNION */
+#define SOC_FFTS_DFX_VERCNT_ADDR(base)                        ((base) + 0x21CCUL)
+
+/* Register description: SIGCNT总占用个数
+   Bit domain definition UNION:  SOC_FFTS_DFX_SIGCNT_UNION */
+#define SOC_FFTS_DFX_SIGCNT_ADDR(base)                        ((base) + 0x21D0UL)
+
+/* Register description: FFTS向消息总线发送的OSTD
+   Bit domain definition UNION:  SOC_FFTS_DFX_MSG_OST_UNION */
+#define SOC_FFTS_DFX_MSG_OST_ADDR(base)                       ((base) + 0x21D4UL)
+
+/* Register description: FFTS访问DDR OSTD
+   Bit domain definition UNION:  SOC_FFTS_DFX_DDR_OST_UNION */
+#define SOC_FFTS_DFX_DDR_OST_ADDR(base)                       ((base) + 0x21D8UL)
+
+/* Register description: TASKFIFO深度
+   Bit domain definition UNION:  SOC_FFTS_DFX_FIFO_CNT_UNION */
+#define SOC_FFTS_DFX_FIFO_CNT_ADDR(base)                      ((base) + 0x21DCUL)
+
+/* Register description: 维侧回读busy状态寄存器
+   Bit domain definition UNION:  SOC_FFTS_DFX_BUSY_UNION */
+#define SOC_FFTS_DFX_BUSY_ADDR(base)                          ((base) + 0x21E0UL)
+
+/* Register description: 维侧回读需要搜索的UID个数
+   Bit domain definition UNION:  SOC_FFTS_DFX_UID_SEARCH_CNT_UNION */
+#define SOC_FFTS_DFX_UID_SEARCH_CNT_ADDR(base)                ((base) + 0x21E4UL)
+
+/* Register description: 维侧回读异常处理
+   Bit domain definition UNION:  SOC_FFTS_DFX_ABNORMAL_UNION */
+#define SOC_FFTS_DFX_ABNORMAL_ADDR(base)                      ((base) + 0x21E8UL)
+
+/* Register description: FFTS PMU event counter register.
+   Bit domain definition UNION:  SOC_FFTS_PMU_EVCNT_UNION */
+#define SOC_FFTS_PMU_EVCNT_ADDR(base, PMU_NUM)                ((base) + (PMU_NUM) * 4 + 0x2200UL)
+
+/* Register description: FFTS PMU event counter shadow register.
+   Bit domain definition UNION:  SOC_FFTS_PMU_EVSVR_UNION */
+#define SOC_FFTS_PMU_EVSVR_ADDR(base, PMU_NUM)                ((base) + (PMU_NUM) * 4 + 0x2220UL)
+
+/* Register description: FFTS PMU event type set register.
+   Bit domain definition UNION:  SOC_FFTS_PMU_EVTYPE_UNION */
+#define SOC_FFTS_PMU_EVTYPE_ADDR(base, PMU_NUM)               ((base) + (PMU_NUM) * 4 + 0x2240UL)
+
+/* Register description: FFTS PMU event counter enable register.
+   Bit domain definition UNION:  SOC_FFTS_PMU_CNTEN_UNION */
+#define SOC_FFTS_PMU_CNTEN_ADDR(base)                         ((base) + 0x2260UL)
+
+/* Register description: FFTS PMU event counter overflow status register.
+   Bit domain definition UNION:  SOC_FFTS_PMU_OV_UNION */
+#define SOC_FFTS_PMU_OV_ADDR(base)                            ((base) + 0x2264UL)
+
+/* Register description: FFTS PMU config register.
+   Bit domain definition UNION:  SOC_FFTS_PMU_CFG_UNION */
+#define SOC_FFTS_PMU_CFG_ADDR(base)                           ((base) + 0x2268UL)
+
+/* Register description: FFTS PMU capture register.
+   Bit domain definition UNION:  SOC_FFTS_PMU_CAPR_UNION */
+#define SOC_FFTS_PMU_CAPR_ADDR(base)                          ((base) + 0x226CUL)
+
+/* Register description: FFTS PMU UIT过滤寄存器0
+   Bit domain definition UNION:  SOC_FFTS_PMU_UID_FLT_UNION */
+#define SOC_FFTS_PMU_UID_FLT_ADDR(base)                       ((base) + 0x2270UL)
+
+/* Register description: FFTS_PMU_HWTYPE过滤器
+   Bit domain definition UNION:  SOC_FFTS_PMU_HWTYPE_FLT_UNION */
+#define SOC_FFTS_PMU_HWTYPE_FLT_ADDR(base)                    ((base) + 0x2274UL)
+
+/* Register description: FFTS PMU DDR访问控制
+   Bit domain definition UNION:  SOC_FFTS_PMU_FLT_DDR_UNION */
+#define SOC_FFTS_PMU_FLT_DDR_ADDR(base)                       ((base) + 0x2278UL)
+
+/* Register description: FFTS PMU TASKFIFO 阈值
+   Bit domain definition UNION:  SOC_FFTS_PMU_TASKFIFO_TH_UNION */
+#define SOC_FFTS_PMU_TASKFIFO_TH_ADDR(base)                   ((base) + 0x227CUL)
+
+/* Register description: ISP使用的QOS控制
+   Bit domain definition UNION:  SOC_FFTS_INTR_ISP_QOS_UNION */
+#define SOC_FFTS_INTR_ISP_QOS_ADDR(base)                      ((base) + 0x2300UL)
+
+/* Register description: ISPCPU正常中断MASK寄存器
+   Bit domain definition UNION:  SOC_FFTS_INTR_NRML_MASK_ISP_UNION */
+#define SOC_FFTS_INTR_NRML_MASK_ISP_ADDR(base)                ((base) + 0x2304UL)
+
+/* Register description: ISPCPU正常中断状态清除寄存器
+   Bit domain definition UNION:  SOC_FFTS_INTR_NRML_CLR_ISP_UNION */
+#define SOC_FFTS_INTR_NRML_CLR_ISP_ADDR(base)                 ((base) + 0x2308UL)
+
+/* Register description: ISPCPU正常中断状态寄存器
+   Bit domain definition UNION:  SOC_FFTS_INTR_NRML_ST_ISP_UNION */
+#define SOC_FFTS_INTR_NRML_ST_ISP_ADDR(base)                  ((base) + 0x230CUL)
+
+/* Register description: ISPCPU正常中断队列读写指针
+   Bit domain definition UNION:  SOC_FFTS_INTRQ_NRML_PTR_ISP_UNION */
+#define SOC_FFTS_INTRQ_NRML_PTR_ISP_ADDR(base)                ((base) + 0x2310UL)
+
+/* Register description: 正常中断MASK寄存器
+   Bit domain definition UNION:  SOC_FFTS_INTR_NRML_MASK_UNION */
+#define SOC_FFTS_INTR_NRML_MASK_ADDR(base)                    ((base) + 0x2314UL)
+
+/* Register description: 正常中断状态清除寄存器
+   Bit domain definition UNION:  SOC_FFTS_INTR_NRML_CLR_UNION */
+#define SOC_FFTS_INTR_NRML_CLR_ADDR(base)                     ((base) + 0x2318UL)
+
+/* Register description: 正常中断状态寄存器
+   Bit domain definition UNION:  SOC_FFTS_INTR_NRML_ST_UNION */
+#define SOC_FFTS_INTR_NRML_ST_ADDR(base)                      ((base) + 0x231CUL)
+
+/* Register description: 正常中断队列读写指针
+   Bit domain definition UNION:  SOC_FFTS_INTRQ_NRML_PTR_UNION */
+#define SOC_FFTS_INTRQ_NRML_PTR_ADDR(base)                    ((base) + 0x2320UL)
+
+/* Register description: 异常中断MASK寄存器
+   Bit domain definition UNION:  SOC_FFTS_INTR_ABNM_MASK_UNION */
+#define SOC_FFTS_INTR_ABNM_MASK_ADDR(base)                    ((base) + 0x2324UL)
+
+/* Register description: 异常中断状态清除寄存器
+   Bit domain definition UNION:  SOC_FFTS_INTR_ABNM_CLR_UNION */
+#define SOC_FFTS_INTR_ABNM_CLR_ADDR(base)                     ((base) + 0x2328UL)
+
+/* Register description: 异常中断状态寄存器
+   Bit domain definition UNION:  SOC_FFTS_INTR_ABNM_ST_UNION */
+#define SOC_FFTS_INTR_ABNM_ST_ADDR(base)                      ((base) + 0x232CUL)
+
+/* Register description: 异常中断队列读写指针
+   Bit domain definition UNION:  SOC_FFTS_INTRQ_ABNM_PTR_UNION */
+#define SOC_FFTS_INTRQ_ABNM_PTR_ADDR(base)                    ((base) + 0x2330UL)
+
+/* Register description: 异常中断队列MASK
+   Bit domain definition UNION:  SOC_FFTS_INTRQ_ABNM_MASK_UNION */
+#define SOC_FFTS_INTRQ_ABNM_MASK_ADDR(base)                   ((base) + 0x2334UL)
+
+/* Register description: 异常中断队列状态
+   Bit domain definition UNION:  SOC_FFTS_INTRQ_ABNM_DFX_ST_UNION */
+#define SOC_FFTS_INTRQ_ABNM_DFX_ST_ADDR(base)                 ((base) + 0x2338UL)
+
+/* Register description: 异常中断队列CLR
+   Bit domain definition UNION:  SOC_FFTS_INTRQ_ABNM_DFX_CLR_UNION */
+#define SOC_FFTS_INTRQ_ABNM_DFX_CLR_ADDR(base)                ((base) + 0x233CUL)
+
+/* Register description: FFTS DFX control register.
+   Bit domain definition UNION:  SOC_FFTS_INTR_DFX_MASK_UNION */
+#define SOC_FFTS_INTR_DFX_MASK_ADDR(base)                     ((base) + 0x2340UL)
+
+/* Register description: FFTS DFX status register.
+   Bit domain definition UNION:  SOC_FFTS_INTR_DFX_ORG_STATUS_UNION */
+#define SOC_FFTS_INTR_DFX_ORG_STATUS_ADDR(base)               ((base) + 0x2344UL)
+
+/* Register description: FFTS DFX status register.
+   Bit domain definition UNION:  SOC_FFTS_INTR_DFX_MASK_STATUS_UNION */
+#define SOC_FFTS_INTR_DFX_MASK_STATUS_ADDR(base)              ((base) + 0x2348UL)
+
+/* Register description: FFTS DFX type register.
+   Bit domain definition UNION:  SOC_FFTS_INTR_DFX_TYPE_UNION */
+#define SOC_FFTS_INTR_DFX_TYPE_ADDR(base)                     ((base) + 0x234CUL)
+
+/* Register description: FFTS DFX info0 register.
+   Bit domain definition UNION:  SOC_FFTS_INTR_DFX_INFO_UNION */
+#define SOC_FFTS_INTR_DFX_INFO_ADDR(base)                     ((base) + 0x2350UL)
+
+/* Register description: Debug地址寄存器
+   Bit domain definition UNION:  SOC_FFTS_DEBUG_ADDR_UNION */
+#define SOC_FFTS_DEBUG_ADDR_ADDR(base)                        ((base) + 0x2354UL)
+
+/* Register description: Debug读取寄存器
+   Bit domain definition UNION:  SOC_FFTS_DEBUG_RD_EN_UNION */
+#define SOC_FFTS_DEBUG_RD_EN_ADDR(base)                       ((base) + 0x2358UL)
+
+/* Register description: Debug状态寄存器
+   Bit domain definition UNION:  SOC_FFTS_DEBUG_ST_UNION */
+#define SOC_FFTS_DEBUG_ST_ADDR(base)                          ((base) + 0x235CUL)
+
+/* Register description: Debug结果寄存器
+   Bit domain definition UNION:  SOC_FFTS_DEBUG_INFO0_UNION */
+#define SOC_FFTS_DEBUG_INFO0_ADDR(base)                       ((base) + 0x2360UL)
+
+/* Register description: Debug结果寄存器
+   Bit domain definition UNION:  SOC_FFTS_DEBUG_INFO1_UNION */
+#define SOC_FFTS_DEBUG_INFO1_ADDR(base)                       ((base) + 0x2364UL)
+
+/* Register description: Debug结果寄存器
+   Bit domain definition UNION:  SOC_FFTS_DEBUG_INFO2_UNION */
+#define SOC_FFTS_DEBUG_INFO2_ADDR(base)                       ((base) + 0x2368UL)
+
+/* Register description: Debug结果寄存器
+   Bit domain definition UNION:  SOC_FFTS_DEBUG_INFO3_UNION */
+#define SOC_FFTS_DEBUG_INFO3_ADDR(base)                       ((base) + 0x236CUL)
+
+/* Register description: 保留寄存器
+   Bit domain definition UNION:  SOC_FFTS_RESERVED_UNION */
+#define SOC_FFTS_RESERVED_ADDR(base)                          ((base) + 0x2380UL)
+
+
+#else
+
+
+/* Register description: FFTS初始化控制寄存器
+   Bit domain definition UNION:  SOC_FFTS_INITIAL_CTRL_UNION */
+#define SOC_FFTS_INITIAL_CTRL_ADDR(base)                      ((base) + 0x2000)
+
+/* Register description: FFTS下电备份控制寄存器
+   Bit domain definition UNION:  SOC_FFTS_SR_BACKUP_CTRL_UNION */
+#define SOC_FFTS_SR_BACKUP_CTRL_ADDR(base)                    ((base) + 0x2004)
+
+/* Register description: FFTS上电恢复控制寄存器
+   Bit domain definition UNION:  SOC_FFTS_SR_RESUME_CTRL_UNION */
+#define SOC_FFTS_SR_RESUME_CTRL_ADDR(base)                    ((base) + 0x2008)
+
+/* Register description: DDR空间基地址高位
+   Bit domain definition UNION:  SOC_FFTS_BASE_H_UNION */
+#define SOC_FFTS_BASE_H_ADDR(base, ADDR_NUM)                  ((base) + (ADDR_NUM) * 8 + 0x2010)
+
+/* Register description: DDR空间基地址低32位
+   Bit domain definition UNION:  SOC_FFTS_BASE_L_UNION */
+#define SOC_FFTS_BASE_L_ADDR(base, ADDR_NUM)                  ((base) + (ADDR_NUM) * 8 + 0x2014)
+
+/* Register description: FFTS访问属性设置
+   Bit domain definition UNION:  SOC_FFTS_DDR_ATTR_CTRL_UNION */
+#define SOC_FFTS_DDR_ATTR_CTRL_ADDR(base, ATTR_NUM)           ((base) + (ATTR_NUM) * 4 + 0x2080)
+
+/* Register description: ACPU_LPID的TID/UID配置寄存器
+   Bit domain definition UNION:  SOC_FFTS_LPID_MAP_UNION */
+#define SOC_FFTS_LPID_MAP_ADDR(base, LPID_NUM)                ((base) + (LPID_NUM) * 4 + 0x2100)
+
+/* Register description: ISP的TID/UID
+   Bit domain definition UNION:  SOC_FFTS_ISP_MAP_UNION */
+#define SOC_FFTS_ISP_MAP_ADDR(base)                           ((base) + 0x2130)
+
+/* Register description: TaskCtx占用阈值配置
+   Bit domain definition UNION:  SOC_FFTS_TASK_CNT_TH_UNION */
+#define SOC_FFTS_TASK_CNT_TH_ADDR(base)                       ((base) + 0x2134)
+
+/* Register description: VerCtx占用阈值配置
+   Bit domain definition UNION:  SOC_FFTS_VER_CNT_TH_UNION */
+#define SOC_FFTS_VER_CNT_TH_ADDR(base)                        ((base) + 0x2138)
+
+/* Register description: SigCtx占用阈值配置
+   Bit domain definition UNION:  SOC_FFTS_SIG_CNT_TH_UNION */
+#define SOC_FFTS_SIG_CNT_TH_ADDR(base)                        ((base) + 0x213C)
+
+/* Register description: TASK_VER空间大小配置
+   Bit domain definition UNION:  SOC_FFTS_TASKVER_SIZE_UNION */
+#define SOC_FFTS_TASKVER_SIZE_ADDR(base)                      ((base) + 0x2140)
+
+/* Register description: SigHash空间大小配置
+   Bit domain definition UNION:  SOC_FFTS_SIGHASH_SIZE_UNION */
+#define SOC_FFTS_SIGHASH_SIZE_ADDR(base)                      ((base) + 0x2144)
+
+/* Register description: 队列大小配置
+   Bit domain definition UNION:  SOC_FFTS_QUEUE_SIZE_CTRL_UNION */
+#define SOC_FFTS_QUEUE_SIZE_CTRL_ADDR(base)                   ((base) + 0x2148)
+
+/* Register description: ReadyTask队列深度告警深度
+   Bit domain definition UNION:  SOC_FFTS_RTB_INTR_TH_UNION */
+#define SOC_FFTS_RTB_INTR_TH_ADDR(base)                       ((base) + 0x214C)
+
+/* Register description: FFTS TASKVER释放寄存器
+   Bit domain definition UNION:  SOC_FFTS_TASKIDX_REL_UNION */
+#define SOC_FFTS_TASKIDX_REL_ADDR(base)                       ((base) + 0x2150)
+
+/* Register description: FFTS VERIDX释放寄存器
+   Bit domain definition UNION:  SOC_FFTS_VERIDX_REL_UNION */
+#define SOC_FFTS_VERIDX_REL_ADDR(base)                        ((base) + 0x2154)
+
+/* Register description: SIGCNT更新
+   Bit domain definition UNION:  SOC_FFTS_SIGCNT_UPD_UNION */
+#define SOC_FFTS_SIGCNT_UPD_ADDR(base)                        ((base) + 0x2158)
+
+/* Register description: FFTS碰撞重试寄存器
+   Bit domain definition UNION:  SOC_FFTS_TH_RETRY_UNION */
+#define SOC_FFTS_TH_RETRY_ADDR(base)                          ((base) + 0x215C)
+
+/* Register description: 进程封锁控制寄存器
+   Bit domain definition UNION:  SOC_FFTS_PROC_BLOCK_CTRL_UNION */
+#define SOC_FFTS_PROC_BLOCK_CTRL_ADDR(base)                   ((base) + 0x2160)
+
+/* Register description: 进程封锁启动寄存器
+   Bit domain definition UNION:  SOC_FFTS_PROC_BLOCK_START_UNION */
+#define SOC_FFTS_PROC_BLOCK_START_ADDR(base)                  ((base) + 0x2164)
+
+/* Register description: 进程封锁取消寄存器
+   Bit domain definition UNION:  SOC_FFTS_PROC_BLOCK_DIS_UNION */
+#define SOC_FFTS_PROC_BLOCK_DIS_ADDR(base)                    ((base) + 0x2168)
+
+/* Register description: 进程封锁状态寄存器
+   Bit domain definition UNION:  SOC_FFTS_PROC_BLOCK_ST_UNION */
+#define SOC_FFTS_PROC_BLOCK_ST_ADDR(base)                     ((base) + 0x216C)
+
+/* Register description: HW封锁控制寄存器
+   Bit domain definition UNION:  SOC_FFTS_HW_BLOCK_CTRL_UNION */
+#define SOC_FFTS_HW_BLOCK_CTRL_ADDR(base, HW_NUM)             ((base) + (HW_NUM) * 4 + 0x2170)
+
+/* Register description: HW封锁状态寄存器
+   Bit domain definition UNION:  SOC_FFTS_HW_BLOCK_ST_UNION */
+#define SOC_FFTS_HW_BLOCK_ST_ADDR(base, HW_NUM)               ((base) + (HW_NUM) * 4 + 0x2178)
+
+/* Register description: HW建链状态寄存器
+   Bit domain definition UNION:  SOC_FFTS_HW_LINK_ST_UNION */
+#define SOC_FFTS_HW_LINK_ST_ADDR(base, HW_NUM)                ((base) + (HW_NUM) * 4 + 0x2180)
+
+/* Register description: HWRTB读写指针寄存器
+   Bit domain definition UNION:  SOC_FFTS_HWRTB_PTR_UNION */
+#define SOC_FFTS_HWRTB_PTR_ADDR(base, HW_NUM)                 ((base) + (HW_NUM) * 4 + 0x2188)
+
+/* Register description: HWRTB读写指针控制寄存器
+   Bit domain definition UNION:  SOC_FFTS_HWRTB_PTR_CTRL_UNION */
+#define SOC_FFTS_HWRTB_PTR_CTRL_ADDR(base, HW_NUM)            ((base) + (HW_NUM) * 4 + 0x2190)
+
+/* Register description: FFTS Cache CMO控制寄存器
+   Bit domain definition UNION:  SOC_FFTS_CACHE_CMO_CTRL_UNION */
+#define SOC_FFTS_CACHE_CMO_CTRL_ADDR(base)                    ((base) + 0x2198)
+
+/* Register description: FFTS Cache CMO状态寄存器
+   Bit domain definition UNION:  SOC_FFTS_CACHE_CMO_ST_UNION */
+#define SOC_FFTS_CACHE_CMO_ST_ADDR(base)                      ((base) + 0x219C)
+
+/* Register description: FFTS EVENT封锁
+   Bit domain definition UNION:  SOC_FFTS_EVENT_BLOCK_UNION */
+#define SOC_FFTS_EVENT_BLOCK_ADDR(base)                       ((base) + 0x21A0)
+
+/* Register description: FFTS下发EVENT到RTB
+   Bit domain definition UNION:  SOC_FFTS_EVENT2RTB_CTRL_UNION */
+#define SOC_FFTS_EVENT2RTB_CTRL_ADDR(base)                    ((base) + 0x21A4)
+
+/* Register description: FFTS 下发EVENT到RTB状态
+   Bit domain definition UNION:  SOC_FFTS_EVENT2RTB_ST_UNION */
+#define SOC_FFTS_EVENT2RTB_ST_ADDR(base)                      ((base) + 0x21A8)
+
+/* Register description: RTB搜索启动阈值设置
+   Bit domain definition UNION:  SOC_FFTS_RTB_SERACH_TH_UNION */
+#define SOC_FFTS_RTB_SERACH_TH_ADDR(base)                     ((base) + 0x21AC)
+
+/* Register description: FFTS总线访问QOS控制
+   Bit domain definition UNION:  SOC_FFTS_BUS_QOS_CTRL_UNION */
+#define SOC_FFTS_BUS_QOS_CTRL_ADDR(base)                      ((base) + 0x21B0)
+
+/* Register description: MEM控制寄存器
+   Bit domain definition UNION:  SOC_FFTS_SPMEM_CTRL_UNION */
+#define SOC_FFTS_SPMEM_CTRL_ADDR(base)                        ((base) + 0x21B4)
+
+/* Register description: FFTS门控延迟控制
+   Bit domain definition UNION:  SOC_FFTS_CKG_EXT_CTRL_UNION */
+#define SOC_FFTS_CKG_EXT_CTRL_ADDR(base)                      ((base) + 0x21B8)
+
+/* Register description: FFTS门控开关控制
+   Bit domain definition UNION:  SOC_FFTS_CKG_BYP_CTRL_UNION */
+#define SOC_FFTS_CKG_BYP_CTRL_ADDR(base)                      ((base) + 0x21BC)
+
+/* Register description: FFTS相关控制寄存器
+   Bit domain definition UNION:  SOC_FFTS_MISC_CTRL_UNION */
+#define SOC_FFTS_MISC_CTRL_ADDR(base)                         ((base) + 0x21C0)
+
+/* Register description: FFTS相关控制寄存器
+   Bit domain definition UNION:  SOC_FFTS_MISC_CTRL2_UNION */
+#define SOC_FFTS_MISC_CTRL2_ADDR(base)                        ((base) + 0x21C4)
+
+/* Register description: TASKCNT总占用个数
+   Bit domain definition UNION:  SOC_FFTS_DFX_TASKCNT_UNION */
+#define SOC_FFTS_DFX_TASKCNT_ADDR(base)                       ((base) + 0x21C8)
+
+/* Register description: VERCNT总占用个数
+   Bit domain definition UNION:  SOC_FFTS_DFX_VERCNT_UNION */
+#define SOC_FFTS_DFX_VERCNT_ADDR(base)                        ((base) + 0x21CC)
+
+/* Register description: SIGCNT总占用个数
+   Bit domain definition UNION:  SOC_FFTS_DFX_SIGCNT_UNION */
+#define SOC_FFTS_DFX_SIGCNT_ADDR(base)                        ((base) + 0x21D0)
+
+/* Register description: FFTS向消息总线发送的OSTD
+   Bit domain definition UNION:  SOC_FFTS_DFX_MSG_OST_UNION */
+#define SOC_FFTS_DFX_MSG_OST_ADDR(base)                       ((base) + 0x21D4)
+
+/* Register description: FFTS访问DDR OSTD
+   Bit domain definition UNION:  SOC_FFTS_DFX_DDR_OST_UNION */
+#define SOC_FFTS_DFX_DDR_OST_ADDR(base)                       ((base) + 0x21D8)
+
+/* Register description: TASKFIFO深度
+   Bit domain definition UNION:  SOC_FFTS_DFX_FIFO_CNT_UNION */
+#define SOC_FFTS_DFX_FIFO_CNT_ADDR(base)                      ((base) + 0x21DC)
+
+/* Register description: 维侧回读busy状态寄存器
+   Bit domain definition UNION:  SOC_FFTS_DFX_BUSY_UNION */
+#define SOC_FFTS_DFX_BUSY_ADDR(base)                          ((base) + 0x21E0)
+
+/* Register description: 维侧回读需要搜索的UID个数
+   Bit domain definition UNION:  SOC_FFTS_DFX_UID_SEARCH_CNT_UNION */
+#define SOC_FFTS_DFX_UID_SEARCH_CNT_ADDR(base)                ((base) + 0x21E4)
+
+/* Register description: 维侧回读异常处理
+   Bit domain definition UNION:  SOC_FFTS_DFX_ABNORMAL_UNION */
+#define SOC_FFTS_DFX_ABNORMAL_ADDR(base)                      ((base) + 0x21E8)
+
+/* Register description: FFTS PMU event counter register.
+   Bit domain definition UNION:  SOC_FFTS_PMU_EVCNT_UNION */
+#define SOC_FFTS_PMU_EVCNT_ADDR(base, PMU_NUM)                ((base) + (PMU_NUM) * 4 + 0x2200)
+
+/* Register description: FFTS PMU event counter shadow register.
+   Bit domain definition UNION:  SOC_FFTS_PMU_EVSVR_UNION */
+#define SOC_FFTS_PMU_EVSVR_ADDR(base, PMU_NUM)                ((base) + (PMU_NUM) * 4 + 0x2220)
+
+/* Register description: FFTS PMU event type set register.
+   Bit domain definition UNION:  SOC_FFTS_PMU_EVTYPE_UNION */
+#define SOC_FFTS_PMU_EVTYPE_ADDR(base, PMU_NUM)               ((base) + (PMU_NUM) * 4 + 0x2240)
+
+/* Register description: FFTS PMU event counter enable register.
+   Bit domain definition UNION:  SOC_FFTS_PMU_CNTEN_UNION */
+#define SOC_FFTS_PMU_CNTEN_ADDR(base)                         ((base) + 0x2260)
+
+/* Register description: FFTS PMU event counter overflow status register.
+   Bit domain definition UNION:  SOC_FFTS_PMU_OV_UNION */
+#define SOC_FFTS_PMU_OV_ADDR(base)                            ((base) + 0x2264)
+
+/* Register description: FFTS PMU config register.
+   Bit domain definition UNION:  SOC_FFTS_PMU_CFG_UNION */
+#define SOC_FFTS_PMU_CFG_ADDR(base)                           ((base) + 0x2268)
+
+/* Register description: FFTS PMU capture register.
+   Bit domain definition UNION:  SOC_FFTS_PMU_CAPR_UNION */
+#define SOC_FFTS_PMU_CAPR_ADDR(base)                          ((base) + 0x226C)
+
+/* Register description: FFTS PMU UIT过滤寄存器0
+   Bit domain definition UNION:  SOC_FFTS_PMU_UID_FLT_UNION */
+#define SOC_FFTS_PMU_UID_FLT_ADDR(base)                       ((base) + 0x2270)
+
+/* Register description: FFTS_PMU_HWTYPE过滤器
+   Bit domain definition UNION:  SOC_FFTS_PMU_HWTYPE_FLT_UNION */
+#define SOC_FFTS_PMU_HWTYPE_FLT_ADDR(base)                    ((base) + 0x2274)
+
+/* Register description: FFTS PMU DDR访问控制
+   Bit domain definition UNION:  SOC_FFTS_PMU_FLT_DDR_UNION */
+#define SOC_FFTS_PMU_FLT_DDR_ADDR(base)                       ((base) + 0x2278)
+
+/* Register description: FFTS PMU TASKFIFO 阈值
+   Bit domain definition UNION:  SOC_FFTS_PMU_TASKFIFO_TH_UNION */
+#define SOC_FFTS_PMU_TASKFIFO_TH_ADDR(base)                   ((base) + 0x227C)
+
+/* Register description: ISP使用的QOS控制
+   Bit domain definition UNION:  SOC_FFTS_INTR_ISP_QOS_UNION */
+#define SOC_FFTS_INTR_ISP_QOS_ADDR(base)                      ((base) + 0x2300)
+
+/* Register description: ISPCPU正常中断MASK寄存器
+   Bit domain definition UNION:  SOC_FFTS_INTR_NRML_MASK_ISP_UNION */
+#define SOC_FFTS_INTR_NRML_MASK_ISP_ADDR(base)                ((base) + 0x2304)
+
+/* Register description: ISPCPU正常中断状态清除寄存器
+   Bit domain definition UNION:  SOC_FFTS_INTR_NRML_CLR_ISP_UNION */
+#define SOC_FFTS_INTR_NRML_CLR_ISP_ADDR(base)                 ((base) + 0x2308)
+
+/* Register description: ISPCPU正常中断状态寄存器
+   Bit domain definition UNION:  SOC_FFTS_INTR_NRML_ST_ISP_UNION */
+#define SOC_FFTS_INTR_NRML_ST_ISP_ADDR(base)                  ((base) + 0x230C)
+
+/* Register description: ISPCPU正常中断队列读写指针
+   Bit domain definition UNION:  SOC_FFTS_INTRQ_NRML_PTR_ISP_UNION */
+#define SOC_FFTS_INTRQ_NRML_PTR_ISP_ADDR(base)                ((base) + 0x2310)
+
+/* Register description: 正常中断MASK寄存器
+   Bit domain definition UNION:  SOC_FFTS_INTR_NRML_MASK_UNION */
+#define SOC_FFTS_INTR_NRML_MASK_ADDR(base)                    ((base) + 0x2314)
+
+/* Register description: 正常中断状态清除寄存器
+   Bit domain definition UNION:  SOC_FFTS_INTR_NRML_CLR_UNION */
+#define SOC_FFTS_INTR_NRML_CLR_ADDR(base)                     ((base) + 0x2318)
+
+/* Register description: 正常中断状态寄存器
+   Bit domain definition UNION:  SOC_FFTS_INTR_NRML_ST_UNION */
+#define SOC_FFTS_INTR_NRML_ST_ADDR(base)                      ((base) + 0x231C)
+
+/* Register description: 正常中断队列读写指针
+   Bit domain definition UNION:  SOC_FFTS_INTRQ_NRML_PTR_UNION */
+#define SOC_FFTS_INTRQ_NRML_PTR_ADDR(base)                    ((base) + 0x2320)
+
+/* Register description: 异常中断MASK寄存器
+   Bit domain definition UNION:  SOC_FFTS_INTR_ABNM_MASK_UNION */
+#define SOC_FFTS_INTR_ABNM_MASK_ADDR(base)                    ((base) + 0x2324)
+
+/* Register description: 异常中断状态清除寄存器
+   Bit domain definition UNION:  SOC_FFTS_INTR_ABNM_CLR_UNION */
+#define SOC_FFTS_INTR_ABNM_CLR_ADDR(base)                     ((base) + 0x2328)
+
+/* Register description: 异常中断状态寄存器
+   Bit domain definition UNION:  SOC_FFTS_INTR_ABNM_ST_UNION */
+#define SOC_FFTS_INTR_ABNM_ST_ADDR(base)                      ((base) + 0x232C)
+
+/* Register description: 异常中断队列读写指针
+   Bit domain definition UNION:  SOC_FFTS_INTRQ_ABNM_PTR_UNION */
+#define SOC_FFTS_INTRQ_ABNM_PTR_ADDR(base)                    ((base) + 0x2330)
+
+/* Register description: 异常中断队列MASK
+   Bit domain definition UNION:  SOC_FFTS_INTRQ_ABNM_MASK_UNION */
+#define SOC_FFTS_INTRQ_ABNM_MASK_ADDR(base)                   ((base) + 0x2334)
+
+/* Register description: 异常中断队列状态
+   Bit domain definition UNION:  SOC_FFTS_INTRQ_ABNM_DFX_ST_UNION */
+#define SOC_FFTS_INTRQ_ABNM_DFX_ST_ADDR(base)                 ((base) + 0x2338)
+
+/* Register description: 异常中断队列CLR
+   Bit domain definition UNION:  SOC_FFTS_INTRQ_ABNM_DFX_CLR_UNION */
+#define SOC_FFTS_INTRQ_ABNM_DFX_CLR_ADDR(base)                ((base) + 0x233C)
+
+/* Register description: FFTS DFX control register.
+   Bit domain definition UNION:  SOC_FFTS_INTR_DFX_MASK_UNION */
+#define SOC_FFTS_INTR_DFX_MASK_ADDR(base)                     ((base) + 0x2340)
+
+/* Register description: FFTS DFX status register.
+   Bit domain definition UNION:  SOC_FFTS_INTR_DFX_ORG_STATUS_UNION */
+#define SOC_FFTS_INTR_DFX_ORG_STATUS_ADDR(base)               ((base) + 0x2344)
+
+/* Register description: FFTS DFX status register.
+   Bit domain definition UNION:  SOC_FFTS_INTR_DFX_MASK_STATUS_UNION */
+#define SOC_FFTS_INTR_DFX_MASK_STATUS_ADDR(base)              ((base) + 0x2348)
+
+/* Register description: FFTS DFX type register.
+   Bit domain definition UNION:  SOC_FFTS_INTR_DFX_TYPE_UNION */
+#define SOC_FFTS_INTR_DFX_TYPE_ADDR(base)                     ((base) + 0x234C)
+
+/* Register description: FFTS DFX info0 register.
+   Bit domain definition UNION:  SOC_FFTS_INTR_DFX_INFO_UNION */
+#define SOC_FFTS_INTR_DFX_INFO_ADDR(base)                     ((base) + 0x2350)
+
+/* Register description: Debug地址寄存器
+   Bit domain definition UNION:  SOC_FFTS_DEBUG_ADDR_UNION */
+#define SOC_FFTS_DEBUG_ADDR_ADDR(base)                        ((base) + 0x2354)
+
+/* Register description: Debug读取寄存器
+   Bit domain definition UNION:  SOC_FFTS_DEBUG_RD_EN_UNION */
+#define SOC_FFTS_DEBUG_RD_EN_ADDR(base)                       ((base) + 0x2358)
+
+/* Register description: Debug状态寄存器
+   Bit domain definition UNION:  SOC_FFTS_DEBUG_ST_UNION */
+#define SOC_FFTS_DEBUG_ST_ADDR(base)                          ((base) + 0x235C)
+
+/* Register description: Debug结果寄存器
+   Bit domain definition UNION:  SOC_FFTS_DEBUG_INFO0_UNION */
+#define SOC_FFTS_DEBUG_INFO0_ADDR(base)                       ((base) + 0x2360)
+
+/* Register description: Debug结果寄存器
+   Bit domain definition UNION:  SOC_FFTS_DEBUG_INFO1_UNION */
+#define SOC_FFTS_DEBUG_INFO1_ADDR(base)                       ((base) + 0x2364)
+
+/* Register description: Debug结果寄存器
+   Bit domain definition UNION:  SOC_FFTS_DEBUG_INFO2_UNION */
+#define SOC_FFTS_DEBUG_INFO2_ADDR(base)                       ((base) + 0x2368)
+
+/* Register description: Debug结果寄存器
+   Bit domain definition UNION:  SOC_FFTS_DEBUG_INFO3_UNION */
+#define SOC_FFTS_DEBUG_INFO3_ADDR(base)                       ((base) + 0x236C)
+
+/* Register description: 保留寄存器
+   Bit domain definition UNION:  SOC_FFTS_RESERVED_UNION */
+#define SOC_FFTS_RESERVED_ADDR(base)                          ((base) + 0x2380)
+
+
+#endif
+
+
+
+
+/*****************************************************************************
+  3 枚举定义
+*****************************************************************************/
+
+
+
+/*****************************************************************************
+  4 消息头定义
+*****************************************************************************/
+
+
+/*****************************************************************************
+  5 消息定义
+*****************************************************************************/
+
+
+
+/*****************************************************************************
+  6 STRUCT定义
+*****************************************************************************/
+
+
+
+/*****************************************************************************
+  7 UNION定义
+*****************************************************************************/
+
+/****************************************************************************
+                     (1/2) USER_REG
+ ****************************************************************************/
+/*****************************************************************************
+ struct               : SOC_FFTS_RDYTASKQ_PTR_UNION
+ struct description   : RDYTASKQ_PTR Register structure definition
+                        Address Offset:(QOS_NUM)*4+0x1000 Initial:0x0 Width:32
+ register description : RTB指针寄存器
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  rdytask_read_ptr  : 13; /* bit[0-12] : ReadyTaskBuffer读指针 */
+        unsigned int  reserved_0        : 3;  /* bit[13-15]:  */
+        unsigned int  rdytask_write_ptr : 13; /* bit[16-28]: ReadyTaskBuffer写指针 */
+        unsigned int  reserved_1        : 3;  /* bit[29-31]:  */
+    } reg;
+} SOC_FFTS_RDYTASKQ_PTR_UNION;
+#endif
+#define SOC_FFTS_RDYTASKQ_PTR_rdytask_read_ptr_START   (0)
+#define SOC_FFTS_RDYTASKQ_PTR_rdytask_read_ptr_END     (12)
+#define SOC_FFTS_RDYTASKQ_PTR_rdytask_write_ptr_START  (16)
+#define SOC_FFTS_RDYTASKQ_PTR_rdytask_write_ptr_END    (28)
+
+
+/*****************************************************************************
+ struct               : SOC_FFTS_SQ_PTR_UNION
+ struct description   : SQ_PTR Register structure definition
+                        Address Offset:0x1020 Initial:0x00 Width:32
+ register description : SQ指针寄存器
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  sq_read_ptr  : 8;  /* bit[0-7]  : Submit队列读指针 */
+        unsigned int  reserved_0   : 8;  /* bit[8-15] :  */
+        unsigned int  sq_write_ptr : 8;  /* bit[16-23]: Submit队列写指针 */
+        unsigned int  reserved_1   : 8;  /* bit[24-31]:  */
+    } reg;
+} SOC_FFTS_SQ_PTR_UNION;
+#endif
+#define SOC_FFTS_SQ_PTR_sq_read_ptr_START   (0)
+#define SOC_FFTS_SQ_PTR_sq_read_ptr_END     (7)
+#define SOC_FFTS_SQ_PTR_sq_write_ptr_START  (16)
+#define SOC_FFTS_SQ_PTR_sq_write_ptr_END    (23)
+
+
+/*****************************************************************************
+ struct               : SOC_FFTS_INTR_WK_SET_UNION
+ struct description   : INTR_WK_SET Register structure definition
+                        Address Offset:0x1024 Initial:0x000000 Width:32
+ register description : 唤醒中断开启寄存器
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  intr_qos_en_set : 8;  /* bit[0-7] : 写1打开中断，从低到高8比特代表0~7档QOS
+                                                          读取获取当前中断状态 */
+        unsigned int  reserved        : 24; /* bit[8-31]:  */
+    } reg;
+} SOC_FFTS_INTR_WK_SET_UNION;
+#endif
+#define SOC_FFTS_INTR_WK_SET_intr_qos_en_set_START  (0)
+#define SOC_FFTS_INTR_WK_SET_intr_qos_en_set_END    (7)
+
+
+/*****************************************************************************
+ struct               : SOC_FFTS_DOORBELL_UNION
+ struct description   : DOORBELL Register structure definition
+                        Address Offset:0x102C Initial:0x00000007 Width:32
+ register description : DOORBELL寄存器
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  ffts_doorbell : 32; /* bit[0-31]: Doorbell的结果：
+                                                        bit[7:0]表示doorbell结果，如下：
+                                                        1：成功
+                                                        2：失败：进程资源超出阈值，此时bit[10:8]依次代表Version/Signature/Task资源超出阈值
+                                                        3：失败：总资源超出阈值，，此时bit[10:8]依次代表Version/Signature/Task资源超出阈值
+                                                        4：失败：进程异常正在被阻塞清理
+                                                        5：失败：doorbell计数器不足，正在处理的进程过多，等待其他进程处理。
+                                                        6: 失败：进程ProcCtx无效
+                                                        7: 失败：map出的UID值为0 */
+    } reg;
+} SOC_FFTS_DOORBELL_UNION;
+#endif
+#define SOC_FFTS_DOORBELL_ffts_doorbell_START  (0)
+#define SOC_FFTS_DOORBELL_ffts_doorbell_END    (31)
+
+
+/*****************************************************************************
+ struct               : SOC_FFTS_TASKREQUEST_UNION
+ struct description   : TASKREQUEST Register structure definition
+                        Address Offset:0x1030 Initial:0x00000000 Width:32
+ register description : TaskRequest寄存器
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  taskrequest : 32; /* bit[0-31]: [31:16]: reserved
+                                                      [15:0] : taskidx 请求的TaskIdx任务编号 */
+    } reg;
+} SOC_FFTS_TASKREQUEST_UNION;
+#endif
+#define SOC_FFTS_TASKREQUEST_taskrequest_START  (0)
+#define SOC_FFTS_TASKREQUEST_taskrequest_END    (31)
+
+
+/*****************************************************************************
+ struct               : SOC_FFTS_TASKRELEASE_UNION
+ struct description   : TASKRELEASE Register structure definition
+                        Address Offset:0x1034 Initial:0x00000000 Width:32
+ register description : TaskRelease寄存器
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  taskrelease : 32; /* bit[0-31]: [31:16]: reserved
+                                                      [15:0] : taskidx 请求释放的TaskIdx任务编号 */
+    } reg;
+} SOC_FFTS_TASKRELEASE_UNION;
+#endif
+#define SOC_FFTS_TASKRELEASE_taskrelease_START  (0)
+#define SOC_FFTS_TASKRELEASE_taskrelease_END    (31)
+
+
+/*****************************************************************************
+ struct               : SOC_FFTS_TASKSTART_UNION
+ struct description   : TASKSTART Register structure definition
+                        Address Offset:0x1038 Initial:0x00000000 Width:32
+ register description : TaskStart寄存器
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  taskstart : 32; /* bit[0-31]: [31:16]: reserved
+                                                    [15:0] : taskidx 开始执行的任务编号 */
+    } reg;
+} SOC_FFTS_TASKSTART_UNION;
+#endif
+#define SOC_FFTS_TASKSTART_taskstart_START  (0)
+#define SOC_FFTS_TASKSTART_taskstart_END    (31)
+
+
+/*****************************************************************************
+ struct               : SOC_FFTS_TASKDONE_UNION
+ struct description   : TASKDONE Register structure definition
+                        Address Offset:0x103C Initial:0x0000 Width:32
+ register description : TaskDone寄存器
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  taskdone_taskidx   : 16; /* bit[0-15] : taskidx 已完成的TaskIdx任务编号 */
+        unsigned int  taskdone_submitcnt : 16; /* bit[16-31]: task_submit_cnt 该任务下发的所有子任务的总数量 */
+    } reg;
+} SOC_FFTS_TASKDONE_UNION;
+#endif
+#define SOC_FFTS_TASKDONE_taskdone_taskidx_START    (0)
+#define SOC_FFTS_TASKDONE_taskdone_taskidx_END      (15)
+#define SOC_FFTS_TASKDONE_taskdone_submitcnt_START  (16)
+#define SOC_FFTS_TASKDONE_taskdone_submitcnt_END    (31)
+
+
+/*****************************************************************************
+ struct               : SOC_FFTS_PROC_TASKCNT_UNION
+ struct description   : PROC_TASKCNT Register structure definition
+                        Address Offset:0x1040 Initial:0x00000000 Width:32
+ register description : TASKCNT总占用个数
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  proc_taskcnt : 32; /* bit[0-31]: 当前进程占用的TASK资源数量 */
+    } reg;
+} SOC_FFTS_PROC_TASKCNT_UNION;
+#endif
+#define SOC_FFTS_PROC_TASKCNT_proc_taskcnt_START  (0)
+#define SOC_FFTS_PROC_TASKCNT_proc_taskcnt_END    (31)
+
+
+/*****************************************************************************
+ struct               : SOC_FFTS_PROC_VERCNT_UNION
+ struct description   : PROC_VERCNT Register structure definition
+                        Address Offset:0x1044 Initial:0x00000000 Width:32
+ register description : VERCNT总占用个数
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  proc_vercnt : 32; /* bit[0-31]: 当前进程占用的Version资源数量 */
+    } reg;
+} SOC_FFTS_PROC_VERCNT_UNION;
+#endif
+#define SOC_FFTS_PROC_VERCNT_proc_vercnt_START  (0)
+#define SOC_FFTS_PROC_VERCNT_proc_vercnt_END    (31)
+
+
+/*****************************************************************************
+ struct               : SOC_FFTS_PROC_SIGCNT_UNION
+ struct description   : PROC_SIGCNT Register structure definition
+                        Address Offset:0x1048 Initial:0x00000000 Width:32
+ register description : SIGCNT总占用个数
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  proc_sigcnt : 32; /* bit[0-31]: 当前进程占用的Signature资源数量 */
+    } reg;
+} SOC_FFTS_PROC_SIGCNT_UNION;
+#endif
+#define SOC_FFTS_PROC_SIGCNT_proc_sigcnt_START  (0)
+#define SOC_FFTS_PROC_SIGCNT_proc_sigcnt_END    (31)
+
+
+/*****************************************************************************
+ struct               : SOC_FFTS_SEND_EVENT_UNION
+ struct description   : SEND_EVENT Register structure definition
+                        Address Offset:0x104C Initial:0x000000 Width:32
+ register description : SEND_EVENT寄存器
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  send_eventid : 10; /* bit[0-9]  : 通路3错误异常时，软件处理后下发EventID */
+        unsigned int  reserved     : 22; /* bit[10-31]:  */
+    } reg;
+} SOC_FFTS_SEND_EVENT_UNION;
+#endif
+#define SOC_FFTS_SEND_EVENT_send_eventid_START  (0)
+#define SOC_FFTS_SEND_EVENT_send_eventid_END    (9)
+
+
+
+
+/****************************************************************************
+                     (2/2) KERNEL_REG
+ ****************************************************************************/
+/*****************************************************************************
+ struct               : SOC_FFTS_INITIAL_CTRL_UNION
+ struct description   : INITIAL_CTRL Register structure definition
+                        Address Offset:0x2000 Initial:0x00000000 Width:32
+ register description : FFTS初始化控制寄存器
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  inital_start : 1;  /* bit[0]   : 启动Cache以及IdxManger的初始化 */
+        unsigned int  reserved     : 31; /* bit[1-31]:  */
+    } reg;
+} SOC_FFTS_INITIAL_CTRL_UNION;
+#endif
+#define SOC_FFTS_INITIAL_CTRL_inital_start_START  (0)
+#define SOC_FFTS_INITIAL_CTRL_inital_start_END    (0)
+
+
+/*****************************************************************************
+ struct               : SOC_FFTS_SR_BACKUP_CTRL_UNION
+ struct description   : SR_BACKUP_CTRL Register structure definition
+                        Address Offset:0x2004 Initial:0x00000000 Width:32
+ register description : FFTS下电备份控制寄存器
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  sr_backup_start  : 1;  /* bit[0]   : 启动FFTS掉电备份 */
+        unsigned int  sr_backup_finish : 1;  /* bit[1]   : FFTS掉电恢复完成状态，1表示备份完成 */
+        unsigned int  reserved         : 30; /* bit[2-31]:  */
+    } reg;
+} SOC_FFTS_SR_BACKUP_CTRL_UNION;
+#endif
+#define SOC_FFTS_SR_BACKUP_CTRL_sr_backup_start_START   (0)
+#define SOC_FFTS_SR_BACKUP_CTRL_sr_backup_start_END     (0)
+#define SOC_FFTS_SR_BACKUP_CTRL_sr_backup_finish_START  (1)
+#define SOC_FFTS_SR_BACKUP_CTRL_sr_backup_finish_END    (1)
+
+
+/*****************************************************************************
+ struct               : SOC_FFTS_SR_RESUME_CTRL_UNION
+ struct description   : SR_RESUME_CTRL Register structure definition
+                        Address Offset:0x2008 Initial:0x00000000 Width:32
+ register description : FFTS上电恢复控制寄存器
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  sr_resume_start  : 1;  /* bit[0]   : 启动FFTS掉电恢复 */
+        unsigned int  sr_resume_finish : 1;  /* bit[1]   : FFTS掉电恢复完成状态，1表示恢复完成 */
+        unsigned int  reserved         : 30; /* bit[2-31]:  */
+    } reg;
+} SOC_FFTS_SR_RESUME_CTRL_UNION;
+#endif
+#define SOC_FFTS_SR_RESUME_CTRL_sr_resume_start_START   (0)
+#define SOC_FFTS_SR_RESUME_CTRL_sr_resume_start_END     (0)
+#define SOC_FFTS_SR_RESUME_CTRL_sr_resume_finish_START  (1)
+#define SOC_FFTS_SR_RESUME_CTRL_sr_resume_finish_END    (1)
+
+
+/*****************************************************************************
+ struct               : SOC_FFTS_BASE_H_UNION
+ struct description   : BASE_H Register structure definition
+                        Address Offset:(ADDR_NUM)*8+0x2010 Initial:0x00000 Width:32
+ register description : DDR空间基地址高位
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  base_addr_h : 12; /* bit[0-11] : 存储的基地址高位ADDR[43:32]
+                                                       ADDR_NUM 代表不同类型的基地址 */
+        unsigned int  reserved    : 20; /* bit[12-31]:  */
+    } reg;
+} SOC_FFTS_BASE_H_UNION;
+#endif
+#define SOC_FFTS_BASE_H_base_addr_h_START  (0)
+#define SOC_FFTS_BASE_H_base_addr_h_END    (11)
+
+
+/*****************************************************************************
+ struct               : SOC_FFTS_BASE_L_UNION
+ struct description   : BASE_L Register structure definition
+                        Address Offset:(ADDR_NUM)*8+0x2014 Initial:0x0000000 Width:32
+ register description : DDR空间基地址低32位
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  reserved    : 7;  /* bit[0-6] :  */
+        unsigned int  base_addr_l : 25; /* bit[7-31]: 存储的基地址低位ADDR[31:7] */
+    } reg;
+} SOC_FFTS_BASE_L_UNION;
+#endif
+#define SOC_FFTS_BASE_L_base_addr_l_START  (7)
+#define SOC_FFTS_BASE_L_base_addr_l_END    (31)
+
+
+/*****************************************************************************
+ struct               : SOC_FFTS_DDR_ATTR_CTRL_UNION
+ struct description   : DDR_ATTR_CTRL Register structure definition
+                        Address Offset:(ATTR_NUM)*4+0x2080 Initial:0x00 Width:32
+ register description : FFTS访问属性设置
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  attr_gid      : 6;  /* bit[0-5]  :  */
+        unsigned int  attr_schint   : 4;  /* bit[6-9]  :  */
+        unsigned int  attr_awcache  : 4;  /* bit[10-13]:  */
+        unsigned int  attr_arcache  : 4;  /* bit[14-17]:  */
+        unsigned int  attr_axdomain : 2;  /* bit[18-19]:  */
+        unsigned int  attr_mpam     : 4;  /* bit[20-23]:  */
+        unsigned int  reserved      : 8;  /* bit[24-31]:  */
+    } reg;
+} SOC_FFTS_DDR_ATTR_CTRL_UNION;
+#endif
+#define SOC_FFTS_DDR_ATTR_CTRL_attr_gid_START       (0)
+#define SOC_FFTS_DDR_ATTR_CTRL_attr_gid_END         (5)
+#define SOC_FFTS_DDR_ATTR_CTRL_attr_schint_START    (6)
+#define SOC_FFTS_DDR_ATTR_CTRL_attr_schint_END      (9)
+#define SOC_FFTS_DDR_ATTR_CTRL_attr_awcache_START   (10)
+#define SOC_FFTS_DDR_ATTR_CTRL_attr_awcache_END     (13)
+#define SOC_FFTS_DDR_ATTR_CTRL_attr_arcache_START   (14)
+#define SOC_FFTS_DDR_ATTR_CTRL_attr_arcache_END     (17)
+#define SOC_FFTS_DDR_ATTR_CTRL_attr_axdomain_START  (18)
+#define SOC_FFTS_DDR_ATTR_CTRL_attr_axdomain_END    (19)
+#define SOC_FFTS_DDR_ATTR_CTRL_attr_mpam_START      (20)
+#define SOC_FFTS_DDR_ATTR_CTRL_attr_mpam_END        (23)
+
+
+/*****************************************************************************
+ struct               : SOC_FFTS_LPID_MAP_UNION
+ struct description   : LPID_MAP Register structure definition
+                        Address Offset:(LPID_NUM)*4+0x2100 Initial:0x0 Width:32
+ register description : ACPU_LPID的TID/UID配置寄存器
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  lpid_tid_map : 16; /* bit[0-15] : LPID对应的TID */
+        unsigned int  lpid_uid_map : 12; /* bit[16-27]: LPID对应的UID */
+        unsigned int  reserved     : 4;  /* bit[28-31]:  */
+    } reg;
+} SOC_FFTS_LPID_MAP_UNION;
+#endif
+#define SOC_FFTS_LPID_MAP_lpid_tid_map_START  (0)
+#define SOC_FFTS_LPID_MAP_lpid_tid_map_END    (15)
+#define SOC_FFTS_LPID_MAP_lpid_uid_map_START  (16)
+#define SOC_FFTS_LPID_MAP_lpid_uid_map_END    (27)
+
+
+/*****************************************************************************
+ struct               : SOC_FFTS_ISP_MAP_UNION
+ struct description   : ISP_MAP Register structure definition
+                        Address Offset:0x2130 Initial:0x0 Width:32
+ register description : ISP的TID/UID
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  isp_tid_map : 16; /* bit[0-15] : ISP R8的TID(ThreadID) */
+        unsigned int  isp_uid_map : 12; /* bit[16-27]: ISP R8的UID */
+        unsigned int  reserved    : 4;  /* bit[28-31]:  */
+    } reg;
+} SOC_FFTS_ISP_MAP_UNION;
+#endif
+#define SOC_FFTS_ISP_MAP_isp_tid_map_START  (0)
+#define SOC_FFTS_ISP_MAP_isp_tid_map_END    (15)
+#define SOC_FFTS_ISP_MAP_isp_uid_map_START  (16)
+#define SOC_FFTS_ISP_MAP_isp_uid_map_END    (27)
+
+
+/*****************************************************************************
+ struct               : SOC_FFTS_TASK_CNT_TH_UNION
+ struct description   : TASK_CNT_TH Register structure definition
+                        Address Offset:0x2134 Initial:0xFFFF Width:32
+ register description : TaskCtx占用阈值配置
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  taskctx_proc_th  : 16; /* bit[0-15] : 1个进程最多允许占用的TaskCtx资源 */
+        unsigned int  taskctx_total_th : 16; /* bit[16-31]: 允许占用的TaskCtx总资源 */
+    } reg;
+} SOC_FFTS_TASK_CNT_TH_UNION;
+#endif
+#define SOC_FFTS_TASK_CNT_TH_taskctx_proc_th_START   (0)
+#define SOC_FFTS_TASK_CNT_TH_taskctx_proc_th_END     (15)
+#define SOC_FFTS_TASK_CNT_TH_taskctx_total_th_START  (16)
+#define SOC_FFTS_TASK_CNT_TH_taskctx_total_th_END    (31)
+
+
+/*****************************************************************************
+ struct               : SOC_FFTS_VER_CNT_TH_UNION
+ struct description   : VER_CNT_TH Register structure definition
+                        Address Offset:0x2138 Initial:0xFFFF Width:32
+ register description : VerCtx占用阈值配置
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  verctx_proc_th  : 16; /* bit[0-15] : 1个进程最多允许占用的VerCtx资源 */
+        unsigned int  verctx_total_th : 16; /* bit[16-31]: 允许占用的VerCtx总资源 */
+    } reg;
+} SOC_FFTS_VER_CNT_TH_UNION;
+#endif
+#define SOC_FFTS_VER_CNT_TH_verctx_proc_th_START   (0)
+#define SOC_FFTS_VER_CNT_TH_verctx_proc_th_END     (15)
+#define SOC_FFTS_VER_CNT_TH_verctx_total_th_START  (16)
+#define SOC_FFTS_VER_CNT_TH_verctx_total_th_END    (31)
+
+
+/*****************************************************************************
+ struct               : SOC_FFTS_SIG_CNT_TH_UNION
+ struct description   : SIG_CNT_TH Register structure definition
+                        Address Offset:0x213C Initial:0xFFFF Width:32
+ register description : SigCtx占用阈值配置
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  sig_proc_th  : 16; /* bit[0-15] : 1个进程最多允许占用的SigCtx资源 */
+        unsigned int  sig_total_th : 16; /* bit[16-31]: 允许占用的SigCtx总资源 */
+    } reg;
+} SOC_FFTS_SIG_CNT_TH_UNION;
+#endif
+#define SOC_FFTS_SIG_CNT_TH_sig_proc_th_START   (0)
+#define SOC_FFTS_SIG_CNT_TH_sig_proc_th_END     (15)
+#define SOC_FFTS_SIG_CNT_TH_sig_total_th_START  (16)
+#define SOC_FFTS_SIG_CNT_TH_sig_total_th_END    (31)
+
+
+/*****************************************************************************
+ struct               : SOC_FFTS_TASKVER_SIZE_UNION
+ struct description   : TASKVER_SIZE Register structure definition
+                        Address Offset:0x2140 Initial:0x000000 Width:32
+ register description : TASK_VER空间大小配置
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  ver_idx_size  : 4;  /* bit[0-3] : VerCtx使用空间配置，使用空间大小=（配置值*4096）+4096 个VerCtx */
+        unsigned int  task_idx_size : 4;  /* bit[4-7] : TaskCtx使用空间配置，使用空间大小=（配置值*4096）+4096 个Taskctx */
+        unsigned int  reserved      : 24; /* bit[8-31]: Reserved */
+    } reg;
+} SOC_FFTS_TASKVER_SIZE_UNION;
+#endif
+#define SOC_FFTS_TASKVER_SIZE_ver_idx_size_START   (0)
+#define SOC_FFTS_TASKVER_SIZE_ver_idx_size_END     (3)
+#define SOC_FFTS_TASKVER_SIZE_task_idx_size_START  (4)
+#define SOC_FFTS_TASKVER_SIZE_task_idx_size_END    (7)
+
+
+/*****************************************************************************
+ struct               : SOC_FFTS_SIGHASH_SIZE_UNION
+ struct description   : SIGHASH_SIZE Register structure definition
+                        Address Offset:0x2144 Initial:0x00000000 Width:32
+ register description : SigHash空间大小配置
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  sighash_size : 2;  /* bit[0-1] : 3:使用17比特Hash
+                                                       2:使用16比特Hash
+                                                       1:使用15比特Hash
+                                                       0:使用14比特Hash */
+        unsigned int  reserved     : 30; /* bit[2-31]:  */
+    } reg;
+} SOC_FFTS_SIGHASH_SIZE_UNION;
+#endif
+#define SOC_FFTS_SIGHASH_SIZE_sighash_size_START  (0)
+#define SOC_FFTS_SIGHASH_SIZE_sighash_size_END    (1)
+
+
+/*****************************************************************************
+ struct               : SOC_FFTS_QUEUE_SIZE_CTRL_UNION
+ struct description   : QUEUE_SIZE_CTRL Register structure definition
+                        Address Offset:0x2148 Initial:0x0000000 Width:32
+ register description : 队列大小配置
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  ddr_prtb_size : 3;  /* bit[0-2] : 进程的ReadyTaskBuffer队列大小，支持5种大小：
+                                                        0：512
+                                                        1: 1024
+                                                        2: 2048
+                                                        3: 4096
+                                                        4: 8192
+                                                        5~7：Reserved */
+        unsigned int  reserved_0    : 1;  /* bit[3]   :  */
+        unsigned int  ddr_sq_size   : 2;  /* bit[4-5] : Submit/Wait队列大小，支持3种大小：
+                                                        0：64
+                                                        1: 128
+                                                        2: 256
+                                                        3：Reserved */
+        unsigned int  reserved_1    : 26; /* bit[6-31]:  */
+    } reg;
+} SOC_FFTS_QUEUE_SIZE_CTRL_UNION;
+#endif
+#define SOC_FFTS_QUEUE_SIZE_CTRL_ddr_prtb_size_START  (0)
+#define SOC_FFTS_QUEUE_SIZE_CTRL_ddr_prtb_size_END    (2)
+#define SOC_FFTS_QUEUE_SIZE_CTRL_ddr_sq_size_START    (4)
+#define SOC_FFTS_QUEUE_SIZE_CTRL_ddr_sq_size_END      (5)
+
+
+/*****************************************************************************
+ struct               : SOC_FFTS_RTB_INTR_TH_UNION
+ struct description   : RTB_INTR_TH Register structure definition
+                        Address Offset:0x214C Initial:0x0 Width:32
+ register description : ReadyTask队列深度告警深度
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  prtb_intr_th_size  : 13; /* bit[0-12] : ReadyTaskBuffer 告警剩余空间配置，RTB剩余空间小于该空间后触发中断告警 */
+        unsigned int  reserved_0         : 3;  /* bit[13-15]:  */
+        unsigned int  hwrtb_intr_th_size : 13; /* bit[16-28]: HWRTB 告警剩余空间配置，RTB剩余空间小于该空间后触发中断告警 */
+        unsigned int  reserved_1         : 3;  /* bit[29-31]:  */
+    } reg;
+} SOC_FFTS_RTB_INTR_TH_UNION;
+#endif
+#define SOC_FFTS_RTB_INTR_TH_prtb_intr_th_size_START   (0)
+#define SOC_FFTS_RTB_INTR_TH_prtb_intr_th_size_END     (12)
+#define SOC_FFTS_RTB_INTR_TH_hwrtb_intr_th_size_START  (16)
+#define SOC_FFTS_RTB_INTR_TH_hwrtb_intr_th_size_END    (28)
+
+
+/*****************************************************************************
+ struct               : SOC_FFTS_TASKIDX_REL_UNION
+ struct description   : TASKIDX_REL Register structure definition
+                        Address Offset:0x2150 Initial:0x0000 Width:32
+ register description : FFTS TASKVER释放寄存器
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  release_taskidx      : 16; /* bit[0-15] : 释放当前的TaskIdx编号 */
+        unsigned int  release_taskidx_en   : 1;  /* bit[16]   : 释放当前TaskIdx使能 */
+        unsigned int  release_taskidx_idle : 1;  /* bit[17]   : 上一笔TaskIdx释放已经完成 */
+        unsigned int  reserved             : 14; /* bit[18-31]:  */
+    } reg;
+} SOC_FFTS_TASKIDX_REL_UNION;
+#endif
+#define SOC_FFTS_TASKIDX_REL_release_taskidx_START       (0)
+#define SOC_FFTS_TASKIDX_REL_release_taskidx_END         (15)
+#define SOC_FFTS_TASKIDX_REL_release_taskidx_en_START    (16)
+#define SOC_FFTS_TASKIDX_REL_release_taskidx_en_END      (16)
+#define SOC_FFTS_TASKIDX_REL_release_taskidx_idle_START  (17)
+#define SOC_FFTS_TASKIDX_REL_release_taskidx_idle_END    (17)
+
+
+/*****************************************************************************
+ struct               : SOC_FFTS_VERIDX_REL_UNION
+ struct description   : VERIDX_REL Register structure definition
+                        Address Offset:0x2154 Initial:0x0000 Width:32
+ register description : FFTS VERIDX释放寄存器
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  release_veridx      : 16; /* bit[0-15] : 释放当前的VerIdx编号 */
+        unsigned int  release_veridx_en   : 1;  /* bit[16]   : 释放当前VerIdx使能 */
+        unsigned int  release_veridx_idle : 1;  /* bit[17]   : 上一笔VerIdx释放已经完成 */
+        unsigned int  reserved            : 14; /* bit[18-31]:  */
+    } reg;
+} SOC_FFTS_VERIDX_REL_UNION;
+#endif
+#define SOC_FFTS_VERIDX_REL_release_veridx_START       (0)
+#define SOC_FFTS_VERIDX_REL_release_veridx_END         (15)
+#define SOC_FFTS_VERIDX_REL_release_veridx_en_START    (16)
+#define SOC_FFTS_VERIDX_REL_release_veridx_en_END      (16)
+#define SOC_FFTS_VERIDX_REL_release_veridx_idle_START  (17)
+#define SOC_FFTS_VERIDX_REL_release_veridx_idle_END    (17)
+
+
+/*****************************************************************************
+ struct               : SOC_FFTS_SIGCNT_UPD_UNION
+ struct description   : SIGCNT_UPD Register structure definition
+                        Address Offset:0x2158 Initial:0x0000 Width:32
+ register description : SIGCNT更新
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  sigctx_cnt_sub_num : 16; /* bit[0-15] : SIGCTX_CNT减取的值（用于进程释放时，减取该进程下的占用的SIGCNT） */
+        unsigned int  sigctx_cnt_sub_en  : 1;  /* bit[16]   : SIGCTX_CNT减少使能 */
+        unsigned int  reserved           : 15; /* bit[17-31]:  */
+    } reg;
+} SOC_FFTS_SIGCNT_UPD_UNION;
+#endif
+#define SOC_FFTS_SIGCNT_UPD_sigctx_cnt_sub_num_START  (0)
+#define SOC_FFTS_SIGCNT_UPD_sigctx_cnt_sub_num_END    (15)
+#define SOC_FFTS_SIGCNT_UPD_sigctx_cnt_sub_en_START   (16)
+#define SOC_FFTS_SIGCNT_UPD_sigctx_cnt_sub_en_END     (16)
+
+
+/*****************************************************************************
+ struct               : SOC_FFTS_TH_RETRY_UNION
+ struct description   : TH_RETRY Register structure definition
+                        Address Offset:0x215C Initial:0x0 Width:32
+ register description : FFTS碰撞重试寄存器
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  retry_tid  : 16; /* bit[0-15] : Signature碰撞后重试TID */
+        unsigned int  retry_uid  : 12; /* bit[16-27]: Signature碰撞后重试UID */
+        unsigned int  retry_en   : 1;  /* bit[28]   : Signature碰撞后重试使能（仅当retry_busy=0)可配 */
+        unsigned int  retry_busy : 1;  /* bit[29]   : 是否可以接收重试请求：0：可接收 1：不可接收 */
+        unsigned int  reserved   : 2;  /* bit[30-31]:  */
+    } reg;
+} SOC_FFTS_TH_RETRY_UNION;
+#endif
+#define SOC_FFTS_TH_RETRY_retry_tid_START   (0)
+#define SOC_FFTS_TH_RETRY_retry_tid_END     (15)
+#define SOC_FFTS_TH_RETRY_retry_uid_START   (16)
+#define SOC_FFTS_TH_RETRY_retry_uid_END     (27)
+#define SOC_FFTS_TH_RETRY_retry_en_START    (28)
+#define SOC_FFTS_TH_RETRY_retry_en_END      (28)
+#define SOC_FFTS_TH_RETRY_retry_busy_START  (29)
+#define SOC_FFTS_TH_RETRY_retry_busy_END    (29)
+
+
+/*****************************************************************************
+ struct               : SOC_FFTS_PROC_BLOCK_CTRL_UNION
+ struct description   : PROC_BLOCK_CTRL Register structure definition
+                        Address Offset:0x2160 Initial:0x0000000 Width:32
+ register description : 进程封锁控制寄存器
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  proc_block_auto_clean : 1;  /* bit[0]   : 进程封锁时自动进行如下操作：:
+                                                                0：不进行硬件自动清理
+                                                                1：硬件自动清理 */
+        unsigned int  reserved_0            : 3;  /* bit[1-3] :  */
+        unsigned int  proc_block_auto_cmo   : 2;  /* bit[4-5] : 进程封锁时自动执行Cache的CMO操作：
+                                                                0：不自动对异常进程进行清理
+                                                                1：自动对异常进程进行Cache的Clean & Invalid
+                                                                [0]：自动执行ProcCtx Cache的 UID Clean & Invalid
+                                                                [1]：自动执行ThreadCtx Cache的UID Clean & Invalid */
+        unsigned int  reserved_1            : 26; /* bit[6-31]:  */
+    } reg;
+} SOC_FFTS_PROC_BLOCK_CTRL_UNION;
+#endif
+#define SOC_FFTS_PROC_BLOCK_CTRL_proc_block_auto_clean_START  (0)
+#define SOC_FFTS_PROC_BLOCK_CTRL_proc_block_auto_clean_END    (0)
+#define SOC_FFTS_PROC_BLOCK_CTRL_proc_block_auto_cmo_START    (4)
+#define SOC_FFTS_PROC_BLOCK_CTRL_proc_block_auto_cmo_END      (5)
+
+
+/*****************************************************************************
+ struct               : SOC_FFTS_PROC_BLOCK_START_UNION
+ struct description   : PROC_BLOCK_START Register structure definition
+                        Address Offset:0x2164 Initial:0x0 Width:32
+ register description : 进程封锁启动寄存器
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  proc_block_en  : 1;  /* bit[0]    : 写1启动封锁
+                                                          使用约束（写1后，在回读proc_block_state等于1前，不允许执行写1以及更改proc_block_uid） */
+        unsigned int  reserved_0     : 15; /* bit[1-15] :  */
+        unsigned int  proc_block_uid : 12; /* bit[16-27]: 封锁进程的UID */
+        unsigned int  reserved_1     : 4;  /* bit[28-31]:  */
+    } reg;
+} SOC_FFTS_PROC_BLOCK_START_UNION;
+#endif
+#define SOC_FFTS_PROC_BLOCK_START_proc_block_en_START   (0)
+#define SOC_FFTS_PROC_BLOCK_START_proc_block_en_END     (0)
+#define SOC_FFTS_PROC_BLOCK_START_proc_block_uid_START  (16)
+#define SOC_FFTS_PROC_BLOCK_START_proc_block_uid_END    (27)
+
+
+/*****************************************************************************
+ struct               : SOC_FFTS_PROC_BLOCK_DIS_UNION
+ struct description   : PROC_BLOCK_DIS Register structure definition
+                        Address Offset:0x2168 Initial:0x00000000 Width:32
+ register description : 进程封锁取消寄存器
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  proc_block_dis : 1;  /* bit[0]   : 写1取消进程封锁 */
+        unsigned int  reserved       : 31; /* bit[1-31]:  */
+    } reg;
+} SOC_FFTS_PROC_BLOCK_DIS_UNION;
+#endif
+#define SOC_FFTS_PROC_BLOCK_DIS_proc_block_dis_START  (0)
+#define SOC_FFTS_PROC_BLOCK_DIS_proc_block_dis_END    (0)
+
+
+/*****************************************************************************
+ struct               : SOC_FFTS_PROC_BLOCK_ST_UNION
+ struct description   : PROC_BLOCK_ST Register structure definition
+                        Address Offset:0x216C Initial:0x00000000 Width:32
+ register description : 进程封锁状态寄存器
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  proc_block_state : 2;  /* bit[0-1] : 封锁状态：
+                                                           0：当前无进程正在封锁
+                                                           1：正在封锁过程中
+                                                           2：封锁完成
+                                                           3：正在取消封锁 */
+        unsigned int  reserved         : 30; /* bit[2-31]:  */
+    } reg;
+} SOC_FFTS_PROC_BLOCK_ST_UNION;
+#endif
+#define SOC_FFTS_PROC_BLOCK_ST_proc_block_state_START  (0)
+#define SOC_FFTS_PROC_BLOCK_ST_proc_block_state_END    (1)
+
+
+/*****************************************************************************
+ struct               : SOC_FFTS_HW_BLOCK_CTRL_UNION
+ struct description   : HW_BLOCK_CTRL Register structure definition
+                        Address Offset:(HW_NUM)*4+0x2170 Initial:0x00000000 Width:32
+ register description : HW封锁控制寄存器
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  hw_block_en  : 1;  /* bit[0]   : 写1启动封锁
+                                                       HW_NUM（0代表GPU，1代表NPU） */
+        unsigned int  hw_block_dis : 1;  /* bit[1]   : 写1取消封锁
+                                                       HW_NUM（0代表GPU，1代表NPU） */
+        unsigned int  reserved     : 30; /* bit[2-31]:  */
+    } reg;
+} SOC_FFTS_HW_BLOCK_CTRL_UNION;
+#endif
+#define SOC_FFTS_HW_BLOCK_CTRL_hw_block_en_START   (0)
+#define SOC_FFTS_HW_BLOCK_CTRL_hw_block_en_END     (0)
+#define SOC_FFTS_HW_BLOCK_CTRL_hw_block_dis_START  (1)
+#define SOC_FFTS_HW_BLOCK_CTRL_hw_block_dis_END    (1)
+
+
+/*****************************************************************************
+ struct               : SOC_FFTS_HW_BLOCK_ST_UNION
+ struct description   : HW_BLOCK_ST Register structure definition
+                        Address Offset:(HW_NUM)*4+0x2178 Initial:0x00000000 Width:32
+ register description : HW封锁状态寄存器
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  hw_block_state : 2;  /* bit[0-1] : 加速器封锁状态:
+                                                         0：未封锁
+                                                         1或2: 封锁进行中
+                                                         3：封锁完成
+                                                         HW_NUM（0代表GPU，1代表NPU） */
+        unsigned int  reserved       : 30; /* bit[2-31]:  */
+    } reg;
+} SOC_FFTS_HW_BLOCK_ST_UNION;
+#endif
+#define SOC_FFTS_HW_BLOCK_ST_hw_block_state_START  (0)
+#define SOC_FFTS_HW_BLOCK_ST_hw_block_state_END    (1)
+
+
+/*****************************************************************************
+ struct               : SOC_FFTS_HW_LINK_ST_UNION
+ struct description   : HW_LINK_ST Register structure definition
+                        Address Offset:(HW_NUM)*4+0x2180 Initial:0x00000000 Width:32
+ register description : HW建链状态寄存器
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  hw_link_st : 2;  /* bit[0-1] : FFTS与HW的建链状态：
+                                                     0：断链
+                                                     1：断链中
+                                                     2：建链
+                                                     3：建链中 */
+        unsigned int  reserved   : 30; /* bit[2-31]:  */
+    } reg;
+} SOC_FFTS_HW_LINK_ST_UNION;
+#endif
+#define SOC_FFTS_HW_LINK_ST_hw_link_st_START  (0)
+#define SOC_FFTS_HW_LINK_ST_hw_link_st_END    (1)
+
+
+/*****************************************************************************
+ struct               : SOC_FFTS_HWRTB_PTR_UNION
+ struct description   : HWRTB_PTR Register structure definition
+                        Address Offset:(HW_NUM)*4+0x2188 Initial:0x0000 Width:32
+ register description : HWRTB读写指针寄存器
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  hwrtb_rptr : 16; /* bit[0-15] : HWRTB的读指针 */
+        unsigned int  hwrtb_wptr : 16; /* bit[16-31]: HWRTB的写指针 */
+    } reg;
+} SOC_FFTS_HWRTB_PTR_UNION;
+#endif
+#define SOC_FFTS_HWRTB_PTR_hwrtb_rptr_START  (0)
+#define SOC_FFTS_HWRTB_PTR_hwrtb_rptr_END    (15)
+#define SOC_FFTS_HWRTB_PTR_hwrtb_wptr_START  (16)
+#define SOC_FFTS_HWRTB_PTR_hwrtb_wptr_END    (31)
+
+
+/*****************************************************************************
+ struct               : SOC_FFTS_HWRTB_PTR_CTRL_UNION
+ struct description   : HWRTB_PTR_CTRL Register structure definition
+                        Address Offset:(HW_NUM)*4+0x2190 Initial:0x0 Width:32
+ register description : HWRTB读写指针控制寄存器
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  hwrtb_set_wptr      : 12; /* bit[0-11] :  */
+        unsigned int  hwrtb_set_wptr_en   : 1;  /* bit[12]   :  */
+        unsigned int  reserved            : 3;  /* bit[13-15]:  */
+        unsigned int  hwrtb_set_rptr      : 12; /* bit[16-27]:  */
+        unsigned int  hwrtb_set_rptr_en   : 1;  /* bit[28]   :  */
+        unsigned int  hwrtb_set_status    : 2;  /* bit[29-30]:  */
+        unsigned int  hwrtb_set_status_en : 1;  /* bit[31]   :  */
+    } reg;
+} SOC_FFTS_HWRTB_PTR_CTRL_UNION;
+#endif
+#define SOC_FFTS_HWRTB_PTR_CTRL_hwrtb_set_wptr_START       (0)
+#define SOC_FFTS_HWRTB_PTR_CTRL_hwrtb_set_wptr_END         (11)
+#define SOC_FFTS_HWRTB_PTR_CTRL_hwrtb_set_wptr_en_START    (12)
+#define SOC_FFTS_HWRTB_PTR_CTRL_hwrtb_set_wptr_en_END      (12)
+#define SOC_FFTS_HWRTB_PTR_CTRL_hwrtb_set_rptr_START       (16)
+#define SOC_FFTS_HWRTB_PTR_CTRL_hwrtb_set_rptr_END         (27)
+#define SOC_FFTS_HWRTB_PTR_CTRL_hwrtb_set_rptr_en_START    (28)
+#define SOC_FFTS_HWRTB_PTR_CTRL_hwrtb_set_rptr_en_END      (28)
+#define SOC_FFTS_HWRTB_PTR_CTRL_hwrtb_set_status_START     (29)
+#define SOC_FFTS_HWRTB_PTR_CTRL_hwrtb_set_status_END       (30)
+#define SOC_FFTS_HWRTB_PTR_CTRL_hwrtb_set_status_en_START  (31)
+#define SOC_FFTS_HWRTB_PTR_CTRL_hwrtb_set_status_en_END    (31)
+
+
+/*****************************************************************************
+ struct               : SOC_FFTS_CACHE_CMO_CTRL_UNION
+ struct description   : CACHE_CMO_CTRL Register structure definition
+                        Address Offset:0x2198 Initial:0x0 Width:32
+ register description : FFTS Cache CMO控制寄存器
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  cache_flush_start : 1;  /* bit[0]    : 启动Cache的Flush操作 */
+        unsigned int  cache_flush_type  : 15; /* bit[1-15] : Cache Flush的类型，共15比特，每3比特对应1种Cache类型，如下：
+                                                             [2:0] : ProcCtx Cache
+                                                             [5:3] : ThreadCtx Cache
+                                                             [8:6] : TaskCtx Cache
+                                                             [11:9] : SigCtx Cache
+                                                             [14:12]: VerCtx Cache
+                                                             上述每个Cache对应的3比特配置代表的含义如下：
+                                                             0 : Cache Clean (Cache中保留数据，Dirty数据Flush回DDR）
+                                                             1 : Cache Clean&Invalid（Cache中不保留数据，Dirty数据Flush回DDR）
+                                                             2 : 基于UID的Cache Clean
+                                                             3 ：基于UID的Cache Clean & Invalid
+                                                             4~6: Reserved
+                                                             7 : 忽略该Cache，不执行Flush操作 */
+        unsigned int  cache_flush_uid   : 12; /* bit[16-27]: Cache执行基于UID的CMO时匹配的UID
+                                                             注：仅当Cache CMO类型为基于UID的CMO类型时，有效 */
+        unsigned int  reserved          : 4;  /* bit[28-31]:  */
+    } reg;
+} SOC_FFTS_CACHE_CMO_CTRL_UNION;
+#endif
+#define SOC_FFTS_CACHE_CMO_CTRL_cache_flush_start_START  (0)
+#define SOC_FFTS_CACHE_CMO_CTRL_cache_flush_start_END    (0)
+#define SOC_FFTS_CACHE_CMO_CTRL_cache_flush_type_START   (1)
+#define SOC_FFTS_CACHE_CMO_CTRL_cache_flush_type_END     (15)
+#define SOC_FFTS_CACHE_CMO_CTRL_cache_flush_uid_START    (16)
+#define SOC_FFTS_CACHE_CMO_CTRL_cache_flush_uid_END      (27)
+
+
+/*****************************************************************************
+ struct               : SOC_FFTS_CACHE_CMO_ST_UNION
+ struct description   : CACHE_CMO_ST Register structure definition
+                        Address Offset:0x219C Initial:0x00000000 Width:32
+ register description : FFTS Cache CMO状态寄存器
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  cache_flush_finish : 1;  /* bit[0]   : Cache Flush状态，1表示完成 */
+        unsigned int  reserved           : 31; /* bit[1-31]:  */
+    } reg;
+} SOC_FFTS_CACHE_CMO_ST_UNION;
+#endif
+#define SOC_FFTS_CACHE_CMO_ST_cache_flush_finish_START  (0)
+#define SOC_FFTS_CACHE_CMO_ST_cache_flush_finish_END    (0)
+
+
+/*****************************************************************************
+ struct               : SOC_FFTS_EVENT_BLOCK_UNION
+ struct description   : EVENT_BLOCK Register structure definition
+                        Address Offset:0x21A0 Initial:0x00000 Width:32
+ register description : FFTS EVENT封锁
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  hw_event_block_en : 12; /* bit[0-11] : 封锁FFTS向加速器发送Event
+                                                             第i比特，代表是否封锁FFTS向HWTYPE=i的加速器发送event
+                                                             1：封锁 0：不封锁 */
+        unsigned int  reserved          : 20; /* bit[12-31]:  */
+    } reg;
+} SOC_FFTS_EVENT_BLOCK_UNION;
+#endif
+#define SOC_FFTS_EVENT_BLOCK_hw_event_block_en_START  (0)
+#define SOC_FFTS_EVENT_BLOCK_hw_event_block_en_END    (11)
+
+
+/*****************************************************************************
+ struct               : SOC_FFTS_EVENT2RTB_CTRL_UNION
+ struct description   : EVENT2RTB_CTRL Register structure definition
+                        Address Offset:0x21A4 Initial:0x0 Width:32
+ register description : FFTS下发EVENT到RTB
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  event2rtb_eventid : 10; /* bit[0-9]  : 发送Event到RTB对应的EventID */
+        unsigned int  reserved_0        : 2;  /* bit[10-11]:  */
+        unsigned int  event2rtb_uid     : 12; /* bit[12-23]: 发送Event到RTB对应的UID */
+        unsigned int  event2rtb_qos     : 3;  /* bit[24-26]: 发送Event到RTB对应的QoS */
+        unsigned int  event2rtb_en      : 1;  /* bit[27]   : 发送Event到RTB使能信号，写1使能 */
+        unsigned int  reserved_1        : 4;  /* bit[28-31]:  */
+    } reg;
+} SOC_FFTS_EVENT2RTB_CTRL_UNION;
+#endif
+#define SOC_FFTS_EVENT2RTB_CTRL_event2rtb_eventid_START  (0)
+#define SOC_FFTS_EVENT2RTB_CTRL_event2rtb_eventid_END    (9)
+#define SOC_FFTS_EVENT2RTB_CTRL_event2rtb_uid_START      (12)
+#define SOC_FFTS_EVENT2RTB_CTRL_event2rtb_uid_END        (23)
+#define SOC_FFTS_EVENT2RTB_CTRL_event2rtb_qos_START      (24)
+#define SOC_FFTS_EVENT2RTB_CTRL_event2rtb_qos_END        (26)
+#define SOC_FFTS_EVENT2RTB_CTRL_event2rtb_en_START       (27)
+#define SOC_FFTS_EVENT2RTB_CTRL_event2rtb_en_END         (27)
+
+
+/*****************************************************************************
+ struct               : SOC_FFTS_EVENT2RTB_ST_UNION
+ struct description   : EVENT2RTB_ST Register structure definition
+                        Address Offset:0x21A8 Initial:0x00000000 Width:32
+ register description : FFTS 下发EVENT到RTB状态
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  event2rtb_done : 1;  /* bit[0]   : 发送Event到RTB完成，是否发送成功取决于event2rtb_succ域段 */
+        unsigned int  event2rtb_succ : 1;  /* bit[1]   : 发送Event到RTB成功
+                                                         1表示发送成功
+                                                         0表示因 */
+        unsigned int  reserved       : 30; /* bit[2-31]:  */
+    } reg;
+} SOC_FFTS_EVENT2RTB_ST_UNION;
+#endif
+#define SOC_FFTS_EVENT2RTB_ST_event2rtb_done_START  (0)
+#define SOC_FFTS_EVENT2RTB_ST_event2rtb_done_END    (0)
+#define SOC_FFTS_EVENT2RTB_ST_event2rtb_succ_START  (1)
+#define SOC_FFTS_EVENT2RTB_ST_event2rtb_succ_END    (1)
+
+
+/*****************************************************************************
+ struct               : SOC_FFTS_RTB_SERACH_TH_UNION
+ struct description   : RTB_SERACH_TH Register structure definition
+                        Address Offset:0x21AC Initial:0x0 Width:32
+ register description : RTB搜索启动阈值设置
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  hwrtb_search_th : 13; /* bit[0-12] : 通路2 HWRTB搜索启动阈值 */
+        unsigned int  reserved_0      : 3;  /* bit[13-15]:  */
+        unsigned int  prtb_search_th  : 13; /* bit[16-28]: 通路1进程RTB搜索启动阈值 */
+        unsigned int  reserved_1      : 3;  /* bit[29-31]:  */
+    } reg;
+} SOC_FFTS_RTB_SERACH_TH_UNION;
+#endif
+#define SOC_FFTS_RTB_SERACH_TH_hwrtb_search_th_START  (0)
+#define SOC_FFTS_RTB_SERACH_TH_hwrtb_search_th_END    (12)
+#define SOC_FFTS_RTB_SERACH_TH_prtb_search_th_START   (16)
+#define SOC_FFTS_RTB_SERACH_TH_prtb_search_th_END     (28)
+
+
+/*****************************************************************************
+ struct               : SOC_FFTS_BUS_QOS_CTRL_UNION
+ struct description   : BUS_QOS_CTRL Register structure definition
+                        Address Offset:0x21B0 Initial:0x0000000 Width:32
+ register description : FFTS总线访问QOS控制
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  msgmst_qos : 3;  /* bit[0-2] :  */
+        unsigned int  ddrmst_qos : 3;  /* bit[3-5] :  */
+        unsigned int  reserved   : 26; /* bit[6-31]:  */
+    } reg;
+} SOC_FFTS_BUS_QOS_CTRL_UNION;
+#endif
+#define SOC_FFTS_BUS_QOS_CTRL_msgmst_qos_START  (0)
+#define SOC_FFTS_BUS_QOS_CTRL_msgmst_qos_END    (2)
+#define SOC_FFTS_BUS_QOS_CTRL_ddrmst_qos_START  (3)
+#define SOC_FFTS_BUS_QOS_CTRL_ddrmst_qos_END    (5)
+
+
+/*****************************************************************************
+ struct               : SOC_FFTS_SPMEM_CTRL_UNION
+ struct description   : SPMEM_CTRL Register structure definition
+                        Address Offset:0x21B4 Initial:0x00 Width:32
+ register description : MEM控制寄存器
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  mem_ctrl_s : 26; /* bit[0-25] : MEM控制信号 */
+        unsigned int  reserved   : 6;  /* bit[26-31]:  */
+    } reg;
+} SOC_FFTS_SPMEM_CTRL_UNION;
+#endif
+#define SOC_FFTS_SPMEM_CTRL_mem_ctrl_s_START  (0)
+#define SOC_FFTS_SPMEM_CTRL_mem_ctrl_s_END    (25)
+
+
+/*****************************************************************************
+ struct               : SOC_FFTS_CKG_EXT_CTRL_UNION
+ struct description   : CKG_EXT_CTRL Register structure definition
+                        Address Offset:0x21B8 Initial:0x0000 Width:32
+ register description : FFTS门控延迟控制
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  ckg_ctrl_ext : 16; /* bit[0-15] :  */
+        unsigned int  reserved     : 16; /* bit[16-31]:  */
+    } reg;
+} SOC_FFTS_CKG_EXT_CTRL_UNION;
+#endif
+#define SOC_FFTS_CKG_EXT_CTRL_ckg_ctrl_ext_START  (0)
+#define SOC_FFTS_CKG_EXT_CTRL_ckg_ctrl_ext_END    (15)
+
+
+/*****************************************************************************
+ struct               : SOC_FFTS_CKG_BYP_CTRL_UNION
+ struct description   : CKG_BYP_CTRL Register structure definition
+                        Address Offset:0x21BC Initial:0x0000 Width:32
+ register description : FFTS门控开关控制
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  ckg_ctrl_byp : 16; /* bit[0-15] :  */
+        unsigned int  reserved     : 16; /* bit[16-31]:  */
+    } reg;
+} SOC_FFTS_CKG_BYP_CTRL_UNION;
+#endif
+#define SOC_FFTS_CKG_BYP_CTRL_ckg_ctrl_byp_START  (0)
+#define SOC_FFTS_CKG_BYP_CTRL_ckg_ctrl_byp_END    (15)
+
+
+/*****************************************************************************
+ struct               : SOC_FFTS_MISC_CTRL_UNION
+ struct description   : MISC_CTRL Register structure definition
+                        Address Offset:0x21C0 Initial:0x0000 Width:32
+ register description : FFTS相关控制寄存器
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  taskstart_dis_th   : 5;  /* bit[0-4]  : 阈值配置：
+                                                              内部FIFO排队深度大于等于该值后丢弃TaskStart的预取执行。
+                                                              内部FIFO深度取值为0~16，因此：
+                                                              配置0代表永远不执行TaskStart
+                                                              配置大于16代表永远不丢弃TaskStart。 */
+        unsigned int  task_release_dis   : 1;  /* bit[5]    : 关闭TaskRelease */
+        unsigned int  reserved_0         : 2;  /* bit[6-7]  :  */
+        unsigned int  event_dstid_chkbyp : 1;  /* bit[8]    : SubmitEvent/SubmitSend DstID鉴权控制：1：关闭0：开启 */
+        unsigned int  bucket_dis         : 1;  /* bit[9]    : 关闭Signature的Bucket分配 */
+        unsigned int  submitctx_chkbyp   : 1;  /* bit[10]   : 关闭Submit命令执行时对父任务严格的TaskCtx状态检查 */
+        unsigned int  taskx_ctx_chkbyp   : 1;  /* bit[11]   : 关闭TaskDone/TaskRelease时严格的TaskCtx状态检查 */
+        unsigned int  chain_search_max   : 4;  /* bit[12-15]: 0：搜索全部，不限制此处
+                                                              其他取值：最大搜索次数 */
+        unsigned int  reserved_1         : 16; /* bit[16-31]:  */
+    } reg;
+} SOC_FFTS_MISC_CTRL_UNION;
+#endif
+#define SOC_FFTS_MISC_CTRL_taskstart_dis_th_START    (0)
+#define SOC_FFTS_MISC_CTRL_taskstart_dis_th_END      (4)
+#define SOC_FFTS_MISC_CTRL_task_release_dis_START    (5)
+#define SOC_FFTS_MISC_CTRL_task_release_dis_END      (5)
+#define SOC_FFTS_MISC_CTRL_event_dstid_chkbyp_START  (8)
+#define SOC_FFTS_MISC_CTRL_event_dstid_chkbyp_END    (8)
+#define SOC_FFTS_MISC_CTRL_bucket_dis_START          (9)
+#define SOC_FFTS_MISC_CTRL_bucket_dis_END            (9)
+#define SOC_FFTS_MISC_CTRL_submitctx_chkbyp_START    (10)
+#define SOC_FFTS_MISC_CTRL_submitctx_chkbyp_END      (10)
+#define SOC_FFTS_MISC_CTRL_taskx_ctx_chkbyp_START    (11)
+#define SOC_FFTS_MISC_CTRL_taskx_ctx_chkbyp_END      (11)
+#define SOC_FFTS_MISC_CTRL_chain_search_max_START    (12)
+#define SOC_FFTS_MISC_CTRL_chain_search_max_END      (15)
+
+
+/*****************************************************************************
+ struct               : SOC_FFTS_MISC_CTRL2_UNION
+ struct description   : MISC_CTRL2 Register structure definition
+                        Address Offset:0x21C4 Initial:0x00000 Width:32
+ register description : FFTS相关控制寄存器
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  sigq_para_dis        : 1;  /* bit[0]    : Sig并行处理关闭 0：开启 1：关闭 */
+        unsigned int  taskq_para_dis       : 1;  /* bit[1]    : Task并行处理关闭 0：开启 1：关闭 */
+        unsigned int  sync_opt_en          : 1;  /* bit[2]    : 通路2 Sync优化控制开关， 1：开启 0：关闭 */
+        unsigned int  task_search_perf_en  : 1;  /* bit[3]    : 硬件RTB搜索预取开关，1开启 0:关闭 */
+        unsigned int  task_clr_perf_en     : 1;  /* bit[4]    : 硬件异常清理预取开关，1开启 0:关闭 */
+        unsigned int  thctx_use_64b_en     : 1;  /* bit[5]    : 每个ThreadCtx占用64Byte使能1开启 0:关闭 */
+        unsigned int  procctx_use_64b_en   : 1;  /* bit[6]    : 每个ProcCtx占用64Byte使能，1:开启 0关闭 */
+        unsigned int  cfgslv_mid_hazard_en : 1;  /* bit[7]    : CFGSLV按照MID进行Hazard使能开关 1：使能 0：关闭 */
+        unsigned int  sigcache_bypass      : 1;  /* bit[8]    : SigCtx Cache Bypass使能 */
+        unsigned int  vercache_bypass      : 1;  /* bit[9]    : VerCtx Cache Bypass使能 */
+        unsigned int  taskcache_bypass     : 1;  /* bit[10]   : TaskCtx Cache Bypass使能 */
+        unsigned int  thcache_para_dis     : 1;  /* bit[11]   : 关闭THCACHE并行处理 */
+        unsigned int  proccache_para_dis   : 1;  /* bit[12]   : 关闭PROCCACHE并行处理 */
+        unsigned int  submitrecv_npd_dis   : 1;  /* bit[13]   : SubmitRecv不在Version链中记录next_producer 1：使能 0：关闭 */
+        unsigned int  uid_block_retry_off  : 1;  /* bit[14]   : UID封锁开始后完成前，停止HWRTB读取 1：使能 0：关闭 */
+        unsigned int  reserved             : 17; /* bit[15-31]:  */
+    } reg;
+} SOC_FFTS_MISC_CTRL2_UNION;
+#endif
+#define SOC_FFTS_MISC_CTRL2_sigq_para_dis_START         (0)
+#define SOC_FFTS_MISC_CTRL2_sigq_para_dis_END           (0)
+#define SOC_FFTS_MISC_CTRL2_taskq_para_dis_START        (1)
+#define SOC_FFTS_MISC_CTRL2_taskq_para_dis_END          (1)
+#define SOC_FFTS_MISC_CTRL2_sync_opt_en_START           (2)
+#define SOC_FFTS_MISC_CTRL2_sync_opt_en_END             (2)
+#define SOC_FFTS_MISC_CTRL2_task_search_perf_en_START   (3)
+#define SOC_FFTS_MISC_CTRL2_task_search_perf_en_END     (3)
+#define SOC_FFTS_MISC_CTRL2_task_clr_perf_en_START      (4)
+#define SOC_FFTS_MISC_CTRL2_task_clr_perf_en_END        (4)
+#define SOC_FFTS_MISC_CTRL2_thctx_use_64b_en_START      (5)
+#define SOC_FFTS_MISC_CTRL2_thctx_use_64b_en_END        (5)
+#define SOC_FFTS_MISC_CTRL2_procctx_use_64b_en_START    (6)
+#define SOC_FFTS_MISC_CTRL2_procctx_use_64b_en_END      (6)
+#define SOC_FFTS_MISC_CTRL2_cfgslv_mid_hazard_en_START  (7)
+#define SOC_FFTS_MISC_CTRL2_cfgslv_mid_hazard_en_END    (7)
+#define SOC_FFTS_MISC_CTRL2_sigcache_bypass_START       (8)
+#define SOC_FFTS_MISC_CTRL2_sigcache_bypass_END         (8)
+#define SOC_FFTS_MISC_CTRL2_vercache_bypass_START       (9)
+#define SOC_FFTS_MISC_CTRL2_vercache_bypass_END         (9)
+#define SOC_FFTS_MISC_CTRL2_taskcache_bypass_START      (10)
+#define SOC_FFTS_MISC_CTRL2_taskcache_bypass_END        (10)
+#define SOC_FFTS_MISC_CTRL2_thcache_para_dis_START      (11)
+#define SOC_FFTS_MISC_CTRL2_thcache_para_dis_END        (11)
+#define SOC_FFTS_MISC_CTRL2_proccache_para_dis_START    (12)
+#define SOC_FFTS_MISC_CTRL2_proccache_para_dis_END      (12)
+#define SOC_FFTS_MISC_CTRL2_submitrecv_npd_dis_START    (13)
+#define SOC_FFTS_MISC_CTRL2_submitrecv_npd_dis_END      (13)
+#define SOC_FFTS_MISC_CTRL2_uid_block_retry_off_START   (14)
+#define SOC_FFTS_MISC_CTRL2_uid_block_retry_off_END     (14)
+
+
+/*****************************************************************************
+ struct               : SOC_FFTS_DFX_TASKCNT_UNION
+ struct description   : DFX_TASKCNT Register structure definition
+                        Address Offset:0x21C8 Initial:0x0000 Width:32
+ register description : TASKCNT总占用个数
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  taskctx_cnt : 17; /* bit[0-16] : TASKCTX占用的总数量 */
+        unsigned int  reserved    : 15; /* bit[17-31]:  */
+    } reg;
+} SOC_FFTS_DFX_TASKCNT_UNION;
+#endif
+#define SOC_FFTS_DFX_TASKCNT_taskctx_cnt_START  (0)
+#define SOC_FFTS_DFX_TASKCNT_taskctx_cnt_END    (16)
+
+
+/*****************************************************************************
+ struct               : SOC_FFTS_DFX_VERCNT_UNION
+ struct description   : DFX_VERCNT Register structure definition
+                        Address Offset:0x21CC Initial:0x0000 Width:32
+ register description : VERCNT总占用个数
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  verctx_cnt : 17; /* bit[0-16] : VERCTX占用的总数量 */
+        unsigned int  reserved   : 15; /* bit[17-31]:  */
+    } reg;
+} SOC_FFTS_DFX_VERCNT_UNION;
+#endif
+#define SOC_FFTS_DFX_VERCNT_verctx_cnt_START  (0)
+#define SOC_FFTS_DFX_VERCNT_verctx_cnt_END    (16)
+
+
+/*****************************************************************************
+ struct               : SOC_FFTS_DFX_SIGCNT_UNION
+ struct description   : DFX_SIGCNT Register structure definition
+                        Address Offset:0x21D0 Initial:0x0000 Width:32
+ register description : SIGCNT总占用个数
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  sigctx_cnt : 17; /* bit[0-16] : SIGCTX占用的总数量 */
+        unsigned int  reserved   : 15; /* bit[17-31]:  */
+    } reg;
+} SOC_FFTS_DFX_SIGCNT_UNION;
+#endif
+#define SOC_FFTS_DFX_SIGCNT_sigctx_cnt_START  (0)
+#define SOC_FFTS_DFX_SIGCNT_sigctx_cnt_END    (16)
+
+
+/*****************************************************************************
+ struct               : SOC_FFTS_DFX_MSG_OST_UNION
+ struct description   : DFX_MSG_OST Register structure definition
+                        Address Offset:0x21D4 Initial:0x0 Width:32
+ register description : FFTS向消息总线发送的OSTD
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  msg_ost_total     : 5;  /* bit[0-4]  : 消息总线访问总Outstanding */
+        unsigned int  hw3_ost_npu_tscpu : 5;  /* bit[5-9]  : 通路3 总线访问Outstanding NPU_TSCPU */
+        unsigned int  hw3_ost_npu_hwts  : 5;  /* bit[10-14]: 通路3 总线访问Outstanding NPU_HWTS */
+        unsigned int  hw3_ost_gpu       : 5;  /* bit[15-19]: 通路3 总线访问Outstanding GPU */
+        unsigned int  hw2_ost_npu       : 5;  /* bit[20-24]: 通路2 总线访问Outstanding NPU_HWTS */
+        unsigned int  hw2_ost_gpu       : 5;  /* bit[25-29]: 通路2 总线访问Outstanding GPU */
+        unsigned int  reserved          : 2;  /* bit[30-31]:  */
+    } reg;
+} SOC_FFTS_DFX_MSG_OST_UNION;
+#endif
+#define SOC_FFTS_DFX_MSG_OST_msg_ost_total_START      (0)
+#define SOC_FFTS_DFX_MSG_OST_msg_ost_total_END        (4)
+#define SOC_FFTS_DFX_MSG_OST_hw3_ost_npu_tscpu_START  (5)
+#define SOC_FFTS_DFX_MSG_OST_hw3_ost_npu_tscpu_END    (9)
+#define SOC_FFTS_DFX_MSG_OST_hw3_ost_npu_hwts_START   (10)
+#define SOC_FFTS_DFX_MSG_OST_hw3_ost_npu_hwts_END     (14)
+#define SOC_FFTS_DFX_MSG_OST_hw3_ost_gpu_START        (15)
+#define SOC_FFTS_DFX_MSG_OST_hw3_ost_gpu_END          (19)
+#define SOC_FFTS_DFX_MSG_OST_hw2_ost_npu_START        (20)
+#define SOC_FFTS_DFX_MSG_OST_hw2_ost_npu_END          (24)
+#define SOC_FFTS_DFX_MSG_OST_hw2_ost_gpu_START        (25)
+#define SOC_FFTS_DFX_MSG_OST_hw2_ost_gpu_END          (29)
+
+
+/*****************************************************************************
+ struct               : SOC_FFTS_DFX_DDR_OST_UNION
+ struct description   : DFX_DDR_OST Register structure definition
+                        Address Offset:0x21D8 Initial:0x000000 Width:32
+ register description : FFTS访问DDR OSTD
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  ddr_ost_cnt : 8;  /* bit[0-7] : 访问DDR的outstanding */
+        unsigned int  reserved    : 24; /* bit[8-31]:  */
+    } reg;
+} SOC_FFTS_DFX_DDR_OST_UNION;
+#endif
+#define SOC_FFTS_DFX_DDR_OST_ddr_ost_cnt_START  (0)
+#define SOC_FFTS_DFX_DDR_OST_ddr_ost_cnt_END    (7)
+
+
+/*****************************************************************************
+ struct               : SOC_FFTS_DFX_FIFO_CNT_UNION
+ struct description   : DFX_FIFO_CNT Register structure definition
+                        Address Offset:0x21DC Initial:0x000000 Width:32
+ register description : TASKFIFO深度
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  task_cmd_fifo_cnt : 8;  /* bit[0-7] : FFTS TASK FIFO当前占用 */
+        unsigned int  reserved          : 24; /* bit[8-31]:  */
+    } reg;
+} SOC_FFTS_DFX_FIFO_CNT_UNION;
+#endif
+#define SOC_FFTS_DFX_FIFO_CNT_task_cmd_fifo_cnt_START  (0)
+#define SOC_FFTS_DFX_FIFO_CNT_task_cmd_fifo_cnt_END    (7)
+
+
+/*****************************************************************************
+ struct               : SOC_FFTS_DFX_BUSY_UNION
+ struct description   : DFX_BUSY Register structure definition
+                        Address Offset:0x21E0 Initial:0x00 Width:32
+ register description : 维侧回读busy状态寄存器
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  ffts_dfx_busy : 24; /* bit[0-23] : FFTS内部Busy信号（仅用于维侧） */
+        unsigned int  reserved      : 8;  /* bit[24-31]:  */
+    } reg;
+} SOC_FFTS_DFX_BUSY_UNION;
+#endif
+#define SOC_FFTS_DFX_BUSY_ffts_dfx_busy_START  (0)
+#define SOC_FFTS_DFX_BUSY_ffts_dfx_busy_END    (23)
+
+
+/*****************************************************************************
+ struct               : SOC_FFTS_DFX_UID_SEARCH_CNT_UNION
+ struct description   : DFX_UID_SEARCH_CNT Register structure definition
+                        Address Offset:0x21E4 Initial:0x00000 Width:32
+ register description : 维侧回读需要搜索的UID个数
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  dfx_search_uid_cnt : 12; /* bit[0-11] : 当前因RTB满后需要搜索的UID个数 */
+        unsigned int  reserved           : 20; /* bit[12-31]:  */
+    } reg;
+} SOC_FFTS_DFX_UID_SEARCH_CNT_UNION;
+#endif
+#define SOC_FFTS_DFX_UID_SEARCH_CNT_dfx_search_uid_cnt_START  (0)
+#define SOC_FFTS_DFX_UID_SEARCH_CNT_dfx_search_uid_cnt_END    (11)
+
+
+/*****************************************************************************
+ struct               : SOC_FFTS_DFX_ABNORMAL_UNION
+ struct description   : DFX_ABNORMAL Register structure definition
+                        Address Offset:0x21E8 Initial:0x0000 Width:32
+ register description : 维侧回读异常处理
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  dfx_abnm_ctrl_state : 8;  /* bit[0-7]  : 异常处理状态机状态 */
+        unsigned int  dfx_sync_state      : 8;  /* bit[8-15] : 加速器SYNC状态 */
+        unsigned int  reserved            : 16; /* bit[16-31]:  */
+    } reg;
+} SOC_FFTS_DFX_ABNORMAL_UNION;
+#endif
+#define SOC_FFTS_DFX_ABNORMAL_dfx_abnm_ctrl_state_START  (0)
+#define SOC_FFTS_DFX_ABNORMAL_dfx_abnm_ctrl_state_END    (7)
+#define SOC_FFTS_DFX_ABNORMAL_dfx_sync_state_START       (8)
+#define SOC_FFTS_DFX_ABNORMAL_dfx_sync_state_END         (15)
+
+
+/*****************************************************************************
+ struct               : SOC_FFTS_PMU_EVCNT_UNION
+ struct description   : PMU_EVCNT Register structure definition
+                        Address Offset:(PMU_NUM)*4+0x2200 Initial:0x00000000 Width:32
+ register description : FFTS PMU event counter register.
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  pmu_evcnt : 32; /* bit[0-31]: PMU event counter instant value. */
+    } reg;
+} SOC_FFTS_PMU_EVCNT_UNION;
+#endif
+#define SOC_FFTS_PMU_EVCNT_pmu_evcnt_START  (0)
+#define SOC_FFTS_PMU_EVCNT_pmu_evcnt_END    (31)
+
+
+/*****************************************************************************
+ struct               : SOC_FFTS_PMU_EVSVR_UNION
+ struct description   : PMU_EVSVR Register structure definition
+                        Address Offset:(PMU_NUM)*4+0x2220 Initial:0x00000000 Width:32
+ register description : FFTS PMU event counter shadow register.
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  pmu_evsvr : 32; /* bit[0-31]: PMU event counter capture value. */
+    } reg;
+} SOC_FFTS_PMU_EVSVR_UNION;
+#endif
+#define SOC_FFTS_PMU_EVSVR_pmu_evsvr_START  (0)
+#define SOC_FFTS_PMU_EVSVR_pmu_evsvr_END    (31)
+
+
+/*****************************************************************************
+ struct               : SOC_FFTS_PMU_EVTYPE_UNION
+ struct description   : PMU_EVTYPE Register structure definition
+                        Address Offset:(PMU_NUM)*4+0x2240 Initial:0x0000000 Width:32
+ register description : FFTS PMU event type set register.
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  pmu_evtype : 6;  /* bit[0-5] : PMU event 编号. */
+        unsigned int  reserved   : 26; /* bit[6-31]:  */
+    } reg;
+} SOC_FFTS_PMU_EVTYPE_UNION;
+#endif
+#define SOC_FFTS_PMU_EVTYPE_pmu_evtype_START  (0)
+#define SOC_FFTS_PMU_EVTYPE_pmu_evtype_END    (5)
+
+
+/*****************************************************************************
+ struct               : SOC_FFTS_PMU_CNTEN_UNION
+ struct description   : PMU_CNTEN Register structure definition
+                        Address Offset:0x2260 Initial:0x000000 Width:32
+ register description : FFTS PMU event counter enable register.
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  pmu_cnten : 8;  /* bit[0-7] : PMU counter enable. Switching from enable to disable will clear corresponding pmuevnt/pmu_overflow status.
+                                                    0x0 disable
+                                                    0x1 enable */
+        unsigned int  reserved  : 24; /* bit[8-31]:  */
+    } reg;
+} SOC_FFTS_PMU_CNTEN_UNION;
+#endif
+#define SOC_FFTS_PMU_CNTEN_pmu_cnten_START  (0)
+#define SOC_FFTS_PMU_CNTEN_pmu_cnten_END    (7)
+
+
+/*****************************************************************************
+ struct               : SOC_FFTS_PMU_OV_UNION
+ struct description   : PMU_OV Register structure definition
+                        Address Offset:0x2264 Initial:0x000000 Width:32
+ register description : FFTS PMU event counter overflow status register.
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  pmu_overflow : 8;  /* bit[0-7] : PMU counter overflow status. Whenever a counter overflows, it's pmu counter value is captured. */
+        unsigned int  reserved     : 24; /* bit[8-31]:  */
+    } reg;
+} SOC_FFTS_PMU_OV_UNION;
+#endif
+#define SOC_FFTS_PMU_OV_pmu_overflow_START  (0)
+#define SOC_FFTS_PMU_OV_pmu_overflow_END    (7)
+
+
+/*****************************************************************************
+ struct               : SOC_FFTS_PMU_CFG_UNION
+ struct description   : PMU_CFG Register structure definition
+                        Address Offset:0x2268 Initial:0x00000000 Width:32
+ register description : FFTS PMU config register.
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  pmu_en       : 1;  /* bit[0]   : PMU enable. Switching from enable to disable will clear all pmuevnt/pmu_overflow status.
+                                                       0x0 disable
+                                                       0x1 enable */
+        unsigned int  pmu_ovcap_en : 1;  /* bit[1]   : PMU overflow capture enable.
+                                                       0x0 disable
+                                                       0x1 enable */
+        unsigned int  reserved     : 30; /* bit[2-31]:  */
+    } reg;
+} SOC_FFTS_PMU_CFG_UNION;
+#endif
+#define SOC_FFTS_PMU_CFG_pmu_en_START        (0)
+#define SOC_FFTS_PMU_CFG_pmu_en_END          (0)
+#define SOC_FFTS_PMU_CFG_pmu_ovcap_en_START  (1)
+#define SOC_FFTS_PMU_CFG_pmu_ovcap_en_END    (1)
+
+
+/*****************************************************************************
+ struct               : SOC_FFTS_PMU_CAPR_UNION
+ struct description   : PMU_CAPR Register structure definition
+                        Address Offset:0x226C Initial:0x00000000 Width:32
+ register description : FFTS PMU capture register.
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  pmu_cap  : 1;  /* bit[0]   : Whenever write to this bit, all counters value are captured. */
+        unsigned int  reserved : 31; /* bit[1-31]: Reserved */
+    } reg;
+} SOC_FFTS_PMU_CAPR_UNION;
+#endif
+#define SOC_FFTS_PMU_CAPR_pmu_cap_START   (0)
+#define SOC_FFTS_PMU_CAPR_pmu_cap_END     (0)
+
+
+/*****************************************************************************
+ struct               : SOC_FFTS_PMU_UID_FLT_UNION
+ struct description   : PMU_UID_FLT Register structure definition
+                        Address Offset:0x2270 Initial:0x00 Width:32
+ register description : FFTS PMU UIT过滤寄存器0
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  pmu_flt_uid_val  : 12; /* bit[0-11] : UID过滤设置值 */
+        unsigned int  pmu_flt_uid_mask : 12; /* bit[12-23]: UID过滤MASK比特位:
+                                                            UID匹配条件为：uid_mask&uid_val == uid_mask&uid */
+        unsigned int  reserved         : 8;  /* bit[24-31]:  */
+    } reg;
+} SOC_FFTS_PMU_UID_FLT_UNION;
+#endif
+#define SOC_FFTS_PMU_UID_FLT_pmu_flt_uid_val_START   (0)
+#define SOC_FFTS_PMU_UID_FLT_pmu_flt_uid_val_END     (11)
+#define SOC_FFTS_PMU_UID_FLT_pmu_flt_uid_mask_START  (12)
+#define SOC_FFTS_PMU_UID_FLT_pmu_flt_uid_mask_END    (23)
+
+
+/*****************************************************************************
+ struct               : SOC_FFTS_PMU_HWTYPE_FLT_UNION
+ struct description   : PMU_HWTYPE_FLT Register structure definition
+                        Address Offset:0x2274 Initial:0x00000 Width:32
+ register description : FFTS_PMU_HWTYPE过滤器
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  pmu_flt_hwtype3 : 12; /* bit[0-11] : 通路3 HWTYPE PMU统计控制
+                                                           比特[i]代表是否统计HWTYPE=(i)类型的Event
+                                                           1:统计0：不统计 */
+        unsigned int  pmu_flt_hwtype2 : 2;  /* bit[12-13]: 通路2 HWTYPE PMU统计控制，2比特中：
+                                                           比特[i]代表是否统计HWTYPE=(i+16)类型的Event
+                                                           1:统计0：不统计 */
+        unsigned int  reserved        : 18; /* bit[14-31]:  */
+    } reg;
+} SOC_FFTS_PMU_HWTYPE_FLT_UNION;
+#endif
+#define SOC_FFTS_PMU_HWTYPE_FLT_pmu_flt_hwtype3_START  (0)
+#define SOC_FFTS_PMU_HWTYPE_FLT_pmu_flt_hwtype3_END    (11)
+#define SOC_FFTS_PMU_HWTYPE_FLT_pmu_flt_hwtype2_START  (12)
+#define SOC_FFTS_PMU_HWTYPE_FLT_pmu_flt_hwtype2_END    (13)
+
+
+/*****************************************************************************
+ struct               : SOC_FFTS_PMU_FLT_DDR_UNION
+ struct description   : PMU_FLT_DDR Register structure definition
+                        Address Offset:0x2278 Initial:0x000 Width:32
+ register description : FFTS PMU DDR访问控制
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  pmu_flt_ddr_en : 20; /* bit[0-19] : PMU: Event读写统计读写使能，一共统计源头为10个。每2bit对应一个源头的读写统计使能控制。低bit写1，使能该源头的写ddr统计。高bit写1，使能该源头的读ddr统计。
+                                                          具体源头控制祥见《HiFFTSV100 DFX与PMU》 */
+        unsigned int  reserved       : 12; /* bit[20-31]:  */
+    } reg;
+} SOC_FFTS_PMU_FLT_DDR_UNION;
+#endif
+#define SOC_FFTS_PMU_FLT_DDR_pmu_flt_ddr_en_START  (0)
+#define SOC_FFTS_PMU_FLT_DDR_pmu_flt_ddr_en_END    (19)
+
+
+/*****************************************************************************
+ struct               : SOC_FFTS_PMU_TASKFIFO_TH_UNION
+ struct description   : PMU_TASKFIFO_TH Register structure definition
+                        Address Offset:0x227C Initial:0x0000 Width:32
+ register description : FFTS PMU TASKFIFO 阈值
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  pmu_taskfifo_th0 : 8;  /* bit[0-7]  : PMU TASKFIFO统计阈值设置 */
+        unsigned int  pmu_taskfifo_th1 : 8;  /* bit[8-15] : PMU TASKFIFO统计阈值设置 */
+        unsigned int  reserved         : 16; /* bit[16-31]:  */
+    } reg;
+} SOC_FFTS_PMU_TASKFIFO_TH_UNION;
+#endif
+#define SOC_FFTS_PMU_TASKFIFO_TH_pmu_taskfifo_th0_START  (0)
+#define SOC_FFTS_PMU_TASKFIFO_TH_pmu_taskfifo_th0_END    (7)
+#define SOC_FFTS_PMU_TASKFIFO_TH_pmu_taskfifo_th1_START  (8)
+#define SOC_FFTS_PMU_TASKFIFO_TH_pmu_taskfifo_th1_END    (15)
+
+
+/*****************************************************************************
+ struct               : SOC_FFTS_INTR_ISP_QOS_UNION
+ struct description   : INTR_ISP_QOS Register structure definition
+                        Address Offset:0x2300 Initial:0x000000 Width:32
+ register description : ISP使用的QOS控制
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  isp_qos_en : 8;  /* bit[0-7] : ISP使用的QOS控制，该设置不区分进程，每个比特代表1个QOS
+                                                     若比特X置1则表示QOS X为ISP使用，其产生的唤醒中断上报到ISP。 */
+        unsigned int  reserved   : 24; /* bit[8-31]:  */
+    } reg;
+} SOC_FFTS_INTR_ISP_QOS_UNION;
+#endif
+#define SOC_FFTS_INTR_ISP_QOS_isp_qos_en_START  (0)
+#define SOC_FFTS_INTR_ISP_QOS_isp_qos_en_END    (7)
+
+
+/*****************************************************************************
+ struct               : SOC_FFTS_INTR_NRML_MASK_ISP_UNION
+ struct description   : INTR_NRML_MASK_ISP Register structure definition
+                        Address Offset:0x2304 Initial:0x00000000 Width:32
+ register description : ISPCPU正常中断MASK寄存器
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  isp_intr_normal_mask : 1;  /* bit[0]   : 中断Mask：0为开启中断，1为关闭中断
+                                                               每BIT含义如下：
+                                                               0：中断队列非空（中断队列内容见用户手册） */
+        unsigned int  reserved             : 31; /* bit[1-31]:  */
+    } reg;
+} SOC_FFTS_INTR_NRML_MASK_ISP_UNION;
+#endif
+#define SOC_FFTS_INTR_NRML_MASK_ISP_isp_intr_normal_mask_START  (0)
+#define SOC_FFTS_INTR_NRML_MASK_ISP_isp_intr_normal_mask_END    (0)
+
+
+/*****************************************************************************
+ struct               : SOC_FFTS_INTR_NRML_CLR_ISP_UNION
+ struct description   : INTR_NRML_CLR_ISP Register structure definition
+                        Address Offset:0x2308 Initial:0x00000000 Width:32
+ register description : ISPCPU正常中断状态清除寄存器
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  isp_intr_normal_clr : 1;  /* bit[0]   : 中断清除，每bit含义见intr_normal_mask */
+        unsigned int  reserved            : 31; /* bit[1-31]:  */
+    } reg;
+} SOC_FFTS_INTR_NRML_CLR_ISP_UNION;
+#endif
+#define SOC_FFTS_INTR_NRML_CLR_ISP_isp_intr_normal_clr_START  (0)
+#define SOC_FFTS_INTR_NRML_CLR_ISP_isp_intr_normal_clr_END    (0)
+
+
+/*****************************************************************************
+ struct               : SOC_FFTS_INTR_NRML_ST_ISP_UNION
+ struct description   : INTR_NRML_ST_ISP Register structure definition
+                        Address Offset:0x230C Initial:0x00000000 Width:32
+ register description : ISPCPU正常中断状态寄存器
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  isp_intr_normal_st : 1;  /* bit[0]   : 中断状态，每bit含义见intr_normal_mask */
+        unsigned int  reserved           : 31; /* bit[1-31]:  */
+    } reg;
+} SOC_FFTS_INTR_NRML_ST_ISP_UNION;
+#endif
+#define SOC_FFTS_INTR_NRML_ST_ISP_isp_intr_normal_st_START  (0)
+#define SOC_FFTS_INTR_NRML_ST_ISP_isp_intr_normal_st_END    (0)
+
+
+/*****************************************************************************
+ struct               : SOC_FFTS_INTRQ_NRML_PTR_ISP_UNION
+ struct description   : INTRQ_NRML_PTR_ISP Register structure definition
+                        Address Offset:0x2310 Initial:0x0 Width:32
+ register description : ISPCPU正常中断队列读写指针
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  isp_intrq_normal_rptr     : 12; /* bit[0-11] : 中断队列读指针 */
+        unsigned int  isp_intrq_normal_rptr_upd : 1;  /* bit[12]   : 中断队列读指针更新使能 */
+        unsigned int  reserved_0                : 3;  /* bit[13-15]:  */
+        unsigned int  isp_intrq_normal_wptr     : 12; /* bit[16-27]: 中断队列写指针 */
+        unsigned int  reserved_1                : 4;  /* bit[28-31]:  */
+    } reg;
+} SOC_FFTS_INTRQ_NRML_PTR_ISP_UNION;
+#endif
+#define SOC_FFTS_INTRQ_NRML_PTR_ISP_isp_intrq_normal_rptr_START      (0)
+#define SOC_FFTS_INTRQ_NRML_PTR_ISP_isp_intrq_normal_rptr_END        (11)
+#define SOC_FFTS_INTRQ_NRML_PTR_ISP_isp_intrq_normal_rptr_upd_START  (12)
+#define SOC_FFTS_INTRQ_NRML_PTR_ISP_isp_intrq_normal_rptr_upd_END    (12)
+#define SOC_FFTS_INTRQ_NRML_PTR_ISP_isp_intrq_normal_wptr_START      (16)
+#define SOC_FFTS_INTRQ_NRML_PTR_ISP_isp_intrq_normal_wptr_END        (27)
+
+
+/*****************************************************************************
+ struct               : SOC_FFTS_INTR_NRML_MASK_UNION
+ struct description   : INTR_NRML_MASK Register structure definition
+                        Address Offset:0x2314 Initial:0x0000000 Width:32
+ register description : 正常中断MASK寄存器
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  intr_normal_mask : 5;  /* bit[0-4] : 中断Mask：0为开启中断，1为关闭中断
+                                                           每BIT含义如下：
+                                                           0：中断队列非空（中断队列内容见用户手册）
+                                                           1：加速器封锁完成中断（GPU）
+                                                           2：加速器封锁完成中断（NPU）
+                                                           3：进程封锁完成中断
+                                                           4：Cache Flush操作完成 */
+        unsigned int  reserved         : 27; /* bit[5-31]:  */
+    } reg;
+} SOC_FFTS_INTR_NRML_MASK_UNION;
+#endif
+#define SOC_FFTS_INTR_NRML_MASK_intr_normal_mask_START  (0)
+#define SOC_FFTS_INTR_NRML_MASK_intr_normal_mask_END    (4)
+
+
+/*****************************************************************************
+ struct               : SOC_FFTS_INTR_NRML_CLR_UNION
+ struct description   : INTR_NRML_CLR Register structure definition
+                        Address Offset:0x2318 Initial:0x0000000 Width:32
+ register description : 正常中断状态清除寄存器
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  intr_normal_clr : 5;  /* bit[0-4] : 中断清除，每bit含义见intr_normal_mask */
+        unsigned int  reserved        : 27; /* bit[5-31]:  */
+    } reg;
+} SOC_FFTS_INTR_NRML_CLR_UNION;
+#endif
+#define SOC_FFTS_INTR_NRML_CLR_intr_normal_clr_START  (0)
+#define SOC_FFTS_INTR_NRML_CLR_intr_normal_clr_END    (4)
+
+
+/*****************************************************************************
+ struct               : SOC_FFTS_INTR_NRML_ST_UNION
+ struct description   : INTR_NRML_ST Register structure definition
+                        Address Offset:0x231C Initial:0x0000000 Width:32
+ register description : 正常中断状态寄存器
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  intr_normal_st : 5;  /* bit[0-4] : 中断状态，每bit含义见intr_normal_mask */
+        unsigned int  reserved       : 27; /* bit[5-31]:  */
+    } reg;
+} SOC_FFTS_INTR_NRML_ST_UNION;
+#endif
+#define SOC_FFTS_INTR_NRML_ST_intr_normal_st_START  (0)
+#define SOC_FFTS_INTR_NRML_ST_intr_normal_st_END    (4)
+
+
+/*****************************************************************************
+ struct               : SOC_FFTS_INTRQ_NRML_PTR_UNION
+ struct description   : INTRQ_NRML_PTR Register structure definition
+                        Address Offset:0x2320 Initial:0x0 Width:32
+ register description : 正常中断队列读写指针
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  intrq_normal_rptr     : 12; /* bit[0-11] : 中断队列读指针 */
+        unsigned int  intrq_normal_rptr_upd : 1;  /* bit[12]   : 中断队列读指针更新使能 */
+        unsigned int  reserved_0            : 3;  /* bit[13-15]:  */
+        unsigned int  intrq_normal_wptr     : 12; /* bit[16-27]: 中断队列写指针 */
+        unsigned int  reserved_1            : 4;  /* bit[28-31]:  */
+    } reg;
+} SOC_FFTS_INTRQ_NRML_PTR_UNION;
+#endif
+#define SOC_FFTS_INTRQ_NRML_PTR_intrq_normal_rptr_START      (0)
+#define SOC_FFTS_INTRQ_NRML_PTR_intrq_normal_rptr_END        (11)
+#define SOC_FFTS_INTRQ_NRML_PTR_intrq_normal_rptr_upd_START  (12)
+#define SOC_FFTS_INTRQ_NRML_PTR_intrq_normal_rptr_upd_END    (12)
+#define SOC_FFTS_INTRQ_NRML_PTR_intrq_normal_wptr_START      (16)
+#define SOC_FFTS_INTRQ_NRML_PTR_intrq_normal_wptr_END        (27)
+
+
+/*****************************************************************************
+ struct               : SOC_FFTS_INTR_ABNM_MASK_UNION
+ struct description   : INTR_ABNM_MASK Register structure definition
+                        Address Offset:0x2324 Initial:0x0000000 Width:32
+ register description : 异常中断MASK寄存器
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  intr_abnormal_mask : 4;  /* bit[0-3] : 中断Mask：0为开启中断，1为关闭中断
+                                                             具体每bit含义如下：
+                                                             [0]:有中断上报到中断队列
+                                                             [1]:HWRTB(GPU)中存储超过阈值
+                                                             [2]:HWRTB(NPU)中存储超过阈值
+                                                             [3]:DFX类型异常中断 */
+        unsigned int  reserved           : 28; /* bit[4-31]:  */
+    } reg;
+} SOC_FFTS_INTR_ABNM_MASK_UNION;
+#endif
+#define SOC_FFTS_INTR_ABNM_MASK_intr_abnormal_mask_START  (0)
+#define SOC_FFTS_INTR_ABNM_MASK_intr_abnormal_mask_END    (3)
+
+
+/*****************************************************************************
+ struct               : SOC_FFTS_INTR_ABNM_CLR_UNION
+ struct description   : INTR_ABNM_CLR Register structure definition
+                        Address Offset:0x2328 Initial:0x0000000 Width:32
+ register description : 异常中断状态清除寄存器
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  intr_abnormal_clr : 4;  /* bit[0-3] : 中断清除：写1清除中断
+                                                            具体每bit含义见intr_abnormal_mask */
+        unsigned int  reserved          : 28; /* bit[4-31]:  */
+    } reg;
+} SOC_FFTS_INTR_ABNM_CLR_UNION;
+#endif
+#define SOC_FFTS_INTR_ABNM_CLR_intr_abnormal_clr_START  (0)
+#define SOC_FFTS_INTR_ABNM_CLR_intr_abnormal_clr_END    (3)
+
+
+/*****************************************************************************
+ struct               : SOC_FFTS_INTR_ABNM_ST_UNION
+ struct description   : INTR_ABNM_ST Register structure definition
+                        Address Offset:0x232C Initial:0x0000000 Width:32
+ register description : 异常中断状态寄存器
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  intr_abnormal_st : 4;  /* bit[0-3] : 中断清除：写1清除中断
+                                                           具体每bit含义见intr_abnormal_mask */
+        unsigned int  reserved         : 28; /* bit[4-31]:  */
+    } reg;
+} SOC_FFTS_INTR_ABNM_ST_UNION;
+#endif
+#define SOC_FFTS_INTR_ABNM_ST_intr_abnormal_st_START  (0)
+#define SOC_FFTS_INTR_ABNM_ST_intr_abnormal_st_END    (3)
+
+
+/*****************************************************************************
+ struct               : SOC_FFTS_INTRQ_ABNM_PTR_UNION
+ struct description   : INTRQ_ABNM_PTR Register structure definition
+                        Address Offset:0x2330 Initial:0x0 Width:32
+ register description : 异常中断队列读写指针
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  intrq_abnormal_rptr     : 12; /* bit[0-11] : 中断队列读指针 */
+        unsigned int  intrq_abnormal_rptr_upd : 1;  /* bit[12]   : 中断队列读指针更新使能 */
+        unsigned int  reserved_0              : 3;  /* bit[13-15]:  */
+        unsigned int  intrq_abnormal_wptr     : 12; /* bit[16-27]: 中断队列写指针 */
+        unsigned int  reserved_1              : 4;  /* bit[28-31]:  */
+    } reg;
+} SOC_FFTS_INTRQ_ABNM_PTR_UNION;
+#endif
+#define SOC_FFTS_INTRQ_ABNM_PTR_intrq_abnormal_rptr_START      (0)
+#define SOC_FFTS_INTRQ_ABNM_PTR_intrq_abnormal_rptr_END        (11)
+#define SOC_FFTS_INTRQ_ABNM_PTR_intrq_abnormal_rptr_upd_START  (12)
+#define SOC_FFTS_INTRQ_ABNM_PTR_intrq_abnormal_rptr_upd_END    (12)
+#define SOC_FFTS_INTRQ_ABNM_PTR_intrq_abnormal_wptr_START      (16)
+#define SOC_FFTS_INTRQ_ABNM_PTR_intrq_abnormal_wptr_END        (27)
+
+
+/*****************************************************************************
+ struct               : SOC_FFTS_INTRQ_ABNM_MASK_UNION
+ struct description   : INTRQ_ABNM_MASK Register structure definition
+                        Address Offset:0x2334 Initial:0x00000000 Width:32
+ register description : 异常中断队列MASK
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  intrq_abnormal_mask : 32; /* bit[0-31]: 记录到中断队列中的中断类型开关：0：打开中断1：关闭中断
+                                                              每bit代表1个中断，具体见用户手册 */
+    } reg;
+} SOC_FFTS_INTRQ_ABNM_MASK_UNION;
+#endif
+#define SOC_FFTS_INTRQ_ABNM_MASK_intrq_abnormal_mask_START  (0)
+#define SOC_FFTS_INTRQ_ABNM_MASK_intrq_abnormal_mask_END    (31)
+
+
+/*****************************************************************************
+ struct               : SOC_FFTS_INTRQ_ABNM_DFX_ST_UNION
+ struct description   : INTRQ_ABNM_DFX_ST Register structure definition
+                        Address Offset:0x2338 Initial:0x00000000 Width:32
+ register description : 异常中断队列状态
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  intrq_abnormal_dfx_st : 32; /* bit[0-31]: 曾经上报到中断队列的中断状态
+                                                                每bit代表1个中断，具体见用户手册 */
+    } reg;
+} SOC_FFTS_INTRQ_ABNM_DFX_ST_UNION;
+#endif
+#define SOC_FFTS_INTRQ_ABNM_DFX_ST_intrq_abnormal_dfx_st_START  (0)
+#define SOC_FFTS_INTRQ_ABNM_DFX_ST_intrq_abnormal_dfx_st_END    (31)
+
+
+/*****************************************************************************
+ struct               : SOC_FFTS_INTRQ_ABNM_DFX_CLR_UNION
+ struct description   : INTRQ_ABNM_DFX_CLR Register structure definition
+                        Address Offset:0x233C Initial:0x00000000 Width:32
+ register description : 异常中断队列CLR
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  intrq_abnormal_dfx_clr : 32; /* bit[0-31]: 写1清除intrq_abnormal_dfx_st状态 */
+    } reg;
+} SOC_FFTS_INTRQ_ABNM_DFX_CLR_UNION;
+#endif
+#define SOC_FFTS_INTRQ_ABNM_DFX_CLR_intrq_abnormal_dfx_clr_START  (0)
+#define SOC_FFTS_INTRQ_ABNM_DFX_CLR_intrq_abnormal_dfx_clr_END    (31)
+
+
+/*****************************************************************************
+ struct               : SOC_FFTS_INTR_DFX_MASK_UNION
+ struct description   : INTR_DFX_MASK Register structure definition
+                        Address Offset:0x2340 Initial:0x00000000 Width:32
+ register description : FFTS DFX control register.
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  dfx_int_mask : 32; /* bit[0-31]: Interrupt Signal Mask：0：使能；1：禁止。 */
+    } reg;
+} SOC_FFTS_INTR_DFX_MASK_UNION;
+#endif
+#define SOC_FFTS_INTR_DFX_MASK_dfx_int_mask_START  (0)
+#define SOC_FFTS_INTR_DFX_MASK_dfx_int_mask_END    (31)
+
+
+/*****************************************************************************
+ struct               : SOC_FFTS_INTR_DFX_ORG_STATUS_UNION
+ struct description   : INTR_DFX_ORG_STATUS Register structure definition
+                        Address Offset:0x2344 Initial:0x00000000 Width:32
+ register description : FFTS DFX status register.
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  dfx_int_org_status : 32; /* bit[0-31]:  */
+    } reg;
+} SOC_FFTS_INTR_DFX_ORG_STATUS_UNION;
+#endif
+#define SOC_FFTS_INTR_DFX_ORG_STATUS_dfx_int_org_status_START  (0)
+#define SOC_FFTS_INTR_DFX_ORG_STATUS_dfx_int_org_status_END    (31)
+
+
+/*****************************************************************************
+ struct               : SOC_FFTS_INTR_DFX_MASK_STATUS_UNION
+ struct description   : INTR_DFX_MASK_STATUS Register structure definition
+                        Address Offset:0x2348 Initial:0x00000000 Width:32
+ register description : FFTS DFX status register.
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  dfx_int_mask_status : 32; /* bit[0-31]: ABNML_INT_NS_MASK_STATUS */
+    } reg;
+} SOC_FFTS_INTR_DFX_MASK_STATUS_UNION;
+#endif
+#define SOC_FFTS_INTR_DFX_MASK_STATUS_dfx_int_mask_status_START  (0)
+#define SOC_FFTS_INTR_DFX_MASK_STATUS_dfx_int_mask_status_END    (31)
+
+
+/*****************************************************************************
+ struct               : SOC_FFTS_INTR_DFX_TYPE_UNION
+ struct description   : INTR_DFX_TYPE Register structure definition
+                        Address Offset:0x234C Initial:0x0000000 Width:32
+ register description : FFTS DFX type register.
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  dfx_int_type : 5;  /* bit[0-4] : DFX中断类型编号（编号含义见用户手册）
+                                                       （仅记录中断清除后第一个上报的异常信息） */
+        unsigned int  reserved     : 27; /* bit[5-31]: 保留。 */
+    } reg;
+} SOC_FFTS_INTR_DFX_TYPE_UNION;
+#endif
+#define SOC_FFTS_INTR_DFX_TYPE_dfx_int_type_START  (0)
+#define SOC_FFTS_INTR_DFX_TYPE_dfx_int_type_END    (4)
+
+
+/*****************************************************************************
+ struct               : SOC_FFTS_INTR_DFX_INFO_UNION
+ struct description   : INTR_DFX_INFO Register structure definition
+                        Address Offset:0x2350 Initial:0x00000000 Width:32
+ register description : FFTS DFX info0 register.
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  dfx_int_info : 32; /* bit[0-31]: DFX中断上报的异常信息（具体含义见用户手册）
+                                                       （仅记录中断清除后第一个上报的异常信息） */
+    } reg;
+} SOC_FFTS_INTR_DFX_INFO_UNION;
+#endif
+#define SOC_FFTS_INTR_DFX_INFO_dfx_int_info_START  (0)
+#define SOC_FFTS_INTR_DFX_INFO_dfx_int_info_END    (31)
+
+
+/*****************************************************************************
+ struct               : SOC_FFTS_DEBUG_ADDR_UNION
+ struct description   : DEBUG_ADDR Register structure definition
+                        Address Offset:0x2354 Initial:0x0000 Width:32
+ register description : Debug地址寄存器
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  dbg_cfg_addr : 16; /* bit[0-15] : debug读地址寄存器 */
+        unsigned int  reserved     : 16; /* bit[16-31]: reserved. */
+    } reg;
+} SOC_FFTS_DEBUG_ADDR_UNION;
+#endif
+#define SOC_FFTS_DEBUG_ADDR_dbg_cfg_addr_START  (0)
+#define SOC_FFTS_DEBUG_ADDR_dbg_cfg_addr_END    (15)
+
+
+/*****************************************************************************
+ struct               : SOC_FFTS_DEBUG_RD_EN_UNION
+ struct description   : DEBUG_RD_EN Register structure definition
+                        Address Offset:0x2358 Initial:0x00000000 Width:32
+ register description : Debug读取寄存器
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  dbg_cfg_rd : 1;  /* bit[0]   : debug读取使能寄存器 */
+        unsigned int  reserved   : 31; /* bit[1-31]: reserved. */
+    } reg;
+} SOC_FFTS_DEBUG_RD_EN_UNION;
+#endif
+#define SOC_FFTS_DEBUG_RD_EN_dbg_cfg_rd_START  (0)
+#define SOC_FFTS_DEBUG_RD_EN_dbg_cfg_rd_END    (0)
+
+
+/*****************************************************************************
+ struct               : SOC_FFTS_DEBUG_ST_UNION
+ struct description   : DEBUG_ST Register structure definition
+                        Address Offset:0x235C Initial:0x00000000 Width:32
+ register description : Debug状态寄存器
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  dbg_cfg_data_vld : 1;  /* bit[0]   : debug状态寄存器，使能dbg_cfg_rd后，该信号为1表示debug读取成功 */
+        unsigned int  reserved         : 31; /* bit[1-31]: reserved. */
+    } reg;
+} SOC_FFTS_DEBUG_ST_UNION;
+#endif
+#define SOC_FFTS_DEBUG_ST_dbg_cfg_data_vld_START  (0)
+#define SOC_FFTS_DEBUG_ST_dbg_cfg_data_vld_END    (0)
+
+
+/*****************************************************************************
+ struct               : SOC_FFTS_DEBUG_INFO0_UNION
+ struct description   : DEBUG_INFO0 Register structure definition
+                        Address Offset:0x2360 Initial:0x00000000 Width:32
+ register description : Debug结果寄存器
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  dbg_cfg_rdata0 : 32; /* bit[0-31]: debug读取结果寄存器 */
+    } reg;
+} SOC_FFTS_DEBUG_INFO0_UNION;
+#endif
+#define SOC_FFTS_DEBUG_INFO0_dbg_cfg_rdata0_START  (0)
+#define SOC_FFTS_DEBUG_INFO0_dbg_cfg_rdata0_END    (31)
+
+
+/*****************************************************************************
+ struct               : SOC_FFTS_DEBUG_INFO1_UNION
+ struct description   : DEBUG_INFO1 Register structure definition
+                        Address Offset:0x2364 Initial:0x00000000 Width:32
+ register description : Debug结果寄存器
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  dbg_cfg_rdata1 : 32; /* bit[0-31]: debug读取结果寄存器 */
+    } reg;
+} SOC_FFTS_DEBUG_INFO1_UNION;
+#endif
+#define SOC_FFTS_DEBUG_INFO1_dbg_cfg_rdata1_START  (0)
+#define SOC_FFTS_DEBUG_INFO1_dbg_cfg_rdata1_END    (31)
+
+
+/*****************************************************************************
+ struct               : SOC_FFTS_DEBUG_INFO2_UNION
+ struct description   : DEBUG_INFO2 Register structure definition
+                        Address Offset:0x2368 Initial:0x00000000 Width:32
+ register description : Debug结果寄存器
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  dbg_cfg_rdata2 : 32; /* bit[0-31]: debug读取结果寄存器 */
+    } reg;
+} SOC_FFTS_DEBUG_INFO2_UNION;
+#endif
+#define SOC_FFTS_DEBUG_INFO2_dbg_cfg_rdata2_START  (0)
+#define SOC_FFTS_DEBUG_INFO2_dbg_cfg_rdata2_END    (31)
+
+
+/*****************************************************************************
+ struct               : SOC_FFTS_DEBUG_INFO3_UNION
+ struct description   : DEBUG_INFO3 Register structure definition
+                        Address Offset:0x236C Initial:0x00000000 Width:32
+ register description : Debug结果寄存器
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  dbg_cfg_rdata3 : 32; /* bit[0-31]: debug读取结果寄存器 */
+    } reg;
+} SOC_FFTS_DEBUG_INFO3_UNION;
+#endif
+#define SOC_FFTS_DEBUG_INFO3_dbg_cfg_rdata3_START  (0)
+#define SOC_FFTS_DEBUG_INFO3_dbg_cfg_rdata3_END    (31)
+
+
+/*****************************************************************************
+ struct               : SOC_FFTS_RESERVED_UNION
+ struct description   : RESERVED Register structure definition
+                        Address Offset:0x2380 Initial:0x0000000 Width:32
+ register description : 保留寄存器
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  rtq_misc_ckg_byp_en   : 2;  /* bit[0-1] : RTQ模块时钟门控 */
+        unsigned int  uid_block_ctxclr_en   : 1;  /* bit[2]   : 当进程封锁时，希望软件手动触发资源清理，则在封锁完成后，配置对该寄存器先写1再写0. */
+        unsigned int  uid_block_ctxclr_ctrl : 1;  /* bit[3]   : 当进程封锁时，希望软件手动触发资源清理，则进程封锁时配置
+                                                                proc_block_auto_clean为0，同时该寄存器配置为1. */
+        unsigned int  ffts_reserved         : 28; /* bit[4-31]: 保留寄存器 */
+    } reg;
+} SOC_FFTS_RESERVED_UNION;
+#endif
+#define SOC_FFTS_RESERVED_rtq_misc_ckg_byp_en_START    (0)
+#define SOC_FFTS_RESERVED_rtq_misc_ckg_byp_en_END      (1)
+#define SOC_FFTS_RESERVED_uid_block_ctxclr_en_START    (2)
+#define SOC_FFTS_RESERVED_uid_block_ctxclr_en_END      (2)
+#define SOC_FFTS_RESERVED_uid_block_ctxclr_ctrl_START  (3)
+#define SOC_FFTS_RESERVED_uid_block_ctxclr_ctrl_END    (3)
+#define SOC_FFTS_RESERVED_ffts_reserved_START          (4)
+#define SOC_FFTS_RESERVED_ffts_reserved_END            (31)
+
+
+
+
+
+
+/*****************************************************************************
+  8 OTHERS定义
+*****************************************************************************/
+
+
+
+/*****************************************************************************
+  9 全局变量声明
+*****************************************************************************/
+
+
+/*****************************************************************************
+  10 函数声明
+*****************************************************************************/
+
+
+#ifdef __cplusplus
+    #if __cplusplus
+        }
+    #endif
+#endif
+
+#endif /* end of soc_ffts_interface.h */

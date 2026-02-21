@@ -1,0 +1,5 @@
+source "platform_source/basicplatform/drivers/dma-buf/heaps/Kconfig"
+source "platform_source/basicplatform/drivers/dma-buf/mm/Kconfig"
+source "platform_source/basicplatform/drivers/dma-buf/dmabuf_reclaim/Kconfig"
+source "platform_source/basicplatform/drivers/dma-buf/dmabuf_reclaim_dev/Kconfig"
+source "platform_source/basicplatform/drivers/dma-buf/pa_offset/Kconfig"

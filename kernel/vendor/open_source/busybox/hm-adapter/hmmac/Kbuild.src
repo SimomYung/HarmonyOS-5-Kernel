@@ -1,0 +1,12 @@
+# Makefile for adapter for Hongmeng MAC
+#
+# Copyright (C) Huawei Technologies Co., Ltd. 2022.
+# Author: Huawei OS Kernel Lab
+# Create: Wed Jun 22 14:32:13 2022
+#
+
+lib-y:=
+
+INSERT
+
+lib-$(CONFIG_HM_RESTORECON) += restorecon.o

@@ -1,0 +1,94 @@
+/*
+ * Copyright (c) Huawei Technologies Co., Ltd. 2012-2020. All rights reserved.
+ * Description: sensor feima header file
+ * Author: DIVS_SENSORHUB
+ * Create: 2012-05-29
+ */
+
+#ifndef __SENSOR_FEIMA_H__
+#define __SENSOR_FEIMA_H__
+
+#include "sensor_config.h"
+#define MOTION_CTRL_PAR	3
+#define MOTION_CTRL_NUM	10
+
+#define SPI_READ 0
+#define SPI_WRITE 1
+#define SPI_DATA_LENGTH	2
+#define SPI_REG_LENGTH	2
+#define BIT_MOVE_HIGH 8
+#define SPI_PARAMETER_COUNT 11
+
+#define SPI_BUS_NUM_IDX 0
+#define SPI_DATA_IDX_1 1
+#define SPI_DATA_IDX_2 2
+#define SPI_REG_WIDTH_IDX 3
+#define SPI_REG_ADDR_IDX_1 4
+#define SPI_REG_ADDR_IDX_2 5
+#define SPI_DUMMY_EXIST_IDX 6
+#define SPI_RW_DATA_LEN_IDX 7
+#define SPI_RW_DATA_IDX_1 8
+#define SPI_RW_DATA_IDX_2 9
+#define SPI_RW_TAG 10
+#define TOP_BIT_SET_1 0x80
+
+#define BIT_8 8
+#define BIT_9 9
+#define BIT_8_MASK 0X0100
+#define BIT_9_MASK 0X0200
+
+struct sensor_cookie {
+	int tag;
+	const char *name;
+	const struct attribute_group *attrs_group;
+	struct device *dev;
+};
+
+struct spi_rw_info {
+	uint8_t bus_num;
+	union spi_ctrl ctrl;
+	uint8_t reg_width;
+	uint8_t dummy_exist;
+	uint8_t len;
+	uint8_t reg[2];
+	uint8_t data_buf[2];
+	uint8_t rw_tag;
+};
+
+typedef struct {
+	uint16_t sub_cmd;
+	uint16_t sar_info;
+} rpc_ioctl_t;
+
+typedef struct {
+	uint32_t sub_cmd;
+	uint32_t sdc_config;
+} sdc_ioctl_t;
+
+typedef struct {
+	uint32_t sub_cmd;
+	uint32_t config_val;
+} orientation_set_mode_ioctl_t;
+
+typedef struct {
+	uint32_t sub_cmd;
+	uint32_t carcrash_signal;
+} carcrash_ioctl_t;
+
+enum {
+	CALL_START = 0xa2,
+	CALL_STOP,
+};
+
+typedef struct {
+	uint32_t sub_cmd;
+	uint32_t selftest_code;
+} selftest_ioctl_t;
+
+void send_lcd_freq_to_sensorhub(uint32_t lcd_freq);
+void save_light_to_sensorhub_panel_id(uint32_t mipi_level, uint32_t bl_level, uint32_t panel_id);
+void save_light_to_sensorhub(uint32_t mipi_level, uint32_t bl_level);
+int posture_sensor_enable(void);
+void report_fold_status_when_poweroff_charging(int status);
+
+#endif /* __SENSOR_FEIMA_H__ */

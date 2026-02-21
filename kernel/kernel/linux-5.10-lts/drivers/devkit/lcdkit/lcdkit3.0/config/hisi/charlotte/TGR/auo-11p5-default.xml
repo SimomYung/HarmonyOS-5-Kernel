@@ -1,0 +1,140 @@
+<hwlcd>
+	<PanelEntry>
+		<!--/* 0:DSI0 1:DSI1 2:DSI2 */ -->
+		<ConnectorId0>0</ConnectorId0>
+		<!--/* 0:DSI0 1:DSI1 2:DSI2 */ -->
+		<ConnectorId1>2</ConnectorId1>
+		<!--/* Max connector number is 2 */ -->
+		<ConnectorNum>2</ConnectorNum>
+
+		<!--Ldi config start-->
+		<MipiDsiTimingSupport>1</MipiDsiTimingSupport>
+		<!--Mipi Horizontal sync area -->
+		<MipiHSyncArea>20</MipiHSyncArea>
+		<!--Mipi Horizontal back porch -->
+		<MipiHBackPorch>92</MipiHBackPorch>
+		<!--Mipi Horizontal line time -->
+		<MipiHLineTime>892</MipiHLineTime>
+		<!--Mipi Dpi horizontal size -->
+		<MipiDpiHSize>692</MipiDpiHSize>
+		<!--Mipi Vertical sync area -->
+		<MipiVSyncArea>2</MipiVSyncArea>
+		<!--Mipi Vertical back porch -->
+		<MipiVBackPorch>214</MipiVBackPorch>
+		<!--Mipi Vertical front porch -->
+		<MipiVFrontPorch>26</MipiVFrontPorch>
+		<!--Mipi dsi default clock-->
+		<MipiDsiBitClk>648</MipiDsiBitClk>
+		<!--Panel information config start-->
+		<!--Panel type:8-video mode, 16-command mode-->
+		<PanelCmdType>32</PanelCmdType>
+		<!--DSS low power setting:0-close(video mode), 7-open(command mode)-->
+		<PanelVsynCtrType>0</PanelVsynCtrType>
+		<!--Pixel clock-->
+		<PanelPxlClk>192</PanelPxlClk>
+		<!--Panel fps-->
+		<PanelFps>60</PanelFps>
+		<PanelTEIndex>0</PanelTEIndex>
+
+		<!--Pixel clock division ratio IFBC_TYPE_NONE: pxl_clk_rate_div = 1, VESA3X or VESA3_75X: pxl_clk_rate_div = 3-->
+		<PanelPxlClkDiv>1</PanelPxlClkDiv>
+		<!--Ifbc type:0-none, 1-orise2x, 2-orise3x, 3-himax2x,
+		4-rsp2x, 5-rsp3x, 6-vesa2x single, 7-vesa3x single
+		8-vesa2x dual, 9-vesa3x dual, 10-vesa3.75x dual-->
+		<PanelIfbcType>0</PanelIfbcType>
+		<VesaSliceWidth>920</VesaSliceWidth>
+		<VesaSliceHeight>20</VesaSliceHeight>
+		<!--0-ver1.1, 1-ver1.2-->
+		<VesaDscVersion>0</VesaDscVersion>
+		<!--0-RGB, 1-YUV, 2-YUV420, 3-YUV422, 4-YUV-444-->
+		<VesaDscFormat>0</VesaDscFormat>
+		<!--bit per pixel-->
+		<VesaDscBpp>8</VesaDscBpp>
+		<!--bit per component-->
+		<VesaDscBpc>8</VesaDscBpc>
+		<!--block pred enable-->
+		<VesaDscBlkPredEn>1</VesaDscBlkPredEn>
+		<!--line buff depth-->
+		<VesaDscLineBuffDepth>9</VesaDscLineBuffDepth>
+		<!--GENERATE_RC_PARAMETERS:0-default, 1-calculate-->
+		<VesaDscGenRcParams>1</VesaDscGenRcParams>
+
+		<!--bl type:1-none, 2-pwm, 4-blpwm, 8-mipi, 16-sh blpwm-->
+		<PanelBlType>4</PanelBlType>
+		<!--bl max nit-->
+		<PanelBlMaxnit>450</PanelBlMaxnit>
+		<!--bl min brightness setting-->
+		<PanelBlmin>30</PanelBlmin>
+		<!--bl max brightness setting-->
+		<PanelBlmax>3932</PanelBlmax>
+		<!--bl default brightness setting-->
+		<PanelBlDef>2000</PanelBlDef>
+		<!--backlight ext byte flag-->
+		<PanelBlextFlag>0</PanelBlextFlag>
+		<!--backlight need prepare-->
+		<BlNeedPrepare>0</BlNeedPrepare>
+
+		<!--Mipi lane number:c-phy:0-1port, 1-2port, 2-3port d-phy:0-1lane, 1-2lane, 2-3lane, 3-4lane-->
+		<MipiLaneNums>3</MipiLaneNums>
+		<!--mipi dsi support-->
+		<MipiDsiUptSupport>0</MipiDsiUptSupport>
+		<!--Mipi phy mode:0-D-phy, 1-C-phy-->
+		<MipiPhyMode>0</MipiPhyMode>
+		<MipiClkPostAdjust>215</MipiClkPostAdjust>
+		<MipiMaxTxEscClk>10</MipiMaxTxEscClk>
+
+		<!--event send
+		event, data, delay
+		event:0-NONE, 1-VCI, 2-IOVCC, 3-VSP, 4-VSN, 5-RESET, 6-MIPI, 7-TS early-event, 8-TS later-event, 9-vdd 10-AOD, 11-BIAS
+		data:0-power off, 1-power on
+		delay:ms/TS:0-no-sync 1-sync
+		-->
+		<!--Power on timming-->
+		<PowerOnStage>"2, 0, 10
+				3, 0, 2
+				4, 0, 11
+				11, 0, 1
+				5, 0, 10
+				5, 0, 10
+				5, 0, 10
+				5, 0, 10"</PowerOnStage>
+		<LPOnStage>"6, 0, 0
+				7, 0, 5
+				8, 0, 0"</LPOnStage>
+		<HSOnStage>"0, 0, 0"</HSOnStage>
+
+		<!--Power off timming-->
+		<HSOffStage>"7, 0, 0
+			8, 0, 20
+			6, 0, 10"</HSOffStage>
+		<LPOffStage>"0, 0, 0"</LPOffStage>
+		<PowerOffStage>"5, 0, 5
+				11, 0, 2
+				4, 0, 5
+				3, 0, 10
+				2, 0, 0"</PowerOffStage>
+		<!--Power timming config end-->
+
+		<!--Backlight max nit-->
+		<!--Power timming config start-->
+		<!--event define
+		mode, number, amplitude
+		mode:0-none, 1-regulator, 2-gpio
+		number:gpio num or ldo num
+		amplitude:3100000-3.1v, 1850000-1.85v, 5500000-5.5v
+		-->
+		<IOVccRegulator>ldo4</IOVccRegulator>
+		<LcdIovcc>"1, 4, 1850000"</LcdIovcc>
+		<LcdVsp>"2, 341, 5900000"</LcdVsp>
+		<LcdVsn>"2, 337, 5900000"</LcdVsn>
+		<PowerDownVsp>"2, 341, 5000000"</PowerDownVsp>
+		<PowerDownVsn>"2, 337, 5000000"</PowerDownVsn>
+		<LcdReset>"2, 354, 0"</LcdReset>
+		<TpReset>"2, 352, 0"</TpReset>
+		<LcdMipiSwitch>"0, 0, 0"</LcdMipiSwitch>
+		<LcdTe0>"0, 0, 0"</LcdTe0>
+		<LcdBacklight>"0, 0, 0"</LcdBacklight>
+		<!--event send-->
+
+	</PanelEntry>
+</hwlcd>

@@ -1,0 +1,1 @@
+obj-$(CONFIG_AUDIO_MIC_BLOCK) += audio_mic_block.o

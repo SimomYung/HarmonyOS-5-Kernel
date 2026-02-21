@@ -1,0 +1,47 @@
+From 024103923a5c826e40c993be4ee2ada5536cb66a Mon Sep 17 00:00:00 2001
+From: Petr Machata <petrm@nvidia.com>
+Date: Mon, 27 Jun 2022 15:18:21 +0200
+Subject: [PATCH] ip: Fix size_columns() for very large values
+
+For values near the 64-bit boundary, the iterative application of
+powi *= 10 causes powi to overflow without the termination condition of
+powi >= val having ever been satisfied. Instead, when determining the
+length of the number, iterate val /= 10 and terminate when it's a single
+digit.
+
+Fixes: 49437375b6c1 ("ip: dynamically size columns when printing stats")
+CC: Tariq Toukan <tariqt@nvidia.com>
+CC: Itay Aveksis <itayav@nvidia.com>
+Signed-off-by: Petr Machata <petrm@nvidia.com>
+Signed-off-by: Stephen Hemminger <stephen@networkplumber.org>
+Conflict: void size_columns to static void size_colunms
+Reference: https://git.kernel.org/pub/scm/network/iproute2/iproute2.git/commit?id=024103923a5
+---
+ ip/ipaddress.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/ip/ipaddress.c b/ip/ipaddress.c
+index 17341d28..5a3b1cae 100644
+--- a/ip/ipaddress.c
++++ b/ip/ipaddress.c
+@@ -549,7 +549,7 @@ static void print_vfinfo(FILE *fp, struct ifinfomsg *ifi, struct rtattr *vfinfo)
+ static void size_columns(unsigned int cols[], unsigned int n, ...)
+ {
+ 	unsigned int i, len;
+-	uint64_t val, powi;
++	uint64_t val;
+ 	va_list args;
+ 
+ 	va_start(args, n);
+@@ -560,7 +560,7 @@ void size_columns(unsigned int cols[], unsigned int n, ...)
+ 		if (human_readable)
+ 			continue;
+ 
+-		for (len = 1, powi = 10; powi < val; len++, powi *= 10)
++		for (len = 1; val > 9; len++, val /= 10)
+ 			/* nothing */;
+ 		if (len > cols[i])
+ 			cols[i] = len;
+-- 
+2.23.0
+

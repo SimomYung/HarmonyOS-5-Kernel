@@ -1,0 +1,55 @@
+{
+    "name": "@ohos/libexif",
+    "description": "Reference library for parsing, editing, and saving EXIF data.",
+    "version": "3.1",
+    "license": "libexif license",
+    "publishAs": "code-segment",
+    "segment": {
+        "destPath": "third_party/libexif"
+    },
+    "dirs": {},
+    "scripts": {},
+    "licensePath": "COPYING",
+    "readmePath": {
+        "en": "README"
+    },
+    "component": {
+        "name": "libexif",
+        "subsystem": "thirdparty",
+        "syscap": [],
+        "features": [],
+        "adapted_system_type": [ "standard" ],
+        "rom": "196KB",
+        "ram": "392KB",
+        "deps": {
+            "components": [
+                "bounds_checking_function",
+                "hilog"
+            ],
+            "third_party": []
+        },
+        "build": {
+            "sub_component": ["//third_party/libexif:libexif"],
+            "inner_kits": [
+                {
+                    "name": "//third_party/libexif:libexif",
+                    "header": {
+                        "header_files": [
+                            "exif-data.h",
+                            "exif-entry.h",
+                            "exif-tag.h",
+                            "exif-format.h",
+                            "huawei/exif-mnote-data-huawei.h",
+                            "huawei/mnote-huawei-entry.h",
+                            "huawei/mnote-huawei-tag.h",
+                            "huawei/mnote-huawei-data-type.h"
+
+                        ],
+                        "header_base": "//third_party/libexif/libexif"
+                    }
+                }
+            ],
+            "test": []
+        }
+    }
+}

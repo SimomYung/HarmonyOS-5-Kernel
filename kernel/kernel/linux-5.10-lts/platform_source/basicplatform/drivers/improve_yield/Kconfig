@@ -1,0 +1,11 @@
+config IMPROVE_YIELD
+	bool "improve yield driver"
+	default n
+	help
+		Say 'Y' here if you want to use improve yield driver
+
+config IMPROVE_YIELD_PANIC
+	bool "improve yield panic driver"
+	default n
+	help
+		Say 'Y' here if you want to use improve yield panic driver

@@ -1,0 +1,27 @@
+# SPDX-License-Identifier: GPL-2.0
+include samples/ldk/selinux/Makefile.override
+export override-cmds-y
+
+# Prepare lcdkit3.0 generated files
+
+ifeq ($(KBUILD_EXTMOD),)
+KERNEL_BUILD_TOP := $(srctree)/../..
+LCDKIT_DEPENDENCY_FILELIST := $(shell find $(KERNEL_BUILD_TOP)/device/hisi/customize/config/arm64/$(TARGET_BOARD_PLATFORM)/lcdkit -name "*.xml" -type f 2>/dev/null | xargs echo)
+LCDKIT_DEPENDENCY_FILELIST += $(shell find $(KERNEL_BUILD_TOP)/device/hisi/customize/config/arm64/$(TARGET_BOARD_PLATFORM)/*/default/product_config/devkit_config -name "*.xml" -type f 2>/dev/null | xargs echo)
+LCDKIT_DEPENDENCY_FILELIST += $(shell find $(KERNEL_BUILD_TOP)/vendor/huawei/chipset_common/devkit/lcdkit/lcdkit1.0/panel -name "*.xml" -type f 2>/dev/null | xargs echo)
+LCDKIT_DEPENDENCY_FILELIST += $(shell find $(KERNEL_BUILD_TOP)/vendor/huawei/chipset_common/devkit/lcdkit/lcdkit3.0/config/hisi/$(TARGET_BOARD_PLATFORM)/*/ -name "*.xml" -type f 2>/dev/null | xargs echo)
+LCDKIT_DEPENDENCY_FILELIST += $(shell find $(KERNEL_BUILD_TOP)/vendor/huawei/chipset_common/devkit/lcdkit/lcdkit3.0/config/hisi/$(TARGET_BOARD_PLATFORM)/lcdkit -name "*.xml" -type f 2>/dev/null | xargs echo)
+LCDKIT_DEPENDENCY_FILELIST += $(shell find $(KERNEL_BUILD_TOP)/vendor/huawei/chipset_common/devkit/lcdkit/lcdkit3.0/panel -name "*.xml" -type f 2>/dev/null | xargs echo)
+LCDKIT_DEPENDENCY_FILELIST += $(shell find $(KERNEL_BUILD_TOP)/vendor/huawei/chipset_common/devkit/lcdkit/lcdkit1.0/lcdkit_tool -name "*.pl" -type f 2>/dev/null | xargs echo)
+LCDKIT_DEPENDENCY_FILELIST += $(shell find $(KERNEL_BUILD_TOP)/vendor/huawei/chipset_common/devkit/lcdkit/lcdkit3.0/tools -name "*.pl" -type f 2>/dev/null | xargs echo)
+
+LCDKIT_TOOLPATH := $(srctree)/drivers/devkit/lcdkit/lcdkit3.0/tools
+LCDKIT_EFFECT_FILE := $(objtree)/drivers/devkit/lcdkit/lcdkit3.0/lcd_kit_effect.h
+$(LCDKIT_EFFECT_FILE): $(LCDKIT_DEPENDENCY_FILELIST)
+	$(Q)$(kecho) "  LCDKIT3 $@"
+	$(Q)mkdir -p $(dir $@)
+	cd $(LCDKIT_TOOLPATH);\
+	$(PERL) ./lcd_kit_parser.pl $(strip $(TARGET_BOARD_PLATFORM)) effect \
+		$(realpath $(objtree))/$(dir $@)
+asm-generic: $(LCDKIT_EFFECT_FILE)
+endif # KBUILD_EXTMOD

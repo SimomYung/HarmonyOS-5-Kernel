@@ -1,0 +1,42 @@
+{
+    "name": "@ohos/ceres",
+    "description": "Ceres Solver - A fast non-linear least squares minimizer",
+    "version": "2.2.0",
+    "license": "BSD 3-Clause License",
+    "publishAs": "code-segment",
+    "segment": {
+        "destPath": "vendor/open_source/ceres_solver"
+    },
+    "dirs": {},
+    "scripts": {},
+    "component": {
+        "name": "ceres_solver",
+        "subsystem": "open_source",
+        "syscap": [],
+        "features": [],
+        "adapted_system_type": [
+            "standard"
+        ],
+        "rom": "",
+        "ram": "",
+        "deps": {
+            "components": [],
+            "third_party": []
+        },
+        "build": {
+            "sub_component": [
+                "//vendor/open_source/ceres_solver:ceres"
+            ],
+            "inner_kits": [
+                {
+                    "name": "//vendor/open_source/ceres_solver:ceres",
+                    "header": {
+                        "header_files": [],
+                        "header_base": "${root_gen_dir}/vendor/open_source/ceres_solver/src/include"
+                    }
+                }
+            ],
+            "test": []
+        }
+    }
+}

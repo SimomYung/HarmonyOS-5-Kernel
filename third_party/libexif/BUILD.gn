@@ -1,0 +1,176 @@
+# Copyright (C) 2022 Huawei Device Co., Ltd.
+
+if (defined(ohos_lite)) {  # is on lite Os for ipcamera
+  import("//build/lite/config/component/lite_component.gni")
+
+  config("libexif_config") {
+    include_dirs = [
+      "//third_party/libexif",
+      "//third_party/libexif/libexif",
+      "//third_party/libexif/libexif/pentax",
+      "//third_party/libexif/libexif/olympus",
+      "//third_party/libexif/libexif/apple",
+      "//third_party/libexif/libexif/canon",
+      "//third_party/libexif/libexif/fuji",
+      "//third_party/libexif/libexif/apple",
+      "//third_party/libexif/contrib/watcom",
+      "//third_party/libexif/libexif/huawei",
+    ]
+
+    libexif_source = [
+      "//third_party/libexif/libexif/exif-byte-order.c",
+      "//third_party/libexif/libexif/exif-content.c",
+      "//third_party/libexif/libexif/exif-data.c",
+      "//third_party/libexif/libexif/exif-entry.c",
+      "//third_party/libexif/libexif/exif-format.c",
+      "//third_party/libexif/libexif/exif-gps-ifd.c",
+      "//third_party/libexif/libexif/exif-ifd.c",
+      "//third_party/libexif/libexif/exif-loader.c",
+      "//third_party/libexif/libexif/exif-log.c",
+      "//third_party/libexif/libexif/exif-mem.c",
+      "//third_party/libexif/libexif/exif-mnote-data.c",
+      "//third_party/libexif/libexif/exif-tag.c",
+      "//third_party/libexif/libexif/exif-utils.c",
+      "//third_party/libexif/libexif/pentax/exif-mnote-data-pentax.c",
+      "//third_party/libexif/libexif/pentax/mnote-pentax-entry.c",
+      "//third_party/libexif/libexif/pentax/mnote-pentax-tag.c",
+      "//third_party/libexif/libexif/olympus/exif-mnote-data-olympus.c",
+      "//third_party/libexif/libexif/olympus/mnote-olympus-entry.c",
+      "//third_party/libexif/libexif/olympus/mnote-olympus-tag.c",
+      "//third_party/libexif/libexif/fuji/exif-mnote-data-fuji.c",
+      "//third_party/libexif/libexif/fuji/mnote-fuji-entry.c",
+      "//third_party/libexif/libexif/fuji/mnote-fuji-tag.c",
+      "//third_party/libexif/libexif/apple/exif-mnote-data-apple.c",
+      "//third_party/libexif/libexif/apple/mnote-apple-entry.c",
+      "//third_party/libexif/libexif/apple/mnote-apple-tag.c",
+      "//third_party/libexif/libexif/canon/exif-mnote-data-canon.c",
+      "//third_party/libexif/libexif/canon/mnote-canon-entry.c",
+      "//third_party/libexif/libexif/canon/mnote-canon-tag.c",
+      "//third_party/libexif/libexif/apple/exif-mnote-data-apple.c",
+      "//third_party/libexif/libexif/apple/mnote-apple-entry.c",
+      "//third_party/libexif/libexif/apple/mnote-apple-tag.c",
+      "//third_party/libexif/libexif/huawei/exif-mnote-data-huawei.c",
+      "//third_party/libexif/libexif/huawei/mnote-huawei-data-type.c",
+      "//third_party/libexif/libexif/huawei/mnote-huawei-entry.c",
+      "//third_party/libexif/libexif/huawei/mnote-huawei-tag.c",
+    ]
+    cflags = [
+      "-DGETTEXT_PACKAGE=\"libexif-12\"",
+      "-DLOCALEDIR=\"//third_party/libexif/build/share/locale/locale\"",
+    ]
+  }
+
+  lite_library("libexif") {
+    if (ohos_kernel_type == "liteos_m") {
+      target_type = "static_library"
+    } else {
+      target_type = "shared_library"
+    }
+    sources = libexif_source
+
+    public_configs = [ ":libexif_config" ]
+  }
+} else {
+  import("//build/ohos.gni")
+
+  config("build_private_config") {
+    cflags = [
+      "-DGETTEXT_PACKAGE=\"libexif-12\"",
+      "-DLOCALEDIR=\"//third_party/libexif/build/share/locale\"",
+      "-Werror",
+      "-Wno-format",
+      "-Wno-sign-compare",
+      "-Wno-unused-parameter",
+      "-DHAVE_CONFIG_H",
+    ]
+  }
+
+  config("build_public_config") {
+    include_dirs = [ "//third_party/libexif" ]
+  }
+
+  ohos_source_set("exif_static") {
+    subsystem_name = "thirdparty"
+    part_name = "libexif"
+    # arkui-x not supported external_deps
+    if (is_arkui_x) {
+      deps = [
+        "//third_party/bounds_checking_function:libsec_static",
+        "//vendor/huawei/base/hiviewdfx/hilog/interfaces/native/innerkits:libhilog"]
+    } else {
+      external_deps = [
+        "bounds_checking_function:libsec_shared",
+        "hilog:libhilog"
+      ]
+    }
+    branch_protector_ret = "pac_ret"
+    sources = [
+      "//third_party/libexif/libexif/apple/exif-mnote-data-apple.c",
+      "//third_party/libexif/libexif/apple/mnote-apple-entry.c",
+      "//third_party/libexif/libexif/apple/mnote-apple-tag.c",
+      "//third_party/libexif/libexif/canon/exif-mnote-data-canon.c",
+      "//third_party/libexif/libexif/canon/mnote-canon-entry.c",
+      "//third_party/libexif/libexif/canon/mnote-canon-tag.c",
+      "//third_party/libexif/libexif/exif-byte-order.c",
+      "//third_party/libexif/libexif/exif-content.c",
+      "//third_party/libexif/libexif/exif-data.c",
+      "//third_party/libexif/libexif/exif-entry.c",
+      "//third_party/libexif/libexif/exif-format.c",
+      "//third_party/libexif/libexif/exif-gps-ifd.c",
+      "//third_party/libexif/libexif/exif-ifd.c",
+      "//third_party/libexif/libexif/exif-loader.c",
+      "//third_party/libexif/libexif/exif-log.c",
+      "//third_party/libexif/libexif/exif-mem.c",
+      "//third_party/libexif/libexif/exif-mnote-data.c",
+      "//third_party/libexif/libexif/exif-tag.c",
+      "//third_party/libexif/libexif/exif-utils.c",
+      "//third_party/libexif/libexif/fuji/exif-mnote-data-fuji.c",
+      "//third_party/libexif/libexif/fuji/mnote-fuji-entry.c",
+      "//third_party/libexif/libexif/fuji/mnote-fuji-tag.c",
+      "//third_party/libexif/libexif/huawei/exif-mnote-data-huawei.c",
+      "//third_party/libexif/libexif/huawei/mnote-huawei-data-type.c",
+      "//third_party/libexif/libexif/huawei/mnote-huawei-entry.c",
+      "//third_party/libexif/libexif/huawei/mnote-huawei-tag.c",
+      "//third_party/libexif/libexif/olympus/exif-mnote-data-olympus.c",
+      "//third_party/libexif/libexif/olympus/mnote-olympus-entry.c",
+      "//third_party/libexif/libexif/olympus/mnote-olympus-tag.c",
+      "//third_party/libexif/libexif/pentax/exif-mnote-data-pentax.c",
+      "//third_party/libexif/libexif/pentax/mnote-pentax-entry.c",
+      "//third_party/libexif/libexif/pentax/mnote-pentax-tag.c",
+    ]
+    include_dirs = [
+      "//third_party/libexif",
+      "//third_party/libexif/libexif",
+      "//third_party/libexif/libexif/pentax",
+      "//third_party/libexif/libexif/olympus",
+      "//third_party/libexif/libexif/apple",
+      "//third_party/libexif/libexif/canon",
+      "//third_party/libexif/libexif/fuji",
+      "//third_party/libexif/libexif/apple",
+      "//third_party/libexif/contrib/watcom",
+      "//third_party/libexif/libexif/huawei",
+    ]
+
+    configs = [ ":build_private_config" ]
+  }
+
+  ohos_shared_library("libexif") {
+    branch_protector_ret = "pac_ret"
+    deps = [ ":exif_static" ]
+    if (is_arkui_x) {
+      deps += [
+        "//third_party/bounds_checking_function:libsec_static",
+        "//vendor/huawei/base/hiviewdfx/hilog/interfaces/native/innerkits:libhilog"]
+    } else {
+      external_deps = [
+        "bounds_checking_function:libsec_shared",
+        "hilog:libhilog"
+      ]
+    }
+    public_configs = [ ":build_public_config" ]
+    install_images = [ system_base_dir ]
+    subsystem_name = "thirdparty"
+    innerapi_tags = [ "chipsetsdk" ]
+    part_name = "libexif"
+  }
+}

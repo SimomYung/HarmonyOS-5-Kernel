@@ -1,0 +1,46 @@
+From ba18f6efec62a1706b4bcf8fffd27611022260b8 Mon Sep 17 00:00:00 2001
+From: zhanchengbin <zhanchengbin1@huawei.com>
+Date: Fri, 31 Dec 2021 15:42:40 +0800
+Subject: dumpe2fs, resize2fs: avoid memory leak on error path
+
+Link: https://lore.kernel.org/r/cbfd9852-bc89-1e83-f101-36fd29a0e70e@huawei.com
+Signed-off-by: zhanchengbin <zhanchengbin1@huawei.com>
+Signed-off-by: Theodore Ts'o <tytso@mit.edu>
+---
+ misc/dumpe2fs.c    | 1 +
+ resize/resize2fs.c | 4 ++--
+ 2 files changed, 3 insertions(+), 2 deletions(-)
+
+diff --git a/misc/dumpe2fs.c b/misc/dumpe2fs.c
+index 3f4fc4ed..ef6d1cb8 100644
+--- a/misc/dumpe2fs.c
++++ b/misc/dumpe2fs.c
+@@ -338,6 +338,7 @@ static void list_bad_blocks(ext2_filsys fs, int dump)
+ 	if (retval) {
+ 		com_err("ext2fs_badblocks_list_iterate_begin", retval,
+ 			"%s", _("while printing bad block list"));
++		ext2fs_badblocks_list_free(bb_list);
+ 		return;
+ 	}
+ 	if (dump) {
+diff --git a/resize/resize2fs.c b/resize/resize2fs.c
+index d69cb01e..916b1f4b 100644
+--- a/resize/resize2fs.c
++++ b/resize/resize2fs.c
+@@ -1781,11 +1781,11 @@ static errcode_t block_mover(ext2_resize_t rfs)
+ 					fs->inode_blocks_per_group,
+ 					&rfs->itable_buf);
+ 		if (retval)
+-			return retval;
++			goto errout;
+ 	}
+ 	retval = ext2fs_create_extent_table(&rfs->bmap, 0);
+ 	if (retval)
+-		return retval;
++		goto errout;
+ 
+ 	/*
+ 	 * The first step is to figure out where all of the blocks
+-- 
+cgit 
+

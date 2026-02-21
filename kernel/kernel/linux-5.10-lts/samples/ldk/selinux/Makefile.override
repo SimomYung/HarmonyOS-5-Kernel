@@ -1,0 +1,25 @@
+# SPDX-License-Identifier: GPL-2.0
+override-quiet_cmd_flask = HMGEN   $$(obj)/flask.h $$(obj)/av_permissions.h
+      override-cmd_flask = $$(srctree)/samples/ldk/selinux/genheader.sh \
+			   $$(obj)/flask.h $$(obj)/av_permissions.h $(HMSDKSYSROOTPATH)
+override-cmds-y += flask
+export override-cmd_flask override-quiet_cmd_flask
+
+ifeq ($(CONFIG_SECURITY_SELINUX),y)
+# build `$(objtree)/security/%` before `$(objtree)/samples/%`
+# because `samples/ldk/selinux/%.o` required headers generated
+# in `security/selinux`
+samples: security
+
+LDFLAGS_vmlinux += -lhmseharmony
+
+vmlinux: libhmseharmony
+
+libhmseharmony: FORCE
+	rm -f $(objtree)/hmseharmony.c $(objtree)/hmseharmony.o $(objtree)/libhmseharmony.so.0.1 $(objtree)/libhmseharmony.so.0 $(objtree)/libhmseharmony.so
+	echo "" > $(objtree)/hmseharmony.c
+	$(CC) -c $(objtree)/hmseharmony.c -o $(objtree)/hmseharmony.o
+	$(CC) -fPIC -shared -o $(objtree)/libhmseharmony.so.0.1 -Wl,-soname,libhmseharmony.so.0 $(objtree)/hmseharmony.o
+	ln -s libhmseharmony.so.0.1 $(objtree)/libhmseharmony.so.0
+	ln -s libhmseharmony.so.0 $(objtree)/libhmseharmony.so
+endif

@@ -1,0 +1,27 @@
+/*
+ * Copyright (C) Huawei Technologies Co., Ltd. 2019-2020. All rights reserved.
+ * Description: The DSL for generating activation interface of tppmgr sysfs
+ * Author: Huawei OS Kernel Lab
+ * Create: Wed Oct 23 17:16:45 2019
+ */
+#ifdef SYSIF_EXPORT_API
+#include <hmkernel/types.h>
+#endif
+
+/*
+ * To support the mixed data model which means the client and the server
+ * may use different data model. See the document for limitation of data type
+ * used in the sysif interfaces in <Documentation/sysif_compat.md>.
+ */
+DEFINE_MANAGER(sysfs, 2,
+	DEFINE_SIMPLE_METHOD(sysfs, read,
+		      ARG(1, struct hm_actv_buf, actv_buf),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(sysfs, write,
+		      ARG(4, int, tagid, unsigned long long, ctx,
+                          unsigned long long, pos, struct hm_actv_buf, actv_buf),
+		      RET_NO,
+		      SLOWDATA_NO)
+)

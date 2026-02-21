@@ -1,0 +1,9 @@
+# Copyright (C) Huawei Technologies Co., Ltd. 2021. All rights reserved.
+# Description: HMbuild
+# Author: Huawei OS Kernel Lab
+# Create: Thu Nov 04 11:38:21 2021
+
+src-y: ux_visp_ppp_core.c
+src-y: ux_visp_ppp_netdev.c
+
+cflags-ux_visp_ppp_netdev.c-y: -Wno-unused-parameter

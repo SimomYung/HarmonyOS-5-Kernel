@@ -1,0 +1,22 @@
+import("//build/ohos.gni")
+
+ohos_prebuilt_executable("mke2fs") {
+  source = "bin/mke2fs"
+  subsystem_name = "thirdparty"
+  part_name = "e2fsprogs"
+  install_enable = true
+}
+
+ohos_prebuilt_executable("e2fsdroid") {
+  source = "bin/e2fsdroid"
+  subsystem_name = "thirdparty"
+  part_name = "e2fsprogs"
+  install_enable = true
+}
+
+ohos_prebuilt_executable("e2fsck") {
+  source = "bin/e2fsck"
+  subsystem_name = "thirdparty"
+  part_name = "e2fsprogs"
+  install_enable = true
+}

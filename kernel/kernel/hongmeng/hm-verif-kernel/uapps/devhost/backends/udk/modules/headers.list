@@ -1,0 +1,57 @@
+usr/include/stdio.h stdio.h
+usr/include/stdlib.h stdlib.h
+usr/include/limits.h limits.h
+usr/include/features.h features.h
+usr/include/stdbool.h stdbool.h
+usr/include/stdint.h stdint.h
+usr/include/stddef.h stddef.h
+usr/include/string.h string.h
+usr/include/strings.h strings.h
+usr/include/sys/types.h sys/types.h
+usr/include/endian.h endian.h
+usr/include/bits/endian.h bits/endian.h
+usr/include/bits/stdint.h bits/stdint.h
+usr/include/bits/limits.h bits/limits.h
+usr/include/bits/alltypes.h bits/alltypes.h
+usr/include/wchar.h wchar.h
+usr/include/errno.h errno.h
+usr/include/bits/errno.h bits/errno.h
+
+# Add ioctl command for mtdchar and mtdblock
+usr/include/bits/ioctl_fix.h bits/ioctl_fix.h
+usr/include/bits/ioctl.h bits/ioctl.h
+usr/include/sys/ioctl.h sys/ioctl.h
+
+# Add timespec definition
+usr/include/time.h time.h
+
+usr/include/lib/dlist.h lib/dlist.h
+usr/include/lib/utils.h lib/utils.h
+usr/include/libalgo/rbtree.h libalgo/rbtree.h
+usr/include/libalgo/radix_tree.h libalgo/radix_tree.h
+usr/include/libalgo/idr.h libalgo/idr.h
+
+usr/include/securec.h securec.h
+usr/include/securectype.h securectype.h
+usr/include/libhwsecurec/securec.h libhwsecurec/securec.h
+usr/include/hmkernel/compiler.h hmkernel/compiler.h
+usr/include/hongmeng/compiler.h hongmeng/compiler.h
+usr/include/hmkernel/barrier.h  hmkernel/barrier.h
+usr/include/hongmeng/panic.h hongmeng/panic.h
+
+usr/include/libhmsync/bitops/generic.h libhmsync/bitops/generic.h
+usr/include/libhmsync/raw_mutex.h libhmsync/raw_mutex.h
+usr/include/libhmsync/raw_mutex_guard.h libhmsync/raw_mutex_guard.h
+
+# For net drivers to use sockaddr struct
+usr/include/net/if.h net/if.h
+usr/include/bits/socket.h bits/socket.h
+usr/include/sys/socket.h sys/socket.h
+
+# For fix codedex/pclint warnings
+usr/include/libstrict/strict.h libstrict/strict.h
+
+- sys/select.h
+- sys/sysmacros.h
+- libhmlog/hmlog.h
+- hongmeng/errno.h

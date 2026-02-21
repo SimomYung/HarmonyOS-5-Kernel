@@ -1,0 +1,20 @@
+comment "MODULE ISP"
+
+choice
+	prompt "HISP Version"
+	default KERNEL_CAMERA_USE_HISP120
+	depends on KERNEL_CAMERA
+	help
+        Select ISP version.
+
+config KERNEL_CAMERA_USE_HISP120
+	bool "HISP120"
+	depends on KERNEL_CAMERA
+
+config KERNEL_CAMERA_ISPV120_A
+    tristate "Support histar ispv120_A driver"
+    depends on KERNEL_CAMERA_USE_HISP120
+    default n
+
+endchoice
+

@@ -1,0 +1,7 @@
+config KIRIN_TYPEC
+	bool "Kirin USB Typei-C Driver"
+	help
+	  Say Y to enable Kirin USB Typec Driver
+
+source "platform_source/basicplatform/drivers/hisi_typec/hisi_tcpc/Kconfig"
+

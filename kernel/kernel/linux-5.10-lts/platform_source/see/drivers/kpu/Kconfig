@@ -1,0 +1,5 @@
+config KPU_TEST
+	bool "kpu test"
+	default y
+	help
+		Say yes here to support kpu test in kernel

@@ -1,0 +1,14 @@
+#
+# Copyright (c) Hisilicon Technologies Co., Ltd. 2021-2021. All rights reserved.
+#
+
+INCLUDE_DIR += -I$(HVGR_PATH)/ffrt/hts \
+               -I$(srctree)/include/platform_include/ffrt/uniform_id \
+               -I$(srctree)/platform_source/ffrt/hts/hkd/interfaces \
+
+ifdef CONFIG_LIBLINUX
+    INCLUDE_DIR += -I$(srctree)/platform_source/ffrt_ohos/hts \
+                   -I$(srctree)/include/platform_include/ffrt/uniform_id
+endif
+
+SRC += $(HVGR_ROOT)/ffrt/hts/hvgr_hts.c

@@ -1,0 +1,176 @@
+# Copyright (c) 2022 Huawei Device Co., Ltd.
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License along
+# with this program; if not, write to the Free Software Foundation, Inc.,
+# 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+
+import("//build/ohos.gni")
+
+group("exfatprogs") {
+  deps = [
+    ":exfatlabel",
+    ":fsck.exfat",
+    ":mkfs.exfat",
+  ]
+}
+
+config("exfat-defaults") {
+  cflags = [
+    "-std=gnu99",
+    "-Wno-error",
+    "-D_FILE_OFFSET_BITS=64",
+    "-DPACKAGE=\"exfatprogs\"",
+    "-DVERSION=\"1.2.5\"",
+  ]
+  include_dirs = [
+    "dump",
+    "fsck",
+    "include",
+    "label",
+    "mkfs",
+    "tune",
+    "exfat2img",
+  ]
+}
+
+ohos_shared_library("libexfat") {
+  configs = [ ":exfat-defaults" ]
+  sources = [
+    "lib/exfat_dir.c",
+    "lib/exfat_fs.c",
+    "lib/libexfat.c",
+  ]
+
+  include_dirs = [ "./libexfat" ]
+
+  deps = []
+  install_enable = true
+  subsystem_name = "thirdparty"
+  part_name = "exfatprogs"
+  install_images = [ "system" ]
+}
+
+###################################################
+##Build mkfs.exfat
+ohos_executable("mkfs.exfat") {
+  configs = [ ":exfat-defaults" ]
+  sources = [
+    "mkfs/mkfs.c",
+    "mkfs/upcase.c",
+  ]
+
+  include_dirs = [
+    "./lib",
+    "./mkfs",
+  ]
+
+  deps = [ ":libexfat" ]
+  install_enable = true
+  subsystem_name = "thirdparty"
+  part_name = "exfatprogs"
+  install_images = [ "system" ]
+}
+
+###################################################
+##Build fsck.exfat
+ohos_executable("fsck.exfat") {
+  configs = [ ":exfat-defaults" ]
+  sources = [
+    "fsck/fsck.c",
+    "fsck/repair.c",
+  ]
+
+  include_dirs = [
+    "./lib",
+    "./mkfs",
+    "./fsck",
+  ]
+
+  deps = [ ":libexfat" ]
+  install_enable = true
+  subsystem_name = "thirdparty"
+  part_name = "exfatprogs"
+  install_images = [ "system" ]
+}
+
+###################################################
+##Build dump.exfat
+ohos_executable("dump.exfat") {
+  configs = [ ":exfat-defaults" ]
+  sources = [ "dump/dump.c" ]
+
+  include_dirs = [
+    "./lib",
+    "./mkfs",
+    "./fsck",
+    "./dump",
+  ]
+
+  deps = [ ":libexfat" ]
+  subsystem_name = "thirdparty"
+  part_name = "exfatprogs"
+}
+
+###################################################
+##Build exfatlabel
+ohos_executable("exfatlabel") {
+  configs = [ ":exfat-defaults" ]
+  sources = [ "label/label.c" ]
+
+  include_dirs = [
+    "./lib",
+    "./mkfs",
+    "./fsck",
+    "./label",
+  ]
+
+  deps = [ ":libexfat" ]
+  subsystem_name = "thirdparty"
+  part_name = "exfatprogs"
+}
+
+###################################################
+##Build tune.exfat
+ohos_executable("tune.exfat") {
+  configs = [ ":exfat-defaults" ]
+  sources = [ "tune/tune.c" ]
+
+  include_dirs = [
+    "./lib",
+    "./mkfs",
+    "./fsck",
+    "./label",
+  ]
+
+  deps = [ ":libexfat" ]
+  subsystem_name = "thirdparty"
+  part_name = "exfatprogs"
+}
+
+###################################################
+##Build exfat2img
+ohos_executable("exfat2img") {
+  configs = [ ":exfat-defaults" ]
+  sources = [ "exfat2img/exfat2img.c" ]
+
+  include_dirs = [
+    "./lib",
+    "./mkfs",
+    "./fsck",
+    "./exfat2img",
+  ]
+
+  deps = [ ":libexfat" ]
+  subsystem_name = "thirdparty"
+  part_name = "exfatprogs"
+}

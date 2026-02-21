@@ -1,0 +1,132 @@
+# Copyright (c) Huawei Technologies Co., Ltd. 2020-2020. All rights reserved.
+# Description: Functions defined for Security cmake
+# Author: Huawei OS Kernel Lab
+# Create: Wed Nov 18 17:58:08 2020
+
+write_dot_config()
+{
+    if  [ -f  "./.config"  ]; then
+        rm ./.config
+    fi
+    if [ "${DEBUG_BUILD}x" != "nx" ]
+    then
+      echo "CONFIG_DEBUG_BUILD=y"                                           >> ./.config
+      echo "CONFIG_HMBUILD_PROFILE_DEBUG=y"                                 >> ./.config
+    fi
+    echo "CONFIG_HMBUILD_TOOLCHAIN_GNU=y"                                   >> ./.config
+    echo "CONFIG_HMBUILD_STRIP_OPTION=\"\""                                 >> ./.config
+    echo "defconfig is $1"
+    cat $1 >> ./.config
+}
+
+choose_defconfig()
+{
+    if [ "${PRODUCT}x" = "x" ] || [ "${PRODUCT}x" = "allx" ]; then
+        DEFCONFIG_PATH="${ABS_SOURCE_PATH}/arch/${ARCH}/configs/${DEFCONFIG_NAME}"
+    else
+        DEFCONFIG_PATH="${ABS_SOURCE_PATH}/arch/${ARCH}/configs/${PRODUCT}/${DEFCONFIG_NAME}"
+    fi
+
+    if [ ! -f "${DEFCONFIG_PATH}" ]; then
+        DEFCONFIG_NAME="defconfig"
+        if [ "${BE}x" = "yx" ]; then
+            DEFCONFIG_NAME="be_${DEFCONFIG_NAME}"
+        fi
+        if [ "${DEBUG_BUILD}x" == "nx" ]; then
+            DEFCONFIG_NAME="release_${DEFCONFIG_NAME}"
+        fi
+        DEFCONFIG_PATH="${ABS_SOURCE_PATH}/arch/${ARCH}/configs/${DEFCONFIG_NAME}"
+    fi
+    write_dot_config $DEFCONFIG_PATH
+}
+
+run_hm_cmake()
+{
+    tcfilebasename="toolchain.cmake"
+    cmake   --log-level=VERBOSE \
+            -DHMNATIVESDKPATH:PATH=${HOST_SYSROOT_ABS_PATH} \
+            -DCMAKE_TOOLCHAIN_FILE=${HOST_SYSROOT_ABS_PATH}/usr/share/cmake/Modules/${TARGET_PREFIX}$tcfilebasename \
+            -DCMAKE_MODULE_PATH=${HOST_SYSROOT_ABS_PATH}/usr/share/cmake/Modules \
+            -DCMAKE_SYSROOT=${HMSYSROOT_ABS_PATH} \
+            $1 \
+            -Wno-dev  # Use -Wno-dev to suppress cmake warning
+}
+
+make_gcc_plugins() {
+    mkdir -p ${BUILD_PATH}/gcc-plugins
+    cd ${BUILD_PATH}/gcc-plugins
+
+    if  [ -f  "./.config"  ]; then
+        rm ./.config
+    fi
+    if [ "${ARCH}x" == "armx" ]; then
+        echo "CONFIG_ARM=y" >> ./.config
+    fi
+    echo "CONFIG_HMBUILD_INSTALL_DIR_GCC_PLUGIN_DIR=\"/usr/lib\"" >> ./.config
+    echo "CONFIG_HMBUILD_EXTRA_CFLAGS=\"-Og -g -feliminate-unused-debug-types -pipe\"" >> ./.config
+
+    cmake --log-level=VERBOSE ${ABS_SOURCE_PATH}/tools/gcc-plugins \
+          -DCMAKE_MODULE_PATH=${HOST_SYSROOT_ABS_PATH}/usr/share/cmake/Modules \
+          -DTARGET_PREFIX_GCC=${HOST_SYSROOT_ABS_PATH}/usr/bin/${TARGET_PREFIX} \
+          -DSSTACK_SCRIPT_OUTPUT_DIR=/usr/src/hm-security/gcc_plugin
+}
+
+make_tools() {
+    mkdir -p ${BUILD_PATH}/tools
+    cd ${BUILD_PATH}/tools
+    if  [ -f  "./.config"  ]; then
+        rm ./.config
+    fi
+    echo "CONFIG_HMBUILD_INSTALL_DIR_BINDIR=\"/native/usr/bin\"" >> ./.config
+    echo "CONFIG_HMBUILD_EXTRA_CFLAGS=\"-Og -g -feliminate-unused-debug-types -pipe\"" >> ./.config
+
+    cmake --log-level=VERBOSE ${ABS_SOURCE_PATH}/tools \
+          -DCMAKE_MODULE_PATH=${HOST_SYSROOT_ABS_PATH}/usr/share/cmake/Modules
+}
+
+make_headers() {
+    mkdir -p ${BUILD_PATH}/headers
+    cd ${BUILD_PATH}/headers
+    cmake --log-level=VERBOSE ${ABS_SOURCE_PATH}/include \
+          -DCMAKE_MODULE_PATH=${HOST_SYSROOT_ABS_PATH}/usr/share/cmake/Modules \
+          -DCMAKE_SYSROOT=${HMSYSROOT_ABS_PATH}
+}
+
+make_policy() {
+    mkdir -p ${BUILD_PATH}/policy
+    cd ${BUILD_PATH}/policy
+
+    choose_defconfig
+    echo "CONFIG_POLICY_OUTPUT_DIR=\"/usr/src/hm-security/policy\""                       >> ./.config
+    echo "CONFIG_NATIVE_BIN_DIR=\"${HOST_SYSROOT_ABS_PATH}/usr/bin\""                     >> ./.config
+    echo "CONFIG_PRODUCT=\"${PRODUCT}\""                                                  >> ./.config
+
+    run_hm_cmake "${ABS_SOURCE_PATH}/policy"
+}
+
+make_libs() {
+    mkdir -p ${BUILD_PATH}/libs
+    cd ${BUILD_PATH}/libs
+
+    choose_defconfig
+    EXTRA_FLAGS="${EXTRA_FLAGS} -I${BUILD_PATH}/policy"
+    echo "CONFIG_HMBUILD_EXTRA_CFLAGS=\"${EXTRA_FLAGS}\""                                 >> ./.config
+
+    run_hm_cmake "${ABS_SOURCE_PATH}/ulibs"
+}
+
+make_services() {
+    mkdir -p ${BUILD_PATH}/services
+    cd ${BUILD_PATH}/services
+
+    choose_defconfig
+    run_hm_cmake "${ABS_SOURCE_PATH}/uapps"
+}
+
+make_tests() {
+    mkdir -p ${BUILD_PATH}/tests
+    cd ${BUILD_PATH}/tests
+
+    choose_defconfig
+    run_hm_cmake "${ABS_SOURCE_PATH}/tests"
+}

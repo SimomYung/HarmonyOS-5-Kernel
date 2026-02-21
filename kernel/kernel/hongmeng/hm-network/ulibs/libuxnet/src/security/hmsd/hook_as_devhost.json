@@ -1,0 +1,26 @@
+{
+    "template": "hook",
+    "server": "net",
+    "manager": "as_devhost",
+    "hooks": {
+        "as_devhost": {
+            "scheme": "security check/object access",
+            "arguments": [],
+            "object": {
+                "type": ""
+            },
+            "ac": {
+                "dac": {
+                    "enabled": false
+                },
+                "mac": {
+                    "alias": "sec_chk_ability_as_devhost",
+                    "permission": "ab_as_devhost"
+                },
+                "seharmony": {
+                    "enabled": false
+                }
+            }
+        }
+    }
+}

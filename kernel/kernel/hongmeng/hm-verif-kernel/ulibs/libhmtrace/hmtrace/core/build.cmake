@@ -1,0 +1,5 @@
+add_hm_library(trace_class.c)
+add_hm_library(trace_buffer.c)
+add_hm_library(trace_efmt.c)
+add_hm_library(trace_iter.c)
+add_hm_library(trace_event.c)

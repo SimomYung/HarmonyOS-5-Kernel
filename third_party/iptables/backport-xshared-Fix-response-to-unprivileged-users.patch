@@ -1,0 +1,130 @@
+From 26ecdf53960658771c0fc582f72a4025e2887f75 Mon Sep 17 00:00:00 2001
+From: Phil Sutter <phil@nwl.cc>
+Date: Tue, 18 Jan 2022 22:39:08 +0100
+Subject: xshared: Fix response to unprivileged users
+
+Expected behaviour in both variants is:
+
+* Print help without error, append extension help if -m and/or -j
+  options are present
+* Indicate lack of permissions in an error message for anything else
+
+With iptables-nft, this was broken basically from day 1. Shared use of
+do_parse() then somewhat broke legacy: it started complaining about
+inability to create a lock file.
+
+Fix this by making iptables-nft assume extension revision 0 is present
+if permissions don't allow to verify. This is consistent with legacy.
+
+Second part is to exit directly after printing help - this avoids having
+to make the following code "nop-aware" to prevent privileged actions.
+
+Conflict: NA
+Reference:
+https://git.netfilter.org/iptables/commit/?id=26ecdf53960658771c0fc582f72a4025e2887f75
+Signed-off-by: Phil Sutter <phil@nwl.cc>
+Reviewed-by: Florian Westphal <fw@strlen.de>
+---
+ iptables/nft.c                                |  5 ++
+ .../testcases/iptables/0008-unprivileged_0    | 59 +++++++++++++++++++
+ iptables/xtables.c                            |  2 +-
+ 3 files changed, 65 insertions(+), 1 deletion(-)
+ create mode 100644 iptables/tests/shell/testcases/iptables/0008-unprivileged_0
+
+diff --git a/iptables/nft.c b/iptables/nft.c
+index bde4ca7..c9a4940 100644
+--- a/iptables/nft.c
++++ b/iptables/nft.c
+@@ -3245,6 +3245,11 @@ int nft_compatible_revision(const char *name, uint8_t rev, int opt)
+ err:
+ 	mnl_socket_close(nl);
+ 
++    /* pretend revision 0 is valid if not permitted to check -
++    * this is required for printing extension help texts as user */
++    if (ret < 0 && errno == EPERM && rev == 0)
++        return 1;
++
+ 	return ret < 0 ? 0 : 1;
+ }
+ 
+diff --git a/iptables/tests/shell/testcases/iptables/0008-unprivileged_0 b/iptables/tests/shell/testcases/iptables/0008-unprivileged_0
+new file mode 100644
+index 0000000..0914c88
+--- /dev/null
++++ b/iptables/tests/shell/testcases/iptables/0008-unprivileged_0
+@@ -0,0 +1,59 @@
++#!/bin/bash
++# iptables may print match/target specific help texts
++# help output should work for unprivileged users
++
++run() {
++   echo "running: $*" >&2
++   runuser -u nobody -- "$@"
++}
++
++grep_or_rc() {
++   declare -g rc
++   grep -q "$*" && return 0
++   echo "missing in output: $*" >&2
++   return 1
++}
++
++out=$(run $XT_MULTI iptables --help)
++let "rc+=$?"
++grep_or_rc "iptables -h (print this help information)" <<< "$out"
++let "rc+=$?"
++
++out=$(run $XT_MULTI iptables -m limit --help)
++let "rc+=$?"
++grep_or_rc "limit match options:" <<< "$out"
++let "rc+=$?"
++
++out=$(run $XT_MULTI iptables -p tcp --help)
++let "rc+=$?"
++grep_or_rc "tcp match options:" <<< "$out"
++let "rc+=$?"
++
++out=$(run $XT_MULTI iptables -j DNAT --help)
++let "rc+=$?"
++grep_or_rc "DNAT target options:" <<< "$out"
++let "rc+=$?"
++
++out=$(run $XT_MULTI iptables -p tcp -j DNAT --help)
++let "rc+=$?"
++grep_or_rc "tcp match options:" <<< "$out"
++let "rc+=$?"
++out=$(run $XT_MULTI iptables -p tcp -j DNAT --help)
++let "rc+=$?"
++grep_or_rc "DNAT target options:" <<< "$out"
++let "rc+=$?"
++
++
++run $XT_MULTI iptables -L 2>&1 | \
++       grep_or_rc "Permission denied"
++let "rc+=$?"
++
++run $XT_MULTI iptables -A FORWARD -p tcp --dport 123 2>&1 | \
++       grep_or_rc "Permission denied"
++let "rc+=$?"
++
++run $XT_MULTI iptables -A FORWARD -j DNAT --to-destination 1.2.3.4 2>&1 | \
++       grep_or_rc "Permission denied"
++let "rc+=$?"
++
++exit $rc
+diff --git a/iptables/xtables.c b/iptables/xtables.c
+index 9779bd8..a16bba7 100644
+--- a/iptables/xtables.c
++++ b/iptables/xtables.c
+@@ -645,7 +645,7 @@ void do_parse(struct nft_handle *h, int argc, char *argv[],
+ 
+ 			printhelp(cs->matches);
+ 			p->command = CMD_NONE;
+-			return;
++			exit(0);
+ 
+ 			/*
+ 			 * Option selection
+-- 
+2.23.0
+

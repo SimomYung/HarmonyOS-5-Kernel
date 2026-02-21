@@ -1,0 +1,231 @@
+<hwlcd>
+	<Version>1.1</Version>
+
+	<!-- any supported lcd Panel, add it here! very important -->
+	<lcdlist>
+		<!-- format: -->
+		<!-- panel-name, gpio, brdid(product_id), product_name, product_floder, version_floder -->
+		<!-- panel-name : must same with panel xml file name -->
+		<!-- product & version folder: must same with the folder name or 'def' -->
+		<lcd>raydium-6d030-1p44-cmd,                    0x00,   4300,    DEFAULT,    DEFAULT,  def     </lcd>
+		<lcd>raydium-6d031-boe-1p38-cmd,                0x6A,   4300,    SR,   SR, def     </lcd>
+		<lcd>raydium-6d031-vnx-1p38-cmd,                0x6B,   4300,    SR,   SR, def     </lcd>
+		<lcd>raydium-6d031-edo-1p38-cmd,                0x6C,   4300,    SR,   SR, def     </lcd>
+		<lcd>raydium-6d031-boe-1p5-cmd,                 0x6D,   4300,    SR,   SR, def     </lcd>
+		<lcd>raydium-6d031-vnx-1p5-cmd,                 0x6E,   4300,    SR,   SR, def     </lcd>
+		<lcd>raydium-6d031-tm-1p5-cmd,                  0x6F,   4300,    SR,   SR, def     </lcd>
+	</lcdlist>
+	<PanelEntry>
+		<!-- Panel information config start -->
+		<!-- panel orietation -->
+		<PanelOrientation>1</PanelOrientation>
+		<!--panel bpp:0-rgb888, 1-rgb1010101, 2-rgb565-->
+		<PanelBpp>0</PanelBpp>
+		<!--panel rgb order:0-rgb, 1-bgr-->
+		<PanelBgrfmt>0</PanelBgrfmt>
+
+		<!--Mipi config start-->
+		<MipiHSyncArea>2</MipiHSyncArea>
+		<MipiHBackPorch>10</MipiHBackPorch>
+		<MipiDpiHSize>1404</MipiDpiHSize>
+		<MipiHLineTime>1456</MipiHLineTime>
+		<MipiVSyncArea>2</MipiVSyncArea>
+		<MipiVBackPorch>10</MipiVBackPorch>
+		<MipiVFrontPorch>10</MipiVFrontPorch>
+
+		<MipiDsiBitClk>252</MipiDsiBitClk>
+		<PanelPxlClk>19</PanelPxlClk>
+		<MipiDsiUptSupport>1</MipiDsiUptSupport>
+		<MipiClkPostAdjust>215</MipiClkPostAdjust>
+		<MipiLaneNums>0</MipiLaneNums>
+		<MipiColorMode>5</MipiColorMode>
+		<MipiMaxTxEscClk>8</MipiMaxTxEscClk>
+		<MipiBurstMode>2</MipiBurstMode>
+
+		<MipiDsiBitClkValA>260</MipiDsiBitClkValA>
+		<MipiDsiBitClkValB>252</MipiDsiBitClkValB>
+		<MipiDsiBitClkValC>0</MipiDsiBitClkValC>
+		<MipiDsiBitClkValD>0</MipiDsiBitClkValD>
+		<MipiDsiBitClkValE>0</MipiDsiBitClkValE>
+
+		<!--Mipi config start-->
+		<MipiDsiVersion>0</MipiDsiVersion>
+		<!--Mipi lane number:c-phy:0-1port, 1-2port, 2-3port d-phy:0-1lane, 1-2lane, 2-3lane, 3-4lane-->
+		<MipiLaneNums>1</MipiLaneNums>
+		<!--Mipi color mode:0-16bit_1, 1-16bit_2, 2-16bit_3, 3-18bit_1, 4-18bit_2, 5-24bit_1, 6-24bit_2, 7-24bit_3-->
+		<MipiColorMode>5</MipiColorMode>
+		<!--Mipi virtual channel-->
+		<MipiVc>0</MipiVc>
+		<!--Mipi burst mode:0-non burst sync pulse, 1-non burst sync event, 2-burst sync pulse1, 3-burst sync pulse2-->
+		<MipiBurstMode>2</MipiBurstMode>
+		<!--Mipi escape mode clock-->
+		<MipiMaxTxEscClk>6</MipiMaxTxEscClk>
+		<!--Mipi non continue enable:0-continue mode, 1-non continue mode-->
+		<MipiNonContinueEnable>1</MipiNonContinueEnable>
+		<!--Mipi RG_VREFSEL_EQ -->
+		<MipiRgEqAdjust>0</MipiRgEqAdjust>
+		<!--Mipi RG_VREFSEL_VCM -->
+		<MipiRgVcmAdjust>0</MipiRgVcmAdjust>
+		<PanelCheckRegOnSupport>1</PanelCheckRegOnSupport>
+		<PanelCheckRegOnSupportDsmReport>1</PanelCheckRegOnSupportDsmReport>
+		<PanelCheckRegOffSupport>0</PanelCheckRegOffSupport>
+		<PanelCheckRegOffSupportDsmReport>0</PanelCheckRegOffSupportDsmReport>
+		<!-- for mipi check reg on -->
+		<PanelCheckRegOnCommand>"0x06, 0x01, 0x00, 0x01, 0x00, 0x00, 0x01, 0x0a"</PanelCheckRegOnCommand>
+		<PanelCheckRegOnCommandState>0</PanelCheckRegOnCommandState>
+		<PanelCheckRegOnValue>"0x9c"</PanelCheckRegOnValue>
+		<!-- for mipi check reg off -->
+		<PanelCheckRegOffCommand>"0x06, 0x01, 0x00, 0x01, 0x00, 0x00, 0x01, 0x0a"</PanelCheckRegOffCommand>
+		<PanelCheckRegOffCommandState>0</PanelCheckRegOffCommandState>
+		<PanelCheckRegOffValue>"0x08"</PanelCheckRegOffValue>
+		<!--Local region update support-->
+		<PanelDirtyRegionSupport>0</PanelDirtyRegionSupport>
+		<!--Left align-->
+		<DirtyLeftAlign>0xffff</DirtyLeftAlign>
+		<!--Right align-->
+		<DirtyRightAlign>0xffff</DirtyRightAlign>
+		<!--Top align-->
+		<DirtyTopAlign>2</DirtyTopAlign>
+		<!--Bottom align-->
+		<DirtyBottAlign>2</DirtyBottAlign>
+		<!--Width align-->
+		<DirtyWidthAlign>0xffff</DirtyWidthAlign>
+		<!--Height align-->
+		<DirtyHeightAlign>2</DirtyHeightAlign>
+		<!--Width Region-->
+		<DirtyWidthMin>466</DirtyWidthMin>
+		<!--Height Region-->
+		<DirtyHeightMin>0xffff</DirtyHeightMin>
+		<!--Top location-->
+		<DirtyTopStart>0xffff</DirtyTopStart>
+		<!--Bottom location-->
+		<DirtyBottStart>0xffff</DirtyBottStart>
+		<!-- for display region-->
+		<PanelDirtyRegionCommand>"0x39, 0x01, 0x00, 0x00, 0x00, 0x00, 0x05, 0x2A, 0x00, 0x00, 0x01, 0xD1
+				0x39, 0x01, 0x00, 0x00, 0x00, 0x00, 0x05, 0x2B, 0x00, 0x00, 0x01, 0xD1"</PanelDirtyRegionCommand>
+		<!-- for support safe frame info -->
+		<!-- <PanelSafeFrameInfo>"120, 90, 60, 30, 10, 1"</PanelSafeFrameInfo> -->
+		<!-- for support safe frame info -->
+		<!-- <PanelLpSafeFrameInfo>"30, 10, 1"</PanelLpSafeFrameInfo> -->
+		<!--Power timming config start-->
+		<!--event define
+		mode, number, amplitude
+		mode:0-none, 1-regulator, 2-gpio
+		number:gpio num or ldo num
+		amplitude:3100000-3.1v, 1850000-1.85v, 5500000-5.5v
+		-->
+		<!-- FPGA lcd gpio:reset:43, 3v1:41, 1v8:33 -->
+		<LcdVci>"2, 161, 0"</LcdVci>
+		<LcdIovcc>"1, 18, 1850000"</LcdIovcc>
+		<LcdReset>"2, 160, 0"</LcdReset>
+
+		<IOVccRegulator>ldo18</IOVccRegulator>
+		<LcdVdd>"1, 0, 0"</LcdVdd>
+		<LcdVsp>"2, 0, 5500000"</LcdVsp>
+		<LcdVsn>"2, 0, 5500000"</LcdVsn>
+		<!-- <LcdReset>"2, 0, 0"</LcdReset> -->
+		<TpReset>"2, 0, 0"</TpReset>
+		<LcdTe0>"2, 0, 0"</LcdTe0>
+		<LcdBacklight>"2, 0, 0"</LcdBacklight>
+		<LcdAod>"2, 0, 0"</LcdAod>
+		<LcdMipiSwitch>"2, 0, 0"</LcdMipiSwitch>
+		<LdiDpi01SetChange>0</LdiDpi01SetChange>
+		<PxlClkToPll2>0</PxlClkToPll2>
+		<PxlClkToPll0>0</PxlClkToPll0>
+		<OemInfoSupport>0</OemInfoSupport>
+		<OemBarcode2DSupport>0</OemBarcode2DSupport>
+		<LcdPmicCtrl>"1, 0, 0"</LcdPmicCtrl>
+		<LcdPmicReset>"1, 0, 0"</LcdPmicReset>
+		<LcdPmicInit>"1, 0, 0"</LcdPmicInit>
+		<LcdBoostEnable>"1, 0, 0"</LcdBoostEnable>
+		<LcdBoostCtrl>"1, 0, 0"</LcdBoostCtrl>
+		<LcdBoostBypass>"1, 0, 0"</LcdBoostBypass>
+		<!--Power off performance optimize-->
+		<PwrOffTimeOptimizeSupport>0</PwrOffTimeOptimizeSupport>
+		<PwrOffTimeWorkDelay>120</PwrOffTimeWorkDelay>
+		<!--event send
+		event, data, delay/sync, no-sync
+		event:0-NONE, 1-VCI, 2-IOVCC, 3-VSP, 4-VSN, 5-RESET, 6-MIPI init code, 7-TS early-event, 8-TS later-event, 9-vdd
+		event:10-EVENT_AOD,11-EVENT_BIAS, 12-EVENT_AOD_MIPI, 13-EVENT_MIPI_SWITCH, 14-EVENT_AVDD_MIPI, 15-EVENT_2ND_POWER_OFF_TS, 16-EVENT_BLOCK_TS
+		event:17-EVENT_PMIC_CTRL, 18-EVENT_PMIC_RESET, 19-EVENT_PMIC_INIT, 21-EVENT_BOOST_ENABLE, 22-EVENT_BOOST_CTRL, 23-EVENT_BOOST_BYPASS
+		data:0-power off, 1-power on
+		delay:ms/TS:0-no-sync 1-sync
+		-->
+		<!--Power on timming-->
+		<PowerOnStage>"2, 1, 0
+		               1, 1, 20
+                               5, 1, 50"</PowerOnStage>
+
+		<LPOnStage>"0, 0, 1
+		            6, 1, 0"</LPOnStage>
+		<HSOnStage>"0, 0, 0"</HSOnStage>
+
+		<!--Power off timming-->
+		<HSOffStage>"0, 0, 0"</HSOffStage>
+		<LPOffStage>"6, 0, 0"</LPOffStage>
+		<PowerOffStage>"5, 0, 20
+				1, 0, 20
+				2, 2, 0"</PowerOffStage>
+		<!--Power timming config end-->
+		<!-- ulps process : 1-execute, 0-not execute; exit ulps at power on and enter ulps at power off -->
+		<PoweroffUlpsSupport>1</PoweroffUlpsSupport>
+		<!--support aod ltpo-->
+		<LtpoAodSupport>0</LtpoAodSupport>
+		<!--sensorhub enter exit ulps-->
+		<SensorhubUlps>0</SensorhubUlps>
+		<SensorhubAodExtSupport>0</SensorhubAodExtSupport>
+        <!--set power by nv support-->
+        <SetPowerByNvSupport>0</SetPowerByNvSupport>
+		<!--update dss core clk support-->
+		<UpdateCoreClkSupport>0</UpdateCoreClkSupport>
+
+		<!--Lcdkit fps support -->
+		<PanelFpsUpdtSupport>1</PanelFpsUpdtSupport>
+		<PanelDefaultFps>60</PanelDefaultFps>
+		<PanelSupportFpsList>"60, 30"</PanelSupportFpsList>
+		<!-- dfr mode:0-CONSTANT, 1-LONG_V, 2-LONG_H, 3-TE_SKIP_BY_MCU, 4-TE_SKIP_BY_ACPU -->
+		<DFRMode>4</DFRMode>
+		<OledType>1</OledType>
+		<!--ltpo version:0-ltpo1, 1-ltpo2-->
+		<LtpoVersion>0</LtpoVersion>
+		<!--support te freq info-->
+		<PanelTEFreqInfo>"60"</PanelTEFreqInfo>
+		<!--support te mask info-->
+		<PanelTEMaskInfo>"0"</PanelTEMaskInfo>
+		<!--Project id support-->
+		<PanelProjectIdSupport>0</PanelProjectIdSupport>
+		<!--Tp use default project Id-->
+		<PanelUseDefaultProjectId>0</PanelUseDefaultProjectId>
+		<!--default tp project Id-->
+		<PanelDefaultTpProjectId>"P374B02900"</PanelDefaultTpProjectId>
+		<!--Tp project id update support-->
+		<PanelProjectIdUptSupport>0</PanelProjectIdUptSupport>
+		<!--Tp project id update start position-->
+		<PanelProjectIdStartPos>6</PanelProjectIdStartPos>
+		<!--Tp project id update end position-->
+		<PanelProjectIdEndPos>9</PanelProjectIdEndPos>
+		<!-- for dieid read  -->
+		<LcdPanelDieidSupport>1</LcdPanelDieidSupport>
+		<DieidCommand>"0x15, 0x01, 0x00, 0x00, 0x00, 0x00, 0x02, 0xFE, 0xC0
+			0x06, 0x01, 0x00, 0x00, 0x00, 0x00, 0x01, 0x02
+			0x06, 0x01, 0x00, 0x00, 0x00, 0x00, 0x01, 0x03
+			0x06, 0x01, 0x00, 0x00, 0x00, 0x00, 0x01, 0x04
+			0x06, 0x01, 0x00, 0x00, 0x00, 0x00, 0x01, 0x05
+			0x06, 0x01, 0x00, 0x00, 0x00, 0x00, 0x01, 0x06
+			0x06, 0x01, 0x00, 0x00, 0x00, 0x00, 0x01, 0x07
+			0x06, 0x01, 0x00, 0x00, 0x00, 0x00, 0x01, 0x08
+			0x06, 0x01, 0x00, 0x00, 0x00, 0x00, 0x01, 0x09
+			0x06, 0x01, 0x00, 0x00, 0x00, 0x00, 0x01, 0x0A
+			0x06, 0x01, 0x00, 0x00, 0x00, 0x00, 0x01, 0x0B
+			0x15, 0x01, 0x00, 0x00, 0x00, 0x00, 0x02, 0xFE, 0x00"</DieidCommand>
+		<DieidCommandState>0</DieidCommandState>
+
+		<MipiClkTLpxAdjust>4294967280</MipiClkTLpxAdjust>
+		<MipiDataTLpxAdjust>4294967264</MipiDataTLpxAdjust>
+		<MipiDataTHsTrailAdjust>16</MipiDataTHsTrailAdjust>
+		<MipiDataLaneLp2HsTimeAdjust>4294967280</MipiDataLaneLp2HsTimeAdjust>
+		<MipiDataTHsPrepareAdjust>4294967280</MipiDataTHsPrepareAdjust>
+		<PanelVsynCtrType>7</PanelVsynCtrType>
+		<PowerCheckEnableAndDisable>1</PowerCheckEnableAndDisable>
+	</PanelEntry>
+</hwlcd>

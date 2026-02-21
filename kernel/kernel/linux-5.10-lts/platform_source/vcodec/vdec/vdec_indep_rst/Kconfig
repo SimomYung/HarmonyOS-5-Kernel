@@ -1,0 +1,5 @@
+config VDEC_INDEP_RST_VM_CTRL
+    bool "vdec indep rst vm control"
+    default n
+    help
+        This config controls vdec indep rst on the system.

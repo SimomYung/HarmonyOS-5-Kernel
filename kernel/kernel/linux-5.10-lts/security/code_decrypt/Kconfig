@@ -1,0 +1,11 @@
+# SPDX-License-Identifier: GPL-2.0-or-later
+#
+# Copyright (c) 2023 Huawei Device Co., Ltd.
+#
+
+config CODE_DECRYPT
+	bool "Enable code decrypt support"
+	default n
+	help
+	  This option provides support for code decrypt.
+

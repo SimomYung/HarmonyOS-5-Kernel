@@ -1,0 +1,36 @@
+# Copyright (c) Huawei Technologies Co., Ltd. 2022-2022. All rights reserved.
+# Description: HMbuild for libhmcrypt/libhmcrypt
+# Author: Huawei OS Kernel Lab
+# Create: Wed Jnu 15 21:10:24 2022
+
+src-y: hmbase64.c
+src-y: hmasn1.c
+src-y: hmpem.c
+src-y: hmcrypt.c
+src-CONFIG_CRYPTO_OPENSSL: hmpkcs7.c
+src-CONFIG_CRYPTO_OPENSSL: hmcert.c
+src-CONFIG_CRYPTO_OPENSSL: hmcert_smartcs.c
+include-.-y: ./include
+include-.-y: ./hmcrypto_hitls
+include-.-CONFIG_CRYPTO_OPENSSL: ./hmcrypto_openssl
+src-CONFIG_CRYPTO_OPENSSL: hmcrypto_framework/hmcrypto_skcipher.c
+src-CONFIG_CRYPTO_OPENSSL: hmcrypto_framework/hmcrypto_rsacipher.c
+src-CONFIG_CRYPTO_OPENSSL: hmcrypto_framework/hmcrypto_mac.c
+src-CONFIG_CRYPTO_OPENSSL: hmcrypto_framework/hmcrypto_provider.c
+src-y: hmcrypto_framework/hmcrypto_hash.c
+src-y: hmcrypto_framework/hmcrypto_pkverify.c
+src-y: hmcrypto_framework/hmcrypto_drbg.c
+src-CONFIG_CRYPTO_OPENSSL: hmcrypto_openssl/hmcrypto_openssl.c
+src-CONFIG_CRYPTO_OPENSSL: hmcrypto_openssl/hmcrypto_skcipher_openssl.c
+src-CONFIG_CRYPTO_OPENSSL: hmcrypto_openssl/hmcrypto_mac_openssl.c
+src-CONFIG_CRYPTO_OPENSSL: hmcrypto_openssl/hmcrypto_hash_openssl.c
+src-CONFIG_CRYPTO_OPENSSL: hmcrypto_openssl/hmcrypto_drbg_openssl.c
+src-CONFIG_CRYPTO_OPENSSL: hmcrypto_openssl/hmcrypto_rsa_encrypt_openssl.c
+src-CONFIG_CRYPTO_OPENSSL: hmcrypto_openssl/hmcrypto_provider_openssl.c
+src-CONFIG_CRYPTO_HITLS:          hmcrypto_hitls/hmcrypto_hitls.c
+src-CONFIG_CRYPTO_PART_HITLS:     hmcrypto_hitls/hmcrypto_hitls.c
+src-CONFIG_CRYPTO_HITLS:          hmcrypto_hitls/hmcrypto_hash_hitls.c
+src-CONFIG_CRYPTO_HITLS:          hmcrypto_hitls/hmcrypto_rsaverify_hitls.c
+src-CONFIG_CRYPTO_HITLS:          hmcrypto_hitls/hmcrypto_drbg_hitls.c
+src-CONFIG_CRYPTO_PART_HITLS:     hmcrypto_hitls/hmcrypto_drbg_hitls.c
+src-y: common/internal_common.c

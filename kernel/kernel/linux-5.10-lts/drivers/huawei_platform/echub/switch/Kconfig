@@ -1,0 +1,13 @@
+#
+# echub switch moudule
+#
+
+
+config ARMPC_ECHUB_SWITCH
+        bool "echub switch func"
+        depends on ARMPC_ECHUB
+        default n
+        help
+          This driver provides support for tablet mode
+          via GPIO.
+

@@ -1,0 +1,35 @@
+# Copyright (C) Huawei Technologies Co., Ltd. 2021. All rights reserved.
+# Description: HMbuild
+# Author: Huawei OS Kernel Lab
+# Create: Tue Nov 02 16:48:07 2021
+
+src-y: ss_version.c
+src-y: ss_shmem.c
+src-y: ss_channel.c
+src-y: ss_atexit.c
+src-y: ss_dofork.c
+src-y: ss_socket.c
+src-y: ss_ioctl.c
+src-y: ss_config.c
+src-y: ss_sysif.c
+src-y: ss_libc_misc.c
+src-y: ss_netdev.c
+src-y: ss_netlink.c
+src-y: ss_vsock.c
+src-CONFIG_LDK: ss_ldk.c
+src-CONFIG_NET_NS: ss_procfs.c
+
+excludecflags-ss_socket.c: -fsanitize=kernel-address '-fasan-shadow-offset=0x[0-9]*'
+excludecflags-ss_channel.c: -fsanitize=kernel-address '-fasan-shadow-offset=0x[0-9]*'
+excludecflags-ss_shmem.c: -fsanitize=kernel-address '-fasan-shadow-offset=0x[0-9]*'
+excludecflags-ss_sysif.c: -fsanitize-coverage=trace-pc
+excludecflags-ss_sysif.c: -fsanitize-coverage=trace-cmp
+
+lib-static-y: hmsrv_net
+install-hmsrv_net-y: LIBDIR
+
+lib-dynamic-y: hmsrv_net_shared
+output-hmsrv_net_shared: hmsrv_net
+cflags-hmsrv_net_shared-y: -fPIC
+linklib-hmsrv_net_shared-y: -nostdlib
+install-hmsrv_net_shared-y: LIBDIR

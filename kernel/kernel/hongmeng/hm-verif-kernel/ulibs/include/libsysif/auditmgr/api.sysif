@@ -1,0 +1,20 @@
+/*
+ * Copyright (c) Huawei Technologies Co., Ltd. 2020-2020. All rights reserved.
+ * Description: Generate auditmgr sysif apis using code generator
+ * Author: Huawei OS Kernel Lab
+ * Create: Fri 26 Dec 2020 07:39:11 PM CST
+ */
+
+/* for pid_t */
+INCLUDE_C_HEADER(unistd.h)
+
+USE_CALL_PREFIX(adcall)
+USE_HANDLER_PREFIX(adhandler)
+USE_SERVER_NAME(auditmgr)
+
+/* auditmgr path */
+DECLARE_DATATYPE_BEGIN
+#define AUDITMGR_PATH	"auditmgr.actv"
+DECLARE_DATATYPE_END
+
+INCLUDE_SUBSYSTEM(libsysif/auditmgr/auditmgr_msg.sysif)

@@ -1,0 +1,162 @@
+{
+    "root": {
+        "data": {
+            "id": "ci27l63cu8w0",
+            "created": 1645495824622,
+            "text": "HLIBC",
+            "usecase": 99
+        },
+        "children": [
+            {
+                "data": {
+                    "id": "cikg169dzwo0",
+                    "created": 1647347726912,
+                    "text": "支持gmclient运行在hpe环境"
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "cijmgj9pfs80",
+                            "created": 1647264297395,
+                            "text": "realpath",
+                            "usecase": 1,
+                            "layout_right_offset": {
+                                "x": 0,
+                                "y": -31
+                            }
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "cijmibjku5k0",
+                                    "created": 1647264437306,
+                                    "text": "入参分析"
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "cijmiigdkz40",
+                                            "created": 1647264452350,
+                                            "text": "filename"
+                                        },
+                                        "children": [
+                                            {
+                                                "data": {
+                                                    "id": "cijmjahlt080",
+                                                    "created": 1647264513374,
+                                                    "text": "是否有效",
+                                                    "usecase": 2
+                                                },
+                                                "children": [
+                                                    {
+                                                        "data": {
+                                                            "id": "cijmjf707k00",
+                                                            "created": 1647264523617,
+                                                            "text": "传入空指针，预期返回NULL",
+                                                            "usecase": 4,
+                                                            "author": "z00572669",
+                                                            "showId": "00024"
+                                                        },
+                                                        "children": []
+                                                    },
+                                                    {
+                                                        "data": {
+                                                            "id": "cijmu7vlu4o0",
+                                                            "created": 1647265369696,
+                                                            "text": "传入空字符串，预期返回NULL",
+                                                            "usecase": 4,
+                                                            "author": "z00572669",
+                                                            "showId": "00027"
+                                                        },
+                                                        "children": []
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "data": {
+                                            "id": "cijmiklgu7k0",
+                                            "created": 1647264457011,
+                                            "text": "resolved"
+                                        },
+                                        "children": [
+                                            {
+                                                "data": {
+                                                    "id": "cijmk8vy62w0",
+                                                    "created": 1647264588252,
+                                                    "text": "是否有效",
+                                                    "usecase": 2
+                                                },
+                                                "children": [
+                                                    {
+                                                        "data": {
+                                                            "id": "cijmlnppcsg0",
+                                                            "created": 1647264698890,
+                                                            "text": "传入空指针，预期返回成功",
+                                                            "usecase": 4,
+                                                            "author": "z00572669",
+                                                            "showId": "cijmlnppcsg0"
+                                                        },
+                                                        "children": []
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    }
+                                ]
+                            },
+                            {
+                                "data": {
+                                    "id": "cijmmhxv8ko0",
+                                    "created": 1647264764687,
+                                    "text": "功能分析"
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "cijmmn88psg0",
+                                            "created": 1647264776198,
+                                            "text": "路径",
+                                            "usecase": 2
+                                        },
+                                        "children": [
+                                            {
+                                                "data": {
+                                                    "id": "cijmn6cy4v40",
+                                                    "created": 1647264817842,
+                                                    "text": "传入相对路径，预期返回绝对路径",
+                                                    "usecase": 4,
+                                                    "author": "z00572669",
+                                                    "showId": "00026"
+                                                },
+                                                "children": []
+                                            },
+                                            {
+                                                "data": {
+                                                    "id": "cik8iuxo1pk0",
+                                                    "created": 1647326543935,
+                                                    "text": "（遗留）路径不存在，预期返回失败",
+                                                    "usecase": 4,
+                                                    "author": "z00572669",
+                                                    "showId": "00047"
+                                                },
+                                                "children": []
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    "templatePath": null,
+    "singleTemplatePath": null,
+    "testcaseFilePath": "",
+    "template": "right",
+    "theme": "fresh-blue",
+    "version": "1.4.43"
+}

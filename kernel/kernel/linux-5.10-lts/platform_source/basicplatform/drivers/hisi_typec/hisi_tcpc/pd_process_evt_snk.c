@@ -1,0 +1,1020 @@
+/*
+ * pd_process_evt_snk.c
+ *
+ * Power Delivery Process Event For SNK
+ *
+ * Copyright (c) 2019 Huawei Technologies Co., Ltd.
+ *
+ * Copyright (C) 2016 Richtek Technology Corp.
+ * Author: TH <tsunghan_tsai@richtek.com>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 2 as
+ * published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ */
+
+
+#define LOG_TAG "[evt_snk]"
+
+#include "include/pd_core.h"
+#include "include/pd_tcpm.h"
+#include "include/pd_dpm_core.h"
+#include "include/tcpci_event.h"
+#include "include/pd_process_evt.h"
+#include "include/pd_policy_engine.h"
+
+/* PD Control MSG reactions */
+
+DECL_PE_STATE_TRANSITION(PD_CTRL_MSG_GOOD_CRC) = {
+	/* sink */
+	{ PE_SNK_GIVE_SINK_CAP, PE_SNK_READY },
+	{ PE_SNK_GET_SOURCE_CAP, PE_SNK_READY },
+
+	{ PE_SNK_SOFT_RESET, PE_SNK_WAIT_FOR_CAPABILITIES },
+
+	/* dual */
+	{ PE_DR_SNK_GIVE_SOURCE_CAP, PE_SNK_READY },
+	{ PE_SNK_SEND_NOT_SUPPORTED, PE_SNK_READY },
+	{ PE_GIVE_MANUFACTURER_INFO, PE_SNK_READY },
+};
+DECL_PE_STATE_REACTION(PD_CTRL_MSG_GOOD_CRC);
+
+DECL_PE_STATE_TRANSITION(PD_CTRL_MSG_GOTO_MIN) = {
+	{ PE_SNK_READY, PE_SNK_TRANSITION_SINK },
+};
+DECL_PE_STATE_REACTION(PD_CTRL_MSG_GOTO_MIN);
+
+DECL_PE_STATE_TRANSITION(PD_CTRL_MSG_ACCEPT) = {
+	{ PE_SNK_SELECT_CAPABILITY, PE_SNK_TRANSITION_SINK },
+	{ PE_SNK_SEND_SOFT_RESET, PE_SNK_WAIT_FOR_CAPABILITIES },
+#ifdef CONFIG_KIRIN_PD_REV30
+	{ PE_SNK_GET_SOURCE_STATUS, PE_SNK_READY },
+#ifdef CONFIG_KIRIN_PD_REV30_PPS_SINK
+	{ PE_SNK_GET_PPS_STATUS, PE_SNK_READY },
+#endif
+#endif
+};
+DECL_PE_STATE_REACTION(PD_CTRL_MSG_ACCEPT);
+
+DECL_PE_STATE_TRANSITION(PD_CTRL_MSG_PS_RDY) = {
+	{ PE_SNK_TRANSITION_SINK, PE_SNK_READY },
+};
+DECL_PE_STATE_REACTION(PD_CTRL_MSG_PS_RDY);
+
+DECL_PE_STATE_TRANSITION(PD_CTRL_MSG_GET_SINK_CAP) = {
+	{ PE_SNK_READY, PE_SNK_GIVE_SINK_CAP },
+};
+DECL_PE_STATE_REACTION(PD_CTRL_MSG_GET_SINK_CAP);
+
+/* PD Data MSG reactions */
+
+DECL_PE_STATE_TRANSITION(PD_DATA_MSG_SOURCE_CAP) = {
+	{ PE_SNK_WAIT_FOR_CAPABILITIES, PE_SNK_EVALUATE_CAPABILITY },
+	{ PE_SNK_READY, PE_SNK_EVALUATE_CAPABILITY },
+
+	/* PR-Swap issue (Check it later) */
+	{ PE_SNK_STARTUP, PE_SNK_EVALUATE_CAPABILITY },
+	{ PE_SNK_DISCOVERY, PE_SNK_EVALUATE_CAPABILITY },
+};
+DECL_PE_STATE_REACTION(PD_DATA_MSG_SOURCE_CAP);
+
+DECL_PE_STATE_TRANSITION(PD_DATA_MSG_SINK_CAP) = {
+	{ PE_DR_SNK_GET_SINK_CAP, PE_SNK_READY },
+};
+DECL_PE_STATE_REACTION(PD_DATA_MSG_SINK_CAP);
+
+/* DPM Event reactions */
+
+DECL_PE_STATE_TRANSITION(PD_DPM_MSG_ACK) = {
+	{ PE_SNK_EVALUATE_CAPABILITY, PE_SNK_SELECT_CAPABILITY },
+};
+DECL_PE_STATE_REACTION(PD_DPM_MSG_ACK);
+
+DECL_PE_STATE_TRANSITION(PD_DPM_MSG_NAK) = {
+};
+DECL_PE_STATE_REACTION(PD_DPM_MSG_NAK);
+
+/* HW Event reactions */
+
+DECL_PE_STATE_TRANSITION(PD_HW_MSG_VBUS_PRESENT) = {
+	{ PE_SNK_DISCOVERY, PE_SNK_WAIT_FOR_CAPABILITIES},
+};
+DECL_PE_STATE_REACTION(PD_HW_MSG_VBUS_PRESENT);
+
+DECL_PE_STATE_TRANSITION(PD_HW_MSG_VBUS_ABSENT) = {
+	{ PE_SNK_STARTUP, PE_SNK_DISCOVERY },
+};
+DECL_PE_STATE_REACTION(PD_HW_MSG_VBUS_ABSENT);
+
+DECL_PE_STATE_TRANSITION(PD_HW_MSG_TX_FAILED) = {
+	{ PE_SNK_SOFT_RESET, PE_SNK_HARD_RESET },
+	{ PE_SNK_SEND_SOFT_RESET, PE_SNK_HARD_RESET },
+
+#ifdef CONFIG_PD_DFP_RESET_CABLE
+	{ PE_DFP_CBL_SEND_SOFT_RESET, PE_SNK_READY },
+#endif
+};
+DECL_PE_STATE_REACTION(PD_HW_MSG_TX_FAILED);
+
+/* PE Event reactions */
+
+DECL_PE_STATE_TRANSITION(PD_PE_MSG_HARD_RESET_COMPLETED) = {
+	{ PE_SNK_HARD_RESET, PE_SNK_TRANSITION_TO_DEFAULT },
+};
+DECL_PE_STATE_REACTION(PD_PE_MSG_HARD_RESET_COMPLETED);
+
+DECL_PE_STATE_TRANSITION(PD_PE_MSG_RESET_PRL_COMPLETED) = {
+	{ PE_SNK_STARTUP, PE_SNK_DISCOVERY },
+};
+DECL_PE_STATE_REACTION(PD_PE_MSG_RESET_PRL_COMPLETED);
+
+DECL_PE_STATE_TRANSITION(PD_PE_MSG_POWER_ROLE_AT_DEFAULT) = {
+	{ PE_SNK_TRANSITION_TO_DEFAULT, PE_SNK_STARTUP },
+};
+DECL_PE_STATE_REACTION(PD_PE_MSG_POWER_ROLE_AT_DEFAULT);
+
+DECL_PE_STATE_TRANSITION(PD_PE_MSG_IDLE) = {
+	{ PE_IDLE1, PE_IDLE2 },
+};
+DECL_PE_STATE_REACTION(PD_PE_MSG_IDLE);
+
+/* Timer Event reactions */
+
+DECL_PE_STATE_TRANSITION(PD_TIMER_BIST_CONT_MODE) = {
+	{ PE_BIST_CARRIER_MODE_2, PE_SNK_READY },
+};
+DECL_PE_STATE_REACTION(PD_TIMER_BIST_CONT_MODE);
+
+DECL_PE_STATE_TRANSITION(PD_TIMER_SENDER_RESPONSE) = {
+	{ PE_SNK_SELECT_CAPABILITY, PE_SNK_HARD_RESET },
+	{ PE_SNK_SEND_SOFT_RESET, PE_SNK_HARD_RESET },
+
+	{ PE_DR_SNK_GET_SINK_CAP, PE_SNK_READY },
+
+#ifdef CONFIG_PD_DFP_RESET_CABLE
+	{ PE_DFP_CBL_SEND_SOFT_RESET, PE_SNK_READY },
+#endif
+
+#ifdef CONFIG_KIRIN_PD_REV30
+	{ PE_SNK_GET_SOURCE_STATUS, PE_SNK_READY },
+#ifdef CONFIG_KIRIN_PD_REV30_PPS_SINK
+	{ PE_SNK_GET_PPS_STATUS, PE_SNK_READY },
+#endif
+#endif
+};
+DECL_PE_STATE_REACTION(PD_TIMER_SENDER_RESPONSE);
+
+/*
+ * 1. define a array of struct
+ * 2. defien a xxx_reaction struct contain the array.
+ * 3. the xxx_reaction used by PE_MAKE_STATE_TRANSIT
+ */
+DECL_PE_STATE_TRANSITION(PD_TIMER_SINK_REQUEST) = {
+	{ PE_SNK_READY, PE_SNK_SELECT_CAPABILITY },
+};
+DECL_PE_STATE_REACTION(PD_TIMER_SINK_REQUEST);
+
+/*
+ * [BLOCK] Porcess Ctrl MSG
+ */
+
+static bool pd_process_ctrl_msg_good_crc(pd_port_t *pd_port,
+		pd_event_t *pd_event)
+{
+	D("\n");
+	switch (pd_port->pe_state_curr) {
+	case PE_SNK_SELECT_CAPABILITY:
+	case PE_SNK_SEND_SOFT_RESET:
+	case PE_DR_SNK_GET_SINK_CAP:
+		pd_enable_timer(pd_port, PD_TIMER_SENDER_RESPONSE);
+		return false;
+
+#ifdef CONFIG_KIRIN_PD_REV30
+	case PE_SNK_GIVE_SINK_CAP_EXT:
+		PE_TRANSIT_STATE(pd_port, PE_SNK_READY);
+		return true;
+#ifdef CONFIG_KIRIN_PD_REV30_ALERT_REMOTE
+	case PE_SNK_SOURCE_ALERT_RECEIVED:
+		PE_TRANSIT_STATE(pd_port, PE_SNK_READY);
+		return true;
+#endif
+#endif
+#ifdef CONFIG_KIRIN_PD_REV30_BAT_CAP_LOCAL
+	case PE_GIVE_BATTERY_CAP:
+	case PE_GIVE_BATTERY_STATUS:
+		PE_TRANSIT_STATE(pd_port, PE_SNK_READY);
+		return true;
+#endif
+#ifdef CONFIG_KIRIN_PD_REV30_COUNTRY_CODE_LOCAL
+	case PE_GIVE_COUNTRY_CODES:
+		PE_TRANSIT_STATE(pd_port, PE_SNK_READY);
+			return true;
+#endif
+#ifdef CONFIG_KIRIN_PD_REV30_COUNTRY_INFO_LOCAL
+	case PE_GIVE_COUNTRY_INFO:
+		PE_TRANSIT_STATE(pd_port, PE_SNK_READY);
+			return true;
+#endif
+	default:
+		return PE_MAKE_STATE_TRANSIT(PD_CTRL_MSG_GOOD_CRC);
+	}
+}
+
+static bool pd_process_ctrl_msg_get_source_cap(	pd_port_t *pd_port,
+	pd_event_t *pd_event, uint8_t next)
+{
+	D("\n");
+	if (pd_port->pe_state_curr != PE_SNK_READY)
+		return false;
+
+	if (pd_port->dpm_caps & DPM_CAP_LOCAL_DR_POWER) {
+		PE_TRANSIT_STATE(pd_port, next);
+		return true;
+	}
+
+	hisi_pd_send_ctrl_msg(pd_port, TCPC_TX_SOP, PD_CTRL_REJECT);
+
+	return false;
+}
+
+static bool pd_process_ctrl_msg_soft_reset(pd_port_t *pd_port,
+		pd_event_t *pd_event)
+{
+	if (!pd_port->during_swap) {
+		D("not during swap, do soft reset\n");
+		PE_TRANSIT_STATE(pd_port, PE_SNK_SOFT_RESET);
+		return true;
+	}
+
+	D("during swap, ignore soft reset Message\n");
+	return true;
+}
+
+static bool pd_process_ctrl_msg_reject(pd_port_t *pd_port,
+		pd_event_t *pd_event)
+{
+	if (pd_port->pe_state_curr == PE_DR_SNK_GET_SINK_CAP
+#ifdef CONFIG_KIRIN_PD_REV30_STATUS_REMOTE
+		|| pd_port->pe_state_curr == PE_SNK_GET_SOURCE_STATUS
+#endif
+#ifdef CONFIG_KIRIN_PD_REV30_PPS_SINK
+		|| pd_port->pe_state_curr == PE_SNK_GET_PPS_STATUS
+#ifdef CONFIG_KIRIN_PD_REV30_SRC_CAP_EXT_REMOTE
+		|| pd_port->pe_state_curr == PE_SNK_GET_SOURCE_CAP_EXT
+#endif
+#endif
+	) {
+		PE_TRANSIT_STATE(pd_port, PE_SNK_READY);
+		return true;
+	}
+
+	if (pd_port->pe_state_curr == PE_SNK_SELECT_CAPABILITY) {
+		if (pd_port->explicit_contract)
+			PE_TRANSIT_STATE(pd_port, PE_SNK_READY);
+		else
+			PE_TRANSIT_STATE(pd_port, PE_SNK_WAIT_FOR_CAPABILITIES);
+		return true;
+	}
+
+	return false;
+}
+
+static bool pd_process_ctrl_msg_wait(pd_port_t *pd_port,
+		pd_event_t *pd_event)
+{
+	if (pd_port->pe_state_curr == PE_SNK_SELECT_CAPABILITY) {
+		if (pd_port->explicit_contract)
+			PE_TRANSIT_STATE(pd_port, PE_SNK_READY);
+		else
+			PE_TRANSIT_STATE(pd_port, PE_SNK_WAIT_FOR_CAPABILITIES);
+		return true;
+	}
+
+	return false;
+}
+
+static void pd_process_partner_ctrl_msg_first(pd_port_t *pd_port,
+		pd_event_t *pd_event)
+{
+#ifdef CONFIG_USB_PD_PARTNER_CTRL_MSG_FIRST
+	switch (pd_port->pe_state_curr) {
+	case PE_SNK_GET_SOURCE_CAP:
+	case PE_DR_SNK_GET_SINK_CAP:
+		if (pd_event->msg >= PD_CTRL_GET_SOURCE_CAP &&
+				pd_event->msg <= PD_CTRL_VCONN_SWAP) {
+			D("Port Partner Request First\n");
+			pd_port->pe_state_curr = PE_SNK_READY;
+			pd_disable_timer(pd_port, PD_TIMER_SENDER_RESPONSE);
+		}
+		break;
+
+	default:
+		break;
+	}
+#endif /* CONFIG_USB_PD_PARTNER_CTRL_MSG_FIRST */
+}
+
+static bool hisi_pd_process_ctrl_msg_swap(pd_port_t *pd_port,
+		pd_event_t *pd_event)
+{
+	bool ret = false;
+
+	switch (pd_event->msg) {
+	case PD_CTRL_DR_SWAP:
+		ret = hisi_pd_process_ctrl_msg_dr_swap(pd_port, pd_event);
+		break;
+
+	case PD_CTRL_PR_SWAP:
+		ret = hisi_pd_process_ctrl_msg_pr_swap(pd_port, pd_event);
+		break;
+
+	case PD_CTRL_VCONN_SWAP:
+		ret = hisi_pd_process_ctrl_msg_vconn_swap(pd_port, pd_event);
+		break;
+
+	default:
+		break;
+	}
+
+	return ret;
+}
+
+static bool pd_process_ctrl_msg_accept_check_snk_ready(pd_port_t *pd_port)
+{
+#ifdef CONFIG_KIRIN_PD_REV30
+ /* TD.PD.SRC3.E24 Unexpected Message Received in Ready State */
+	if(pd_port->pe_state_curr == PE_SNK_READY){
+		PE_TRANSIT_SEND_SOFT_RESET_STATE(pd_port);
+		return true;
+	}
+#endif
+	return PE_MAKE_STATE_TRANSIT(PD_CTRL_MSG_ACCEPT);
+}
+
+static bool pd_process_ctrl_msg(pd_port_t *pd_port, pd_event_t *pd_event)
+{
+	bool ret = false;
+D("+\n");
+	pd_process_partner_ctrl_msg_first(pd_port, pd_event);
+
+	switch (pd_event->msg) {
+	case PD_CTRL_GOOD_CRC:
+		return pd_process_ctrl_msg_good_crc(pd_port, pd_event);
+
+	case PD_CTRL_GOTO_MIN:
+		ret = PE_MAKE_STATE_TRANSIT(PD_CTRL_MSG_GOTO_MIN);
+		break;
+
+	case PD_CTRL_ACCEPT:
+		ret = pd_process_ctrl_msg_accept_check_snk_ready(pd_port);
+		break;
+
+	case PD_CTRL_PING:
+		hisi_pd_notify_pe_recv_ping_event(pd_port);
+		break;
+
+	case PD_CTRL_PS_RDY:
+		switch (pd_port->pe_state_curr) {
+			case PE_SNK_TRANSITION_SINK:
+				ret = PE_MAKE_STATE_TRANSIT(PD_CTRL_MSG_PS_RDY);
+			case PE_VCS_SEND_PS_RDY:
+				/* To avoid SAM charger bug */  
+				PE_TRANSIT_READY_STATE(pd_port);
+				return true;
+			default:
+				break;
+		}
+		break;
+
+	case PD_CTRL_GET_SOURCE_CAP:
+		ret = pd_process_ctrl_msg_get_source_cap(pd_port, pd_event,
+			PE_DR_SNK_GIVE_SOURCE_CAP);
+		break;
+
+	case PD_CTRL_GET_SINK_CAP:
+		if (pd_port->vdf_flags & VDF_FLAGS_PD_31_CERTIFICATION_MASK)
+			pd_port->pd_sink_get_sink_cap_cnt++;
+
+		ret = PE_MAKE_STATE_TRANSIT(PD_CTRL_MSG_GET_SINK_CAP);
+		break;
+
+	case PD_CTRL_REJECT:
+		pd_notify_tcp_event_2nd_result(pd_port, TCP_DPM_RET_REJECT);
+		ret = pd_process_ctrl_msg_reject(pd_port, pd_event);
+		break;
+
+	case PD_CTRL_WAIT:
+		pd_notify_tcp_event_2nd_result(pd_port, TCP_DPM_RET_WAIT);
+		ret = pd_process_ctrl_msg_wait(pd_port, pd_event);
+		break;
+	/* Swap */
+	case PD_CTRL_DR_SWAP:
+	case PD_CTRL_PR_SWAP:
+	case PD_CTRL_VCONN_SWAP:
+		ret = hisi_pd_process_ctrl_msg_swap(pd_port, pd_event);
+		break;
+	/* SoftReset */
+	case PD_CTRL_SOFT_RESET:
+		D("Conrol Message: soft reset received!\n");
+		ret = pd_process_ctrl_msg_soft_reset(pd_port, pd_event);
+		break;
+
+#ifdef CONFIG_KIRIN_PD_REV30
+#ifdef CONFIG_KIRIN_PD_REV30_COUNTRY_CODE_LOCAL
+	case PD_CTRL_GET_COUNTRY_CODE:
+		if (PE_MAKE_STATE_TRANSIT_SINGLE(
+			PE_SNK_READY, PE_GIVE_COUNTRY_CODES))
+			return true;
+		break;
+#endif
+	case PD_CTRL_GET_REVISION:
+		if (PE_MAKE_STATE_TRANSIT_SINGLE(
+			PE_SNK_READY, PE_GIVE_REVISION))
+			return true;
+		break;
+
+	case PD_CTRL_FR_SWAP:
+		break; // TD.PD.VNDI3.E12 FR_Swap Without Signaling
+
+	case PD_CTRL_NOT_SUPPORTED:
+#ifdef CONFIG_KIRIN_PD_REV30_PPS_SINK
+		if (PE_MAKE_STATE_TRANSIT_SINGLE(
+			PE_SNK_GET_PPS_STATUS, PE_SNK_READY))
+			return true;
+#endif
+		return true;
+		break;
+
+#ifdef CONFIG_KIRIN_PD_REV30_SRC_CAP_EXT_LOCAL
+	case PD_CTRL_GET_SOURCE_CAP_EXT:
+		if (pd_process_ctrl_msg_get_source_cap(pd_port, pd_event,
+			PE_DR_SNK_GIVE_SOURCE_CAP_EXT))
+			return true;
+		break;
+#endif
+#ifdef CONFIG_KIRIN_PD_REV30_STATUS_LOCAL
+	case PD_CTRL_GET_STATUS:
+		if (PE_MAKE_STATE_TRANSIT_SINGLE(
+			PE_SNK_READY, PE_SNK_GIVE_SINK_STATUS))
+			return true;
+		break;
+#endif
+	case PD_CTRL_GET_SINK_CAP_EXT:
+		if (PE_MAKE_STATE_TRANSIT_SINGLE(
+			PE_SNK_READY, PE_SNK_GIVE_SINK_CAP_EXT))
+			return true;
+		break;
+#endif
+
+	default:
+		break;
+	}
+
+	if (!ret)
+		ret = hisi_pd_process_protocol_error(pd_port, pd_event);
+
+	return ret;
+}
+
+/*
+ * [BLOCK] Porcess Data MSG
+ */
+
+static bool pd_process_data_msg(pd_port_t *pd_port, pd_event_t *pd_event)
+{
+	bool ret = false;
+
+	D("+\n");
+	switch (pd_event->msg) {
+	case PD_DATA_SOURCE_CAP:
+		ret = PE_MAKE_STATE_TRANSIT(PD_DATA_MSG_SOURCE_CAP);
+		break;
+
+	case PD_DATA_SINK_CAP:
+		ret = PE_MAKE_STATE_TRANSIT(PD_DATA_MSG_SINK_CAP);
+		break;
+
+	case PD_DATA_BIST:
+		ret = hisi_pd_process_data_msg_bist(pd_port, pd_event);
+		break;
+
+#ifdef CONFIG_KIRIN_PD_REV30
+#ifdef CONFIG_KIRIN_PD_REV30_ALERT_REMOTE
+	case PD_DATA_ALERT:
+		ret = PE_MAKE_STATE_TRANSIT_SINGLE(
+				PE_SNK_READY, PE_SNK_READY);
+		break;
+#endif
+
+	case PD_DATA_REVISION:
+		ret = PE_MAKE_STATE_TRANSIT_SINGLE(
+			PE_GET_REVISION, PE_SNK_READY);
+		break;
+#ifdef CONFIG_KIRIN_PD_REV30_BAT_STATUS_REMOTE
+	case PD_DATA_BAT_STATUS:
+		ret = PE_MAKE_STATE_TRANSIT_SINGLE(
+			PE_GET_BATTERY_STATUS, PE_SNK_READY);
+		break;
+#endif
+#ifdef CONFIG_KIRIN_PD_REV30_COUNTRY_INFO_LOCAL
+	case PD_DATA_GET_COUNTRY_INFO:
+		ret = PE_MAKE_STATE_TRANSIT_SINGLE(
+			PE_SNK_READY, PE_GIVE_COUNTRY_INFO);
+		break;
+#endif
+#endif
+
+	case PD_DATA_REQUEST:
+	case PD_DATA_VENDOR_DEF:
+		break;
+
+	default:
+		break;
+	}
+
+	if (!ret)
+		ret = hisi_pd_process_protocol_error(pd_port, pd_event);
+
+	D("-\n");
+	return ret;
+}
+
+/*
+ * [BLOCK] Porcess Extend MSG
+ */
+#ifdef CONFIG_KIRIN_PD_REV30
+static bool pd_process_ext_msg(
+		pd_port_t *pd_port, pd_event_t *pd_event)
+{
+	bool ret = false;
+
+	switch (pd_event->msg) {
+#ifdef CONFIG_KIRIN_PD_REV30_SRC_CAP_EXT_REMOTE
+	case PD_EXT_SOURCE_CAP_EXT:
+		if (PE_MAKE_STATE_TRANSIT_SINGLE(
+			PE_SNK_GET_SOURCE_CAP_EXT, PE_SNK_READY))
+			return true;
+		break;
+#endif
+
+#ifdef CONFIG_KIRIN_PD_REV30_STATUS_LOCAL
+	case PD_EXT_STATUS:
+		if (PE_MAKE_STATE_TRANSIT_SINGLE(
+			PE_SNK_GET_SOURCE_STATUS, PE_SNK_READY))
+			return true;
+		break;
+#endif
+
+#ifdef CONFIG_KIRIN_PD_REV30_PPS_SINK
+	case PD_EXT_PPS_STATUS:
+		if (PE_MAKE_STATE_TRANSIT_SINGLE(
+			PE_SNK_GET_PPS_STATUS, PE_SNK_READY))
+			return true;
+		break;
+#endif
+
+	case PD_EXT_SINK_CAP_EXT:
+		if (PE_MAKE_STATE_TRANSIT_SINGLE(
+			PE_DR_SNK_GET_SINK_CAP_EXT, PE_SNK_READY))
+			return true;
+		break;
+
+#ifdef CONFIG_KIRIN_PD_REV30_BAT_CAP_LOCAL
+	case PD_EXT_GET_BAT_CAP:
+		ret = PE_MAKE_STATE_TRANSIT_SINGLE(
+			PE_SNK_READY, PE_GIVE_BATTERY_CAP);
+		break;
+#endif
+
+#ifdef CONFIG_KIRIN_PD_REV30_BAT_STATUS_LOCAL
+	case PD_EXT_GET_BAT_STATUS:
+		ret = PE_MAKE_STATE_TRANSIT_SINGLE(
+			PE_SNK_READY, PE_GIVE_BATTERY_STATUS);
+		break;
+#endif
+
+#ifdef CONFIG_KIRIN_PD_REV30_BAT_CAP_REMOTE
+	case PD_EXT_BAT_CAP:
+		ret = PE_MAKE_STATE_TRANSIT_SINGLE(
+			PE_GET_BATTERY_CAP, PE_SNK_READY);
+		break;
+#endif
+
+#ifdef CONFIG_KIRIN_PD_REV30_MFRS_INFO_LOCAL
+	case PD_EXT_GET_MFR_INFO:
+		ret = PE_MAKE_STATE_TRANSIT_SINGLE(
+			PE_SNK_READY, PE_GIVE_MANUFACTURER_INFO);
+		break;
+#endif
+
+#ifdef CONFIG_KIRIN_PD_REV30_MFRS_INFO_REMOTE
+	case PD_EXT_MFR_INFO:
+		ret = PE_MAKE_STATE_TRANSIT_SINGLE(
+			PE_GET_MANUFACTURER_INFO, PE_SNK_READY);
+		break;
+#endif
+
+#ifdef CONFIG_KIRIN_PD_REV30_COUNTRY_INFO_REMOTE
+	case PD_EXT_COUNTRY_INFO:
+		ret = PE_MAKE_STATE_TRANSIT_SINGLE(
+			PE_GET_COUNTRY_INFO, PE_SNK_READY);
+		break;
+#endif
+
+#ifdef CONFIG_KIRIN_PD_REV30_COUNTRY_CODE_REMOTE
+	case PD_EXT_COUNTRY_CODES:
+		ret = PE_MAKE_STATE_TRANSIT_SINGLE(
+			PE_GET_COUNTRY_CODES, PE_SNK_READY);
+		break;
+#endif
+	case PD_EXT_SEC_REQUEST:
+	case PD_EXT_SEC_RESPONSE:
+	case PD_EXT_FW_UPDATE_REQUEST:
+	case PD_EXT_FW_UPDATE_RESPONSE:
+		if (PE_MAKE_STATE_TRANSIT_SINGLE(
+			PE_SNK_READY, PE_SNK_SEND_NOT_SUPPORTED))
+			return true;
+		break;
+	default:
+		D("Not use this ext msg: %u\n", pd_event->msg);
+		break;
+	}
+
+/*
+ * TD.PD.SNK3.E19 ChunkSenderResponseTimer
+ * TD.PD.SNK3.E11 Receiving Chunked Extended Message
+ */
+	if (ret == false)
+		ret = hisi_pd_process_protocol_error(pd_port, pd_event);
+
+	return ret;
+}
+
+/*
+ * [BLOCK] Process HW MSG
+ */
+
+static inline bool pd_process_hw_msg_sink_tx_change(
+	pd_port_t *pd_port, pd_event_t *pd_event)
+{
+#ifdef CONFIG_KIRIN_PD_REV30_COLLISION_AVOID
+	uint8_t pd_traffic;
+	I("\n");
+	if (!pd_check_rev30(pd_port))
+		return false;
+
+#ifdef CONFIG_KIRIN_PD_REV30_SNK_FLOW_DELAY_STARTUP
+	if (pd_port->pd_traffic_control == PD_SINK_TX_START)
+		return false;
+#endif	/* CONFIG_KIRIN_PD_REV30_SNK_FLOW_DELAY_STARTUP */
+
+	pd_traffic = pd_event->msg_sec ?
+		PD_SINK_TX_OK : PD_SINK_TX_NG;
+
+	if (pd_port->pd_traffic_control == pd_traffic)
+		return false;
+
+	pd_port->pd_traffic_control = pd_traffic;
+#endif	/* CONFIG_KIRIN_PD_REV30_COLLISION_AVOID */
+
+	return false;
+}
+#endif
+
+/*
+ * [BLOCK] Porcess DPM MSG
+ */
+
+static bool pd_process_dpm_msg(pd_port_t *pd_port, pd_event_t *pd_event)
+{
+	bool ret = false;
+
+	switch (pd_event->msg) {
+	case PD_DPM_ACK:
+		ret = PE_MAKE_STATE_TRANSIT(PD_DPM_MSG_ACK);
+		break;
+
+	case PD_DPM_NAK:
+		ret = PE_MAKE_STATE_TRANSIT(PD_DPM_MSG_NAK);
+		break;
+
+	case PD_DPM_ERROR_RECOVERY:
+		PE_TRANSIT_STATE(pd_port, PE_ERROR_RECOVERY);
+		return true;
+#ifdef CONFIG_KIRIN_PD_REV30
+	case PD_DPM_NOT_SUPPORT:
+		if (pd_check_rev30(pd_port)) {
+			PE_TRANSIT_STATE(pd_port, PE_VDM_NOT_SUPPORTED);
+			return true;
+		}
+		break;
+#endif
+	default:
+		break;
+	}
+
+	return ret;
+}
+
+/*
+ * [BLOCK] Porcess HW MSG
+ */
+
+static bool pd_process_hw_msg(pd_port_t *pd_port, pd_event_t *pd_event)
+{
+	bool ret = false;
+
+	D("+\n");
+	switch (pd_event->msg) {
+	case PD_HW_CC_DETACHED:
+		PE_TRANSIT_STATE(pd_port, PE_IDLE1);
+		return true;
+
+	case PD_HW_CC_ATTACHED:
+		D("hw msg cc attached\n");
+		PE_TRANSIT_STATE(pd_port, PE_SNK_STARTUP);
+		return true;
+
+	case PD_HW_CC_RE_ENABLE_PD:
+		pd_port->cable_vdo_set = true;
+		PE_TRANSIT_STATE(pd_port, PE_SNK_READY);
+		return true;
+
+	case PD_HW_RECV_HARD_RESET:
+		ret = hisi_pd_process_recv_hard_reset(pd_port, pd_event,
+					PE_SNK_TRANSITION_TO_DEFAULT);
+		break;
+	case PD_HW_VBUS_PRESENT:
+		ret = PE_MAKE_STATE_TRANSIT(PD_HW_MSG_VBUS_PRESENT);
+		break;
+
+	case PD_HW_VBUS_ABSENT:
+		ret = PE_MAKE_STATE_TRANSIT(PD_HW_MSG_VBUS_ABSENT);
+		break;
+
+	case PD_HW_TX_FAILED:
+		ret = PE_MAKE_STATE_TRANSIT_FORCE(PD_HW_MSG_TX_FAILED,
+				PE_SNK_SEND_SOFT_RESET);
+		break;
+
+#ifdef CONFIG_KIRIN_PD_REV30_COLLISION_AVOID
+	case PD_HW_SINK_TX_CHANGE:
+		return pd_process_hw_msg_sink_tx_change(pd_port, pd_event);
+#endif /* CONFIG_KIRIN_PD_REV30_COLLISION_AVOID */
+
+	default:
+		break;
+	};
+
+	D("-\n");
+	return ret;
+}
+
+/*
+ * [BLOCK] Porcess PE MSG
+ */
+
+static bool pd_process_pe_msg(pd_port_t *pd_port, pd_event_t *pd_event)
+{
+	bool ret = false;
+
+	D("+\n");
+	switch (pd_event->msg) {
+	case PD_PE_RESET_PRL_COMPLETED:
+		ret = PE_MAKE_STATE_TRANSIT(PD_PE_MSG_RESET_PRL_COMPLETED);
+		break;
+
+	case PD_PE_HARD_RESET_COMPLETED:
+		ret = PE_MAKE_STATE_TRANSIT(PD_PE_MSG_HARD_RESET_COMPLETED);
+		break;
+
+	case PD_PE_POWER_ROLE_AT_DEFAULT:
+		ret = PE_MAKE_STATE_TRANSIT(PD_PE_MSG_POWER_ROLE_AT_DEFAULT);
+		break;
+
+	case PD_PE_IDLE:
+		ret = PE_MAKE_STATE_TRANSIT(PD_PE_MSG_IDLE);
+		break;
+
+	default:
+		break;
+	}
+
+	D("-\n");
+	return ret;
+}
+
+/*
+ * [BLOCK] Porcess Timer MSG
+ */
+
+static void pd_report_typec_only_charger(pd_port_t *pd_port)
+{
+	I("TYPE-C Only Charger!\r\n");
+	pd_dpm_sink_vbus(pd_port, true);
+	hisi_pd_notify_pe_hard_reset_completed(pd_port);
+	hisi_pd_update_connect_state(pd_port, HISI_PD_CONNECT_TYPEC_ONLY);
+}
+
+static bool pd_process_timer_msg_no_response(pd_port_t *pd_port,
+		pd_event_t *pd_event)
+{
+	I("vbus_valid: %d\n", pd_dpm_check_vbus_valid(pd_port));
+	I("direct_charge: %d\n",
+			pd_port->tcpc_dev->typec_during_direct_charge);
+	if ((!pd_dpm_check_vbus_valid(pd_port)) &&
+			(!pd_port->tcpc_dev->typec_during_direct_charge)) {
+		D("NoResp&VBUS=0\n");
+		PE_TRANSIT_STATE(pd_port, PE_ERROR_RECOVERY);
+		return true;
+	} else if (pd_port->hard_reset_counter <= PD_HARD_RESET_COUNT) {
+		PE_TRANSIT_STATE(pd_port, PE_SNK_HARD_RESET);
+		return true;
+	} else if (pd_port->pd_prev_connected) {
+		PE_TRANSIT_STATE(pd_port, PE_ERROR_RECOVERY);
+		return true;
+	}
+	pd_report_typec_only_charger(pd_port);
+	return false;
+}
+
+static bool pd_process_timer_msg_wait_cap(pd_port_t *pd_port)
+{
+	I("vbus_valid: %d\n", pd_dpm_check_vbus_valid(pd_port));
+	if ((!pd_dpm_check_vbus_valid(pd_port)) &&
+			(!pd_port->tcpc_dev->typec_during_direct_charge)) {
+		D("NoResp&VBUS=0\n");
+		PE_TRANSIT_STATE(pd_port, PE_ERROR_RECOVERY);
+		return true;
+	} else if (pd_port->hard_reset_counter <= PD_HARD_RESET_COUNT) {
+		PE_TRANSIT_STATE(pd_port, PE_SNK_HARD_RESET);
+		return true;
+	} else if (pd_port->pd_prev_connected) {
+		PE_TRANSIT_STATE(pd_port, PE_ERROR_RECOVERY);
+		return true;
+	}
+	pd_report_typec_only_charger(pd_port);
+	return false;
+}
+
+#ifdef CONFIG_KIRIN_PD_REV30_PPS_SINK
+static void pd_process_pps_heart_beat_timeout(pd_port_t *pd_port, pd_event_t *pd_event)
+{
+	int retry = 5;
+
+	struct tcp_dpm_event tcp_event = {
+		.event_id = TCP_DPM_EVT_REQUEST_AGAIN,
+	};
+
+	while(pd_port->pe_pd_state != PE_SNK_READY  && retry > 0) { 
+        D("heart_beat request busy, pe_state_curr =  %s\n",  pd_pe_state_name(pd_port->pe_pd_state));
+		msleep(10);
+		retry--;
+	}
+
+	if (pd_port->dpm_charging_policy == DPM_CHARGING_POLICY_PPS) {
+		I("timer pps heart beats request\n");
+		hisi_pd_put_deferred_tcp_event_ex(pd_port->tcpc_dev, &tcp_event);
+		pd_restart_timer(pd_port, PD_TIMER_PPS_REQUEST);
+	}
+}
+#endif
+
+static bool pd_process_timer_msg(pd_port_t *pd_port, pd_event_t *pd_event)
+{
+	bool ret = false;
+#ifdef CONFIG_KIRIN_PD_REV30_PPS_SINK
+	struct tcp_dpm_event tcp_event = {
+		.event_id = TCP_DPM_EVT_REQUEST_AGAIN,
+	};
+#endif
+
+	D("+\n");
+	switch (pd_event->msg) {
+	case PD_TIMER_BIST_CONT_MODE:
+		ret = PE_MAKE_STATE_TRANSIT(PD_TIMER_BIST_CONT_MODE);
+		break;
+
+	case PD_TIMER_SINK_REQUEST:
+		ret = PE_MAKE_STATE_TRANSIT(PD_TIMER_SINK_REQUEST);
+		break;
+
+#ifndef CONFIG_USB_PD_DBG_IGRONE_TIMEOUT
+	case PD_TIMER_SENDER_RESPONSE:
+		pd_notify_tcp_event_2nd_result(pd_port, TCP_DPM_RET_TIMEOUT);
+		ret = PE_MAKE_STATE_TRANSIT(PD_TIMER_SENDER_RESPONSE);
+		break;
+
+	case PD_TIMER_SINK_WAIT_CAP:
+	case PD_TIMER_PS_TRANSITION:
+		return pd_process_timer_msg_wait_cap(pd_port);
+		break;
+
+	case PD_TIMER_NO_RESPONSE:
+		ret = pd_process_timer_msg_no_response(pd_port, pd_event);
+		break;
+
+	case PD_TIMER_SRC_CAP_EXT_TOUT:
+		PE_TRANSIT_STATE(pd_port, PE_SNK_READY);
+		return true;
+#endif /* CONFIG_USB_PD_DBG_IGRONE_TIMEOUT */
+
+#ifdef CONFIG_USB_PD_DFP_READY_DISCOVER_ID
+	case PD_TIMER_DISCOVER_ID:
+		vdm_put_dpm_discover_cable_event(pd_port);
+		break;
+#endif /* CONFIG_USB_PD_DFP_READY_DISCOVER_ID */
+
+#ifdef CONFIG_USB_PD_DFP_FLOW_DELAY
+	case PD_TIMER_DFP_FLOW_DELAY:
+		if (pd_port->pe_state_curr == PE_SNK_READY)
+			hisi_pd_dpm_notify_dfp_delay_done(pd_port, pd_event);
+		break;
+#endif /* CONFIG_USB_PD_DFP_FLOW_DELAY */
+
+#ifdef CONFIG_USB_PD_UFP_FLOW_DELAY
+	case PD_TIMER_UFP_FLOW_DELAY:
+		if (pd_port->pe_state_curr == PE_SNK_READY)
+			hisi_pd_dpm_notify_ufp_delay_done(pd_port, pd_event);
+		break;
+#endif /* CONFIG_USB_PD_UFP_FLOW_DELAY */
+
+#ifdef CONFIG_KIRIN_PD_REV30
+	case PD_TIMER_CK_NOT_SUPPORTED:
+		I("Timer: Not Supported\n");
+		return PE_MAKE_STATE_TRANSIT_SINGLE(
+			PE_SNK_CHUNK_RECEIVED, PE_SNK_SEND_NOT_SUPPORTED);
+#ifdef CONFIG_KIRIN_PD_REV30_COLLISION_AVOID
+#ifdef CONFIG_KIRIN_PD_REV30_SNK_FLOW_DELAY_STARTUP
+		/* fall through */
+	case PD_TIMER_SNK_FLOW_DELAY:
+		if (pd_port->pd_traffic_control == PD_SINK_TX_START) {
+			if (tcpci_get_cc_res(pd_port->tcpc_dev) == TYPEC_CC_VOLT_SNK_3_0)
+				pd_port->pd_traffic_control = PD_SINK_TX_OK;
+			else
+				pd_port->pd_traffic_control = PD_SINK_TX_NG;		}
+		break;
+#endif
+#endif
+#ifdef CONFIG_KIRIN_PD_REV30_PPS_SINK
+	case PD_TIMER_PPS_REQUEST:
+		pd_process_pps_heart_beat_timeout(pd_port, pd_event);
+		break;
+#endif
+#ifdef CONFIG_KIRIN_PD_REV30_COLLISION_AVOID
+	case PD_TIMER_DEFERRED_EVT:
+		I("timer deferred evt\n");
+		break;
+
+#endif
+#endif
+	default:
+		break;
+	}
+
+	D("-\n");
+	return ret;
+}
+
+/*
+ * [BLOCK] Process Policy Engine's SNK Message
+ */
+
+bool hisi_pd_process_event_snk(pd_port_t *pd_port,
+		pd_event_t *pd_event)
+{
+	D("+\n");
+	switch (pd_event->event_type) {
+	case PD_EVT_CTRL_MSG:
+		return pd_process_ctrl_msg(pd_port, pd_event);
+
+	case PD_EVT_DATA_MSG:
+		return pd_process_data_msg(pd_port, pd_event);
+
+#ifdef CONFIG_KIRIN_PD_REV30
+	case PD_EVT_EXT_MSG:
+		return pd_process_ext_msg(pd_port, pd_event);
+#endif
+
+	case PD_EVT_DPM_MSG:
+		return pd_process_dpm_msg(pd_port, pd_event);
+
+	case PD_EVT_HW_MSG:
+		return pd_process_hw_msg(pd_port, pd_event);
+
+	case PD_EVT_PE_MSG:
+		return pd_process_pe_msg(pd_port, pd_event);
+
+	case PD_EVT_TIMER_MSG:
+		tcpci_tcpc_print_pd_fsm_state(pd_port->tcpc_dev);
+		return pd_process_timer_msg(pd_port, pd_event);
+
+	default:
+		return false;
+	}
+}

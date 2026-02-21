@@ -1,0 +1,38 @@
+#
+# echub thermal moudule
+#
+
+config  PC_ECHUB_THERMAL
+        bool "echub thermal"
+        depends on ARMPC_ECHUB
+        default n
+        help
+          This driver provides support for echub thermal
+
+config THERMAL_DEVICE_INTERFACE
+	bool "thermal device interface"
+	depends on ARMPC_ECHUB
+	default n
+	help
+	  Say Yes here to support thermal device interface
+
+config ARMPC_ECHUB_OVERHEAT
+        bool "echub overheat protect"
+        depends on ARMPC_ECHUB_I2C && LPM_HKADC
+        default n
+        help
+          This driver provides support for echub overheat protect
+
+config ARMPC_ECHUB_FAN
+        bool "echub fan control"
+        depends on ARMPC_ECHUB_I2C && BLPWM
+        default n
+        help
+          This driver provides support for echub fan control
+
+config  ECHUB_SYNC_THERMAL
+        bool "sync thermal to ec"
+        depends on ARMPC_ECHUB
+        default n
+        help
+          This driver provides support for sync thermal

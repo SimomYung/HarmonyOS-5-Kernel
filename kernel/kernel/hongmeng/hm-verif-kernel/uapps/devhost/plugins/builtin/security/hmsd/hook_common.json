@@ -1,0 +1,27 @@
+{
+    "template": "hook",
+    "server": "devhost",
+    "manager": "common",
+    "generation": {
+        "header": {
+            "embedded_code": {
+                "hook": ""
+            }
+        }
+    },
+    "hooks": {
+        "src_actv_is_vfs": {
+            "scheme": "security check/inner constraint",
+            "credential": {
+                "transaction": true
+            },
+            "arguments": [],
+            "ac": {
+                "buckle": {
+                    "alias": "sec_chk_ability_src_actv_is_vfs",
+                    "permission": "ab_as_vfs"
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,188 @@
+
+<hwlcd>
+	<Version>1.1</Version>
+	<!-- any supported lcd Panel, add it here! very important -->
+	<lcdlist>
+		<!-- format: -->
+		<!-- panel-name, gpio, brdid(product_id), product_name, product_floder, version_floder -->
+		<!-- panel-name : must same with panel xml file name -->
+		<!-- product & version folder: must same with the folder name or 'def' -->
+		<lcd>auo-otm1901a-5p2-1080p-video-default,      0x0A,    0,      DEFAULT,    DEFAULT,    def     </lcd>
+		<lcd>290-c08-1-6p76-udp,                        0x01,    1000,   UDP,        UDP,        def     </lcd>
+		<lcd>310-c06-6p7,                               0x00,    1000,   UDP,        UDP,        def     </lcd>
+		<lcd>310-h01-6p69,                              0x02,    1000,   UDP,        UDP,        def	 </lcd>
+		<lcd>290-c08-6p76-mia,                          0x21,    2000,   MIA,        MIA,        def     </lcd>
+		<lcd>190-c08-6p76-mia,                          0x28,    2000,   MIA,        MIA,        def     </lcd>
+		<lcd>290-f01-6p76-mia,                          0x29,    2000,   MIA,        MIA,        def     </lcd>
+		<lcd>290-c08-1-6p76-mia,                        0x01,    2000,   MIA,        MIA,        def     </lcd>
+		<lcd>190-c08-1-6p76-mia,                        0x08,    2000,   MIA,        MIA,        def     </lcd>
+		<lcd>290-f01-1-6p76-mia,                        0x09,    2000,   MIA,        MIA,        def     </lcd>
+		<lcd>auo-6p76-default,                          0x0A,    2000,   MIA,        MIA,        def     </lcd>
+		<lcd>auo-6p82-default,                          0x2A,    2000,   MIA,        MIA,        def     </lcd>
+		<lcd>310-h03-6p8-mrt,                           0x00,    3000,   MRT,        MRT,        def     </lcd>
+		<lcd>110-h03-6p8-mrt,                           0x05,    3000,   MRT,        MRT,        def     </lcd>
+		<lcd>310-h03-6p8-mrt-2sd,                       0x04,    3000,   MRT,        MRT,        def     </lcd>
+		<lcd>auo-6p8-mrt-default,                       0x0A,    3000,   MRT,        MRT,        def     </lcd>
+		<lcd>110-h03-6p8-mrt-vn1,                       0x05,    3001,   MRT,        MRT,        def     </lcd>
+		<lcd>310-h03-6p8-mrt-2sd-vn1,                   0x04,    3001,   MRT,        MRT,        def     </lcd>
+		<lcd>auo-6p8-mrt-default,                       0x0A,    3001,   MRT,        MRT,        def     </lcd>
+		<lcd>auo-11p45-default,                         0x0A,    4000,   TXZ,        TXZ,        def     </lcd>
+		<lcd>190-d04-11p45-txz,                         0x02,    4000,   TXZ,        TXZ,        def     </lcd>
+		<lcd>190-20d-11p45-txz,                         0x06,    4000,   TXZ,        TXZ,        def     </lcd>
+		<lcd>290-20d-11p45-txz,                         0x08,    4000,   TXZ,        TXZ,        def     </lcd>
+		<lcd>290-d04-11p45-txz,                         0x00,    4000,   TXZ,        TXZ,        def     </lcd>
+		<lcd>auo-11p45-default,                         0x0A,    4001,   TXZ,        TXZ,        def     </lcd>
+		<lcd>290-d04-11p45-txz-lte,                     0x00,    4001,   TXZ,        TXZ,        def     </lcd>
+		<lcd>190-d04-11p45-txz-lte,                     0x02,    4001,   TXZ,        TXZ,        def     </lcd>
+		<lcd>190-20d-11p45-txz,                         0x06,    4001,   TXZ,        TXZ,        def     </lcd>
+		<lcd>290-20d-11p45-txz,                         0x08,    4001,   TXZ,        TXZ,        def     </lcd>
+		<lcd>190-h03-6p58-hed,                          0x02,    5000,   HED,        HED,        def     </lcd>
+		<lcd>310-h03-6p58-hed,                          0x08,    5000,   HED,        HED,        def     </lcd>
+		<lcd>auo-6p58-default,                          0x0A,    5000,   HED,        HED,        def     </lcd>
+	</lcdlist>
+
+	<PanelEntry>
+		<!-- Panel information config start -->
+		<!-- panel orietation -->
+		<PanelOrientation>1</PanelOrientation>
+		<!--panel bpp:0-rgb888, 1-rgb1010101, 2-rgb565-->
+		<PanelBpp>0</PanelBpp>
+		<!--panel rgb order:0-rgb, 1-bgr-->
+		<PanelBgrfmt>0</PanelBgrfmt>
+		<!--Mipi config start-->
+		<MipiDsiVersion>0</MipiDsiVersion>
+		<!--Mipi lane number:c-phy:0-1port, 1-2port, 2-3port d-phy:0-1lane, 1-2lane, 2-3lane, 3-4lane-->
+		<MipiLaneNums>3</MipiLaneNums>
+		<!--Mipi color mode:0-16bit_1, 1-16bit_2, 2-16bit_3, 3-18bit_1, 4-18bit_2, 5-24bit_1, 6-24bit_2, 7-24bit_3-->
+		<MipiColorMode>5</MipiColorMode>
+		<!--Mipi virtual channel-->
+		<MipiVc>0</MipiVc>
+		<!--Mipi burst mode:0-non burst sync pulse, 1-non burst sync event, 2-burst sync pulse1, 3-burst sync pulse2-->
+		<MipiBurstMode>2</MipiBurstMode>
+		<!--Mipi escape mode clock-->
+		<MipiMaxTxEscClk>10</MipiMaxTxEscClk>
+		<!--Mipi non continue enable:0-continue mode, 1-non continue mode-->
+		<MipiNonContinueEnable>1</MipiNonContinueEnable>
+		<!--Mipi RG_VREFSEL_EQ -->
+		<MipiRgEqAdjust>0</MipiRgEqAdjust>
+		<!--Mipi RG_VREFSEL_VCM -->
+		<MipiRgVcmAdjust>0</MipiRgVcmAdjust>
+		<!--Check panel power status test support-->
+		<PanelCheckRegSupport>0</PanelCheckRegSupport>
+		<PanelCheckRegOnSupport>1</PanelCheckRegOnSupport>
+		<PanelCheckRegOnSupportDsmReport>0</PanelCheckRegOnSupportDsmReport>
+		<PanelCheckRegOffSupport>1</PanelCheckRegOffSupport>
+		<PanelCheckRegOffSupportDsmReport>0</PanelCheckRegOffSupportDsmReport>
+		<!-- for mipi check reg on -->
+		<PanelCheckRegOnCommand>"0x06, 0x01, 0x00, 0x00, 0x0a, 0x00, 0x01, 0x0a"</PanelCheckRegOnCommand>
+		<PanelCheckRegOnCommandState>0</PanelCheckRegOnCommandState>
+		<PanelCheckRegOnValue>"0x9c"</PanelCheckRegOnValue>
+		<!-- for mipi check reg off -->
+		<PanelCheckRegOffCommand>"0x06, 0x01, 0x00, 0x00, 0x0a, 0x00, 0x01, 0x0a"</PanelCheckRegOffCommand>
+		<PanelCheckRegOffCommandState>0</PanelCheckRegOffCommandState>
+		<PanelCheckRegOffValue>"0x08"</PanelCheckRegOffValue>
+		<!-- for support safe frame info -->
+		<PanelSafeFrameInfo>"120, 90, 60, 30, 10, 1"</PanelSafeFrameInfo>
+		<!-- for support safe frame info -->
+		<PanelLpSafeFrameInfo>"30, 10, 1"</PanelLpSafeFrameInfo>
+		<!--Power timming config start-->
+		<!--event define
+		mode, number, amplitude
+		mode:0-none, 1-regulator, 2-gpio
+		number:gpio num or ldo num
+		amplitude:3100000-3.1v, 1850000-1.85v, 5500000-5.5v
+		-->
+		<LcdVci>"1, 0, 0"</LcdVci>
+		<LcdIovcc>"1, 0, 0"</LcdIovcc>
+		<LcdVdd>"1, 0, 0"</LcdVdd>
+		<LcdVsp>"2, 0, 5500000"</LcdVsp>
+		<LcdVsn>"2, 0, 5500000"</LcdVsn>
+		<LcdReset>"2, 0, 0"</LcdReset>
+		<TpReset>"2, 0, 0"</TpReset>
+		<LcdTe0>"2, 0, 0"</LcdTe0>
+		<LcdBacklight>"2, 0, 0"</LcdBacklight>
+		<LcdAod>"2, 0, 0"</LcdAod>
+		<LcdMipiSwitch>"2, 0, 0"</LcdMipiSwitch>
+		<!--sensorhub io config-->
+		<ShLcdVci>"0, 0, 0"</ShLcdVci>
+		<ShLcdIovcc>"0, 0, 0"</ShLcdIovcc>
+		<ShLcdVdd>"0, 0, 0"</ShLcdVdd>
+		<ShLcdMipiSwitch>"0, 0, 0"</ShLcdMipiSwitch>
+		<ShLcdReset>"0, 0, 0"</ShLcdReset>
+		<ShLcdPmicCtrl>"0, 0, 0"</ShLcdPmicCtrl>
+		<ShLcdPmicReset>"0, 0, 0"</ShLcdPmicReset>
+		<LdiDpi01SetChange>0</LdiDpi01SetChange>
+		<PxlClkToPll2>0</PxlClkToPll2>
+		<PxlClkToPll0>0</PxlClkToPll0>
+		<LcdPmicCtrl>"1, 0, 0"</LcdPmicCtrl>
+		<LcdPmicReset>"1, 0, 0"</LcdPmicReset>
+		<LcdPmicInit>"1, 0, 0"</LcdPmicInit>
+		<LcdBoostEnable>"1, 0, 0"</LcdBoostEnable>
+		<LcdBoostCtrl>"1, 0, 0"</LcdBoostCtrl>
+		<LcdBoostBypass>"1, 0, 0"</LcdBoostBypass>
+		<LcdPowerIcSwitch>"2, 0, 0"</LcdPowerIcSwitch>
+		<LcdIntegSwitch>"2, 0, 0"</LcdIntegSwitch>
+		<LcdIntegEn>"2, 0, 0"</LcdIntegEn>
+		<!--Power off performance optimize-->
+		<PwrOffTimeOptimizeSupport>0</PwrOffTimeOptimizeSupport>
+		<PwrOffTimeWorkDelay>120</PwrOffTimeWorkDelay>
+		<!--event send
+		event, data, delay/sync, no-sync
+		event:0-NONE, 1-VCI, 2-IOVCC, 3-VSP, 4-VSN, 5-RESET, 6-MIPI init code, 7-TS early-event, 8-TS later-event, 9-vdd
+		event:10-EVENT_AOD,11-EVENT_BIAS, 12-EVENT_AOD_MIPI, 13-EVENT_MIPI_SWITCH, 14-EVENT_AVDD_MIPI, 15-EVENT_2ND_POWER_OFF_TS, 16-EVENT_BLOCK_TS
+		event:17-EVENT_PMIC_CTRL, 18-EVENT_PMIC_RESET, 19-EVENT_PMIC_INIT, 21-EVENT_BOOST_ENABLE, 22-EVENT_BOOST_CTRL, 23-EVENT_BOOST_BYPASS
+		data:0-power off, 1-power on
+		delay:ms/TS:0-no-sync 1-sync
+		-->
+		<!--Power on timming-->
+		<PowerOnStage>"3, 1, 0
+				4, 1, 0"</PowerOnStage>
+		<LPOnStage>"0, 0, 0"</LPOnStage>
+		<HSOnStage>"0, 0, 0"</HSOnStage>
+		<OnTpStage>"7, 1, 0
+				0, 1, 1
+				8, 1, 0"</OnTpStage>
+		<!--Power off timming-->
+		<HSOffStage>"0, 0, 0"</HSOffStage>
+		<LPOffStage>"0, 0, 0"</LPOffStage>
+		<PowerOffStage>"4, 0, 0
+				3, 0, 0"</PowerOffStage>
+		<OffTpStage>"7, 0, 0
+				0, 0, 130
+				8, 0, 0"</OffTpStage>
+		<!--Power timming config end-->
+		<!--This configuration is enabled.
+		You must first confirm the address of the platform of the hard reset time.
+		The default configuration query address of 990 is 0x2e9, which is configured in PwrKeyLPressConfAddr.
+		-->
+		<PwrKeyLPressPwrOffSupport>0</PwrKeyLPressPwrOffSupport>
+		<PwrKeyLPressConfAddr>0x2E9</PwrKeyLPressConfAddr>
+		<PanelQuiPwrOffCommand>"0x05, 0x01, 0x00, 0x00, 0x0a, 0x00, 0x01, 0x10"</PanelQuiPwrOffCommand>
+		<PwrKeyLPressTime1>1700</PwrKeyLPressTime1>
+		<PwrKeyLPressTime2>3700</PwrKeyLPressTime2>
+		<PwrKeyLPressTime3>23700</PwrKeyLPressTime3>
+		<PwrKeyLPressTime4>53700</PwrKeyLPressTime4>
+
+		<!--support aod ltpo-->
+		<LtpoAodSupport>1</LtpoAodSupport>
+		<!--sensorhub enter exit ulps-->
+		<SensorhubUlps>0</SensorhubUlps>
+		<!--set power by nv support-->
+		<SetPowerByNvSupport>0</SetPowerByNvSupport>
+		<SensorhubAodExtSupport>0</SensorhubAodExtSupport>
+		<!--update dss core clk support-->
+		<UpdateCoreClkSupport>0</UpdateCoreClkSupport>
+		<!--Project id support-->
+		<PanelProjectIdSupport>0</PanelProjectIdSupport>
+		<!--Tp use default project Id-->
+		<PanelUseDefaultProjectId>0</PanelUseDefaultProjectId>
+		<!--default tp project Id-->
+		<PanelDefaultTpProjectId>"P374B02900"</PanelDefaultTpProjectId>
+		<!--Tp project id update support-->
+		<PanelProjectIdUptSupport>0</PanelProjectIdUptSupport>
+		<!--Tp project id update start position-->
+		<PanelProjectIdStartPos>6</PanelProjectIdStartPos>
+		<!--Tp project id update end position-->
+		<PanelProjectIdEndPos>9</PanelProjectIdEndPos>
+	</PanelEntry>
+</hwlcd>

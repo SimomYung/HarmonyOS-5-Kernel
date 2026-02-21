@@ -1,0 +1,9 @@
+# Copyright (c) Huawei Technologies Co., Ltd. 2023-2023. All rights reserved.
+# Description: HMbuild for devhost shrinker plugin
+# Author: Huawei OS Kernel Lab
+# Create: Thu Mar 30 17:55:45 2023
+
+cflags-y: -D_DH_PLUGIN_NAME=shrinker
+
+src-y: shrinker_if.c
+src-y: shrinker.c

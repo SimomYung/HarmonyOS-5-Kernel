@@ -1,0 +1,232 @@
+# Copyright (c) 2024-2024 Huawei Device Co., Ltd.
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+import("//build/config/config.gni")
+import("//build/ohos.gni")
+
+source_gen_dir = "${target_gen_dir}/openvpn-2.6.9"
+sources_list = [
+  "${source_gen_dir}/src/compat/compat-basename.c",
+  "${source_gen_dir}/src/compat/compat-daemon.c",
+  "${source_gen_dir}/src/compat/compat-dirname.c",
+  "${source_gen_dir}/src/compat/compat-gettimeofday.c",
+  "${source_gen_dir}/src/compat/compat-strsep.c",
+  "${source_gen_dir}/src/openvpn/argv.c",
+  "${source_gen_dir}/src/openvpn/auth_token.c",
+  "${source_gen_dir}/src/openvpn/base64.c",
+  "${source_gen_dir}/src/openvpn/buffer.c",
+  "${source_gen_dir}/src/openvpn/clinat.c",
+  "${source_gen_dir}/src/openvpn/comp-lz4.c",
+  "${source_gen_dir}/src/openvpn/comp.c",
+  "${source_gen_dir}/src/openvpn/compstub.c",
+  "${source_gen_dir}/src/openvpn/console.c",
+  "${source_gen_dir}/src/openvpn/console_builtin.c",
+  "${source_gen_dir}/src/openvpn/console_systemd.c",
+  "${source_gen_dir}/src/openvpn/crypto.c",
+  "${source_gen_dir}/src/openvpn/crypto_mbedtls.c",
+  "${source_gen_dir}/src/openvpn/crypto_openssl.c",
+  "${source_gen_dir}/src/openvpn/cryptoapi.c",
+  "${source_gen_dir}/src/openvpn/dco.c",
+  "${source_gen_dir}/src/openvpn/dco_freebsd.c",
+  "${source_gen_dir}/src/openvpn/dco_linux.c",
+  "${source_gen_dir}/src/openvpn/dco_win.c",
+  "${source_gen_dir}/src/openvpn/dhcp.c",
+  "${source_gen_dir}/src/openvpn/dns.c",
+  "${source_gen_dir}/src/openvpn/env_set.c",
+  "${source_gen_dir}/src/openvpn/error.c",
+  "${source_gen_dir}/src/openvpn/event.c",
+  "${source_gen_dir}/src/openvpn/fdmisc.c",
+  "${source_gen_dir}/src/openvpn/forward.c",
+  "${source_gen_dir}/src/openvpn/fragment.c",
+  "${source_gen_dir}/src/openvpn/gremlin.c",
+  "${source_gen_dir}/src/openvpn/helper.c",
+  "${source_gen_dir}/src/openvpn/httpdigest.c",
+  "${source_gen_dir}/src/openvpn/init.c",
+  "${source_gen_dir}/src/openvpn/interval.c",
+  "${source_gen_dir}/src/openvpn/keystore.c",
+  "${source_gen_dir}/src/openvpn/list.c",
+  "${source_gen_dir}/src/openvpn/lladdr.c",
+  "${source_gen_dir}/src/openvpn/lzo.c",
+  "${source_gen_dir}/src/openvpn/manage.c",
+  "${source_gen_dir}/src/openvpn/mbuf.c",
+  "${source_gen_dir}/src/openvpn/misc.c",
+  "${source_gen_dir}/src/openvpn/mroute.c",
+  "${source_gen_dir}/src/openvpn/mss.c",
+  "${source_gen_dir}/src/openvpn/mstats.c",
+  "${source_gen_dir}/src/openvpn/mtcp.c",
+  "${source_gen_dir}/src/openvpn/mtu.c",
+  "${source_gen_dir}/src/openvpn/mudp.c",
+  "${source_gen_dir}/src/openvpn/multi.c",
+  "${source_gen_dir}/src/openvpn/networking_freebsd.c",
+  "${source_gen_dir}/src/openvpn/networking_iproute2.c",
+  "${source_gen_dir}/src/openvpn/networking_sitnl.c",
+  "${source_gen_dir}/src/openvpn/ntlm.c",
+  "${source_gen_dir}/src/openvpn/occ.c",
+  "${source_gen_dir}/src/openvpn/openvpn.c",
+  "${source_gen_dir}/src/openvpn/openvpn_fd.c",
+  "${source_gen_dir}/src/openvpn/options.c",
+  "${source_gen_dir}/src/openvpn/options_util.c",
+  "${source_gen_dir}/src/openvpn/otime.c",
+  "${source_gen_dir}/src/openvpn/packet_id.c",
+  "${source_gen_dir}/src/openvpn/perf.c",
+  "${source_gen_dir}/src/openvpn/ping.c",
+  "${source_gen_dir}/src/openvpn/pkcs11.c",
+  "${source_gen_dir}/src/openvpn/pkcs11_mbedtls.c",
+  "${source_gen_dir}/src/openvpn/pkcs11_openssl.c",
+  "${source_gen_dir}/src/openvpn/platform.c",
+  "${source_gen_dir}/src/openvpn/plugin.c",
+  "${source_gen_dir}/src/openvpn/pool.c",
+  "${source_gen_dir}/src/openvpn/proto.c",
+  "${source_gen_dir}/src/openvpn/proxy.c",
+  "${source_gen_dir}/src/openvpn/ps.c",
+  "${source_gen_dir}/src/openvpn/push.c",
+  "${source_gen_dir}/src/openvpn/reflect_filter.c",
+  "${source_gen_dir}/src/openvpn/reliable.c",
+  "${source_gen_dir}/src/openvpn/route.c",
+  "${source_gen_dir}/src/openvpn/run_command.c",
+  "${source_gen_dir}/src/openvpn/schedule.c",
+  "${source_gen_dir}/src/openvpn/session_id.c",
+  "${source_gen_dir}/src/openvpn/shaper.c",
+  "${source_gen_dir}/src/openvpn/sig.c",
+  "${source_gen_dir}/src/openvpn/socket.c",
+  "${source_gen_dir}/src/openvpn/socks.c",
+  "${source_gen_dir}/src/openvpn/ssl.c",
+  "${source_gen_dir}/src/openvpn/ssl_mbedtls.c",
+  "${source_gen_dir}/src/openvpn/ssl_ncp.c",
+  "${source_gen_dir}/src/openvpn/ssl_openssl.c",
+  "${source_gen_dir}/src/openvpn/ssl_pkt.c",
+  "${source_gen_dir}/src/openvpn/ssl_util.c",
+  "${source_gen_dir}/src/openvpn/ssl_verify.c",
+  "${source_gen_dir}/src/openvpn/ssl_verify_mbedtls.c",
+  "${source_gen_dir}/src/openvpn/ssl_verify_openssl.c",
+  "${source_gen_dir}/src/openvpn/status.c",
+  "${source_gen_dir}/src/openvpn/tls_crypt.c",
+  "${source_gen_dir}/src/openvpn/tun.c",
+  "${source_gen_dir}/src/openvpn/vlan.c",
+  "${source_gen_dir}/src/openvpn/win32-util.c",
+  "${source_gen_dir}/src/openvpn/win32.c",
+  "${source_gen_dir}/src/openvpn/xkey_helper.c",
+  "${source_gen_dir}/src/openvpn/xkey_provider.c",
+]
+
+# Execute the script and extract openvpn source files
+action("openvpn_install_action") {
+  script = "//vendor/open_source/openvpn/install.py"
+  outputs = sources_list
+  args = [
+    "--gen-dir",
+    rebase_path("${target_gen_dir}", root_build_dir),
+    "--source-file",
+    rebase_path("//vendor/open_source/openvpn"),
+  ]
+}
+
+openvpn_includes = [
+  "${source_gen_dir}/src/compat",
+  "${source_gen_dir}",
+  "${source_gen_dir}/src/ipc/certmanager/include",
+  "${source_gen_dir}/src/ipc/netmanager/include",
+  "${source_gen_dir}/include",
+  "${source_gen_dir}/src/openvpn",
+]
+
+ohos_executable("openvpn") {
+  sources = get_target_outputs(":openvpn_install_action")
+  include_dirs = openvpn_includes
+  defines = [
+    "SUPPORT_SYSVPN",
+    "HAVE_CONFIG_H",
+  ]
+
+  cflags = [
+    "-fstack-protector-strong",
+    "-D_FORTIFY_SOURCE=2",
+    "-O2",
+  ]
+
+  deps = [
+    ":ipc",
+    ":openvpn_install_action",
+  ]
+  external_deps = [
+    "hilog:libhilog",
+    "lz4:liblz4_shared",
+    "openssl:libcrypto_shared",
+    "openssl:libssl_shared",
+  ]
+
+  install_enable = true
+  branch_protector_ret = "pac_ret"
+  subsystem_name = "open_source"
+  part_name = "openvpn"
+}
+
+# for ipc library
+# net_manager_ext ipc
+ipc_sources = [
+  "${source_gen_dir}/src/ipc/netmanager/src/net_manager_api.c",
+  "${source_gen_dir}/src/ipc/netmanager/src/nm_ipc_client.cpp",
+  "${source_gen_dir}/src/ipc/netmanager/src/nm_log.c",
+]
+
+# cert_manager ipc
+ipc_sources += [
+  "${source_gen_dir}/src/ipc/certmanager/src/cert_manager_api.c",
+  "${source_gen_dir}/src/ipc/certmanager/src/cm_ipc_client.c",
+  "${source_gen_dir}/src/ipc/certmanager/src/cm_ipc_client_serialization.c",
+  "${source_gen_dir}/src/ipc/certmanager/src/cm_load_sa.cpp",
+  "${source_gen_dir}/src/ipc/certmanager/src/cm_log.c",
+  "${source_gen_dir}/src/ipc/certmanager/src/cm_mem.c",
+  "${source_gen_dir}/src/ipc/certmanager/src/cm_param.c",
+  "${source_gen_dir}/src/ipc/certmanager/src/cm_request.cpp",
+  "${source_gen_dir}/src/ipc/certmanager/src/cm_x509.c",
+]
+
+# Execute the script and extract ipc source files
+action("ipc_install_action") {
+  script = "//vendor/open_source/openvpn/empty.py"
+  outputs = ipc_sources
+  deps = [ ":openvpn_install_action" ]
+}
+
+ipc_includes = [
+  "${source_gen_dir}/src/ipc/netmanager/include",
+  "${source_gen_dir}/src/ipc/certmanager/include",
+]
+
+ohos_static_library("ipc") {
+  sources = get_target_outputs(":ipc_install_action")
+  include_dirs = ipc_includes
+  defines = [ "SUPPORT_SYSVPN" ]
+
+  cflags = [
+    "-fstack-protector-strong",
+    "-D_FORTIFY_SOURCE=2",
+    "-O2",
+    "-Wno-error=incompatible-pointer-types-discards-qualifiers",
+  ]
+
+  deps = [ ":ipc_install_action" ]
+  external_deps = [
+    "c_utils:utils",
+    "hilog:libhilog",
+    "ipc:ipc_single",
+    "netmanager_ext:net_vpn_manager_if",
+    "openssl:libcrypto_shared",
+    "samgr:samgr_proxy",
+  ]
+
+  branch_protector_ret = "pac_ret"
+  subsystem_name = "open_source"
+  part_name = "openvpn"
+}

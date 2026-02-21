@@ -1,0 +1,629 @@
+{
+    "root": {
+        "data": {
+            "id": "ci26txcan080",
+            "created": 1645493689739,
+            "text": "HLIBC",
+            "usecase": 99
+        },
+        "children": [
+            {
+                "data": {
+                    "id": "ci26yfp7p400",
+                    "created": 1645494043159,
+                    "text": "字符串比较-字符串比较memcmp、strncmp",
+                    "usecase": 1,
+                    "layout_mind_offset": {
+                        "x": -40,
+                        "y": -4
+                    },
+                    "expandState": "expand",
+                    "layout": null
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "ci468i3121c0",
+                            "created": 1645695130793,
+                            "text": "入参分析",
+                            "layout": null
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "ci468ptu7k00",
+                                    "created": 1645695147651,
+                                    "text": "空字符串",
+                                    "usecase": 2,
+                                    "layout": null
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "ci469m5oxdk0",
+                                            "created": 1645695218025,
+                                            "text": "比较空字符串和非空字符串，长度0，返回0",
+                                            "usecase": 4,
+                                            "author": "x50021790",
+                                            "showId": "00024",
+                                            "priority": null,
+                                            "layout": null
+                                        },
+                                        "children": []
+                                    },
+                                    {
+                                        "data": {
+                                            "id": "ci512k4ig7c0",
+                                            "created": 1645782119458,
+                                            "text": "比较空字符串和非空字符串，长度1，返回负数",
+                                            "usecase": 4,
+                                            "author": "x50021790",
+                                            "showId": "00029",
+                                            "layout": null
+                                        },
+                                        "children": []
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "data": {
+                            "id": "ci270vepp9k0",
+                            "created": 1645494234080,
+                            "text": "功能分析",
+                            "usecase": null,
+                            "expandState": "expand",
+                            "layout": null
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "ci27e5wi46o0",
+                                    "created": 1645495275658,
+                                    "text": "字符串比较",
+                                    "usecase": 2,
+                                    "layout": null
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "ci27etyv5f40",
+                                            "created": 1645495328044,
+                                            "text": "比较“ac”和“acd”，长度2，返回0",
+                                            "usecase": 4,
+                                            "author": "x50021790",
+                                            "showId": "00003",
+                                            "layout": null
+                                        },
+                                        "children": []
+                                    },
+                                    {
+                                        "data": {
+                                            "id": "ci27jmhj8lk0",
+                                            "created": 1645495703579,
+                                            "text": "比较“ac”和“acd”，长度3，返回负数",
+                                            "usecase": 4,
+                                            "author": "x50021790",
+                                            "showId": "00008",
+                                            "layout": null
+                                        },
+                                        "children": []
+                                    },
+                                    {
+                                        "data": {
+                                            "id": "ci27jq6kdeo0",
+                                            "created": 1645495711623,
+                                            "text": "比较“ac”和“abc”，长度2，返回正数",
+                                            "usecase": 4,
+                                            "author": "x50021790",
+                                            "showId": "00009",
+                                            "priority": null,
+                                            "layout": null
+                                        },
+                                        "children": []
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "data": {
+                            "id": "ci2710l2v6g0",
+                            "created": 1645494245349,
+                            "text": "可靠性分析",
+                            "usecase": null,
+                            "layout": null
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "ci2c0m48ago0",
+                                    "created": 1645508319405,
+                                    "text": "比较长度",
+                                    "usecase": 2,
+                                    "layout": null
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "ci50vcmvkds0",
+                                            "created": 1645781554605,
+                                            "text": "memcmp中比较长度长度需要小于等于两个字符串数组长度",
+                                            "usecase": 4,
+                                            "author": "x50021790",
+                                            "showId": "00028",
+                                            "layout": null
+                                        },
+                                        "children": []
+                                    }
+                                ]
+                            },
+                            {
+                                "data": {
+                                    "id": "ci5148rruy80",
+                                    "created": 1645782251471,
+                                    "text": "空指针",
+                                    "usecase": 2,
+                                    "layout": null
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "ci5148rrh0o0",
+                                            "created": 1645782251471,
+                                            "text": "比较空指针和字符串，函数错误",
+                                            "usecase": 4,
+                                            "author": "x50021790",
+                                            "showId": "00030",
+                                            "priority": null,
+                                            "layout": null
+                                        },
+                                        "children": []
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "data": {
+                    "id": "ci2c93pq9g00",
+                    "created": 1645508984624,
+                    "text": "字符串比较-字符串比较strcmp",
+                    "layout_mind_offset": {
+                        "x": 45,
+                        "y": 268
+                    },
+                    "usecase": 1,
+                    "layout": null
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "ci5155otviw0",
+                            "created": 1645782323127,
+                            "text": "入参分析",
+                            "layout": null
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "ci5155otv1c0",
+                                    "created": 1645782323127,
+                                    "text": "空字符串",
+                                    "usecase": 2,
+                                    "layout": null
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "ci5155otnko0",
+                                            "created": 1645782323127,
+                                            "text": "比较空字符串和非空字符串，返回负数",
+                                            "usecase": 4,
+                                            "author": "x50021790",
+                                            "showId": "00031",
+                                            "priority": null,
+                                            "layout": null
+                                        },
+                                        "children": []
+                                    },
+                                    {
+                                        "data": {
+                                            "id": "ci5155otw1k0",
+                                            "created": 1645782323127,
+                                            "text": "比较空字符串和空字符串，返回0",
+                                            "usecase": 4,
+                                            "author": "x50021790",
+                                            "showId": "00032",
+                                            "layout": null
+                                        },
+                                        "children": []
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "data": {
+                            "id": "ci2c9xtqhn40",
+                            "created": 1645509050169,
+                            "text": "功能分析",
+                            "expandState": "expand",
+                            "layout": null
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "ci2cfhij4dk0",
+                                    "created": 1645509484848,
+                                    "text": "字符串比较",
+                                    "usecase": 2,
+                                    "expandState": "expand",
+                                    "layout": null
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "ci2cfhijbtk0",
+                                            "created": 1645509484849,
+                                            "text": "比较“ac”和“acd”，返回负数",
+                                            "usecase": 4,
+                                            "author": "x50021790",
+                                            "showId": "00017",
+                                            "layout": null
+                                        },
+                                        "children": []
+                                    },
+                                    {
+                                        "data": {
+                                            "id": "ci2cfhijlao0",
+                                            "created": 1645509484849,
+                                            "text": "比较“ac”和“abc”，返回正数",
+                                            "usecase": 4,
+                                            "author": "x50021790",
+                                            "showId": "00018",
+                                            "priority": null,
+                                            "layout": null
+                                        },
+                                        "children": []
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "data": {
+                            "id": "ci515qns5bk0",
+                            "created": 1645782368776,
+                            "text": "可靠性分析",
+                            "usecase": null,
+                            "layout": null
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "ci515qns4q80",
+                                    "created": 1645782368776,
+                                    "text": "空指针",
+                                    "usecase": 2,
+                                    "layout": null
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "ci515qns6bs0",
+                                            "created": 1645782368776,
+                                            "text": "比较空指针和字符串，函数错误",
+                                            "usecase": 4,
+                                            "author": "x50021790",
+                                            "showId": "00034",
+                                            "priority": null,
+                                            "layout": null
+                                        },
+                                        "children": []
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "data": {
+                    "id": "ci2cghe5xhs0",
+                    "created": 1645509562948,
+                    "text": "字符串比较-字符串比较strcasecmp",
+                    "layout_mind_offset": {
+                        "x": 793,
+                        "y": 995
+                    },
+                    "usecase": 1,
+                    "expandState": "expand",
+                    "layout": null
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "ci516e28bsg0",
+                            "created": 1645782419716,
+                            "text": "入参分析",
+                            "layout": null
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "ci516e285rk0",
+                                    "created": 1645782419716,
+                                    "text": "空字符串",
+                                    "usecase": 2,
+                                    "layout": null
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "ci516e28h9k0",
+                                            "created": 1645782419716,
+                                            "text": "比较空字符串和非空字符串，返回负数",
+                                            "usecase": 4,
+                                            "author": "x50021790",
+                                            "showId": "00037",
+                                            "priority": null,
+                                            "layout": null
+                                        },
+                                        "children": []
+                                    },
+                                    {
+                                        "data": {
+                                            "id": "ci516e284jc0",
+                                            "created": 1645782419716,
+                                            "text": "比较空字符串和空字符串，返回0",
+                                            "usecase": 4,
+                                            "author": "x50021790",
+                                            "showId": "00038",
+                                            "layout": null
+                                        },
+                                        "children": []
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "data": {
+                            "id": "ci2cghe5pb40",
+                            "created": 1645509562948,
+                            "text": "功能分析",
+                            "expandState": "expand",
+                            "layout": null
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "ci2cghe5uvc0",
+                                    "created": 1645509562948,
+                                    "text": "忽略大小写的字符串比较",
+                                    "usecase": 2,
+                                    "expandState": "expand",
+                                    "layout": null
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "ci2cghe5eqo0",
+                                            "created": 1645509562948,
+                                            "text": "比较“ac”和“AC”，返回0",
+                                            "usecase": 4,
+                                            "author": "x50021790",
+                                            "showId": "00019",
+                                            "layout": null
+                                        },
+                                        "children": []
+                                    },
+                                    {
+                                        "data": {
+                                            "id": "ci2cghe5tls0",
+                                            "created": 1645509562948,
+                                            "text": "比较“ac”和“aCd”，返回负数",
+                                            "usecase": 4,
+                                            "author": "x50021790",
+                                            "showId": "00020",
+                                            "layout": null
+                                        },
+                                        "children": []
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "data": {
+                            "id": "ci51782152o0",
+                            "created": 1645782485007,
+                            "text": "可靠性分析",
+                            "usecase": null,
+                            "layout": null
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "ci517821jn40",
+                                    "created": 1645782485008,
+                                    "text": "空指针",
+                                    "usecase": 2,
+                                    "layout": null
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "ci517821s0w0",
+                                            "created": 1645782485008,
+                                            "text": "比较空指针和字符串，函数错误",
+                                            "usecase": 4,
+                                            "author": "x50021790",
+                                            "showId": "00039",
+                                            "priority": null,
+                                            "layout": null
+                                        },
+                                        "children": []
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "data": {
+                    "id": "ci2cm7jefqg0",
+                    "created": 1645510011682,
+                    "text": "字符串比较-字符串比较strncasecmp",
+                    "layout_mind_offset": {
+                        "x": 787,
+                        "y": 1077
+                    },
+                    "usecase": 1,
+                    "layout": null
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "ci517cirag00",
+                            "created": 1645782494726,
+                            "text": "入参分析",
+                            "layout": null
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "ci517cirji00",
+                                    "created": 1645782494726,
+                                    "text": "空字符串",
+                                    "usecase": 2,
+                                    "layout": null
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "ci517cir4ls0",
+                                            "created": 1645782494726,
+                                            "text": "比较空字符串和非空字符串，返回负数",
+                                            "usecase": 4,
+                                            "author": "x50021790",
+                                            "showId": "00040",
+                                            "priority": null,
+                                            "layout": null
+                                        },
+                                        "children": []
+                                    },
+                                    {
+                                        "data": {
+                                            "id": "ci517cir3i80",
+                                            "created": 1645782494726,
+                                            "text": "比较空字符串和空字符串，返回0",
+                                            "usecase": 4,
+                                            "author": "x50021790",
+                                            "showId": "00041",
+                                            "layout": null
+                                        },
+                                        "children": []
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "data": {
+                            "id": "ci2cm7je7s00",
+                            "created": 1645510011682,
+                            "text": "功能分析",
+                            "expandState": "expand",
+                            "layout": null
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "ci2cm7jebtc0",
+                                    "created": 1645510011682,
+                                    "text": "忽略大小写的字符串比较",
+                                    "usecase": 2,
+                                    "expandState": "expand",
+                                    "layout": null
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "ci2cm7je0zs0",
+                                            "created": 1645510011682,
+                                            "text": "比较“ac”和“AC”，长度2，返回0",
+                                            "usecase": 4,
+                                            "author": "x50021790",
+                                            "showId": "00022",
+                                            "layout": null
+                                        },
+                                        "children": []
+                                    },
+                                    {
+                                        "data": {
+                                            "id": "ci2cm7jeeow0",
+                                            "created": 1645510011682,
+                                            "text": "比较“ac”和“aCd”，长度2，返回0",
+                                            "usecase": 4,
+                                            "author": "x50021790",
+                                            "showId": "00023",
+                                            "layout": null
+                                        },
+                                        "children": []
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "data": {
+                            "id": "ci517elo0pk0",
+                            "created": 1645782499255,
+                            "text": "可靠性分析",
+                            "usecase": null,
+                            "layout": null
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "ci517elnqi80",
+                                    "created": 1645782499255,
+                                    "text": "空指针",
+                                    "usecase": 2,
+                                    "layout": null
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "ci517elofe00",
+                                            "created": 1645782499256,
+                                            "text": "比较空指针和字符串，函数错误",
+                                            "usecase": 4,
+                                            "author": "x50021790",
+                                            "showId": "00042",
+                                            "priority": null,
+                                            "layout": null
+                                        },
+                                        "children": []
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    "templatePath": null,
+    "singleTemplatePath": null,
+    "testcaseFilePath": "",
+    "template": "right",
+    "theme": "fresh-blue",
+    "version": "1.4.43"
+}

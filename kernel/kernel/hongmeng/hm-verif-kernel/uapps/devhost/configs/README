@@ -1,0 +1,25 @@
+
+                    ==== DEFCONFIG SUMMARY ===
+
+					minimal	 small  default  full
+---- Feature Lists
+CONFIG_POSIX_CAPS			   N       Y       Y      Y
+CONFIG_DEVHOST_ENTROPY_COLLECT		   N       Y       Y      Y
+CONFIG_DEVHOST_PM_PLUGIN		   N       Y       Y      Y
+  CONFIG_PM_SUSPEND			   N       N       N      Y
+  CONFIG_PM_HIBERNATE			   N       N       N      Y
+  CONFIG_PM_WAKELOCK			   N       N       N      Y
+CONFIG_NET_IO_URING			   N       N       Y      Y
+CONFIG_DEVHOST_NETLINK			   N       N       N      Y
+CONFIG_DEVHOST_PLUGIN_DEMO		   N       N       N      N
+CONFIG_AUDIT				   N       N       N      N
+CONFIG_COMPAT				   N       N       N      N
+
+---- Configurable Parameters
+CONFIG_NET_POOL_BITS			   23      23      23     23
+CONFIG_DEVHOST_BLK_SRING_LEN		   2       2       16     16
+CONFIG_NET_POOL_UNIT_BITS		   11      11      12     12
+
+---- Discard Feature Configs
+CONFIG_MODULE_SCHED_CLASS		   Y       Y       Y      Y
+CONFIG_DEVHOST_NET_SPARSE_POOL		   N       N       N      N

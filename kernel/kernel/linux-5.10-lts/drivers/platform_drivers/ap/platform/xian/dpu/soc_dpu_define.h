@@ -1,0 +1,645 @@
+/*
+ * Copyright (c) Huawei Technologies CO., Ltd. 2023-2023. All rights reserved.
+ * Description: soc_dpu_define.h
+ * Create: 2023-09-12
+ */
+
+#ifndef __SOC_DPU_DEFINE_H__
+#define __SOC_DPU_DEFINE_H__
+
+#include "soc_dpu_interface.h"
+#include "soc_dpu_dacc_interface.h"
+
+#ifdef __cplusplus
+	#if __cplusplus
+		extern "C" {
+	#endif
+#endif
+
+#define INIT_UNION_ZERO  {.value = 0}
+#define DPU_DBCU_MMU_ID_ATTR_NS_56_ADDR(base) (DPU_DBCU_MMU_ID_ATTR_NS_0_ADDR(base) + 4*48)
+#define DPU_DBCU_MMU_ID_ATTR_56_ADDR(base) (DPU_DBCU_MMU_ID_ATTR_0_ADDR(base) + 4*48)
+enum DPU_OPR_TYPE_ID {
+	OPR_NONE = 0,
+	OPR_RESERVED1 = 1,
+	OPR_OV = 2,
+	OPR_HDR = 3,
+	OPR_UVUP = 4,
+	OPR_CLD = 5,
+	OPR_SCL = 6,
+	OPR_SDMA = 7,
+	OPR_SROT = 8,
+	OPR_HEMCD = 9,
+	OPR_DPP = 10,
+	OPR_DDIC = 11,
+	OPR_DSC = 12,
+	OPR_WCH = 13,
+	OPR_ITFSW = 14,
+	OPR_DEMURA0 = 15,
+	OPR_DEBN = 16,
+	OPR_PRELOAD = 17,
+	OPR_DEMURA1 = 18,
+	OPR_INVALID = 0,
+};
+
+enum DPU_OPR_MOD_IDX {
+	OPR_MOD_IDX_SDMA0 = 0,
+	OPR_MOD_IDX_SDMA1 = 1,
+	OPR_MOD_IDX_SDMA2 = 2,
+	OPR_MOD_IDX_OV0 = 4,
+	OPR_MOD_IDX_OV1 = 5,
+	OPR_MOD_IDX_OV2 = 6,
+	OPR_MOD_IDX_OV3 = 7,
+	OPR_MOD_IDX_VSCF0 = 12,
+	OPR_MOD_IDX_VSCF1 = 13,
+	OPR_MOD_IDX_ARSR0 = 16,
+	OPR_MOD_IDX_ARSR1 = 17,
+	OPR_MOD_IDX_HDR = 18,
+	OPR_MOD_IDX_CLD0 = 20,
+	OPR_MOD_IDX_UVUP0 = 22,
+	OPR_MOD_IDX_WCH0 = 24,
+	OPR_MOD_IDX_WCH1 = 25,
+	OPR_MOD_IDX_DPP0 = 32,
+	OPR_MOD_IDX_DPP1 = 33,
+	OPR_MOD_IDX_PRE_BYPASS = 36,
+	OPR_MOD_IDX_DSC0 = 40,
+	OPR_MOD_IDX_DDIC0 = 44,
+	OPR_MOD_IDX_DDIC0_DEMURA_LUT = 48,
+	OPR_MOD_IDX_DDIC0_DEBURNIN_LUT = 49,
+	OPR_MOD_IDX_DDIC0_ODC_LUT = 50,
+	OPR_MOD_IDX_ITFSW0 = 52,
+	OPR_MOD_IDX_ITFSW1 = 53,
+	OPR_MOD_IDX_ITFSW2 = 54,
+	OPR_MOD_IDX_IDLE_DISP = 56,
+	OPR_MOD_IDX_CMDLIST = 63,
+	OPR_MOD_IDX_INVALID = 64,
+};
+
+/* The sequence should be same as dpu_resource reg of dkmd_dpu.dtsi. */
+enum {
+	DISP_IP_BASE_DPU      = 0,
+	DISP_IP_BASE_PERI_CRG,
+	DISP_IP_BASE_SCTRL,
+	DISP_IP_BASE_PCTRL,
+	DISP_IP_BASE_PMCTRL,
+	DISP_IP_BASE_MEDIA1_CRG,
+	DISP_IP_BASE_HSDT1_CRG,
+	DISP_IP_BASE_HIDPTX,
+	DISP_IP_BASE_SOURCELOCK,
+
+	DISP_IP_MAX,
+};
+
+enum SCENE_ID {
+	DPU_SCENE_ONLINE_0 = 0,
+	DPU_SCENE_ONLINE_1,
+	DPU_SCENE_ONLINE_2,
+	DPU_SCENE_ONLINE_3,
+	DPU_SCENE_OFFLINE_0,
+	DPU_SCENE_OFFLINE_1,
+	DPU_SCENE_OFFLINE_2,
+	DPU_SCENE_INITAIL,
+	DPU_SCENE_SECURITY,
+	DPU_SCENE_MAX,
+};
+
+#define DPU_SCENE_VIRTUAL_FB_0 (DPU_SCENE_SECURITY + 1)
+
+/* scene mode */
+enum scene_mode {
+	SCENE_MODE_NORMAL = 0,
+	SCENE_MODE_IDLE_DISPLAY,
+	SCENE_MODE_OV_PATTERN = 3,
+	SCENE_MODE_DPP_COLORBAR,
+	SCENE_MODE_ITFSW_COLORBAR,
+	SCENE_MODE_MAX
+};
+
+enum SDMA_IDX {
+	DPU_SDMA0 = 0,
+	DPU_SDMA1,
+	DPU_SDMA2,
+	DPU_SDMA3,
+};
+
+#define DACC_IM_OFFSET (0x0) // in memmap: DACC_OFFSET + DACC_IM_OFFSET = DSS_DACC_IM
+#define DACC_DM_OFFSET (0x00010000) // in memmap: DACC_OFFSET + DACC_DM_OFFSET = DSS_DACC_DM
+#define DMD_OFFSET  (0x00010000) // in DACC map: DM
+#define DACC_OFFSET (0x0001E000) // in memmap: dacc cal base addr offset
+#define DMC_OFFSET  (0x00022000) // in DACC map: DACC_CFG
+
+#define DACC_IM_LENGTH (0x0000A000) // in DACC map: IM end - IM start
+#define DACC_DM_LENGTH (0x00002A00) // in DACC map: HTS - DM (i.e. DM+TIMER+WDT+CFG)
+#define DACC_FIRMWARE_SIZE (0x00020000) // in memmap: DSS_DACC_TIMER - DSS_DACC_DM
+#define DPU_IOMCU_ADDR_OFFSET (0x0)
+#define DPU_IOMCU_DDR_OFFSET (0x40000000)
+
+#define DM_INPUTDATA_ST_ADDR0 (DMD_OFFSET + 0x4000)
+#define DM_INPUTDATA_ST_ADDR1 (DMD_OFFSET + 0x4C00)
+#define DM_INPUTDATA_ST_ADDR2 (DMD_OFFSET + 0x5400)
+#define DM_INPUTDATA_ST_ADDR3 (DMD_OFFSET + 0x5400)
+#define DM_INPUTDATA_ST_ADDR4 (DMD_OFFSET + 0x5A00)
+#define DM_INPUTDATA_ST_ADDR5 (DMD_OFFSET + 0x5A00)
+#define DM_INPUTDATA_ST_ADDR6 (DMD_OFFSET + 0x5A00)
+#define DM_DPP_INITAIL_ST_ADDR (DMD_OFFSET + 0x8400)
+#define DM_SECURITY_ST_ADDR    (DMD_OFFSET + 0x3C00)
+#define DM_INTER_CORE_ADDR    (DMD_OFFSET + 0x5C00)
+
+struct cmdlist_dm_addr_info {
+	int scene_id;
+	unsigned dm_data_addr;
+	unsigned dm_data_size;
+};
+
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-variable"
+static struct cmdlist_dm_addr_info g_dm_tlb_info[DPU_SCENE_MAX] = {
+	/* - scene_id -------- DM_addr ----------------------------- DM_size ------ */
+	{ DPU_SCENE_ONLINE_0,  DACC_OFFSET + DM_INPUTDATA_ST_ADDR0,  0xC00, }, /* 3K */
+	{ DPU_SCENE_ONLINE_1,  DACC_OFFSET + DM_INPUTDATA_ST_ADDR1,  0x800, }, /* 2K */
+	{ DPU_SCENE_ONLINE_2,  DACC_OFFSET + DM_INPUTDATA_ST_ADDR2,  0x600,  }, /* 1.5K */
+	{ DPU_SCENE_ONLINE_3,  DACC_OFFSET + DM_INPUTDATA_ST_ADDR3,  0x600,  }, /* 1.5K */
+	{ DPU_SCENE_OFFLINE_0, DACC_OFFSET + DM_INPUTDATA_ST_ADDR4,  0x200,  }, /* 0.5K */
+	{ DPU_SCENE_OFFLINE_1, DACC_OFFSET + DM_INPUTDATA_ST_ADDR5,  0x200,  }, /* 2.5K */
+	{ DPU_SCENE_OFFLINE_2, DACC_OFFSET + DM_INPUTDATA_ST_ADDR6,  0x200,  }, /* 2.5K */
+	{ DPU_SCENE_INITAIL,   DACC_OFFSET + DM_DPP_INITAIL_ST_ADDR, 0x800,  }, /* 2K */
+	{ DPU_SCENE_SECURITY,  DACC_OFFSET + DM_SECURITY_ST_ADDR,    0x400,  }, /* 1K */
+};
+#pragma GCC diagnostic pop
+
+#define SCL_NUM_MAX 3 // chip specifications
+#define SCENE_NUM_MAX 2 // chip specifications
+#define SDMA_SWID_NUM    4
+#define WCH_SWID_NUM    2
+#define DPU_SSID_MAX_NUM 3
+
+#define MDC_SDMA_INDEX 2
+#define MDC_HDR_INDEX 0
+#define MDC_OV_INDEX 2
+#define MDC_WCH_INDEX 1
+
+// 0x7 means hdmd::CAPS_HEBCE | hdmd::CAPS_SCL | hdmd::CAPS_ROT
+#define MDC_CAPS 0x7
+
+#define DEFAULT_MIPI_REF_CLK_RATE  (384 * 100000LL)
+#define RG_PLL_PREDIV 1
+/*******************************************************************************
+** ITF_CH
+*/
+#define DPU_ITF_CH0_OFFSET (0x011000) // ITF_CH0
+#define DPU_ITF_CH1_OFFSET (0x011100) // ITF_CH1
+#define DPU_ITF_CH2_OFFSET (0x011200) // ITF_CH2
+#define DPU_ITF_CH3_OFFSET (0)
+
+/*******************************************************************************
+** PIPE_SW
+*/
+#define DPU_PIPE_SW_OFFSET (0x11400) // PIPE_SW
+#define DPU_GLB0_OFFSET (0x00013000) // in memmap: DSS_GLB
+
+#define DPU_WCH0_OFFSET (0x0006C000) // in memmap: DSS_WCH0
+#define DPU_WCH1_OFFSET (0x0006D000) // in memmap: DSS_WCH1
+
+// Not support in this platform
+#define DPU_WCH2_OFFSET (0)
+
+#define DPU_DBCU_OFFSET (0x00019000) // in memmap: DBCU
+#define DPU_DBCU0_OFFSET (0x00019000) // in memmap: DBCU
+
+#define DPU_RD_CTRL_PRE_WRAP_OFFSET (0x00018800) // in memmap: DSS_RD_CTRL_PRE_WRAP
+#define DPU_AVHR_GLB_OFFSET (0x00088000) // in memmap: DSS_GLB_AVHR
+#define DPU_DISP_GLB_OFFSET (0x000D8000) // in memmap: DSS_GLB_DISP
+
+#define DPU_SDMA_DBG_CTRL0_ADDR(base, sdn) DPU_GLB_SDMA_DBG_RESERVED0_ADDR(base, sdn)
+#define DPU_SDMA_CTRL0_ADDR(base, sdn) DPU_GLB_SDMA_CTRL0_ADDR(base, sdn)
+#define DPU_SDMA_OFFSET  DPU_GLB0_OFFSET
+
+// SCL
+enum {
+	SCL_TYPE_ARSR = 0,
+	SCL_TYPE_VSCF,
+};
+#define DPU_VSCF_COUNT 2
+#define SCL_THRESHOLD_DEFAULT_LEVEL 2
+#define MAX_WLT_SLICE_COUNT 4
+
+#define MAX_DP_PORT_NUM 0
+
+// HEBC
+enum HebceSizeMax {
+    HEBCE_WIDTH_MAX_1 = 1024,
+    HEBCE_WIDTH_MAX_2 = 512,
+    HEBCE_WIDTH_MAX_3 = 1024,
+    HEBCE_HEIGHT_MAX = 8192,
+    HEBCE_WIDTH_MAX_ROT = 8192,
+    HEBCE_HEIGHT_MAX_ROT = 512
+};
+
+enum HebceSizeMin {
+    HEBCE_WIDTH_RGB_MIN = 32,
+    HEBCE_HEIGHT_RGB_MIN = 4,
+
+    HEBCE_WIDTH_NV12_MIN = 64,
+    HEBCE_HEIGHT_NV12_MIN = 16,
+    HEBCE_WIDTH_NV12_10BIT_MIN = 32,
+    HEBCE_HEIGHT_NV12_10BIT_MIN = 16,
+
+    HEBCE_WIDTH_RGB_ROT_MIN = 16,
+    HEBCE_HEIGHT_RGB_ROT_MIN = 8,
+
+    HEBCE_WIDTH_NV12_ROT_MIN = 64,
+    HEBCE_HEIGHT_NV12_ROT_MIN = 16,
+    HEBCE_WIDTH_NV12_10BIT_ROT_MIN = 32,
+    HEBCE_HEIGHT_NV12_10BIT_ROT_MIN = 16
+};
+
+// CMDLIST
+#define DPU_CMDLIST_OFFSET  (0x00012000) // in memmap: DSS_CMD
+
+// LBUF
+#define DPU_LBUF_OFFSET (0x00017400) // in memmap: DSS_LBUF_CMN
+#define DPU_PIPE_CTRL_SCNX_FLUX_CTRL_OFFSET(scene_id) (0x00000004 * (scene_id))
+#define DPU_LBUF_SCNX_DBUF_THD_OFFSET(scene_id) (0x00000100 * (scene_id))
+#define DPU_INFO_SRC_SCNX_OFFSET(scene_id) (0x00000004 * (scene_id))
+
+#define DEFAULT_OFFLINE_FPS 600
+
+/* LTPO FEATURE BEGIN */
+#define LTPO_FEATURE_BASE_ADDR                        0x16E00
+
+/* LTPO RELATED PARAMETERS */
+#define DPU_DFR_ENABLE_ADDR(base)                     ((base) + DACC_OFFSET + LTPO_FEATURE_BASE_ADDR + (0x0)) /* dfr feature enable/disable */
+#define DPU_DFR_FRM_RATE_ADDR(base)                   ((base) + DACC_OFFSET + LTPO_FEATURE_BASE_ADDR + (0x4)) /* frame rate, dynamic configed by acpu */
+#define DPU_DFR_TE_RATE_ADDR(base)                    ((base) + DACC_OFFSET + LTPO_FEATURE_BASE_ADDR + (0x8)) /* te rate, dynamic configed by acpu */
+#define DPU_DFR_MIN_FRM_RATE_ADDR(base)               ((base) + DACC_OFFSET + LTPO_FEATURE_BASE_ADDR + (0x10)) /* used to check whether dimming to min frm rate */
+/* Dimming nromal sequence support 12 gears, each gear repeat xx times,
+ * for example [120, 1], [90, 1], [60, 1], [30, 2], [10, 16], [1, 1] */
+
+/* bit0 - bit7: dimming normal seq len; bit8 - bit15: dimming gear len */
+#define DPU_DFR_DIMMING_SEQ_LEN_ADDR(base)            ((base) + DACC_OFFSET + LTPO_FEATURE_BASE_ADDR + (0x14))
+/* enable dimming */
+#define DPU_DFR_ENABLE_FRM_DIMMING_ADDR(base)         ((base) + DACC_OFFSET + LTPO_FEATURE_BASE_ADDR + (0x18))
+/* Dimming sequence addr: 0x1C、0x20、0x24、0x28、0x2C、0x30、0x34、0x38、0x3C、0x40、0x44 */
+#define DPU_DFR_DIMMING_SEQ_BASE_ADDR(base)           ((base) + DACC_OFFSET + LTPO_FEATURE_BASE_ADDR + (0x1C))
+/* timestamp start */
+/* timestamp display for single frame begin */
+// base timestamp 0x1E8~0x1EC
+#define DFR_BASE_TIMESTAMP_LOW32(base)                ((base) + DACC_OFFSET + (LTPO_FEATURE_BASE_ADDR + 0x48))
+#define DFR_BASE_TIMESTAMP_HIGH32(base)               ((base) + DACC_OFFSET + (LTPO_FEATURE_BASE_ADDR + 0x4C))
+// expect timestamp 0x1F0~0xF4
+#define DFR_EXPECT_TIMESTAMP_LOW32(base)              ((base) + DACC_OFFSET + (LTPO_FEATURE_BASE_ADDR + 0x50))
+#define DFR_EXPECT_TIMESTAMP_HIGH32(base)             ((base) + DACC_OFFSET + (LTPO_FEATURE_BASE_ADDR + 0x54))
+// bit0-1: timestamp type; bit2-bit31: displayed frm idx corresponding expected timestamp
+#define DFR_FRAME_INFO_DISPLAYED(base)                ((base) + DACC_OFFSET + (LTPO_FEATURE_BASE_ADDR + 0x58))
+// displayed frm idx when timestamp and display mismatch
+#define DFR_MISMATCHED_FRAME_INFO_DISPLAYED(base)     ((base) + DACC_OFFSET + (LTPO_FEATURE_BASE_ADDR + 0x5C))
+/* timestamp end */
+
+/* LTPO CMD CMDLIST ADDR */
+#define DPU_DFR_CMDLIST_NOP_ADDR(base)                ((base) + DACC_OFFSET + LTPO_FEATURE_BASE_ADDR + (0x60))
+#define DPU_DFR_PRESENT_ADDR(base)                    ((base) + DACC_OFFSET + LTPO_FEATURE_BASE_ADDR + (0x64))
+#define DPU_DFR_REFRESH_EXT_ADDR(base)                ((base) + DACC_OFFSET + LTPO_FEATURE_BASE_ADDR + (0x68))
+#define DPU_DFR_REFRESH_ADDR(base)                    ((base) + DACC_OFFSET + LTPO_FEATURE_BASE_ADDR + (0x6C))
+#define DPU_DFR_MIN_FRAME_ADDR(base)                  ((base) + DACC_OFFSET + LTPO_FEATURE_BASE_ADDR + (0x70))
+
+/* LTPO SEND CMD FLAG */
+#define DPU_DFR_SAFE_FRM_SET_AGAIN_ADDR(base)         ((base) + DACC_OFFSET + LTPO_FEATURE_BASE_ADDR + (0x74))
+#define DPU_DFR_DACC_TE_CHECK_ADDR(base)              ((base) + DACC_OFFSET + LTPO_FEATURE_BASE_ADDR + (0x78))
+#define DPU_DFR_SEND_DCS_BY_RISCV_ADDR(base)          ((base) + DACC_OFFSET + LTPO_FEATURE_BASE_ADDR + (0x7C))
+#define DPU_DFR_INIT_CONFIG_ADDR(base)                ((base) + DACC_OFFSET + LTPO_FEATURE_BASE_ADDR + (0x80))
+#define DPU_DFR_TE_MASK_NUM_ADDR(base)                ((base) + DACC_OFFSET + LTPO_FEATURE_BASE_ADDR + (0x84))
+#define DPU_DFR_ISR_TYPE_ADDR(base)                   ((base) + DACC_OFFSET + LTPO_FEATURE_BASE_ADDR + (0x88)) /* DDIC mask TE num */
+#define DPU_DFR_DACC_RESUME_ADDR(base)                ((base) + DACC_OFFSET + LTPO_FEATURE_BASE_ADDR + (0x8C))
+#define DPU_DFR_TE_IDX_ADDR(base)                     ((base) + DACC_OFFSET + LTPO_FEATURE_BASE_ADDR + (0x90))
+#define DPU_DFR_DACC_CMDS_ASYNC_ADDR(base)            ((base) + DACC_OFFSET + LTPO_FEATURE_BASE_ADDR + (0x94))
+#define DPU_DFR_REFRESH_TYPE_ADDR(base)               ((base) + DACC_OFFSET + LTPO_FEATURE_BASE_ADDR + (0x98))
+#define DPU_DFR_EXTRA_REFRESH_CNT_ADDR(base)          ((base) + DACC_OFFSET + LTPO_FEATURE_BASE_ADDR + (0x9C))
+/* DFR TE INTERVAL record 0xa0 - 0xb4, len is 6 */
+#define DPU_DFR_TE_INTERVAL_RECORD(base)               ((base) + DACC_OFFSET + LTPO_FEATURE_BASE_ADDR + (0xA0))
+#define DPU_DFR_LTPO_RESERVED_ADDR(base)              ((base) + DACC_OFFSET + LTPO_FEATURE_BASE_ADDR + (0xBC)) /* reserved 40 bytes for LTPO*/
+
+/* LTPO PPU start */
+#define DPU_DFR_PANEL_REFRESH_MODE(base)              ((base) + DACC_OFFSET + LTPO_FEATURE_BASE_ADDR + (0xC0)) /* refresh mode, partial or full */
+#define DPU_DFR_HIGH_REFRESH_CMDLIST(base)            ((base) + DACC_OFFSET + LTPO_FEATURE_BASE_ADDR + (0xC4)) /* high refresh cmdlist addr */
+#define DPU_DFR_FULL_FEFRESH_CMDLIST(base)            ((base) + DACC_OFFSET + LTPO_FEATURE_BASE_ADDR + (0xC8)) /* full refresh cmdlist addr */
+#define DPU_DFR_HIGH_REFRESH_RECT(base)               ((base) + DACC_OFFSET + LTPO_FEATURE_BASE_ADDR + (0xCC)) /* x, y, w, h, 64bit len, 0x104~0x108 */
+#define DPU_DFR_FULL_REFRESH_RECT(base)               ((base) + DACC_OFFSET + LTPO_FEATURE_BASE_ADDR + (0xD4)) /* x, y, w, h, 64bit len, 0x10C~0x110, reserved */
+#define DPU_DFR_AUX_FULL_REFRESH(base)                ((base) + DACC_OFFSET + LTPO_FEATURE_BASE_ADDR + (0xDC)) /* auxiliary full refresh, frm content not change*/
+#define DPU_DFR_PPU_RESERVED_ADDR(base)               ((base) + DACC_OFFSET + LTPO_FEATURE_BASE_ADDR + (0xFC)) /* reserved 64 bytes for PPU*/
+/* LTPO PPU end */
+
+#define DPU_RISCV_INTR_TRIG_ADDR(base)                ((base) + DACC_OFFSET + DMC_OFFSET + (0x6c))
+#define DPU_RISCV_INTR_MASK_ADDR(base)                ((base) + DACC_OFFSET + DMC_OFFSET + (0x70))
+
+#define DPU_ASYNC_TX_OFFSET                           (0x1EC)
+#define DPU_ASYNC_TX_REQ_SCENE_ADDR(base)             ((base) + DACC_OFFSET + DM_INTER_CORE_ADDR + DPU_ASYNC_TX_OFFSET)
+#define DPU_ASYNC_TX_REQ_CMDLIST_NUM_ADDR(base)       ((base) + DACC_OFFSET + DM_INTER_CORE_ADDR + DPU_ASYNC_TX_OFFSET + (0x4))
+#define DPU_ASYNC_TX_OPS_STATUS_ADDR(base)            ((base) + DACC_OFFSET + DM_INTER_CORE_ADDR + DPU_ASYNC_TX_OFFSET + (0x8))
+#define DPU_ASYNC_TX_REQ_CMDLIST_ID_ADDR(base, idx)   ((base) + DACC_OFFSET + DM_INTER_CORE_ADDR + DPU_ASYNC_TX_OFFSET + (0xC) + idx*0x4)
+#define DPU_ASYNC_TX_REQ_CMDLIST_PHY_ADDR(base, idx)  ((base) + DACC_OFFSET + DM_INTER_CORE_ADDR + DPU_ASYNC_TX_OFFSET + (0x24) + idx*0x4)
+#define DPU_ASYNC_TX_REQ_CMDLIST_TYPE_ADDR(base, idx) ((base) + DACC_OFFSET + DM_INTER_CORE_ADDR + DPU_ASYNC_TX_OFFSET + (0x3C) + idx*0x4)
+
+#define DPU_ASYNC_TX_REL_SCENE_ADDR(base)             ((base) + DACC_OFFSET + DM_INTER_CORE_ADDR + DPU_ASYNC_TX_OFFSET + (0x54))
+#define DPU_ASYNC_TX_REL_CMDLIST_NUM_ADDR(base)       ((base) + DACC_OFFSET + DM_INTER_CORE_ADDR + DPU_ASYNC_TX_OFFSET + (0x58))
+#define DPU_ASYNC_TX_REL_CMDLIST_ID_ADDR(base, idx)   ((base) + DACC_OFFSET + DM_INTER_CORE_ADDR + DPU_ASYNC_TX_OFFSET + (0x5C) + idx*0x4)
+#define DPU_ASYNC_TX_DONE_ADDR(base)                  ((base) + DACC_OFFSET + DM_INTER_CORE_ADDR + DPU_ASYNC_TX_OFFSET + (0x74))
+
+#define DPU_ASYNC_TX_INIT_OK_ADDR(base)               ((base) + DACC_OFFSET + DM_INTER_CORE_ADDR + DPU_ASYNC_TX_OFFSET + 0x78)
+#define DPU_ASYNC_TX_TIMER_CNT_ADDR(base)             ((base) + DACC_OFFSET + DM_INTER_CORE_ADDR + DPU_ASYNC_TX_OFFSET + 0x7C)
+#define DPU_ASYNC_TX_RECEIVED_TASK_CNT_ADDR(base)     ((base) + DACC_OFFSET + DM_INTER_CORE_ADDR + DPU_ASYNC_TX_OFFSET + 0x80)
+#define DPU_ASYNC_TX_START_CNT_ADDR(base)             ((base) + DACC_OFFSET + DM_INTER_CORE_ADDR + DPU_ASYNC_TX_OFFSET + 0x84)
+#define DPU_ASYNC_TX_TASK_DONE_CNT_ADDR(base)         ((base) + DACC_OFFSET + DM_INTER_CORE_ADDR + DPU_ASYNC_TX_OFFSET + 0x88)
+#define DPU_ASYNC_TX_SENT_TASK_CNT_ADDR(base)         ((base) + DACC_OFFSET + DM_INTER_CORE_ADDR + DPU_ASYNC_TX_OFFSET + 0x8C)
+#define DPU_ASYNC_TX_REQ_CMDLIST_DELAY_ADDR(base, idx)       ((base) + DACC_OFFSET + DM_INTER_CORE_ADDR + DPU_ASYNC_TX_OFFSET + (0x90) + idx*0x4)
+#define DPU_ASYNC_TX_REQ_CMDLIST_FLAG_ADDR(base, idx) ((base) + DACC_OFFSET + DM_INTER_CORE_ADDR + DPU_ASYNC_TX_OFFSET + (0xA8) + idx*0x4)
+#define DPU_ASYNC_TX_OPS_TYPE_ADDR(base)              ((base) + DACC_OFFSET + DM_INTER_CORE_ADDR + DPU_ASYNC_TX_OFFSET + 0xC0)
+#define DPU_ASYNC_TX_FLW_TASK_LEFT_NUM_ADDR(base)     ((base) + DACC_OFFSET + DM_INTER_CORE_ADDR + DPU_ASYNC_TX_OFFSET + 0xC4)
+#define DPU_ASYNC_TX_REL_REPEATED_TASK_CMDLIST_ID_ADDR(base)   ((base) + DACC_OFFSET + DM_INTER_CORE_ADDR + DPU_ASYNC_TX_OFFSET + 0xC8)
+#define DPU_ASYNC_TX_ERROR_STATUS(base)               ((base) + DACC_OFFSET + DM_INTER_CORE_ADDR + DPU_ASYNC_TX_OFFSET + 0xCC)
+#define DPU_ASYNC_TX_QUEUE_FLW_SIZE(base)             ((base) + DACC_OFFSET + DM_INTER_CORE_ADDR + DPU_ASYNC_TX_OFFSET + 0xD0)
+#define DPU_ASYNC_TX_QUEUE_NOR_SIZE(base)             ((base) + DACC_OFFSET + DM_INTER_CORE_ADDR + DPU_ASYNC_TX_OFFSET + 0xD4)
+#define DPU_ASYNC_TX_QUEUE_FLW_NUM_TO_TX(base)        ((base) + DACC_OFFSET + DM_INTER_CORE_ADDR + DPU_ASYNC_TX_OFFSET + 0xD8)
+#define DPU_ASYNC_TX_QUEUE_NOR_NUM_TO_TX(base)        ((base) + DACC_OFFSET + DM_INTER_CORE_ADDR + DPU_ASYNC_TX_OFFSET + 0xDC)
+#define DPU_ASYNC_TX_REQ_CMDS_VALIDATE_TYPE_ADDR(base, idx) ((base) + DACC_OFFSET + DM_INTER_CORE_ADDR + DPU_ASYNC_TX_OFFSET + (0xF0) + idx*0x4)
+
+/* DIMMING GEAR CONFIG 0x130 - 0x17C, len is 20 */
+#define DPU_DFR_DIMMING_GEAR_CONFIG_ADDR(base)        ((base) + DACC_OFFSET + LTPO_FEATURE_BASE_ADDR + (0x130))
+
+// FOR DEBUG
+#define DFR_DACC_DFR_DEBUG_ADDR                       0x180
+// 0X16FA0
+#define DFR_DACC_CURR_FRM_RATE(base)                  ((base) + DACC_OFFSET + LTPO_FEATURE_BASE_ADDR + DFR_DACC_DFR_DEBUG_ADDR + (0x0))
+#define DFR_DACC_TE_RATE(base)                        ((base) + DACC_OFFSET + LTPO_FEATURE_BASE_ADDR + DFR_DACC_DFR_DEBUG_ADDR + (0x4))
+#define DFR_DACC_TE_MSK_NUM(base)                     ((base) + DACC_OFFSET + LTPO_FEATURE_BASE_ADDR + DFR_DACC_DFR_DEBUG_ADDR + (0x8))
+#define DFR_DACC_INIT_CONFIG(base)                    ((base) + DACC_OFFSET + LTPO_FEATURE_BASE_ADDR + DFR_DACC_DFR_DEBUG_ADDR + (0xC))
+#define DFR_DACC_DFR_ENABLE(base)                     ((base) + DACC_OFFSET + LTPO_FEATURE_BASE_ADDR + DFR_DACC_DFR_DEBUG_ADDR + (0x10))
+
+#define DFR_DACC_FRM_DIMMING_TE_CNT(base)             ((base) + DACC_OFFSET + LTPO_FEATURE_BASE_ADDR + DFR_DACC_DFR_DEBUG_ADDR + (0x14))
+#define DFR_DACC_TARGET_SAFE_FRM_RATE(base)           ((base) + DACC_OFFSET + LTPO_FEATURE_BASE_ADDR + DFR_DACC_DFR_DEBUG_ADDR + (0x18))
+#define DFR_DACC_CURRENT_SAFE_FRM_RATE(base)          ((base) + DACC_OFFSET + LTPO_FEATURE_BASE_ADDR + DFR_DACC_DFR_DEBUG_ADDR + (0x1C))
+#define DFR_DACC_FRM_DIMMING_REAL_FRM_RATE(base)      ((base) + DACC_OFFSET + LTPO_FEATURE_BASE_ADDR + DFR_DACC_DFR_DEBUG_ADDR + (0x20))
+#define DFR_DACC_FRM_DIMMING_CUR_FRM_RATE(base)       ((base) + DACC_OFFSET + LTPO_FEATURE_BASE_ADDR + DFR_DACC_DFR_DEBUG_ADDR + (0x24))
+#define DFR_DACC_FRM_DIMMING_CUR_REPEAT_CNT(base)     ((base) + DACC_OFFSET + LTPO_FEATURE_BASE_ADDR + DFR_DACC_DFR_DEBUG_ADDR + (0x28))
+
+#define DFR_DACC_SELF_REFRESH_TYPE(base)              ((base) + DACC_OFFSET + LTPO_FEATURE_BASE_ADDR + DFR_DACC_DFR_DEBUG_ADDR + (0x2C))
+#define DFR_DACC_TE_ISR_COUNT(base)                   ((base) + DACC_OFFSET + LTPO_FEATURE_BASE_ADDR + DFR_DACC_DFR_DEBUG_ADDR + (0x30))
+#define DFR_DACC_TIMER_COUNT(base)                    ((base) + DACC_OFFSET + LTPO_FEATURE_BASE_ADDR + DFR_DACC_DFR_DEBUG_ADDR + (0x34))
+#define DFR_DACC_TE_COUNT_TMP(base)                   ((base) + DACC_OFFSET + LTPO_FEATURE_BASE_ADDR + DFR_DACC_DFR_DEBUG_ADDR + (0x38))
+#define DFR_DACC_SELF_REFRESH_COUNT_TMP(base)         ((base) + DACC_OFFSET + LTPO_FEATURE_BASE_ADDR + DFR_DACC_DFR_DEBUG_ADDR + (0x3C))
+#define DFR_DACC_IS_VSYNC_TE(base)                    ((base) + DACC_OFFSET + LTPO_FEATURE_BASE_ADDR + DFR_DACC_DFR_DEBUG_ADDR + (0x40))
+#define DFR_DACC_SEND_FRM_FLAG(base)                  ((base) + DACC_OFFSET + LTPO_FEATURE_BASE_ADDR + DFR_DACC_DFR_DEBUG_ADDR + (0x44))
+#define DFR_DACC_DIMMING_STATUS(base)                 ((base) + DACC_OFFSET + LTPO_FEATURE_BASE_ADDR + DFR_DACC_DFR_DEBUG_ADDR + (0x48))
+#define DFR_DACC_NEED_SELF_REFRESH_FLAG(base)         ((base) + DACC_OFFSET + LTPO_FEATURE_BASE_ADDR + DFR_DACC_DFR_DEBUG_ADDR + (0x4C))
+#define DFR_DACC_SELF_REFRESH_COUNT(base)             ((base) + DACC_OFFSET + LTPO_FEATURE_BASE_ADDR + DFR_DACC_DFR_DEBUG_ADDR + (0x50))
+#define DFR_DACC_TE_COUNT(base)                       ((base) + DACC_OFFSET + LTPO_FEATURE_BASE_ADDR + DFR_DACC_DFR_DEBUG_ADDR + (0x54))
+#define DFR_DACC_TE_TYPE(base)                        ((base) + DACC_OFFSET + LTPO_FEATURE_BASE_ADDR + DFR_DACC_DFR_DEBUG_ADDR + (0x58))
+// 16FDC
+#define DFR_DACC_FRM_DIMMING_STATE(base)              ((base) + DACC_OFFSET + LTPO_FEATURE_BASE_ADDR + DFR_DACC_DFR_DEBUG_ADDR + (0x5C))
+#define DFR_DACC_ASYNC_HAS_REFRESH(base)              ((base) + DACC_OFFSET + LTPO_FEATURE_BASE_ADDR + DFR_DACC_DFR_DEBUG_ADDR + (0x60))
+#define DFR_DACC_ASYNC_TX_GEN_TASK_NUM(base)          ((base) + DACC_OFFSET + LTPO_FEATURE_BASE_ADDR + DFR_DACC_DFR_DEBUG_ADDR + (0x64))
+#define DFR_DACC_ASYNC_TX_FLW_TASK_NUM(base)          ((base) + DACC_OFFSET + LTPO_FEATURE_BASE_ADDR + DFR_DACC_DFR_DEBUG_ADDR + (0x68))
+
+#define DFR_DACC_FRM_DIMMING_TE_CNT_H(base)           ((base) + DACC_OFFSET + LTPO_FEATURE_BASE_ADDR + DFR_DACC_DFR_DEBUG_ADDR + (0x6C))
+#define DFR_DACC_FRM_DIMMING_REAL_FRM_RATE_H(base)    ((base) + DACC_OFFSET + LTPO_FEATURE_BASE_ADDR + DFR_DACC_DFR_DEBUG_ADDR + (0x70))
+#define DFR_DACC_FRM_DIMMING_CUR_FRM_RATE_H(base)     ((base) + DACC_OFFSET + LTPO_FEATURE_BASE_ADDR + DFR_DACC_DFR_DEBUG_ADDR + (0x74))
+#define DFR_DACC_FRM_DIMMING_CUR_REPEAT_CNT_H(base)   ((base) + DACC_OFFSET + LTPO_FEATURE_BASE_ADDR + DFR_DACC_DFR_DEBUG_ADDR + (0x78))
+#define DFR_DACC_FRM_DIMMING_STATE_H(base)            ((base) + DACC_OFFSET + LTPO_FEATURE_BASE_ADDR + DFR_DACC_DFR_DEBUG_ADDR + (0x7C))
+#define DFR_DACC_PANEL_REFRESH_MODE(base)             ((base) + DACC_OFFSET + LTPO_FEATURE_BASE_ADDR + DFR_DACC_DFR_DEBUG_ADDR + (0x80))
+
+/* LTPO FEATURE END */
+
+typedef union
+{
+    unsigned int      value;
+    struct
+    {
+        unsigned int  scn0_lb_num; // stub
+    } reg;
+} DPU_LBUF_SCN0_FLUX_CTRL_UNION;
+
+// TOP_GLP
+#define DPU_TOP_GLP_OFFSET (0x00013000)
+
+// PIPE_CTRL
+#define DPU_SDMA_PIPE_CTRL_OFFSET (0x00015000) // in memmap: DSS_PIPE0
+#define DPU_PRE_PIPE_CTRL_OFFSET (0x0001A000) // in memmap: DSS_PIPE1
+#define DPU_OV_PIPE_CTRL_OFFSET (0x0001B000) // in memmap: DSS_PIPE2
+#define DPU_POST_PIPE_CTRL_OFFSET (0x000D6C00) // in memmap: DSS_PIPE3
+#define DPU_ITF_PIPE_CTRL_OFFSET (0x00016000) // in memmap: DSS_PIPE4
+
+// SMMU
+#define DPU_SMMU_OFFSET (0x00002000)  // in memmap: DSS_RT_TBU
+#define DPU_SMMU1_OFFSET (0x00006000) // in memmap: DSS_SRT_TBU
+
+#define DPU_ARSR0_OFFSET (0x000CD000) // ARSR0_WRAP
+#define DPU_ARSR1_OFFSET (0x00078000) // in memmap: DSS_ARSR1_WRAP_REG
+
+#define DPU_VSCF0_OFFSET (0x0007F000) // in memmap: DSS_VSCF0_WRAP_REG
+#define DPU_VSCF1_OFFSET (0x00083000) // in memmap: DSS_VSCF1_WRAP_REG
+
+#define DPU_HDR_OFFSET (0x00060000) // in memmap: DSS_HDR_WRAP_REG
+#define DPU_HDR_GMP_LUT_OFFSET (0x00069000) // in memmap: DSS_HDR_GMP_LUT
+
+#define DPU_CLD0_OFFSET (0x0008D000) // in memmap: DSS_CLD0_WRAP_REG
+
+#define DPU_RCH_OV_OFFSET (0x0001C000) // in memmap: DSS_RCH_OV
+
+/*******************************************************************************
+** DPP
+*/
+#define DPU_DPP0_OFFSET (0x000B4000) // DPP WRAP
+#define DPU_DPP0_HIACE_OFFSET (0x000C9000) // HIACE
+#define DPU_DPP1_OFFSET (0x00000000)
+
+// DSC
+#define DPU_DSC0_OFFSET  (0x000D4000) // DSC WRAP
+#define DPU_DSC1_OFFSET  (0x00000000)
+
+// MIPI
+#define DPU_MIPI_DSI0_OFFSET     0x00000000 //in memmap: DSI
+#define DPU_MIPI_DSI_GLB_OFFSET  0x00000C00 // DSI_GLB
+#define DPU_MIPI_DSI1_OFFSET     0x00000000
+#define DPU_MIPI_DSI2_OFFSET     0x00000000
+
+#define CDPHY_TEST_CTRL_TESTEN_BIT 0x80000000
+#define MIPIDSI_PHY_TST_CLK_PRE_DELAY  (CDPHY_TEST_CTRL_TESTEN_BIT + 0xB0)
+#define MIPIDSI_PHY_TST_CLK_POST_DELAY (CDPHY_TEST_CTRL_TESTEN_BIT + 0xB1)
+#define MIPIDSI_PHY_TST_CLK_TLPX       (CDPHY_TEST_CTRL_TESTEN_BIT + 0xB2)
+#define MIPIDSI_PHY_TST_CLK_PREPARE    (CDPHY_TEST_CTRL_TESTEN_BIT + 0xB3)
+#define MIPIDSI_PHY_TST_CLK_ZERO       (CDPHY_TEST_CTRL_TESTEN_BIT + 0xB4)
+#define MIPIDSI_PHY_TST_CLK_TRAIL      (CDPHY_TEST_CTRL_TESTEN_BIT + 0xB5)
+#define MIPIDSI_PHY_TST_DATA_PRE_DELAY  (CDPHY_TEST_CTRL_TESTEN_BIT + 0x70)
+#define MIPIDSI_PHY_TST_DATA_POST_DELAY (CDPHY_TEST_CTRL_TESTEN_BIT + 0x71)
+#define MIPIDSI_PHY_TST_DATA_TLPX       (CDPHY_TEST_CTRL_TESTEN_BIT + 0x72)
+#define MIPIDSI_PHY_TST_DATA_PREPARE    (CDPHY_TEST_CTRL_TESTEN_BIT + 0x73)
+#define MIPIDSI_PHY_TST_DATA_ZERO       (CDPHY_TEST_CTRL_TESTEN_BIT + 0x74)
+#define MIPIDSI_PHY_TST_DATA_TRAIL      (CDPHY_TEST_CTRL_TESTEN_BIT + 0x75)
+#define MIPIDSI_PHY_TST_LANE_TRANSMISSION_PROPERTY (0x77)
+#define MIPIDSI_PHY_TST_RG_VREFSEL_VCM  (0x6)
+#define MIPIDSI_PHY_TST_RG_MAIN_RT      (0x3)
+
+
+// ------------ Soc limits ------------
+#define PART0_LB_NUM_MAX 75
+#define PART1_LB_NUM_MAX 20
+#define PART2_LB_NUM_MAX 15
+#define PART3_LB_NUM_MAX 25
+#define INFO_SRC_DBUF_DEPTH_MAX 50 // us
+#define INFO_SRC_DBUF_LEVEL_PERCENT 0.8
+#define PART1_LB_NUM_FOR_FREQ_CONSTRAINT 12
+#define SCENE0_PART3_LB_DEFAULT 41
+#define SCENE1_PART3_LB_DEFAULT 16
+#define SCENE2_PART3_LB_DEFAULT 15
+#define SCENE3_PART3_LB_DEFAULT 3
+#define DBUF_THD_DBUF_DEPTH_MAX 50 // us
+#define DBUF_THD_DBUF_DEPTH_HALF 25 // us
+#define INFO_SRC_DBUF_DEPTH_LEVEL2 35 // us
+#define INFO_SRC_DBUF_DEPTH_LEVEL1 55 // INFO_SRC_DBUF_DEPTH_LEVEL2 + 20
+#define INFO_SRC_LEVEL0_EXTEND 2 // line number
+#define INFO_SRC_OFFLINE_DEPTH 2 // line number
+#define INFO_SRC_DEPTH_DEFAULT 20 // line number
+#define LB_PIXEL_NUM_PERLB 1440 // 640*90/40
+#define DPU_LB3_MIN_NUM 16
+#define VPORCH_RATIO_OFFLINE_DEFAULT 105
+#define INFO_PAUSE_NUM_PERCENT_OFFLINE 100 // 100%
+#define INFO_PAUSE_NUM_PERCENT_ONLINE 100 // 100%
+#define INFO_PAUSE_NUM_PERCENT_ONLINE0 130 // 130%
+
+/* DBUF value init for 1080p@10Hz */
+#define DBUF0_THD_RQOS_IN_FPGA 144
+#define DBUF0_THD_RQOS_OUT_FPGA 162
+#define DBUF0_THD_FLUX_IN_FPGA 126
+#define DBUF0_THD_FLUX_OUT_FPGA 144
+
+#define DPU_WIDTH_MIN 16
+#define DPU_HEIGHT_MIN 16
+#define DPU_OV_HEIGHT_LIMIT DPU_HEIGHT_MIN
+
+#define SCF_MIN_WIDTH 16
+#define SCF_MIN_HEIGHT 16
+#define SCF_INC_FACTOR 262144 // 1 << 18
+#define SCF_INC_OFFSET 131072 // SCF_INC_FACTOR / 2
+#define SCF_INPUT_OV 16
+#define ARSR2P_INC_FACTOR 65536
+#define ARSR2P_INPUT_OV 16
+#define WDMA_ADDR_PIXEL_ALIGN 16 // 128bit, yuv 128/8=16, rgb 128/32=4
+#define WDMA_ADDR_PIXEL_ALIGN_HEBC_RGB 32
+#define WDMA_HEIGHT_PIXEL_ALIGN 16
+#define WDMA_ALIGN_BYTES 16
+
+#define DMA_ALIGN_BYTES 64
+#define DMA_STRIDE_ALIGN 64
+
+#define DPU_CLIP_MAX_VAL 63
+#define ITF_CLIP_SUPPORT 0b1100 // itf2/3 support clip
+
+#define SDMA_INPUT_OV_WIDTH_LIMIT 4096
+
+/* VBLOCK means vertical block in segment */
+#define DEFAULT_VBLOCK_WIDTH 512
+#define HEBCE_VBLOCK_WIDTH 512
+#define TRANSFORM_VBLOCK_WIDTH 512
+#define VBLOCK_WIDTH_MAX 8192
+#define VBLOCK_WIDTH_MIN 256
+#define VBLOCK_OVERLAP_SIZE 32
+#define SCF_LAYER_MIN_GAP 32 // column
+#define REUSE_MIN_GAP 64 // row
+#define LBUF_REUSE_MIN_GAP 4 // row
+
+#define DPU_CORE_FREQ_OFF 105000000UL /* L0_POWER_OFF */
+#define DPU_CORE_FREQ0    335000000UL /* L1_060V */
+#define DPU_CORE_FREQ1    480000000UL /* L2_065V */
+#define DPU_CORE_FREQ2    558000000UL /* L3_070V */
+#define DPU_CORE_FREQ3    640000000UL /* L4_080V, 640 */
+#define DPU_CORE_FREQ_SUB_MAX DPU_CORE_FREQ2
+#define DPU_CORE_FREQ_MAX DPU_CORE_FREQ3
+#define DPU_PERF_LEVEL_MAX 4
+#define FREQ3_PLL2B_CLK_DIV 0b0000 /* level4 0.8  - 640M, ppll2_b, 1div  */
+
+#define DPU_CORE_LEVEL_OFF 0 /* L0_POWER_OFF */
+#define DPU_CORE_LEVEL_ON 1 /* L1_060V */
+#define DPU_CORE_LEVEL_IDLE 1
+
+#define GLB_PM_CTRL_VALUE 0x0401A00F
+#define DSI_PM_CTRL_VALUE 0x0401A00F
+#define DSI_MEM_SD_PCTRL_VALUE 0xc0000
+/* parameters used in frequency adjustment */
+/* ddic color mode */
+enum ddic_color_mode {
+	DDIC_COLOR_MODE_MONOCHROME = 1,
+	DDIC_COLOR_MODE_SPR_1_1,
+	DDIC_COLOR_MODE_OTHERS,
+	DDIC_COLOR_MODE_MAX
+};
+
+#define LAYER_WITDH_360 360
+#define LAYER_WITDH_720 720
+#define LAYER_WITDH_1440 1440
+#define LAYER_WITDH_2880 2880
+#define LAYER_WITDH_4320 4320
+#define LAYER_WITDH_360_WN 1
+#define LAYER_WITDH_720_WN 2
+#define LAYER_WITDH_1440_WN 4
+#define LAYER_WITDH_2880_WN 7
+#define LAYER_WITDH_4320_WN 9
+#define LAYER_DDIC_LUT_WN 4
+
+#define PIX_PER_CYCLE_COEF_1 1.0
+#define PIX_PER_CYCLE_COEF_2 2.0
+#define PIX_PER_CYCLE_COEF_3 3.0
+#define PIX_PER_CYCLE_COEF_4 4.0
+#define LINEAR_LAYER_PIX_PER_CYCLE 7.9
+#define NON_ROT_HEBC_LAYER_PIX_PER_CYCLE 10
+#define ROT_HEBC_LAYER_PIX_PER_CYCLE 9
+#define OFFLINE_SDMA_PIX_PER_CYCLE 3.9
+#define VALID_DISPLAY_TIME_RATIO 0.97
+#define TE_JITTER_FACTOR 0.99
+#define ROT_EFFECT_FACTOR_SDMA 2.2
+#define ROT_EFFECT_FACTOR_SCL 1.150
+#define ROT_EFFECT_FACTOR_NON_SCL 1.045
+#define RESERVE_VOTE_PER 1.05
+#define SINGLE_RESOURCE_NUM_8 8
+#define SINGLE_RESOURCE_NUM_9 9
+#define SINGLE_RESOURCE_NUM_10 10
+#define SINGLE_RESOURCE_NUM_11 11
+#define SINGLE_RESOURCE_NUM_12 12
+#define VOTE_PERF_A1_LB_8 1.0
+#define VOTE_PERF_A1_LB_9 1.03
+#define VOTE_PERF_A1_LB_10 1.06
+#define VOTE_PERF_A1_LB_11 1.1
+#define VOTE_PERF_A1_LB_12 1.12
+#define VOTE_PERF_A2 1.18
+#define VOTE_PERF_A3_ONE_SCL 1.03
+#define VOTE_PERF_A3_TWO_SCL 1.07
+#define VOTE_PERF_A3_THREE_SCL 1.09
+#define VOTE_PERF_A4_ONE_SCENE 1.0
+#define VOTE_PERF_A4_TWO_SCENE 1.03
+#define VOTE_PERF_A4_THREE_SCENE 1.06
+#define VOTE_PERF_A4_FOUR_SCENE 1.09
+#define AXI_UTILIZATION 0.8
+#define DUAL_PIXEL_PERFORMANCE 2
+#define SINGLE_PIXEL_PERFORMANCE 1
+#define VSCF_OUT_PIXEL_PERFORMANCE 1.6
+#define BIT_TO_BYTE 8.0
+#define INVALID_ROW_BEATS 80
+#define OV_INVALID_ROW_BEATS 40
+#define DVFS_HEBC_RGB_PIXEL_ALIGN 4
+#define DVFS_HEBC_RGB_PIXEL_ROT_ALIGN 8
+#define DVFS_HEBC_YUV420_PIXEL_ALIGN 16
+#define OV_PIXEL_PERFORMANCE_LIMIT_FACTOR 1.5
+#define VSCF_ZOOM_BASE_FACTOR 2.26
+#define VSCF_ZOOM_CAL_COEFFICIENT 0.46
+#define VSCF_ZOOM_UPPER_DATA 1.9
+#define VSCF_ZOOM_DOWN_DATA 1.5
+#define INPUT_INTERLINE_BUBBLE_COEFF 10
+#define OUTPUT_INTERLINE_BUBBLE_COEFF 30
+#define LOAD_BAL_OV_NUM 3
+#define OUTPUT_PERF_PER_OV 4
+
+#ifdef __cplusplus
+	#if __cplusplus
+		}
+	#endif
+#endif
+
+#endif /* end of __SOC_DTE_DEFINE_H__ */

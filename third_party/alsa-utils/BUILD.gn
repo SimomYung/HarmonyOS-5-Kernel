@@ -1,0 +1,177 @@
+# Copyright (c) 2022 Huawei Device Co., Ltd.
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+import("//build/ohos.gni")
+
+ASOUND_STATE_DIR = "/var/lib/alsa"
+ASOUND_LOCK_DIR = "/var/lock"
+ASOUND_LOCK_DIR = "/var/run"
+
+config("alsa_utils_config") {
+  cflags = [
+    "-Wno-sign-compare",
+    "-Wno-implicit-function-declaration",
+    "-Wno-parentheses",
+    "-Wno-string-conversion",
+    "-Wno-string-plus-int",
+    "-Wno-asm-operand-widths",
+    "-Wno-pointer-sign",
+    "-Wno-deprecated-declarations",
+    "-Wno-implicit-int",
+    "-Wno-switch",
+    "-Wno-incompatible-pointer-types-discards-qualifiers",
+    "-Wno-int-conversion",
+    "-Wno-absolute-value",
+    "-Wno-unused-function",
+    "-Wno-unused-label",
+    "-Wno-unused-const-variable",
+    "-Wno-visibility",
+    "-Wno-incompatible-pointer-types",
+    "-Wno-sometimes-uninitialized",
+    "-Wno-format",
+    "-Wno-tautological-constant-out-of-range-compare",
+    "-Wno-implicit-fallthrough",
+    "-Wno-error",
+    "-DHAVE_CONFIG_H",
+    "-D_GNU_SOURCE",
+    "-D__USE_GNU",
+    "-DCURSESINC=\"\"",
+    "-DSYS_ASOUNDRC=\"$ASOUND_STATE_DIR/asound.state\"",
+    "-DSYS_LOCKFILE=\"$ASOUND_LOCK_DIR/asound.state.lock\"",
+    "-DSYS_LOCKFILE=\"$ASOUND_LOCK_DIR/asound.state.lock\"",
+  ]
+
+  if (use_musl) {
+    cflags += [ "-Wno-bool-operation" ]
+  }
+}
+
+ohos_executable("aconnect") {
+  sources = [ "seq/aconnect/aconnect.c" ]
+
+  include_dirs = [
+    "//third_party/alsa-utils/include",
+    "//third_party/alsa-lib/include",
+  ]
+
+  configs = [ ":alsa_utils_config" ]
+
+  deps = [ "../alsa-lib:libasound" ]
+
+  subsystem_name = "thirdparty"
+  part_name = "alsa-utils"
+}
+
+ohos_executable("amixer") {
+  sources = [
+    "amixer/amixer.c",
+    "amixer/volume_mapping.c",
+  ]
+
+  include_dirs = [
+    "//third_party/alsa-utils/amixer",
+    "//third_party/alsa-utils/include",
+    "//third_party/alsa-lib/include",
+  ]
+
+  configs = [ ":alsa_utils_config" ]
+
+  deps = [ "../alsa-lib:libasound" ]
+
+  install_enable = true
+  subsystem_name = "thirdparty"
+  part_name = "alsa-utils"
+  install_images = [ "system" ]
+}
+
+ohos_executable("aplay") {
+  sources = [ "aplay/aplay.c" ]
+
+  include_dirs = [
+    "//third_party/alsa-utils/aplay",
+    "//third_party/alsa-utils/include",
+    "//third_party/alsa-lib/include",
+  ]
+
+  configs = [ ":alsa_utils_config" ]
+
+  deps = [ "../alsa-lib:libasound" ]
+
+  symlink_target_name = [ "arecord" ]
+
+  install_enable = true
+  subsystem_name = "thirdparty"
+  part_name = "alsa-utils"
+  install_images = [ "system" ]
+}
+
+ohos_executable("speaker-test") {
+  sources = [
+    "speaker-test/pink.c",
+    "speaker-test/speaker-test.c",
+    "speaker-test/st2095.c",
+  ]
+
+  include_dirs = [
+    "//third_party/alsa-utils/speaker-test",
+    "//third_party/alsa-utils/include",
+    "//third_party/alsa-lib/include",
+  ]
+
+  configs = [ ":alsa_utils_config" ]
+
+  deps = [ "../alsa-lib:libasound" ]
+
+  subsystem_name = "thirdparty"
+  part_name = "alsa-utils"
+}
+
+ohos_executable("alsactl") {
+  sources = [
+    "alsactl/alsactl.c",
+    "alsactl/clean.c",
+    "alsactl/daemon.c",
+    "alsactl/info.c",
+    "alsactl/init_parse.c",
+    "alsactl/init_ucm.c",
+    "alsactl/lock.c",
+    "alsactl/monitor.c",
+    "alsactl/state.c",
+    "alsactl/utils.c",
+  ]
+
+  include_dirs = [
+    "//third_party/alsa-utils/alsactl",
+    "//third_party/alsa-utils/include",
+    "//third_party/alsa-lib/include",
+  ]
+
+  configs = [ ":alsa_utils_config" ]
+
+  deps = [ "../alsa-lib:libasound" ]
+
+  install_enable = true
+  subsystem_name = "thirdparty"
+  part_name = "alsa-utils"
+  install_images = [ "system" ]
+}
+
+group("alsa-utils") {
+  deps = [
+    ":aconnect",
+    ":alsactl",
+    ":amixer",
+    ":aplay",
+    ":speaker-test",
+  ]
+}

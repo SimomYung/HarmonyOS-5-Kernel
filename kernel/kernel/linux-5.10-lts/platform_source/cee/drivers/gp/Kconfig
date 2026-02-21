@@ -1,0 +1,5 @@
+config GP
+	bool "Global Predictor"
+	default n
+	help
+	 support gp device and enable driver

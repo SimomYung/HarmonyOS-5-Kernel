@@ -1,0 +1,10 @@
+# Makefile for Miscellaneous Utilities to hongmeng kernel
+#
+# Copyright (C) Huawei Technologies Co., Ltd. 2020.
+# Author: Huawei OS Kernel Lab
+# Create: Fri Apr 10 14:48:13 2020
+#
+
+lib-y:=
+
+INSERT

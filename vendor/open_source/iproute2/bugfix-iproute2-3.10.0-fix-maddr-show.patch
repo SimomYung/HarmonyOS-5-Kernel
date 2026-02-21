@@ -1,0 +1,39 @@
+From 9b190596f7d26ad640bd3e56b65c3fedf80d3963 Mon Sep 17 00:00:00 2001
+From: Feilong Lin <linfeilong@huawei.com>
+Date: Mon, 20 Jan 2020 23:21:25 +0800
+Subject: [PATCH] fix maddr show
+
+---
+ ip/ipmaddr.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/ip/ipmaddr.c b/ip/ipmaddr.c
+index 3400e05..e37929e 100644
+--- a/ip/ipmaddr.c
++++ b/ip/ipmaddr.c
+@@ -138,9 +138,11 @@ static void read_igmp(struct ma_info **result_p)
+ 	while (fgets(buf, sizeof(buf), fp)) {
+ 		struct ma_info *ma;
+ 
++		int index;
+ 		if (buf[0] != '\t') {
+ 			size_t len;
+ 
++			memset(&m.name, 0, sizeof(m.name)); 
+ 			sscanf(buf, "%d%s", &m.index, m.name);
+ 			len = strlen(m.name);
+ 			if (m.name[len - 1] == ':')
+@@ -148,6 +150,10 @@ static void read_igmp(struct ma_info **result_p)
+ 			continue;
+ 		}
+ 
++		index = strlen(m.name) - 1;
++		if (index > 0 && m.name[index] == ':') {
++			m.name[index] = 0;
++		}
+ 		if (filter.dev && strcmp(filter.dev, m.name))
+ 			continue;
+ 
+-- 
+1.8.3.1
+

@@ -1,0 +1,526 @@
+# Copyright (c) 2021 北京万里红科技有限公司
+# Copyright(c) Huawei Technologies Co.,Ltd.
+# 2020-2021.All rights reserved.
+# Copyright(c)2016,Google inc.
+#
+# Permission to use,copy,modify,and/or distribute this software for any
+# purpose with or without fee is hereby granted,provided that the above
+# copyright notice and this permission notice appear in all copies.
+#
+
+import("//build/ohos.gni")
+
+LIBSEPOL_ROOT_DIR = "//third_party/selinux/libsepol"
+LIBSELINUX_ROOT_DIR = "//third_party/selinux/libselinux"
+CHECKPOLICY_ROOT_DIR = "//third_party/selinux/checkpolicy"
+SECILC_ROOT_DIR = "//third_party/selinux/secilc"
+
+config("third_party_selinux_config") {
+  include_dirs = [
+    "$LIBSELINUX_ROOT_DIR/include",
+    "$LIBSELINUX_ROOT_DIR",
+  ]
+}
+
+config("third_party_selinux_nolto_config") {
+  if (use_libfuzzer && !is_mac) {
+    cflags = []
+  } else {
+    cflags = [
+      "-fno-emulated-tls",
+      "-fno-lto",
+      "-fno-whole-program-vtables",
+    ]
+  }
+}
+
+ohos_shared_library("libsepol") {
+  md5_check_script = rebase_path("//third_party/selinux/check_md5.sh")
+  _arguments = [
+    rebase_path("libsepol/cil/src/cil_lexer.c"),
+    rebase_path("libsepol/cil/src/cil_lexer.l"),
+    rebase_path("libsepol/cil/src/cil_lexer.md5"),
+  ]
+  result = exec_script(md5_check_script, _arguments, "string")
+  if (result != "") {
+    exec_script("/usr/bin/flex",
+                [
+                  "-o",
+                  rebase_path("libsepol/cil/src/cil_lexer.c"),
+                  rebase_path("libsepol/cil/src/cil_lexer.l"),
+                ],
+                "")
+  }
+
+  output_name = "libsepol"
+  version_script = "libsepol.map"
+  sources = [
+    "$LIBSEPOL_ROOT_DIR/cil/src/cil.c",
+    "$LIBSEPOL_ROOT_DIR/cil/src/cil_binary.c",
+    "$LIBSEPOL_ROOT_DIR/cil/src/cil_build_ast.c",
+    "$LIBSEPOL_ROOT_DIR/cil/src/cil_copy_ast.c",
+    "$LIBSEPOL_ROOT_DIR/cil/src/cil_find.c",
+    "$LIBSEPOL_ROOT_DIR/cil/src/cil_fqn.c",
+    "$LIBSEPOL_ROOT_DIR/cil/src/cil_lexer.c",
+    "$LIBSEPOL_ROOT_DIR/cil/src/cil_list.c",
+    "$LIBSEPOL_ROOT_DIR/cil/src/cil_log.c",
+    "$LIBSEPOL_ROOT_DIR/cil/src/cil_mem.c",
+    "$LIBSEPOL_ROOT_DIR/cil/src/cil_parser.c",
+    "$LIBSEPOL_ROOT_DIR/cil/src/cil_policy.c",
+    "$LIBSEPOL_ROOT_DIR/cil/src/cil_post.c",
+    "$LIBSEPOL_ROOT_DIR/cil/src/cil_reset_ast.c",
+    "$LIBSEPOL_ROOT_DIR/cil/src/cil_resolve_ast.c",
+    "$LIBSEPOL_ROOT_DIR/cil/src/cil_stack.c",
+    "$LIBSEPOL_ROOT_DIR/cil/src/cil_strpool.c",
+    "$LIBSEPOL_ROOT_DIR/cil/src/cil_symtab.c",
+    "$LIBSEPOL_ROOT_DIR/cil/src/cil_tree.c",
+    "$LIBSEPOL_ROOT_DIR/cil/src/cil_verify.c",
+    "$LIBSEPOL_ROOT_DIR/cil/src/cil_write_ast.c",
+    "$LIBSEPOL_ROOT_DIR/src/assertion.c",
+    "$LIBSEPOL_ROOT_DIR/src/avrule_block.c",
+    "$LIBSEPOL_ROOT_DIR/src/avtab.c",
+    "$LIBSEPOL_ROOT_DIR/src/boolean_record.c",
+    "$LIBSEPOL_ROOT_DIR/src/booleans.c",
+    "$LIBSEPOL_ROOT_DIR/src/conditional.c",
+    "$LIBSEPOL_ROOT_DIR/src/constraint.c",
+    "$LIBSEPOL_ROOT_DIR/src/context.c",
+    "$LIBSEPOL_ROOT_DIR/src/context_record.c",
+    "$LIBSEPOL_ROOT_DIR/src/debug.c",
+    "$LIBSEPOL_ROOT_DIR/src/ebitmap.c",
+    "$LIBSEPOL_ROOT_DIR/src/expand.c",
+    "$LIBSEPOL_ROOT_DIR/src/handle.c",
+    "$LIBSEPOL_ROOT_DIR/src/hashtab.c",
+    "$LIBSEPOL_ROOT_DIR/src/hierarchy.c",
+    "$LIBSEPOL_ROOT_DIR/src/ibendport_record.c",
+    "$LIBSEPOL_ROOT_DIR/src/ibendports.c",
+    "$LIBSEPOL_ROOT_DIR/src/ibpkey_record.c",
+    "$LIBSEPOL_ROOT_DIR/src/ibpkeys.c",
+    "$LIBSEPOL_ROOT_DIR/src/iface_record.c",
+    "$LIBSEPOL_ROOT_DIR/src/interfaces.c",
+    "$LIBSEPOL_ROOT_DIR/src/kernel_to_cil.c",
+    "$LIBSEPOL_ROOT_DIR/src/kernel_to_common.c",
+    "$LIBSEPOL_ROOT_DIR/src/kernel_to_conf.c",
+    "$LIBSEPOL_ROOT_DIR/src/link.c",
+    "$LIBSEPOL_ROOT_DIR/src/mls.c",
+    "$LIBSEPOL_ROOT_DIR/src/module.c",
+    "$LIBSEPOL_ROOT_DIR/src/module_to_cil.c",
+    "$LIBSEPOL_ROOT_DIR/src/node_record.c",
+    "$LIBSEPOL_ROOT_DIR/src/nodes.c",
+    "$LIBSEPOL_ROOT_DIR/src/optimize.c",
+    "$LIBSEPOL_ROOT_DIR/src/polcaps.c",
+    "$LIBSEPOL_ROOT_DIR/src/policydb.c",
+    "$LIBSEPOL_ROOT_DIR/src/policydb_convert.c",
+    "$LIBSEPOL_ROOT_DIR/src/policydb_public.c",
+    "$LIBSEPOL_ROOT_DIR/src/policydb_validate.c",
+    "$LIBSEPOL_ROOT_DIR/src/port_record.c",
+    "$LIBSEPOL_ROOT_DIR/src/ports.c",
+    "$LIBSEPOL_ROOT_DIR/src/services.c",
+    "$LIBSEPOL_ROOT_DIR/src/sidtab.c",
+    "$LIBSEPOL_ROOT_DIR/src/symtab.c",
+    "$LIBSEPOL_ROOT_DIR/src/user_record.c",
+    "$LIBSEPOL_ROOT_DIR/src/users.c",
+    "$LIBSEPOL_ROOT_DIR/src/util.c",
+    "$LIBSEPOL_ROOT_DIR/src/write.c",
+  ]
+  include_dirs = [
+    "$LIBSEPOL_ROOT_DIR/cil/include",
+    "$LIBSEPOL_ROOT_DIR/include",
+  ]
+  cflags = [
+    "-D_GNU_SOURCE",
+    "-DHAVE_REALLOCARRAY",
+    "-w",
+  ]
+  install_enable = true
+  install_images = [
+    "system",
+    "ramdisk",
+    "updater",
+  ]
+  license_file = "$LIBSEPOL_ROOT_DIR/LICENSE"
+  part_name = "selinux"
+  subsystem_name = "thirdparty"
+}
+
+ohos_executable("chkcon") {
+  install_enable = true
+  sources = [ "$LIBSEPOL_ROOT_DIR/utils/chkcon.c" ]
+  deps = [ ":libsepol" ]
+  include_dirs = [ "$LIBSEPOL_ROOT_DIR/include" ]
+  cflags = [
+    "-D_GNU_SOURCE",
+    "-w",
+  ]
+  license_file = "$LIBSEPOL_ROOT_DIR/LICENSE"
+  part_name = "selinux"
+  subsystem_name = "thirdparty"
+}
+
+selinux_sources = [
+  "$LIBSELINUX_ROOT_DIR/src/avc.c",
+  "$LIBSELINUX_ROOT_DIR/src/avc_internal.c",
+  "$LIBSELINUX_ROOT_DIR/src/avc_sidtab.c",
+  "$LIBSELINUX_ROOT_DIR/src/booleans.c",
+  "$LIBSELINUX_ROOT_DIR/src/callbacks.c",
+  "$LIBSELINUX_ROOT_DIR/src/canonicalize_context.c",
+  "$LIBSELINUX_ROOT_DIR/src/checkAccess.c",
+  "$LIBSELINUX_ROOT_DIR/src/check_context.c",
+  "$LIBSELINUX_ROOT_DIR/src/compute_av.c",
+  "$LIBSELINUX_ROOT_DIR/src/compute_create.c",
+  "$LIBSELINUX_ROOT_DIR/src/compute_member.c",
+  "$LIBSELINUX_ROOT_DIR/src/context.c",
+  "$LIBSELINUX_ROOT_DIR/src/deny_unknown.c",
+  "$LIBSELINUX_ROOT_DIR/src/disable.c",
+  "$LIBSELINUX_ROOT_DIR/src/enabled.c",
+  "$LIBSELINUX_ROOT_DIR/src/fgetfilecon.c",
+  "$LIBSELINUX_ROOT_DIR/src/freecon.c",
+  "$LIBSELINUX_ROOT_DIR/src/fsetfilecon.c",
+  "$LIBSELINUX_ROOT_DIR/src/get_initial_context.c",
+  "$LIBSELINUX_ROOT_DIR/src/getenforce.c",
+  "$LIBSELINUX_ROOT_DIR/src/getfilecon.c",
+  "$LIBSELINUX_ROOT_DIR/src/getpeercon.c",
+  "$LIBSELINUX_ROOT_DIR/src/ignore_path.c",
+  "$LIBSELINUX_ROOT_DIR/src/init.c",
+  "$LIBSELINUX_ROOT_DIR/src/is_customizable_type.c",
+  "$LIBSELINUX_ROOT_DIR/src/label.c",
+  "$LIBSELINUX_ROOT_DIR/src/label_backends_android.c",
+  "$LIBSELINUX_ROOT_DIR/src/label_db.c",
+  "$LIBSELINUX_ROOT_DIR/src/label_file.c",
+  "$LIBSELINUX_ROOT_DIR/src/label_media.c",
+  "$LIBSELINUX_ROOT_DIR/src/label_support.c",
+  "$LIBSELINUX_ROOT_DIR/src/label_x.c",
+  "$LIBSELINUX_ROOT_DIR/src/lgetfilecon.c",
+  "$LIBSELINUX_ROOT_DIR/src/load_policy.c",
+  "$LIBSELINUX_ROOT_DIR/src/lsetfilecon.c",
+  "$LIBSELINUX_ROOT_DIR/src/mapping.c",
+  "$LIBSELINUX_ROOT_DIR/src/matchpathcon.c",
+  "$LIBSELINUX_ROOT_DIR/src/policyvers.c",
+  "$LIBSELINUX_ROOT_DIR/src/procattr.c",
+  "$LIBSELINUX_ROOT_DIR/src/regex.c",
+  "$LIBSELINUX_ROOT_DIR/src/reject_unknown.c",
+  "$LIBSELINUX_ROOT_DIR/src/selinux_config.c",
+  "$LIBSELINUX_ROOT_DIR/src/selinux_restorecon.c",
+  "$LIBSELINUX_ROOT_DIR/src/sestatus.c",
+  "$LIBSELINUX_ROOT_DIR/src/setenforce.c",
+  "$LIBSELINUX_ROOT_DIR/src/setfilecon.c",
+  "$LIBSELINUX_ROOT_DIR/src/setrans_client.c",
+  "$LIBSELINUX_ROOT_DIR/src/seusers.c",
+  "$LIBSELINUX_ROOT_DIR/src/sha1.c",
+  "$LIBSELINUX_ROOT_DIR/src/stringrep.c",
+]
+
+ohos_shared_library("libselinux") {
+  branch_protector_ret = "pac_ret"
+
+  output_name = "libselinux"
+
+  sources = selinux_sources
+
+  if (current_toolchain == host_toolchain) {
+    # host build
+    sources += [ "$LIBSELINUX_ROOT_DIR/src/selinux_internal.c" ]
+  }
+
+  include_dirs = [
+    "$LIBSELINUX_ROOT_DIR/include",
+    "$LIBSEPOL_ROOT_DIR/include",
+  ]
+
+  configs = [ ":third_party_selinux_nolto_config" ]
+
+  public_configs = [ ":third_party_selinux_config" ]
+
+  cflags = [
+    "-DOHOS_FC_INIT",
+    "-D_GNU_SOURCE",
+    "-w",
+    "-DSHARED",
+    "-DUSE_PCRE2",
+    "-U__BIONIC__",
+    "-DAUDITD_LOG_TAG=1003",
+    "-DPCRE2_CODE_UNIT_WIDTH=8",
+  ]
+  if (host_cpu == "arm64" && host_os == "linux") {
+    cflags += [ "-DWITH_FREEBSD" ]
+  }
+  external_deps = [ "pcre2:libpcre2" ]
+  public_external_deps = [ "FreeBSD:libfreebsd_static" ]
+  install_enable = true
+  install_images = [
+    "system",
+    "ramdisk",
+    "updater",
+  ]
+  license_file = "$LIBSELINUX_ROOT_DIR/LICENSE"
+  innerapi_tags = [
+    "platformsdk_indirect",
+    "chipsetsdk_indirect",
+  ]
+  part_name = "selinux"
+  subsystem_name = "thirdparty"
+}
+
+ohos_static_library("libselinux_static") {
+  output_name = "libselinux_static"
+
+  sources = selinux_sources
+
+  if (current_toolchain == host_toolchain) {
+    # host build
+    sources += [ "$LIBSELINUX_ROOT_DIR/src/selinux_internal.c" ]
+  }
+
+  include_dirs = [
+    "$LIBSELINUX_ROOT_DIR/include",
+    "$LIBSEPOL_ROOT_DIR/include",
+  ]
+
+  configs = [ ":third_party_selinux_nolto_config" ]
+
+  public_configs = [ ":third_party_selinux_config" ]
+
+  cflags = [
+    "-DOHOS_FC_INIT",
+    "-D_GNU_SOURCE",
+    "-w",
+    "-DSHARED",
+    "-DUSE_PCRE2",
+    "-U__BIONIC__",
+    "-DAUDITD_LOG_TAG=1003",
+    "-DPCRE2_CODE_UNIT_WIDTH=8",
+  ]
+  external_deps = [ "pcre2:libpcre2_static" ]
+  public_external_deps = [ "FreeBSD:libfreebsd_static" ]
+  license_file = "$LIBSELINUX_ROOT_DIR/LICENSE"
+  part_name = "selinux"
+  subsystem_name = "thirdparty"
+}
+
+ohos_executable("setenforce") {
+  install_enable = true
+  sources = [ "$LIBSELINUX_ROOT_DIR/utils/setenforce.c" ]
+  deps = [ ":libselinux" ]
+  include_dirs = [ "$LIBSELINUX_ROOT_DIR/include" ]
+
+  cflags = [
+    "-D_GNU_SOURCE",
+    "-w",
+  ]
+  license_file = "$LIBSELINUX_ROOT_DIR/LICENSE"
+  part_name = "selinux"
+  subsystem_name = "thirdparty"
+  install_images = [
+    "system",
+    "updater",
+  ]
+}
+
+ohos_executable("getenforce") {
+  install_enable = true
+  sources = [ "$LIBSELINUX_ROOT_DIR/utils/getenforce.c" ]
+  deps = [ ":libselinux" ]
+  include_dirs = [ "$LIBSELINUX_ROOT_DIR/include" ]
+  cflags = [
+    "-D_GNU_SOURCE",
+    "-w",
+  ]
+  license_file = "$LIBSELINUX_ROOT_DIR/LICENSE"
+  part_name = "selinux"
+  subsystem_name = "thirdparty"
+  install_images = [
+    "system",
+    "updater",
+  ]
+}
+
+ohos_executable("getfilecon") {
+  install_enable = true
+  sources = [ "$LIBSELINUX_ROOT_DIR/utils/getfilecon.c" ]
+  deps = [ ":libselinux" ]
+  include_dirs = [ "$LIBSELINUX_ROOT_DIR/include" ]
+  cflags = [
+    "-D_GNU_SOURCE",
+    "-w",
+  ]
+  license_file = "$LIBSELINUX_ROOT_DIR/LICENSE"
+  part_name = "selinux"
+  subsystem_name = "thirdparty"
+  install_images = [
+    "system",
+    "updater",
+  ]
+}
+
+ohos_executable("setfilecon") {
+  install_enable = true
+  sources = [ "$LIBSELINUX_ROOT_DIR/utils/setfilecon.c" ]
+  deps = [ ":libselinux" ]
+  include_dirs = [ "$LIBSELINUX_ROOT_DIR/include" ]
+  cflags = [
+    "-D_GNU_SOURCE",
+    "-w",
+  ]
+  license_file = "$LIBSELINUX_ROOT_DIR/LICENSE"
+  part_name = "selinux"
+  subsystem_name = "thirdparty"
+  install_images = [
+    "system",
+    "updater",
+  ]
+}
+
+ohos_executable("selinuxexeccon") {
+  install_enable = true
+  sources = [ "$LIBSELINUX_ROOT_DIR/utils/selinuxexeccon.c" ]
+  deps = [ ":libselinux" ]
+  include_dirs = [ "$LIBSELINUX_ROOT_DIR/include" ]
+  cflags = [
+    "-D_GNU_SOURCE",
+    "-w",
+  ]
+  license_file = "$LIBSELINUX_ROOT_DIR/LICENSE"
+  part_name = "selinux"
+  subsystem_name = "thirdparty"
+  install_images = [
+    "system",
+    "updater",
+  ]
+}
+
+ohos_executable("selinux_check_access") {
+  install_enable = true
+  sources = [ "$LIBSELINUX_ROOT_DIR/utils/selinux_check_access.c" ]
+  deps = [ ":libselinux" ]
+  include_dirs = [ "$LIBSELINUX_ROOT_DIR/include" ]
+  cflags = [
+    "-D_GNU_SOURCE",
+    "-w",
+  ]
+  license_file = "$LIBSELINUX_ROOT_DIR/LICENSE"
+  part_name = "selinux"
+  subsystem_name = "thirdparty"
+  install_images = [
+    "system",
+    "updater",
+  ]
+}
+
+ohos_executable("getpidcon") {
+  install_enable = true
+  sources = [ "$LIBSELINUX_ROOT_DIR/utils/getpidcon.c" ]
+  deps = [ ":libselinux" ]
+  include_dirs = [ "$LIBSELINUX_ROOT_DIR/include" ]
+  cflags = [
+    "-D_GNU_SOURCE",
+    "-w",
+  ]
+  license_file = "$LIBSELINUX_ROOT_DIR/LICENSE"
+  part_name = "selinux"
+  subsystem_name = "thirdparty"
+  install_images = [
+    "system",
+    "updater",
+  ]
+}
+
+ohos_executable("checkpolicy") {
+  md5_check_script = rebase_path("//third_party/selinux/check_md5.sh")
+  _arguments = [
+    rebase_path("checkpolicy/y.tab.c"),
+    rebase_path("checkpolicy/policy_parse.y"),
+    rebase_path("checkpolicy/y.tab.md5"),
+  ]
+  result = exec_script(md5_check_script, _arguments, "string")
+  if (result != "") {
+    exec_script("/usr/bin/bison",
+                [
+                  "-y",
+                  "-d",
+                  rebase_path("checkpolicy/policy_parse.y"),
+                  "-o",
+                  rebase_path("checkpolicy/y.tab.c"),
+                ],
+                "")
+  }
+  _arguments = []
+  _arguments = [
+    rebase_path("checkpolicy/policy_scan.c"),
+    rebase_path("checkpolicy/policy_scan.l"),
+    rebase_path("checkpolicy/policy_scan.md5"),
+  ]
+  result = exec_script(md5_check_script, _arguments, "string")
+  if (result != "") {
+    exec_script("/usr/bin/flex",
+                [
+                  "-o",
+                  rebase_path("checkpolicy/policy_scan.c"),
+                  rebase_path("checkpolicy/policy_scan.l"),
+                ],
+                "")
+  }
+  install_enable = true
+  sources = [
+    "$CHECKPOLICY_ROOT_DIR/checkpolicy.c",
+    "$CHECKPOLICY_ROOT_DIR/module_compiler.c",
+    "$CHECKPOLICY_ROOT_DIR/parse_util.c",
+    "$CHECKPOLICY_ROOT_DIR/policy_define.c",
+    "$CHECKPOLICY_ROOT_DIR/policy_scan.c",
+    "$CHECKPOLICY_ROOT_DIR/queue.c",
+    "$CHECKPOLICY_ROOT_DIR/y.tab.c",
+  ]
+  deps = [ ":libsepol" ]
+  include_dirs = [
+    "$LIBSEPOL_ROOT_DIR/cil/include",
+    "$LIBSEPOL_ROOT_DIR/include",
+    "$CHECKPOLICY_ROOT_DIR",
+  ]
+  cflags = [
+    "-Wall",
+    "-Werror",
+    "-Wshadow",
+  ]
+  license_file = "$LIBSELINUX_ROOT_DIR/LICENSE"
+  part_name = "selinux"
+  subsystem_name = "thirdparty"
+}
+
+ohos_executable("secilc") {
+  install_enable = true
+  sources = [ "$SECILC_ROOT_DIR/secilc.c" ]
+  deps = [ ":libsepol" ]
+  include_dirs = [
+    "$LIBSEPOL_ROOT_DIR/cil/include",
+    "$LIBSEPOL_ROOT_DIR/include",
+  ]
+  cflags = [
+    "-Wall",
+    "-Werror",
+    "-Wshadow",
+  ]
+  license_file = "$LIBSEPOL_ROOT_DIR/LICENSE"
+  part_name = "selinux"
+  subsystem_name = "thirdparty"
+}
+
+ohos_executable("sefcontext_compile") {
+  install_enable = true
+  sources = [ "$LIBSELINUX_ROOT_DIR/utils/sefcontext_compile.c" ]
+  deps = [
+    ":libselinux",
+    ":libsepol",
+  ]
+  external_deps = [ "pcre2:libpcre2" ]
+  include_dirs = [
+    "$LIBSELINUX_ROOT_DIR/include",
+    "$LIBSEPOL_ROOT_DIR/include",
+  ]
+  cflags = [
+    "-D_GNU_SOURCE",
+    "-DUSE_PCRE2",
+    "-DPCRE2_CODE_UNIT_WIDTH=8",
+    "-w",
+  ]
+  license_file = "$LIBSELINUX_ROOT_DIR/LICENSE"
+  part_name = "selinux"
+  subsystem_name = "thirdparty"
+}

@@ -1,0 +1,8 @@
+INCLUDE_DIR += \
+	-I$(HVGR_PATH)/mem
+
+ifdef CONFIG_LIBLINUX
+	SRC += \
+	$(HVGR_ROOT)/ldk/mem/hvgr_mem_ldk.c
+endif
+

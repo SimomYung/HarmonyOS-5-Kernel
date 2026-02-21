@@ -1,0 +1,8 @@
+source "$(HMCMAKENG_KCONFIG)"
+
+config COMPAT
+	bool "Support for 32-bit applications at EL0"
+	default n
+# for sysif handler
+config NO_COMPAT
+	def_bool !COMPAT

@@ -1,0 +1,62 @@
+# Copyright (c) 2024 Huawei Device Co., Ltd.
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+import("//build/ohos.gni")
+import("//third_party/tex-hyphen/tex-hyphen.gni")
+
+ohos_executable("hpb_transform") {
+  cflags_cc = [ "-std=c++17" ]
+  output_name = "hpb_transform"
+  install_enable = false
+  sources =
+      [ "$hyphen_root/ohos/src/hyphen-build/hyphen_pattern_processor.cpp" ]
+  external_deps = [ "icu:shared_icuuc" ]
+  part_name = "tex-hyphen"
+  subsystem_name = "thirdparty"
+}
+
+dep_list = []
+
+foreach(tex_source, tex_source_config) {
+  language = tex_source.language
+  hpb_file = "$target_out_dir/hpb_out/$language.hpb"
+
+  action("tex_hyphen_hpb_action_$language") {
+    script = "$hyphen_root/ohos/build/generate_hpb.py"
+    tex_base_output_path =
+        get_label_info(":hpb_transform(${host_toolchain})", "root_out_dir")
+    sources = [ tex_source.file_path ]
+    outputs = [ hpb_file ]
+    args = [
+      rebase_path(tex_base_output_path) +
+          "/thirdparty/tex-hyphen/hpb_transform",
+      rebase_path(sources[0], root_build_dir),
+      rebase_path("$target_out_dir/hpb_out", root_build_dir),
+    ]
+    public_deps = [ ":hpb_transform(${host_toolchain})" ]
+  }
+
+  target_name = get_path_info(hpb_file, "name")
+  ohos_prebuilt_etc(target_name) {
+    source = hpb_file
+    module_install_dir = "usr/ohos_hyphen_data"
+    subsystem_name = "thirdparty"
+    part_name = "tex-hyphen"
+    deps = [ ":tex_hyphen_hpb_action_$language" ]
+  }
+  dep_list += [ ":" + target_name ]
+}
+
+group("hyphenation_patterns") {
+  deps = dep_list
+}

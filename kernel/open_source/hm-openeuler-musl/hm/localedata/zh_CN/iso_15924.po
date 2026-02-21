@@ -1,0 +1,529 @@
+msgid ""
+msgstr ""
+"Language: zh_CN\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"POT-Creation-Date: 2019-09-25\n"
+
+msgid "Adlam"
+msgstr "Adlam字母（富拉尼语）"
+
+msgid "Afaka"
+msgstr "（一种人工文字）"
+
+msgid "Ahom, Tai Ahom"
+msgstr "阿豪姆字母"
+
+msgid "Anatolian Hieroglyphs (Luwian Hieroglyphs, Hittite Hieroglyphs)"
+msgstr "安那托利亚文字"
+
+msgid "Arabic"
+msgstr "阿拉伯字母"
+
+msgid "Arabic (Nastaliq variant)"
+msgstr "阿拉伯字母（波斯体）"
+
+msgid "Armenian"
+msgstr "亚美尼亚字母"
+
+msgid "Avestan"
+msgstr "阿维斯陀字母"
+
+msgid "Balinese"
+msgstr "巴厘字母"
+
+msgid "Bamum"
+msgstr "巴穆姆文字"
+
+msgid "Bassa Vah"
+msgstr "巴萨哇文字"
+
+msgid "Batak"
+msgstr "巴塔克文"
+
+msgid "Bengali"
+msgstr "孟加拉文"
+
+msgid "Blissymbols"
+msgstr "布利斯符号"
+
+msgid "Book Pahlavi"
+msgstr "书写体巴列维文"
+
+msgid "Bopomofo"
+msgstr "注音符号"
+
+msgid "Brahmi"
+msgstr "婆罗米文"
+
+msgid "Braille"
+msgstr "盲文"
+
+msgid "Bugines"
+msgstr "布吉文"
+
+msgid "Buhid"
+msgstr "布希德文"
+
+msgid "Carian"
+msgstr "卡里亚字母"
+
+msgid "Caucasian Albanian"
+msgstr "高加索阿尔巴尼亚文"
+
+msgid "Chakma"
+msgstr "查克马文"
+
+msgid "Cham"
+msgstr "占文"
+
+msgid "Cherokee"
+msgstr "切罗基字母"
+
+msgid "Cirth"
+msgstr "（一种人工文字）"
+
+msgid "Code for inherited script"
+msgstr "继承文字（表示继承前文的文字属性）"
+
+msgid "Code for uncoded script"
+msgstr "未编码文字"
+
+msgid "Code for undetermined script"
+msgstr "未定文字"
+
+msgid "Code for unwritten documents"
+msgstr "无文字语言"
+
+msgid "Coptic"
+msgstr "科普特字母"
+
+msgid "Cuneiform, Sumero-Akkadian"
+msgstr "苏美尔-阿卡德楔形文字"
+
+msgid "Cypriot"
+msgstr "塞浦路斯文字"
+
+msgid "Cyrillic"
+msgstr "西里尔字母"
+
+msgid "Cyrillic (Old Church Slavonic variant)"
+msgstr "西里尔字母（古教会斯拉夫语变体）"
+
+msgid "Deseret (Mormon)"
+msgstr "德赛莱特字母"
+
+msgid "Devanagari (Nagari)"
+msgstr "天城文（城文）"
+
+msgid "Duployan shorthand, Duployan stenography"
+msgstr ""
+
+msgid "Egyptian demotic"
+msgstr "埃及世俗体"
+
+msgid "Egyptian hieratic"
+msgstr "埃及僧侣体"
+
+msgid "Egyptian hieroglyphs"
+msgstr "埃及圣书体"
+
+msgid "Elbasan"
+msgstr "艾尔巴桑字母"
+
+msgid "Ethiopic (Geʻez)"
+msgstr "埃塞俄比亚文（吉兹字母）"
+
+msgid "Georgian (Mkhedruli)"
+msgstr "格鲁吉亚字母"
+
+msgid "Glagolitic"
+msgstr "格拉哥里字母"
+
+msgid "Gothic"
+msgstr "哥德字母"
+
+msgid "Grantha"
+msgstr "帕拉瓦文"
+
+msgid "Greek"
+msgstr "希腊字母"
+
+msgid "Gujarati"
+msgstr "古吉拉特文"
+
+msgid "Gurmukhi"
+msgstr "古木基文"
+
+msgid "Han (Hanzi, Kanji, Hanja)"
+msgstr "汉字"
+
+msgid "Han (Simplified variant)"
+msgstr "简体汉字"
+
+msgid "Han (Traditional variant)"
+msgstr "传统汉字"
+
+msgid "Hangul (Hangŭl, Hangeul)"
+msgstr "谚文"
+
+msgid "Hanunoo (Hanunóo)"
+msgstr "哈努诺文"
+
+msgid "Hatran"
+msgstr "哈特拉字母"
+
+msgid "Hebrew"
+msgstr "希伯来字母"
+
+msgid "Hiragana"
+msgstr "平假名"
+
+msgid "Imperial Aramaic"
+msgstr "皇家亚兰字母"
+
+msgid "Indus (Harappan)"
+msgstr "印度河文字（哈拉帕文字）"
+
+msgid "Inscriptional Pahlavi"
+msgstr "巴列维铭文"
+
+msgid "Inscriptional Parthian"
+msgstr "帕提亚铭文"
+
+msgid "Japanese (alias for Han + Hiragana + Katakana)"
+msgstr "日文的汉字假名混写文（汉字、平假名和片假名）"
+
+msgid "Japanese syllabaries (alias for Hiragana + Katakana)"
+msgstr "日文假名（平假名和片假名）"
+
+msgid "Javanese"
+msgstr "爪哇字母"
+
+msgid "Jurchen"
+msgstr "女真文"
+
+msgid "Kaithi"
+msgstr "凯提文"
+
+msgid "Kannada"
+msgstr "卡纳达文"
+
+msgid "Katakana"
+msgstr "片假名"
+
+msgid "Kayah Li"
+msgstr "克耶字母"
+
+msgid "Kharoshthi"
+msgstr "佉卢文"
+
+msgid "Khitan large script"
+msgstr "契丹大字"
+
+msgid "Khitan small script"
+msgstr "契丹小字"
+
+msgid "Khmer"
+msgstr "高棉文"
+
+msgid "Khojki"
+msgstr "可吉文"
+
+msgid "Khudawadi, Sindhi"
+msgstr "库达瓦迪文"
+
+msgid "Khutsuri (Asomtavruli and Nuskhuri)"
+msgstr "Khutsuri（格鲁吉亚字母正圆体及小草体）"
+
+msgid "Korean (alias for Hangul + Han)"
+msgstr "韩文的韩汉混用文（谚文和汉字）"
+
+msgid "Kpelle"
+msgstr "克佩列语"
+
+msgid "Lao"
+msgstr "老挝字母"
+
+msgid "Latin"
+msgstr "拉丁字母"
+
+msgid "Latin (Fraktur variant)"
+msgstr "拉丁字母（哥德体、Fraktur）"
+
+msgid "Latin (Gaelic variant)"
+msgstr "拉丁字母（盖尔体）"
+
+msgid "Lepcha (Róng)"
+msgstr "雷布查字母（绒文）"
+
+msgid "Limbu"
+msgstr "林布字母"
+
+msgid "Linear A"
+msgstr "线形文字A"
+
+msgid "Linear B"
+msgstr "线形文字B"
+
+msgid "Lisu (Fraser)"
+msgstr "老傈僳文（富能仁）"
+
+msgid "Loma"
+msgstr "洛马语"
+
+msgid "Lycian"
+msgstr "吕基亚字母"
+
+msgid "Lydian"
+msgstr "吕底亚字母"
+
+msgid "Mahajani"
+msgstr "马哈佳尼文"
+
+msgid "Malayalam"
+msgstr "马拉雅拉姆文"
+
+msgid "Mandaic, Mandaean"
+msgstr "曼达安文字"
+
+msgid "Manichaean"
+msgstr "摩尼字母"
+
+msgid "Marchen"
+msgstr "大玛尔文（象雄语）"
+
+msgid "Mathematical notation"
+msgstr "数学符号"
+
+msgid "Mayan hieroglyphs"
+msgstr "玛雅文字"
+
+msgid "Meitei Mayek (Meithei, Meetei)"
+msgstr "曼尼普尔字母"
+
+msgid "Mende Kikakui"
+msgstr ""
+
+msgid "Meroitic Cursive"
+msgstr "麦罗埃文（手写体）"
+
+msgid "Meroitic Hieroglyphs"
+msgstr "麦罗埃文（圣书体）"
+
+msgid "Miao (Pollard)"
+msgstr "滇东北老苗文（柏格理）"
+
+msgid "Modi, Moḍī"
+msgstr "莫迪文"
+
+msgid "Mongolian"
+msgstr "蒙古字母"
+
+msgid "Moon (Moon code, Moon script, Moon type)"
+msgstr "穆恩文（穆恩码、穆恩字、穆恩体）"
+
+msgid "Mro, Mru"
+msgstr "穆文"
+
+msgid "Multani"
+msgstr "木尔坦文"
+
+msgid "Myanmar (Burmese)"
+msgstr "缅文"
+
+msgid "N’Ko"
+msgstr "（西非书面语言字母）"
+
+msgid "Nabataean"
+msgstr "纳巴泰字母"
+
+msgid "Nakhi Geba ('Na-'Khi ²Ggŏ-¹baw, Naxi Geba)"
+msgstr "纳西哥巴文"
+
+msgid "New Tai Lue"
+msgstr "新傣仂文"
+
+msgid "Nüshu"
+msgstr "女书"
+
+msgid "Ogham"
+msgstr "欧甘字母"
+
+msgid "Ol Chiki (Ol Cemet’, Ol, Santali)"
+msgstr "桑塔利文"
+
+msgid "Old Hungarian (Hungarian Runic)"
+msgstr "老匈牙利文"
+
+msgid "Old Italic (Etruscan, Oscan, etc.)"
+msgstr "古意大利字母（伊特鲁里亚、奥斯坎、等等）"
+
+msgid "Old North Arabian (Ancient North Arabian)"
+msgstr "北阿拉伯字母"
+
+msgid "Old Permic"
+msgstr "古彼尔姆字母"
+
+msgid "Old Persian"
+msgstr "古波斯楔形文字"
+
+msgid "Old South Arabian"
+msgstr "南阿拉伯字母"
+
+msgid "Old Turkic, Orkhon Runic"
+msgstr "鄂尔浑文字"
+
+msgid "Oriya"
+msgstr "奥里亚文"
+
+msgid "Osage"
+msgstr "奥赛治字母"
+
+msgid "Osmanya"
+msgstr "奥斯曼亚字母"
+
+msgid "Pahawh Hmong"
+msgstr "救世苗文"
+
+msgid "Palmyrene"
+msgstr "巴尔米拉字母"
+
+msgid "Pau Cin Hau"
+msgstr ""
+
+msgid "Phags-pa"
+msgstr "八思巴字"
+
+msgid "Phoenician"
+msgstr "腓尼基字母"
+
+msgid "Psalter Pahlavi"
+msgstr "诗篇巴列维文"
+
+msgid "Rejang (Redjang, Kaganga)"
+msgstr "勒姜字母"
+
+msgid "Reserved for private use"
+msgstr "留作个人使用"
+
+msgid "Rongorongo"
+msgstr "朗格朗格"
+
+msgid "Runic"
+msgstr "卢恩字母"
+
+msgid "Samaritan"
+msgstr "撒玛利亚字母"
+
+msgid "Sarati"
+msgstr "（一种人工文字）"
+
+msgid "Saurashtra"
+msgstr "索拉什特拉文"
+
+msgid "Sharada, Śāradā"
+msgstr "夏拉达文"
+
+msgid "Shavian (Shaw)"
+msgstr "萧伯纳字母"
+
+msgid "Siddham, Siddhaṃ, Siddhamātṛkā"
+msgstr "悉昙文字"
+
+msgid "SignWriting"
+msgstr "手语书写符号"
+
+msgid "Sinhala"
+msgstr "僧伽罗文"
+
+msgid "Sora Sompeng"
+msgstr "索拉桑朋文"
+
+msgid "Sundanese"
+msgstr "巽他字母"
+
+msgid "Syloti Nagri"
+msgstr "锡尔赫特文"
+
+msgid "Symbols"
+msgstr "符号"
+
+msgid "Syriac"
+msgstr "叙利亚字母"
+
+msgid "Syriac (Eastern variant)"
+msgstr "叙利亚字母东部变体"
+
+msgid "Syriac (Estrangelo variant)"
+msgstr "叙利亚字母古典变体"
+
+msgid "Syriac (Western variant))"
+msgstr "叙利亚字母西部变体"
+
+msgid "Tagalog (Baybayin, Alibata)"
+msgstr "他加禄文"
+
+msgid "Tagbanwa"
+msgstr "塔格巴努亚文"
+
+msgid "Tai Le"
+msgstr "傣那文"
+
+msgid "Tai Tham (Lanna)"
+msgstr "老傣文（兰纳文）"
+
+msgid "Tai Viet"
+msgstr "越南傣文"
+
+msgid "Takri, Ṭākrī, Ṭāṅkrī"
+msgstr "塔克里字母"
+
+msgid "Tamil"
+msgstr "泰米尔文"
+
+msgid "Tangut"
+msgstr "西夏文"
+
+msgid "Telugu"
+msgstr "泰卢固文"
+
+msgid "Tengwar"
+msgstr "（一种人工文字）"
+
+msgid "Thaana"
+msgstr "它拿字母"
+
+msgid "Thai"
+msgstr "泰语字母"
+
+msgid "Tibetan"
+msgstr "藏文字母"
+
+msgid "Tifinagh (Berber)"
+msgstr "提非纳文字"
+
+msgid "Tirhuta"
+msgstr "提尔胡塔文"
+
+msgid "Ugaritic"
+msgstr "乌加里特字母"
+
+msgid "Unified Canadian Aboriginal Syllabics"
+msgstr "统一加拿大原住民音节文字"
+
+msgid "Vai"
+msgstr "瓦伊语"
+
+msgid "Visible Speech"
+msgstr "（一种人工文字）"
+
+msgid "Warang Citi (Varang Kshiti)"
+msgstr "瓦兰齐地文"
+
+msgid "Woleai"
+msgstr "沃莱艾文"
+
+msgid "Yi"
+msgstr "彝文"
+

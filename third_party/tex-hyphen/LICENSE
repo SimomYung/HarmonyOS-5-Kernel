@@ -1,0 +1,118 @@
+The following files may be used under the terms of
+GNU GENERAL PUBLIC LICENSE License,version 1("GPL")：
+
+/hyph-utf8/tex/generic/hyph-utf8/patterns/tex/hyph-mk.tex
+/hyph-utf8/tex/generic/hyph-utf8/patterns/tex/hyph-sr-cyrl.tex
+
+The full terms of GPL can be found in the LICENSE-GPL file.
+
+---------------------------------------------------------------
+
+The following files may be used under the terms of
+GNU GENERAL PUBLIC LICENSE License,version 2("GPL 2")：
+
+/hyph-utf8/tex/generic/hyph-utf8/patterns/tex/hyph-cs.tex
+/hyph-utf8/tex/generic/hyph-utf8/patterns/tex/hyph-id.tex
+/hyph-utf8/tex/generic/hyph-utf8/patterns/tex/hyph-sk.tex
+/hyph-utf8/tex/generic/hyph-utf8/patterns/tex/hyph-hu.tex
+
+The full terms of GPL 2 can be found in the LICENSE-GPL2 file.
+
+---------------------------------------------------------------
+
+The following files may be used under the terms of
+GNU LESSER GENERAL PUBLIC LICENSE,Version 2.1("LGPL 2.1")：
+
+/hyph-utf8/tex/generic/hyph-utf8/patterns/tex/hyph-lv.tex
+
+The full terms of LGPL 2.1 can be found in the LICENSE-LGPL2.1 file.
+
+---------------------------------------------------------------
+
+The following files may be used under the terms of
+LaTeX Project Public License,Version 1("LPPL")：
+
+/hyph-utf8/tex/generic/hyph-utf8/patterns/tex/hyph-bg.tex
+/hyph-utf8/tex/generic/hyph-utf8/patterns/tex/hyph-cy.tex
+/hyph-utf8/tex/generic/hyph-utf8/patterns/tex/hyph-el-monoton.tex
+/hyph-utf8/tex/generic/hyph-utf8/patterns/tex/hyph-hr.tex
+/hyph-utf8/tex/generic/hyph-utf8/patterns/tex/hyph-sh-cyrl.tex
+/hyph-utf8/tex/generic/hyph-utf8/patterns/tex/hyph-sh-latn.tex
+/hyph-utf8/tex/generic/hyph-utf8/patterns/tex/hyph-sl.tex
+/hyph-utf8/tex/generic/hyph-utf8/patterns/tex/hyph-tr.tex
+/hyph-utf8/tex/generic/hyph-utf8/patterns/tex/hyph-uk.tex
+
+The full terms of LPPL can be found in the LICENSE-LPPL file.
+
+---------------------------------------------------------------
+
+The following files may be used under the terms of
+LaTeX Project Public License,Version 1.2("LPPL 1.2")：
+
+/hyph-utf8/tex/generic/hyph-utf8/patterns/tex/hyph-is.tex
+/hyph-utf8/tex/generic/hyph-utf8/patterns/tex/hyph-ru.tex
+/hyph-utf8/tex/generic/hyph-utf8/patterns/tex/hyph-sv.tex
+
+The full terms of LPPL 1.2 can be found in the LICENSE-LPPL1.2 file.
+
+---------------------------------------------------------------
+
+The following files may be used under the terms of
+LaTeX Project Public License,Version 1.3("LPPL 1.3")：
+
+/hyph-utf8/tex/generic/hyph-utf8/patterns/tex/hyph-da.tex
+/hyph-utf8/tex/generic/hyph-utf8/patterns/tex/hyph-it.tex
+/hyph-utf8/tex/generic/hyph-utf8/patterns/tex/hyph-mn-cyrl.tex
+/hyph-utf8/tex/generic/hyph-utf8/patterns/tex/hyph-th.tex
+
+The full terms of LPPL 1.3 can be found in the LICENSE-LPPL1.3 file.
+
+---------------------------------------------------------------
+
+The following files may be used under the terms of
+The MIT License (MIT)：
+
+/hyph-utf8/tex/generic/hyph-utf8/patterns/tex/hyph-ar.tex
+/hyph-utf8/tex/generic/hyph-utf8/patterns/tex/hyph-as.tex
+/hyph-utf8/tex/generic/hyph-utf8/patterns/tex/hyph-be.tex
+/hyph-utf8/tex/generic/hyph-utf8/patterns/tex/hyph-bn.tex
+/hyph-utf8/tex/generic/hyph-utf8/patterns/tex/hyph-de-1901.tex
+/hyph-utf8/tex/generic/hyph-utf8/patterns/tex/hyph-de-1996.tex
+/hyph-utf8/tex/generic/hyph-utf8/patterns/tex/hyph-de-ch-1901.tex
+/hyph-utf8/tex/generic/hyph-utf8/patterns/tex/hyph-gb.tex
+/hyph-utf8/tex/generic/hyph-utf8/patterns/tex/hyph-es.tex
+/hyph-utf8/tex/generic/hyph-utf8/patterns/tex/hyph-et.tex
+/hyph-utf8/tex/generic/hyph-utf8/patterns/tex/hyph-fa.tex
+/hyph-utf8/tex/generic/hyph-utf8/patterns/tex/hyph-fr.tex
+/hyph-utf8/tex/generic/hyph-utf8/patterns/tex/hyph-gu.tex
+/hyph-utf8/tex/generic/hyph-utf8/patterns/tex/hyph-hi.tex
+/hyph-utf8/tex/generic/hyph-utf8/patterns/tex/hyph-ka.tex
+/hyph-utf8/tex/generic/hyph-utf8/patterns/tex/hyph-kn.tex
+/hyph-utf8/tex/generic/hyph-utf8/patterns/tex/hyph-la.tex
+/hyph-utf8/tex/generic/hyph-utf8/patterns/tex/hyph-lt.tex
+/hyph-utf8/tex/generic/hyph-utf8/patterns/tex/hyph-ml.tex
+/hyph-utf8/tex/generic/hyph-utf8/patterns/tex/hyph-mr.tex
+/hyph-utf8/tex/generic/hyph-utf8/patterns/tex/hyph-mul-ethi.tex
+/hyph-utf8/tex/generic/hyph-utf8/patterns/tex/hyph-nl.tex
+/hyph-utf8/tex/generic/hyph-utf8/patterns/tex/hyph-or.tex
+/hyph-utf8/tex/generic/hyph-utf8/patterns/tex/hyph-pa.tex
+/hyph-utf8/tex/generic/hyph-utf8/patterns/tex/hyph-pl.tex
+/hyph-utf8/tex/generic/hyph-utf8/patterns/tex/hyph-rm.tex
+/hyph-utf8/tex/generic/hyph-utf8/patterns/tex/hyph-ta.tex
+/hyph-utf8/tex/generic/hyph-utf8/patterns/tex/hyph-te.tex
+/hyph-utf8/tex/generic/hyph-utf8/patterns/tex/hyph-tk.tex
+/hyph-utf8/tex/generic/hyph-utf8/patterns/tex/hyph-zh-latn-pinyin.tex
+
+The full terms of MIT can be found in the LICENSE-MIT file.
+
+---------------------------------------------------------------
+---------------------------------------------------------------
+
+The following files may be used under the terms of
+The MIT License (BSD 3)：
+
+/hyph-utf8/tex/generic/hyph-utf8/patterns/tex/hyph-pt.tex
+
+The full terms of BSD can be found in the LICENSE-BSD3 file.
+
+---------------------------------------------------------------

@@ -1,0 +1,42 @@
+/*
+ * Copyright (c) Huawei Technologies Co., Ltd. 2020-2020. All rights reserved.
+ * Description: Generate devhost sysif apis using code generator
+ * Author: Huawei OS Kernel Lab
+ * Create: Mon 07 Dec 2020 07:36:55 PM CST
+ */
+
+/* for struct reboot_cmd */
+INCLUDE_C_HEADER(libhmpm/shutdown.h)
+/* for struct wl_stat_queue_info */
+INCLUDE_C_HEADER(libhmpm/wl_stat.h)
+INCLUDE_C_HEADER(libsysif/devmgr/types.h)
+/* for struct pm_dubai_ctrl_log */
+INCLUDE_C_HEADER(libhmpm/dubai.h)
+
+USE_CALL_PREFIX(drvcall_devhost)
+USE_HANDLER_PREFIX(drvhandler_devhost)
+USE_SERVER_NAME(devhost)
+GEN_WEAK_HDLR
+
+INCLUDE_SUBSYSTEM(libsysif/devhost/devhost_core.sysif)
+INCLUDE_SUBSYSTEM(libsysif/devhost/devhost_rpc.sysif)
+INCLUDE_SUBSYSTEM(libsysif/devhost/devhost_fops.sysif)
+INCLUDE_SUBSYSTEM(libsysif/devhost/devhost_block.sysif)
+INCLUDE_SUBSYSTEM(libsysif/devhost/devhost_net.sysif)
+INCLUDE_SUBSYSTEM(libsysif/devhost/devhost_net_socket.sysif)
+INCLUDE_SUBSYSTEM(libsysif/devhost/devhost_iaware_notify.sysif)
+INCLUDE_SUBSYSTEM(libsysif/devhost/devhost_kstate.sysif)
+INCLUDE_SUBSYSTEM(libsysif/devhost/devhost_pm.sysif)
+INCLUDE_SUBSYSTEM(libsysif/devhost/devhost_procfs.sysif)
+INCLUDE_SUBSYSTEM(libsysif/devhost/devhost_sysfs.sysif)
+INCLUDE_SUBSYSTEM(libsysif/devhost/devhost_clock.sysif)
+INCLUDE_SUBSYSTEM(libsysif/devhost/devhost_transfs.sysif)
+INCLUDE_SUBSYSTEM(libsysif/devhost/devhost_shrinker.sysif)
+INCLUDE_SUBSYSTEM(libsysif/devhost/devhost_process.sysif)
+INCLUDE_SUBSYSTEM(libsysif/devhost/devhost_seharmony.sysif)
+INCLUDE_SUBSYSTEM(libsysif/devhost/devhost_devfs.sysif)
+INCLUDE_SUBSYSTEM(libsysif/devhost/devhost_tracefs.sysif)
+INCLUDE_SUBSYSTEM(libsysif/devhost/devhost_file_info.sysif)
+INCLUDE_SUBSYSTEM(libsysif/devhost/devhost_probe.sysif)
+INCLUDE_SUBSYSTEM(libsysif/devhost/devhost_fileguard.sysif)
+INCLUDE_SUBSYSTEM(libsysif/devhost/devhost_posix.sysif)

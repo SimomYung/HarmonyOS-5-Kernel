@@ -1,0 +1,8 @@
+# Copyright (C) Huawei Technologies Co., Ltd. 2023. All rights reserved.
+# Description: Kconfig for udk extension
+# Author: Huawei OS Kernel Lab
+# Create: Wed Jul 286 21:06:07 2023
+
+# HMCMAKENG_KCONFIG is injected by HongmengCMakeNG/Kconfig.cmake
+# which defines multiple config options which is useful for HMbuild.
+source "$(HMCMAKENG_KCONFIG)"

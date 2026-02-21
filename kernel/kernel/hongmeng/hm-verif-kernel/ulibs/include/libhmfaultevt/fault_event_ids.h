@@ -1,0 +1,55 @@
+/*
+ * Copyright (c) Huawei Technologies Co., Ltd. 2023-2023. All rights reserved.
+ * Description: Header of fault event id
+ * Author: Huawei OS Kernel Lab
+ * Create: Sat Feb 11 16:19:37 2023
+ */
+
+#ifndef ULIBS_LIBHM_FAULT_EVENT_IDS_H
+#define ULIBS_LIBHM_FAULT_EVENT_IDS_H
+
+#define FEVT_EVENT_ID_SHIFT			16U
+#define FEVT_EVENT_ID_BEGIN(module_id)		((unsigned int)(module_id) << FEVT_EVENT_ID_SHIFT)
+#define FEVT_EVENT_ID_BEGIN_RAW(module_name)	FEVT_EVENT_ID_BEGIN(FEVT_MODULE_##module_name)
+
+enum fevt_module_id {
+	FEVT_MODULE_HGUARD,
+	FEVT_MODULE_SYSMGR,
+	FEVT_MODULE_VFS,
+	FEVT_MODULE_UVMM,
+	FEVT_MODULE_DEVHOST,
+	FEVT_MODULE_DEVMGR,
+	FEVT_MODULE_VHOST,
+	FEVT_MODULE_NR,
+};
+
+enum fevt_event_id_hguard {
+	FEVT_EVENT_HGUARD_BASE = FEVT_EVENT_ID_BEGIN_RAW(HGUARD),
+	FEVT_EVENT_HGUARD_DM_VERITY_FAILED,
+	FEVT_EVENT_HGUARD_START_SERVICE_FAILED,
+	FEVT_EVENT_HGUARD_SERVICE_EXITED_ABNORMALLY,
+	FEVT_EVENT_HGUARD_HEARTBEAT_RECOVER_SERVICE,
+	FEVT_EVENT_HGUARD_SYSTEM_LOWMEMORY,
+};
+
+enum fevt_event_id_sysmgr {
+	FEVT_EVENT_SYSMGR_BASE = FEVT_EVENT_ID_BEGIN_RAW(SYSMGR),
+};
+
+enum fevt_event_id_vfs {
+	FEVT_EVENT_VFS_BASE = FEVT_EVENT_ID_BEGIN_RAW(VFS),
+};
+
+enum fevt_event_id_uvmm {
+	FEVT_EVENT_UVMM_BASE = FEVT_EVENT_ID_BEGIN_RAW(UVMM),
+};
+
+enum fevt_event_id_devhost {
+	FEVT_EVENT_DEVHOST_BASE = FEVT_EVENT_ID_BEGIN_RAW(DEVHOST),
+};
+
+enum fevt_event_id_devmgr {
+	FEVT_EVENT_DEVMGR_BASE = FEVT_EVENT_ID_BEGIN_RAW(DEVMGR),
+};
+
+#endif

@@ -1,0 +1,273 @@
+This is a list of things that needs to be done to propagate the changes properly.
+Write DONE to each issue once resolved.
+
+Wishlist:
+- separate language.dat files on per-engine level (a different language.dat for XeTeX than for pdfTeX)
+- different syntax for loading multiple patterns? (Serbian)
+
+Short-term TODO list:
+- A web page with simple examples how to enable hyphenation
+- Documentation about hyphenation setup in TeX Live 2011, MikTeX & W32TeX
+- Documentation about conventions (naming guidelines, no-sequences-in-patterns, stable vs. non-stable filenames, ...) of hyph-utf8
+- Put licence in the manual (and explain licences of others)
+- Hans' examples for comparisons & documentation
+- discuss switching to special patterns for pdfTeX
+- better solutions for apostrophe
+
+
+
+TeX Distributions:
+- [DONE] propagate changes into TeX Live
+- [DONE] coordinate with Christian Schenk <cs at miktex.org> for changes in MikTeX
+- [DONE] coordinate with Akira Kakuto <kakuto at fsci.fuk.kindai.ac.jp> for changes in W32TeX
+
+Pattern creators:
+- make a list of pattern authors, notify them about changes,
+  explain them that they need to modify UTF-8 file/submit file it as UTF-8 in future
+- write DONE for each language once you receive the answer from the author
+
+Languages:
+- complete languages.html
+- unification of Mongolian
+  - encoding
+  - pattern versions
+    - [DONE] a list of differences received from Dorjgotov Batmunkh <bataak at gmail.com>
+    - add that list to repository
+    - waiting for answer from Oliver Corff <corff at zedat.fu-berlin.de>
+- unification of Spanish (some new version of patterns submitted)
+- describe differences between sh-cyrl and sr-cyrl
+- [DONE] do something with EO: I did the conversion for "plain" patterns, but left the original version intact
+  we could leave a separate version in "source" and use the "plain version" in pattern repository
+- Russian etc. that are still outsourcing
+  - solve encoding mess
+- versioning: German etc.
+- Norwegian
+- Belarussian:
+  - Contact the authors of hyphenation patterns on OOo:
+    http://extensions.services.openoffice.org/en/project/dict-be-classic
+    http://extensions.services.openoffice.org/en/project/dict-be-official
+  - Contact the author of support files for LaTeX (Aleksey Novodvorsky):
+    http://alt.linux.kiev.ua/srpm/tetex/patches/8
+    http://tldp.org/HOWTO/pdf/Belarusian-HOWTO.pdf
+  - Convert patterns into UTF-8
+  - Babel and Polyglossia support
+  - Which version has to be used? Classic or official?
+  - Do something about encoding in 8-bit engines (possibly together with Vladimir Volovich)
+
+CTAN:
+- move old patterns to obsolete
+- [DONE] upload new patterns
+- make an easy-to-browse structure
+- ask CTAN people to be careful if someone uploads new patterns
+- write auto-notificator for changes in CTAN
+- try to update the information in TeX Catalogue
+  - http://www.tex.ac.uk/tex-archive/help/Catalogue/hier.html
+  - some entries say that patterns are obsolete, but still claim that the package is included in TL/MikTeX
+    (http://www.tex.ac.uk/tex-archive/help/Catalogue/entries/hrhyph.html)
+  - [DONE] change script 4TL to generate shortdesc for hyph-xxx.tlpsrc
+  - once the shortdesc is written, also make sure to put longdesc or more extensive discription for TeX catalogue
+  - should we release a CTAN-only "browsable" version of hyphenation patterns:
+    - one folder per language
+    - symbolic links to all the files for that language
+    - a nice README for every language
+      - lists the author, copyright, ...
+      - says that the package is part of hyph-utf8 and properly redirect
+    - catalogue could have a reference to that folder and contain all the data
+    - discuss the idea with CTAN before doing extensive changes
+
+OpenOffice:
+- write auto-notificator for changes in OOo (more important)
+- check every single language on http://extensions.services.openoffice.org/en/dictionaries
+- contact the authors & join the efforts
+- [DONE] import indic scripts
+
+Impromevents:
+- prepare a better version of notes
+- auto-conversion into four different files:
+  - licence
+  - list of used letters for each language (lowercase and uppercase equivalent); difference between letters & others
+  - [DONE] list of patterns
+  - [DONE] list of exceptions
+- that list should be auto-generated from TeX sources and used for [complete a list]:
+  - hyphenator
+  - ...
+- LuaTeX patterns
+- [almost DONE] Describe and try to solve the apostrophe problem (users should be able
+  to input both U+0027 and U+2019)
+  See http://tug.org/pipermail/xetex/2010-October/018914.html ff. for
+  one use case.
+
+Documentation:
+- authors, history, changes
+- how to use patterns in plain TeX
+- how to use patterns in LaTeX with polyglossia (or babel?)
+- how to use patterns in ConTeXt
+- how to add a new language (once we quit the project)
+
+Testing:
+- collect lists of words for the languages where that is possible (no copyright problems)
+- write a luatex tester for a collection of words for each language
+
+Licences:
+- ... complete the list with tasks that need to be done
+- we want two licences: one for content and one for packaging
+- write a simple licence for packaging:
+  - we don't care what others (outside of TeX world) do; just mention the credit to hyph-utf8
+    and complete credit to pattern authors
+  - respect the licence of pattern authors
+  - within TeX world:
+    - keep the functionality; implementation may change, but not the end result (unless improved)
+    - contact the list first when changes are needed
+    - if team disappears, one should be free to continue the work (mention how that should be done)
+    - some general guidelines:
+      - no TeX commands (apart from \hyphenation and \patterns)
+      - everything in Unicode
+      - hyph-xx.tex will keep containing the patterns
+      - loadhyph-xx.tex will keep loading the patterns, but may change considerably (ugly tricks should go there)
+      - ... (complete the list)
+    - language-specific:
+      - author of existing patterns has full right to submit changes
+      - when a new author comes and the old one doesn't respond ... what to do?
+      - when two version of patterns appear, try to convince the authors to combine the patterns
+        ... write some general guidelines
+- collect a few ideas for valid licences (maybe a different licence f)
+- write the authors if they agree with that licence (give them a few options to choose from)
+- write some really nice, easily parsable form and apply to all the patterns
+- modify generating scripts for:
+  - German
+  - gl
+  - eu, tk, tr
+
+Example of a licence:
+
+This work consists of two parts:
+a) patterns for different languages
+b) support files (tex files, generating scripts, documentation, ...)
+with two different licences for each:
+1) for within the TeX world
+2) and outside the TeX world
+
+A short version of licence:
+b2) We don't care what you do, though it would be nice of you to mention the source of patterns (hyph-utf8 residing at http://tug.org/tex-hyphen) at some visible place.
+b1)
+
+a1)
+
+Collaboration:
+- make a list of people that we would want to collaborate with
+- some notification system for those using our patterns as source for whenever something in repository changes
+- write done for everyone we have collaborated with
+
+TeX users:
+- [on the way] write DOC about pattern conversion
+- [DONE] write an article for TUG boat and/or other TeX magazines
+- [DONE] maybe present the main idea at some TUG conference
+- notify mailing lists
+- CTAN people should take care for new patterns to be submitted in the proper form
+
+Web page:
+- split the page into several subpages:
+  - short intro & news
+  - languages - list all available language and add proper links
+  - collaboration and links
+  - description of algorithm (with Mathias' slides)
+- nicer design
+- apply Mathias' Hyphenator.js
+- add a test page to do hyphenation on-the-fly using Mathias' code
+  and creating some really nice output
+  - a dropdown box chooses the language
+  - text input field
+  - button for submission (maybe we don't even need that)
+  - sample output
+
+Software:
+- possibly rewrite patgen to handle UTF-8
+  - [DONE] try to convince Mathias Nater to do that; Deadline: BachoTeX 2011 :)
+  - try to convince him to finish the project
+
+OpenOffice:
+- http://extensions.services.openoffice.org/en/project/RomanianDictionaryPackCedillaVersion
+- (kurdish) http://extensions.services.openoffice.org/en/project/kitandin
+
+- http://www.mail-archive.com/dev@lingucomponent.openoffice.org/msg01104.html
+
+
+
+Hello Mojca,
+
+
+On 16/03/2010 10:21, Mojca Miklavec wrote:
+Hello François,
+
+Not so long ago the author of  Mongolian patterns has asked us for
+"help about how to use his patterns in TeX Live 2008/09". (They are
+called "mongolian2a" in language.dat since there are two version of
+Mongolian patterns in TeX Live - both different patterns and different
+encoding. I'm not sure that I know how to enable those patterns in
+LaTeX in some nice way.)
+
+First question: does polyglossia work ok with 8-bit engines (pdftex)
+as a replacement for babel?
+  
+
+No. It assumes Unicode encoding and is currently for XeLaTeX only.
+Together with Elie Roux I plan to add support for LuaLaTeX in a later version (not very soon however).
+
+Second question: would you be willing to write a short introduction
+(in tex or maybe even better in html forhttp://tug.org/tex-hyphen/)
+
+about how to use some particular patterns in polyglossia (maybe we
+should start promoting polyglossia via our webpage, in particual if
+the answer to my first question was positive).
+  
+
+Sure.
+
+The short answer is:
+
+Since Babel's hyphen.cfg is built in the xelatex format, hyphenation patterns can be used without even loading polyglossia (or Babel for that matter). At the low-level this simply corresponds to defining
+   \language=\l@<langname>
+(where langname is the string identifying a particular hyphenation file in language.dat). The user command for this is
+   \hyphenrules{langname}
+or
+   \begin{hyphenrules}{langname} ... \end{hyphenrules}.
+
+The above works with any flavour of LaTeX, and I think it is also available in Plain TeX with
+   \hyphenrules{langname}
+   ...
+   \endhyphenrules
+
+
+
+In particular, we need to provide examples of usage in {plain TeX,
+LaTeX, XeTeX, XeLaTeX, ConTeXt, Lua(La)TeX} for different encodings. I
+can write something about ConTeXt, but I need help for different
+flavours of LaTeX.
+  
+
+Under "plain" pdftex, xetex, and luatex, one can use the macro \uselanguage{langname} for any language mentioned in language.def. It's that simple!
+
+Under polyglossia this is all done automatically, as in Babel, within the individual language definition files, depending of the options associated with each language. Example:
+
+\usepackage{polyglossia}
+\setmainlanguage{asturian}
+\setotherlanguage[variant=usmax]{english}% American English with extended hyphenation patterns
+\setotherlanguage[spelling=new,latesthyphen=true]{german}% German with experimental patterns "ngerman-x-latest"
+\setotherlanguages{spanish,catalan,french}
+\begin{document}
+Long Asturian text ... (Hyphenation for Asturian is not available, but polyglossia automatically falls back on Catalan for now, which seems to be a reasonable choice.)
+
+\begin{german}
+Deutscher Text ... (with the hyphenation patterns selected above: "ngerman-x-latest")
+\end{german}
+
+\begin[script=fraktur,spelling=old]{german}
+Deutſcher Text ... (set in Fraktur, with traditional hyphenation).
+\end{german}
+
+etc.
+
+Feel free to adapt and use the above to your liking!
+
+Regards,
+François

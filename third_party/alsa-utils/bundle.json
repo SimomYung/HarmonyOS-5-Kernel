@@ -1,0 +1,35 @@
+{
+    "name": "@ohos/alsa-utils",
+    "description": "This package contains the command line utilities for the ALSA project. The package can be compiled only with the installed ALSA driver and the ALSA C library (alsa-lib).",
+    "version": "3.1",
+    "license": "GNU General Public License v2.0",
+    "publishAs": "code-segment",
+    "segment": {
+        "destPath": "third_party/alsa-utils"
+    },
+    "dirs": {},
+    "scripts": {},
+    "licensePath": "COPYING",
+    "readmePath": {
+        "en": "README.md",
+        "zh": "README_zh.md"
+    },
+    "component": {
+        "name": "alsa-utils",
+        "subsystem": "thirdparty",
+        "syscap": [],
+        "features": [],
+        "adapted_system_type": [ "standard" ],
+        "rom": "650KB",
+        "ram": "896KB",
+        "deps": {
+            "components": [],
+            "third_party": [ "alsa-lib" ]
+        },
+        "build": {
+            "sub_component": [ "//third_party/alsa-utils:alsa-utils" ],
+            "inner_kits": [],
+            "test": []
+        }
+    }
+}

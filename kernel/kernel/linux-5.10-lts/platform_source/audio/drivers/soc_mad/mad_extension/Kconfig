@@ -1,0 +1,2 @@
+config MAD_EXTENSION
+	tristate "audio mad extension support"

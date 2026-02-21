@@ -1,0 +1,5 @@
+config AUDIO_INFO_COLLECTION
+    bool "audio info collection driver"
+    default n
+    help
+    Say Y to enable audio info collection driver support

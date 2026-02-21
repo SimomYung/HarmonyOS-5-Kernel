@@ -1,0 +1,8 @@
+# Copyright (c) Huawei Technologies Co., Ltd. 2021-2021. All rights reserved.
+# Description: Kconfig for hm-security-headers
+# Author: Huawei OS Kernel Lab
+# Create: Fri Jan 07 11:07:13 2022
+
+# HMCMAKENG_KCONFIG is injected by HongmengCMakeNG/Kconfig.cmake
+# which defines multiple config options which is useful for HMbuild.
+source "$(HMCMAKENG_KCONFIG)"

@@ -1,0 +1,7 @@
+LIBLINUX_VERS_1.0 {
+  global:
+    dh_backend_init;
+
+  local:
+    *;
+};

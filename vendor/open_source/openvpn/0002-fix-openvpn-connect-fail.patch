@@ -1,0 +1,155 @@
+From 59c2600d69536a8debacdc00fe757ee59214b402 Mon Sep 17 00:00:00 2001
+From: w30063796 <w30063796@notesmail.huawei.com/>
+Date: Fri, 18 Oct 2024 16:41:34 +0800
+Subject: [PATCH] TicketNo:DTS2024101019820 Description: fix openvpn connect
+ fail Team:SP_XA_PTL Feature or Bugfix:Bugfix Binary Source:No
+ PrivateCode(Yes/No):No
+
+Change-Id: Ia5fc452eb98721bd221a27a3217d56a9fae1fdfb
+---
+ src/ipc/netmanager/include/net_manager_api.h |  1 +
+ src/ipc/netmanager/include/nm_ipc_client.h   |  1 +
+ src/ipc/netmanager/src/net_manager_api.c     |  5 +++++
+ src/ipc/netmanager/src/nm_ipc_client.cpp     | 13 +++++++++++++
+ src/openvpn/tun.c                            | 19 +++++++++++++------
+ src/openvpn/tun.h                            | 10 ++++++++++
+ 6 files changed, 43 insertions(+), 6 deletions(-)
+
+diff --git a/src/ipc/netmanager/include/net_manager_api.h b/src/ipc/netmanager/include/net_manager_api.h
+index b5486c4..77f946c 100644
+--- a/src/ipc/netmanager/include/net_manager_api.h
++++ b/src/ipc/netmanager/include/net_manager_api.h
+@@ -26,6 +26,7 @@ extern "C" {
+ uint32_t load_vpn_cert_uri(enum vpn_cert_type type, uint8_t *cert_uri, uint32_t cert_size);
+ void setup_vpn_ifconfig(const char *ifconfig, const char *netmask, int mtu);
+ void notify_vpn_state(enum vpn_state state);
++int32_t setup_vpn_tun();
+ 
+ #ifdef __cplusplus
+ }
+diff --git a/src/ipc/netmanager/include/nm_ipc_client.h b/src/ipc/netmanager/include/nm_ipc_client.h
+index 4d335f7..a5782f4 100644
+--- a/src/ipc/netmanager/include/nm_ipc_client.h
++++ b/src/ipc/netmanager/include/nm_ipc_client.h
+@@ -26,6 +26,7 @@ extern "C" {
+ int32_t GetVpnCertUri(enum vpn_cert_type type, uint8_t *certUrl, uint32_t srcSize);
+ void SetupVpnIfconfig(const char *ifconfig, const char *netmask, int mtu);
+ void NotifyVpnState(enum vpn_state state);
++int32_t SetUpVpnTun();
+ 
+ #ifdef __cplusplus
+ }
+diff --git a/src/ipc/netmanager/src/net_manager_api.c b/src/ipc/netmanager/src/net_manager_api.c
+index a763b3e..0feecec 100644
+--- a/src/ipc/netmanager/src/net_manager_api.c
++++ b/src/ipc/netmanager/src/net_manager_api.c
+@@ -42,4 +42,9 @@ void notify_vpn_state(enum vpn_state state)
+         g_state = state;
+         NotifyVpnState(state);
+     }
++}
++
++int32_t setup_vpn_tun()
++{
++    return SetUpVpnTun();
+ }
+\ No newline at end of file
+diff --git a/src/ipc/netmanager/src/nm_ipc_client.cpp b/src/ipc/netmanager/src/nm_ipc_client.cpp
+index 42e652f..8c16898 100644
+--- a/src/ipc/netmanager/src/nm_ipc_client.cpp
++++ b/src/ipc/netmanager/src/nm_ipc_client.cpp
+@@ -65,4 +65,17 @@ void NotifyVpnState(enum vpn_state state)
+     } else {
+         NET_LOG_I("NotifyVpnState success state=%{public}d", state);
+     }
++}
++
++int32_t SetUpVpnTun()
++{
++    char config[BUFSIZ] = {0};
++    sprintf(config, "openvpn{\"setupVpnTun\":{\"state\":%d}}\n", 0);
++    int32_t ret = NetworkVpnClient::GetInstance().NotifyConnectStage(std::string(config), STATE_SUCESS);
++    if (ret != 0) {
++        NET_LOG_E("NotifyVpnState failed: ret=%{public}d state=%{public}d", ret, 0);
++    } else {
++        NET_LOG_I("NotifyVpnState success state=%{public}d", 0);
++    }
++    return ret;
+ }
+\ No newline at end of file
+diff --git a/src/openvpn/tun.c b/src/openvpn/tun.c
+index b7ec639..5a70c5a 100644
+--- a/src/openvpn/tun.c
++++ b/src/openvpn/tun.c
+@@ -1348,6 +1348,7 @@ do_ifconfig_ipv4(struct tuntap *tt, const char *ifname, int tun_mtu,
+ 	}
+ #else
+     // fix error: unused variable 'tun'
++    msg(M_DEBUG, "do_ifconfig setup_vpn_ifconfig");
+     (void) tun;
+     struct gc_arena gc = gc_new();
+     const char *local = print_in_addr_t(tt->local, 0, &gc);
+@@ -2308,12 +2309,18 @@ open_tun(const char *dev, const char *dev_type, const char *dev_node, struct tun
+ #else
+     //  modify end 0401
+     // fix error: unused function 'open_tun_dco_generic'
+-    (void) open_tun_dco_generic;
+-    tt->fd = GetVpnInterfaceFd();
+-    msg(M_DEBUG, "tun.c fd = %d", tt->fd);
+-    set_nonblock(tt->fd);
+-    set_cloexec(tt->fd);
+-    tt->actual_name = string_alloc("vpn-tun", NULL);
++    msg(M_DEBUG, "open_tun setup_vpn_tun");
++    if (setup_vpn_tun() == 0)
++    {
++        (void) open_tun_dco_generic;
++        tt->fd = GetVpnInterfaceFd();
++        msg(M_DEBUG, "open_tun fd = %d", tt->fd);
++        set_nonblock(tt->fd);
++        set_cloexec(tt->fd);
++        tt->actual_name = string_alloc("vpn-tun", NULL);
++    } else {
++        msg(M_DEBUG, "open_tun setup_vpn_tun failed");
++    }
+ #endif // SUPPORT_SYSVPN
+     return;
+ }
+diff --git a/src/openvpn/tun.h b/src/openvpn/tun.h
+index e19e1a2..f4f829b 100644
+--- a/src/openvpn/tun.h
++++ b/src/openvpn/tun.h
+@@ -350,14 +350,23 @@ void warn_on_use_of_common_subnets(openvpn_net_ctx_t *ctx);
+  * tun dev open?
+  */
+ 
++#ifdef SUPPORT_SYSVPN
++#define IFCONFIG_BEFORE_TUN_OPEN 1
++#define IFCONFIG_AFTER_TUN_OPEN  0
++#else
+ #define IFCONFIG_BEFORE_TUN_OPEN 0
+ #define IFCONFIG_AFTER_TUN_OPEN  1
++#endif //SUPPORT_SYSVPN
+ 
+ #define IFCONFIG_DEFAULT         IFCONFIG_AFTER_TUN_OPEN
+ 
+ static inline int
+ ifconfig_order(void)
+ {
++#ifdef SUPPORT_SYSVPN
++    msg(M_INFO, "SUPPORT_SYSVPN: IFCONFIG_BEFORE_TUN_OPEN %d", IFCONFIG_BEFORE_TUN_OPEN);
++    return IFCONFIG_BEFORE_TUN_OPEN;
++#else
+ #if defined(TARGET_LINUX)
+     return IFCONFIG_AFTER_TUN_OPEN;
+ #elif defined(TARGET_SOLARIS)
+@@ -375,6 +384,7 @@ ifconfig_order(void)
+ #else  /* if defined(TARGET_LINUX) */
+     return IFCONFIG_DEFAULT;
+ #endif
++#endif //SUPPORT_SYSVPN
+ }
+ 
+ #define ROUTE_BEFORE_TUN 0
+-- 
+2.7.4
+

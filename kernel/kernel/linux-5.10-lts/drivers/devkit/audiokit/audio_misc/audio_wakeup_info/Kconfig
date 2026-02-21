@@ -1,0 +1,5 @@
+config AUDIO_WAKEUP_INFO
+    bool "audio wakeup info driver"
+    default n
+    help
+    Say Y to enable audio wakeup info driver support

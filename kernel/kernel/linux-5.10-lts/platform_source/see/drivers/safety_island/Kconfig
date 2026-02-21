@@ -1,0 +1,17 @@
+config SAFETY_ISLAND
+	bool "safety_island"
+	default n
+	help
+	  safety_island driver
+
+config SAFETY_ISLAND_ENG
+	bool "safety_island_eng"
+	default n
+	help
+	  safety_island eng test
+
+config SAFETY_ISLAND_RDA_HEARTBEAT
+	bool "safety_island_rda_heartbeat"
+	default n
+	help
+	  The safety_island monitors the heartbeat of the RDA.

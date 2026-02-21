@@ -1,0 +1,825 @@
+/*
+ * Copyright (c) Huawei Technologies CO., Ltd. 2019-2020. All rights reserved.
+ * Description: mntn_subtype_exception.h
+ * Author: Hisilicon
+ * Create: 2019-10-29
+ */
+#ifndef __MNTN_SUBTYPE_EXCEPTION_H__
+#define __MNTN_SUBTYPE_EXCEPTION_H__
+#include "pmic_interface.h"
+#include "mntn_public_interface.h"
+
+#define PMU_EXCSUBTYPE_REG_OFFSET (PMIC_HRST_REG10_ADDR(0))
+
+enum mmc_exception_subtype
+{
+	MMC_EXCEPT_INIT_FAIL = 0x0,
+	MMC_EXCEPT_CMD_TIMEOUT,
+	MMC_EXCEPT_COLDBOOT,
+};
+
+/* AP_S_DDRC_SEC subtype definition */
+enum ddr_sec_subtype {
+	DDR_SEC_UNKNOWN_MASTER = 0x0,
+	DDR_SEC_CPU_RTM,
+	DDR_SEC_PERF_STAT0,
+	DDR_SEC_IPF,
+	DDR_SEC_DJTAG_M,
+	DDR_SEC_AO_TCP,
+	DDR_SEC_QSPI,
+	DDR_SEC_GICV600,
+	DDR_SEC_SPI3_DMA,
+	DDR_SEC_TOP_CSSYS,
+	DDR_SEC_IOMCU_M7,
+	DDR_SEC_SOCP,
+	DDR_SEC_USB3,
+	DDR_SEC_ASP_DMA_HDMI,
+	DDR_SEC_DMAC,
+	DDR_SEC_ASP_LINGLONG,
+	DDR_SEC_FFTS,
+	DDR_SEC_SPE,
+	DDR_SEC_MAA,
+	DDR_SEC_POWER_STAT,	
+	DDR_SEC_MSPC,
+	DDR_SEC_DDR_LPCTRL,
+	DDR_SEC_EICC,
+	DDR_SEC_IOMCU_DMA,
+	DDR_SEC_SDIO,
+	DDR_SEC_LPMCU,
+	DDR_SEC_NPU,
+	DDR_SEC_GPU,
+	DDR_SEC_FCM,
+	DDR_SEC_ISP,
+	DDR_SEC_VENC,
+	DDR_SEC_VDEC,
+	DDR_SEC_DSS,
+	DDR_SEC_MEDIA1,
+	DDR_SEC_MEDIA2,
+	DDR_SEC_IDI2AXI,
+	DDR_SEC_IPP_SUBSYS,
+	DDR_SEC_SYSTEM_CACHE,
+	DDR_SEC_MODEM,
+	DDR_SEC_HTS_MSG,
+	DDR_SEC_FFTS_MSG,
+	DDR_SEC_FFA2_MSG,
+	DDR_SEC_FFA1_MSG,
+	DDR_SEC_DFA,
+	DDR_SEC_MUDP,
+	DDR_SEC_PCIE,
+	DDR_SEC_MSPE,
+	DDR_SEC_HSDT,
+	DDR_SEC_SUBTYPE_MAX,
+};
+
+/*AP_S_APANIC subtype definition*/
+enum appanic_subtype
+{
+	HI_APPANIC_RESERVED = 0x0,  // reserved definition
+	HI_APPANIC_BC_PANIC = 0x1,
+	HI_APPANIC_L3CACHE_ECC1 = 0x2,
+	HI_APPANIC_SOFTLOCKUP = 0x3,
+	HI_APPANIC_OHARDLOCKUP = 0x4, /* other cpu detector hardlockup */
+	HI_APPANIC_HARDLOCKUP = 0x5, /* sp805 detector hardlockup */
+	HI_APPANIC_L3CACHE_ECC2 = 0x6,
+	HI_APPANIC_Storage = 0x7,
+	HI_APPANIC_ISP = 0x9,
+	HI_APPANIC_IVP = 0xa,
+	HI_APPANIC_GPU = 0xc,
+	HI_APPANIC_MODEM = 0xd,
+	HI_APPANIC_CPU0_CE = 0x10,
+	HI_APPANIC_CPU0_UE = 0x11,
+	HI_APPANIC_CPU1_CE = 0x12,
+	HI_APPANIC_CPU1_UE = 0x13,
+	HI_APPANIC_CPU2_CE = 0x14,
+	HI_APPANIC_CPU2_UE = 0x15,
+	HI_APPANIC_CPU3_CE = 0x16,
+	HI_APPANIC_CPU3_UE = 0x17,
+	HI_APPANIC_CPU4_CE = 0x18,
+	HI_APPANIC_CPU4_UE = 0x19,
+	HI_APPANIC_CPU5_CE = 0x1a,
+	HI_APPANIC_CPU5_UE = 0x1b,
+	HI_APPANIC_CPU6_CE = 0x1c,
+	HI_APPANIC_CPU6_UE = 0x1d,
+	HI_APPANIC_CPU7_CE = 0x1e,
+	HI_APPANIC_CPU7_UE = 0x1f,
+	HI_APPANIC_CPU8_CE = 0x20,
+	HI_APPANIC_CPU8_UE = 0x21,
+	HI_APPANIC_CPU9_CE = 0x22,
+	HI_APPANIC_CPU9_UE = 0x23,
+	HI_APPANIC_CPU10_CE = 0x24,
+	HI_APPANIC_CPU10_UE = 0x25,
+	HI_APPANIC_CPU11_CE = 0x26,
+	HI_APPANIC_CPU11_UE = 0x27,
+	HI_APPANIC_CPU12_CE = 0x28,
+	HI_APPANIC_CPU12_UE = 0x29,
+	HI_APPANIC_CPU13_CE = 0x2a,
+	HI_APPANIC_CPU13_UE = 0x2b,
+	HI_APPANIC_CPU14_CE = 0x2c,
+	HI_APPANIC_CPU14_UE = 0x2d,
+	HI_APPANIC_CPU15_CE = 0x2e,
+	HI_APPANIC_CPU15_UE = 0x2f,
+	HI_APPANIC_CPU16_CE = 0x30,
+	HI_APPANIC_CPU16_UE = 0x31,
+	HI_APPANIC_CPU17_CE = 0x32,
+	HI_APPANIC_CPU17_UE = 0x33,
+	HI_APPANIC_CPU18_CE = 0x34,
+	HI_APPANIC_CPU18_UE = 0x35,
+	HI_APPANIC_CPU19_CE = 0x36,
+	HI_APPANIC_CPU19_UE = 0x37,
+	HI_APPANIC_CPU01_L2_CE = 0x38,
+	HI_APPANIC_CPU01_L2_UE = 0x39,
+	HI_APPANIC_CPU23_L2_CE = 0x3a,
+	HI_APPANIC_CPU23_L2_UE = 0x3b,
+	HI_APPANIC_L3_CE = 0x3c,
+	HI_APPANIC_L3_UE = 0x3d,
+	HI_APPANIC_LB = 0x3e,
+	HI_APPANIC_PLL_UNLOCK = 0x3f,
+	HI_APPANIC_EARLY_PANIC = 0x40,
+	HI_APPANIC_INSTRU_ABORT = 0x41,
+	HI_APPANIC_DATA_ABORT = 0x42,
+	HI_APPANIC_SERROR = 0x43,
+	HI_APPANIC_HUNGTASK = 0x44,
+};
+
+/*AP_S_BL31_PANIC subtype definition*/
+enum apbl31panic_subtype
+{
+	HI_APBL31PANIC_RESERVED = 0x0,  // reserved definition
+	HI_APBL31PANIC_ASSERT   = 0x1,
+};
+
+/*AP_S_NOC subtype definition*/
+enum apsnoc_subtype
+{
+	NOC_RESERVED = 0x0,  // reserved definition
+	NOC_CPU_RTM,         // CPU_RTM exception
+	NOC_PERF_STAT,       // PERF_STAT exception
+	NOC_IPF,             // IPF exception
+	NOC_DJTAG_M,         // DJTAG_M exception
+	NOC_AO_TCP,          // AO_TCP exception
+	NOC_QSPI,            // QSPI exception
+	NOC_GICV600,         // GICV600 exception
+	NOC_SPI3_DMA,        // SPI3_DMA exception
+	NOC_TOP_CSSYS,       // TOP_CSSYS exception
+	NOC_IOMCU,           // IOMCU exception
+	NOC_SOCP,            // SOCP exception
+	NOC_USB3,            // USB3 exception
+	NOC_ASP,             // ASP definition
+	NOC_DMAC,            // DMAC exception
+	NOC_FFTS,            // FFTS exception
+	NOC_SPE,             // SPE exception
+	NOC_MAA,             // MAA exception
+	NOC_POWER_STAT,      // POWER_STAT exception
+	NOC_MSPC,            // MSPC exception
+	NOC_LPMCU,           // LPMCU definition
+	NOC_EICC,            // EICC exception
+	NOC_SDIO,            // SDIO exception
+	NOC_NPU,             // NPU exception
+	NOC_GPU,             // GPU definition
+	NOC_ACPU,            // ACPU exception
+	NOC_ISP,             // ISP definition
+	NOC_VENC,            // VENC exception
+	NOC_VDEC,            // VDEC definition
+	NOC_DSS,             // DSS exception
+	NOC_MEDIA,           // MEDIA exception
+	NOC_IDI2AXI,         // IDI2AXI exception
+	NOC_MUDP,            // MUDP exception
+	NOC_SYSCACHE,        // SYSCACHE exception
+	NOC_MODEM,           // MODEM exception
+	NOC_MID_MSG,         // MID_MSG definition
+	NOC_DFA,             // DFA exception
+	NOC_PCIE,            // PCIE exception
+	NOC_TEE,             // HIEPS exception
+};
+
+/*AP_S_VENDOR_PANIC subtype definition*/
+enum apvndpanic_subtype
+{
+	HI_APVNDPANIC_RESERVED = 0x0,  // reserved definition
+	HI_APVNDPANIC_CFI = 0x1,       // CFI exception
+};
+
+#define HM_APWDT_IS_SUPPORTED           1
+#define HM_APWDT_SUBTYPE_SHIFT          4U
+#define HM_APWDT_SUBTYPE_MASK           (0xfU << HM_APWDT_SUBTYPE_SHIFT)
+
+#define DEF_HM_APWDT_SUBTYPE(name, idx) name = ((idx) << HM_APWDT_SUBTYPE_SHIFT)
+
+enum apwdt_subtype
+{
+        HI_APWDT_HW = 0x0,
+        HI_APWDT_LPM3 = 0x1,
+        HI_APWDT_BL31 = 0x2,
+        HI_APWDT_BL31LPM3 = 0x3,
+        HI_APWDT_AP = 0x4,
+        HI_APWDT_BL31AP = 0x6,
+        HI_APWDT_APBL31LPM3 = 0x7,
+
+        /* bits [4-7] are used by HM Kernel */
+        DEF_HM_APWDT_SUBTYPE(HM_APWDT_HARDDOG,  0x1),
+        DEF_HM_APWDT_SUBTYPE(HM_APWDT_LOWDOG,   0x2),
+        DEF_HM_APWDT_SUBTYPE(HM_APWDT_HIGHDOG,  0x3),
+        DEF_HM_APWDT_SUBTYPE(HM_APWDT_ELFLOADER,  0x4),
+};
+
+enum lpm3_subtype
+{
+	PSCI_RESERVED = 0x0,
+	PSCI_AP_WDT_LOCAL,
+	PSCI_AP_WDT_REMOTE,
+	PSCI_M3_WDT_LOCAL,
+	PSCI_M3_WDT_REMOTE,
+	PSCI_REASON_WDT_END,/*5*/
+
+	PSCI_AP_SYS_PANIC = PSCI_REASON_WDT_END,/*5*/
+	PSCI_M3_SYS_PANIC,/*6*/
+	PSCI_PMUSSI_PANIC,
+	PSCI_CLK_ERR,
+	PSCI_REGULATOR_ERR,
+	PSCI_ASYNC_EXCEPTION,
+	PSCI_DMA_ERR,
+	PSCI_NOC_TIMEOUT,
+	PSCI_G3D_PWR_ERR,
+	PSCI_CPU_PWR_ERR,
+	PSCI_TSENSOR_ERR,
+	PSCI_CPUDVFS_ERR,
+	PSCI_GPUDVFS_ERR,
+	PSCI_MEMRP_ERR,
+	PSCI_NOC_BUS_IDLE_PEND,
+	PSCI_AHB_TIMEOUT,
+	PCSI_PERIVOLT_ERR,
+	PSCI_SR_FSM_WSAT_ERR,
+	PSCI_GXPU_IDLE_TIMEOUT,
+	PSCI_CXPU_WFI_TIMEOUT,
+	PSCI_SR_BUS_ACK_ERR,
+	PSCI_SR_MFC_GT_ERROR,
+	PSCI_SR_MFC_ACK_ERROR,
+
+	PSCI_REASON_SYS_EXC_END = 0x1f,
+
+	/*id below use in ddr_unavailable*/
+	PSCI_REASON_DDR_UNAVAILABLE_BEGIN = 0x20,
+
+	PSCI_DDR_PANIC = PSCI_REASON_DDR_UNAVAILABLE_BEGIN,	/*0x20 */
+	PSCI_DDR_FATAL_ERR,
+	PSCI_DDR_SREF_ERR,
+	PSCI_DDR_OSC_ERR,
+	PSCI_DDR_TMON_LOW,
+	PSCI_DDR_TMON_HIGH,
+	PSCI_DDR_GATE_ERR,
+	PSCI_UCE0_EXC,
+	PSCI_UCE1_EXC,
+	PSCI_UCE2_EXC,
+	PSCI_UCE3_EXC,
+	PSCI_DDR_AREF_ALARM,
+	PSCI_DDR_RDTIMEOUT,
+	PSCI_DDR_PLLUNLOCK_ERR,
+	PSCI_DDR_RETRAIN_ERR,
+	PSCI_DDR_TMON_ERR,
+	PSCI_DDR_DFS_OFF_TIMEOUT,
+	PSCI_DDR_DVALID_ERR,
+	PSCI_DDR_DFI_SEL_ERR,
+	PSCI_DDR_PLLUNLOCK_LP,
+	PSCI_DDR_UNKNOWN_ERR,
+	PSCI_UCE_EXC,
+	PSCI_DDR_LOAD_GENERAL_SE_TIMEOUT,
+	PSCI_DDR_DFS_REQ_TIMEOUT,
+	PSCI_DDR_CORE_VOLT_NULL,
+	PSCI_DDR_SCENE_ID_ERR,
+	PSCI_DDR_LATSTAT_SR_ERR,
+	PSCI_DDR_SC_LOCK,
+	PSCI_DDR_SLT_SC_LOCK,
+	PSCI_DDR_ZCAL_ERR,
+	PSCI_DDR_XPU_WFI_TIMEOUT,
+	PSCI_DDR_XPU_EXC,
+	PSCI_DDR_QICE_DLOCK_INT,
+	PSCI_DDR_QICE_NS_INT,
+	PSCI_DDR_SLEEP_TIMEOUT,
+	PSCI_DDR_SC_TIMEOUT,
+	PSCI_DDR_WAKE_TIMEOUT,
+	PSCI_DDR_LIGHT_S_TIMEOUT,
+	PSCI_DDR_LIGHT_R_TIMEOUT,
+	PSCI_DDR_TIME_PT_TIMEOUT,
+
+	PSCI_REASON_DDR_PANIC_END = 0x5f,
+
+	PSCI_DMA_TIMEOUT = 0x60,
+	PSCI_SUBPMU0_PANIC,
+	PSCI_SUBPMU1_PANIC,
+
+	PSCI_REASON_DDR_UNAVAILABLE_END = 0x7f,
+	PSCI_REASON_DDR_AVAILABLE_BEGIN = 0x80,
+	PSCI_DDR_DMSS_VOLT_NULL = PSCI_REASON_DDR_AVAILABLE_BEGIN,
+	PSCI_DDR_DMSS_VOLT_ERR,
+	PSCI_REASON_DDR_AVAILABLE_END = 0x9f,
+
+	PSCI_REASON_OTHERIP_REQ_BEGIN = 0xa0,
+	PSCI_OTHERIP_REQ_MODEM,
+	PSCI_OTHERIP_REQ_HIFI,
+	PSCI_OTHERIP_REQ_IOMCU,
+
+	PSCI_REASON_OTHERIP_REQ_END = 0xaf,
+
+	PSCI_MODEM_BEGIN = 0xb0,
+	PSCI_MODEM_MEM_REPAIR = PSCI_MODEM_BEGIN,
+	PSCI_MODEM_TIME_OUT,
+	PSCI_MODEM_END = 0xbf,
+
+	PSCI_REASON_MAX,
+	PSCI_REASON_UNKNOWN = 0xff,
+};
+
+enum lpcpu_subtype
+{
+	LPCPU_EXCP_RESERVED = 0x0,
+	LPCPU_EXCP_WDT,
+	LPCPU_EXCP_PANIC,
+	LPCPU_EXCP_BUGON,
+};
+
+enum lpgpu_subtype
+{
+	LPGPU_EXCP_RESERVED = 0x0,
+	LPGPU_EXCP_WDT,
+	LPGPU_EXCP_PANIC,
+	LPGPU_EXCP_BUGON,
+};
+
+enum mem_repair_subtype {
+	OMR_PASS_REBOOT = 0x1,
+	OMR_REPAIR_FAIL = 0x2,
+	OMR_RETEST_FAIL = 0x3,
+};
+
+enum scharger_subtype{
+	PMU_VSYS_OV = 0x1,
+	PMU_VSYS_PWROFF_ABS = 0x2,
+	PMU_VSYS_PWROFF_DEB = 0x4,
+	PMU_CALI_VSYSPWROFF_DEB = 0x8,
+	PMU_CALI_VSYSPWROFF_ABS = 0x10,
+	PMU_CALI_VSYS_OV = 0x20,
+};
+
+enum pmu_subtype
+{
+	SYS_NRST_4S = 0x1,
+	PMUA_SHORT_F,
+	PMUH_SHORT_F,
+	VIN_LDOH_SHUTDOWN,
+	VSYS_PWRONEXP_SHUTDOWN ,
+	OFFD_ABNOR_SHUTDOWN,
+	OFFD_TIMEOUT_SHUTDOWN,
+	VOCV_TH_ABN_SHUTDOWN,
+	CALI_PMUH_OCP,
+	CALI_LDO26_OCP,
+	CALI_BUCK2_SCP,
+	CALI_BUCK2_OCP,
+	CALI_PMUH_SHORT,
+	CALI_PMUD_SHORT,
+	CALI_BUCKBOOST_OCP,
+	CALI_BUCKBOOST_SCP,
+	CALI_BUCKBOOST_OVP,
+	OCP_BUCK1,
+	OCP_BUCK2,
+	OCP_BUCK3,
+	OCP_BUCK4,
+	OCP_BUCK5,
+	OCP_BUCK6,
+	OCP_BUCK7,
+	OCP_BUCK8,
+	OCP_BUCK9,
+	OCP_BUCK10,
+	OCP_BUCK11,
+	OCP_BUCK00,
+	OCP_BUCK01,
+	OCP_BUCKBOOST,
+	OCP_LDO0,
+	OCP_LDO2,
+	OCP_LDO3,
+	OCP_LDO4,
+	OCP_LDO5,
+	OCP_LDO8,
+	OCP_LDO9,
+	OCP_LDO11,
+	OCP_LDO12,
+	OCP_LDO13,
+	OCP_LDO14,
+	OCP_LDO15,
+	OCP_LDO16,
+	OCP_LDO17,
+	OCP_LDO18,
+	OCP_LDO19,
+	OCP_LDO20,
+	OCP_LDO21,
+	OCP_LDO22,
+	OCP_LDO23,
+	OCP_LDO24,
+	OCP_LDO25,
+	OCP_LDO26,
+	OCP_LDO27,
+	OCP_LDO28,
+	OCP_LDO29,
+	OCP_LDO30,
+	OCP_LDO32,
+	OCP_LDO33,
+	OCP_LDO34,
+	OCP_LDO37,
+	OCP_LDO38,
+	OCP_LDO42,
+	OCP_LDO43,
+	OCP_LDO46,
+	OCP_LDO47,
+	OCP_LDO48,
+	OCP_LDO49,
+	OCP_LDO51,
+	OCP_LDO52,
+	OCP_LDO53,
+	OCP_LDO54,
+	OCP_LDO56,
+	OCP_LDO_BUF1,
+	OCP_LDO_BUF,
+	OCP_LSW1,
+	OCP_LSW2,
+	OCP_PMUH,
+	SCP_BUCK1,
+	SCP_BUCK2,
+	SCP_BUCK3,
+	SCP_BUCK4,
+	SCP_BUCK5,
+	SCP_BUCK6,
+	SCP_BUCK7,
+	SCP_BUCK8,
+	SCP_BUCK9,
+	SCP_BUCK10,
+	SCP_BUCK11,
+	SCP_BUCK00,
+	SCP_BUCK01,
+	SCP_BUCKBOOST,
+	OVP_BUCK4,
+	OVP_BUCK7,
+	OVP_BUCK00,
+	OVP_BUCK01,
+	OVP_BUCKBOOST,
+	BUCK_TEMP_DAMAGE0_0,
+	BUCK_TEMP_DAMAGE0_1,
+	BUCK_TEMP_DAMAGE0_2,
+	BUCK_TEMP_DAMAGE0_3,
+	BUCK_TEMP_DAMAGE0_4,
+	BUCK_TEMP_DAMAGE0_5,
+	BUCK_TEMP_DAMAGE0_6,
+	BUCK_TEMP_DAMAGE0_7,
+	BUCK_TEMP_DAMAGE1_0,
+	BUCK_TEMP_DAMAGE1_1,
+	BUCK_TEMP_DAMAGE1_2,
+	BUCK_TEMP_DAMAGE1_3,
+	BUCK_TEMP_DAMAGE1_4,
+	BUCK_TEMP_DAMAGE1_5,
+	BUCK_TEMP_DAMAGE1_6,
+	BUCK_TEMP_DAMAGE1_7,
+	BUCK_TEMP_DAMAGE2_0,
+	BUCK_TEMP_DAMAGE2_1,
+	BUCK_TEMP_DAMAGE2_2,
+	BUCK_TEMP_DAMAGE2_3,
+	BUCK_TEMP_DAMAGE2_4,
+	BUCK_TEMP_DAMAGE2_5,
+	BUCK_TEMP_DAMAGE2_6,
+	BUCK_TEMP_DAMAGE2_7,
+};
+
+enum sub_pmu_subtype
+{
+
+	SUBPMU_VIN_LDO39_VLD = 0x01,
+	SUBPMU_VIN_3P45_VLD,
+	SUBPMU_B0_TEMP_ALERT,
+	SUBPMU_B1_TEMP_ALERT,
+	SUBPMU_B2_TEMP_ALERT,
+	SUBPMU_B3_TEMP_ALERT,
+	SUBPMU_B4_TEMP_ALERT,
+	SUBPMU_B5_TEMP_ALERT,
+	SUBPMU_B6_TEMP_ALERT,
+	SUBPMU_B7_TEMP_ALERT,
+	SUBPMU_B0_TEMP_DAMAGE,
+	SUBPMU_B1_TEMP_DAMAGE,
+	SUBPMU_B2_TEMP_DAMAGE,
+	SUBPMU_B3_TEMP_DAMAGE,
+	SUBPMU_B4_TEMP_DAMAGE,
+	SUBPMU_B5_TEMP_DAMAGE,
+	SUBPMU_B6_TEMP_DAMAGE,
+	SUBPMU_B7_TEMP_DAMAGE,
+	SUBPMU_OCP_B0,
+	SUBPMU_OCP_B1,
+	SUBPMU_OCP_B2,
+	SUBPMU_OCP_B3,
+	SUBPMU_OCP_B4,
+	SUBPMU_OCP_B5,
+	SUBPMU_OCP_B6,
+	SUBPMU_OCP_B7,
+	SUBPMU_OCP_LDO39,
+	SUBPMU_OCP_PMUH,
+	SUBPMU_SCP_PMUH,
+	SUBPMU_SCP_B0,
+	SUBPMU_SCP_B2,
+	SUBPMU_SCP_B3,
+	SUBPMU_SCP_B4,
+	SUBPMU_SCP_B6,
+	SUBPMU_SCP_B7,
+	SUBPMU_OVP_B0,
+	SUBPMU_OVP_B2,
+	SUBPMU_OVP_B3,
+	SUBPMU_OVP_B4,
+	SUBPMU_OVP_B6,
+	SUBPMU_OVP_B7,
+	SUBPMU_B0_OC_FER,
+	SUBPMU_B2_OC_FER,
+	SUBPMU_B3_OC_FER,
+	SUBPMU_B4_OC_FER,
+	SUBPMU_B6_OC_FER,
+	SUBPMU_B7_OC_FER,
+	SUBPMU_B0_OC_LEVEL_0,
+	SUBPMU_B0_OC_LEVEL_1,
+	SUBPMU_B2_OC_LEVEL_0,
+	SUBPMU_B2_OC_LEVEL_1,
+	SUBPMU_B3_OC_LEVEL_0,
+	SUBPMU_B3_OC_LEVEL_1,
+	SUBPMU_B4_OC_LEVEL_0,
+	SUBPMU_B4_OC_LEVEL_1,
+	SUBPMU_B6_OC_LEVEL_0,
+	SUBPMU_B6_OC_LEVEL_1,
+	SUBPMU_B7_OC_LEVEL_0,
+	SUBPMU_B7_OC_LEVEL_1,
+};
+
+/* npu mntn */
+enum npu_subtype
+{
+	AICORE_EXCP = 0x0,
+	AICORE_TIMEOUT,
+	TS_RUNNING_EXCP,
+	TS_RUNNING_TIMEOUT,
+	TS_INIT_EXCP,
+	AICPU_INIT_EXCP,
+	AICPU_HEARTBEAT_EXCP,
+	POWERUP_FAIL,
+	POWERDOWN_FAIL,
+	NPU_NOC_ERR,
+	NPU_AICORE0_NOC_ERR,
+	NPU_AICORE1_NOC_ERR,
+	NPU_SDMA1_NOC_ERR, /* SDMA0 tiny use */
+	NPU_TS_CPU_NOC_ERR,
+	NPU_TS_HWTS_NOC_ERR,
+	NPU_TCU_NOC_ERR,
+	SMMU_EXCP,
+	HWTS_EXCP,
+	AIV_EXCP,
+	AIV_TIMEOUT,
+	WAIT_FFTS_EXCP,
+};
+ 
+/* ffts mntn */
+enum ffts_subtype
+{
+	BLOCKPROC_EXCP = 0x0,
+	BLOCKGPU_EXCP = 0x1,
+	BLOCKNPU_EXCP = 0x2,
+	CMO_EXCP = 0x3,
+	RETRY_EXCP = 0x4,
+	ABNORMAL_EXCP = 0x5,
+};
+
+/*conn mntn*/
+enum conn_subtype
+{
+    CONN_WIFI_EXEC = 0,
+    CONN_WIFI_CHAN_EXEC,
+    CONN_WIFI_WAKEUP_FAIL,
+    CONN_BFGX_EXEC,
+    CONN_BFGX_BEAT_TIMEOUT,
+    CONN_BFGX_WAKEUP_FAIL,
+};
+
+/*  general_see mntn  */
+enum general_see_subtype {
+	EXC_SENSOR_CTRL = 0,
+	EXC_SIC,
+	EXC_MED,
+	EXC_MISC,
+	EXC_OTPC,
+	EXC_HARD,
+	EXC_IPC_MAILBOX,
+	EXC_MPU,
+	EXC_BUS,
+	EXC_SSP,
+	EXC_SEC_EXTERN,
+	EXC_WDG,
+	EXC_SYSALARM,
+	EXC_NV_COUNTER,
+	EXC_COS,
+	EXC_SYSINFO,
+	EXC_MNTN_COS,
+	EXC_MNTN_COS_RESET,
+	EXC_LIBC,
+	EXC_NVM,
+
+	EXC_SECENG_TRNG,
+	EXC_SECENG_TRIM,
+	EXC_SECENG_SCE,
+	EXC_SECENG_RSA,
+	EXC_SECENG_SM2,
+	EXC_SECENG_KM,
+	EXC_SECENG_SCRAMBLING,
+	EXC_SECBOOT,
+	EXC_MAIN,
+	EXC_HARD_LOCK,
+	EXC_SECFLASH_FACTORY, EXC_SECFLASH_DATALINK,
+	EXC_SECFLASH_SW, EXC_SECFLASH_SCP03, EXC_SECFLASH_SA,
+    EXC_POWEROFF_FAIL,
+	EXC_TEE_ERR_NOTIFY,
+	EXC_BOTTOM,
+	/* above is for exception in bsp */
+	EXC_MSPC_ROM, EXC_RPMB_KO,
+	/* general_see irqs type, starts */
+	EXC_ALARM0, EXC_ALARM1,
+	EXC_AS2AP_IRQ,
+	EXC_DS2AP_IRQ,
+	EXC_SENC2AP_IRQ,
+	EXC_SENC2AP_IRQ0,
+	EXC_SENC2AP_IRQ1,
+	EXC_LOCKUP,
+	EXC_EH2H_SLV,
+	EXC_TSENSOR0,
+	EXC_TSENSOR1,
+	EXC_RST,
+	EXC_SOC_ALARM_IRQ,
+	EXC_CORE_PARITY_IRQ,
+	EXC_SUBSYS_ALARM_IRQ,
+	EXC_DUAL_VIOLATION_IRQ,
+	EXC_INT_TRAP_IRQ,
+	/* general_see irqs type, ends */
+
+	EXC_UNKNOWN,
+};
+
+/* dss mntn */
+enum dss_subtype {
+	DSS_NOC_EXCEPTION = 0,
+	DSS_DDRC_EXCEPTION,
+	DSS_VACT_IRQ_TIMEOUT,
+};
+
+/* gpu mntn */
+enum gpu_subtype {
+	GPU_HVGR_HANG = 0,
+	GPU_HVGR_FAULT,
+	GPU_HVGR_PAGE_FAULT,
+	GPU_HVGR_CRASH,
+};
+
+enum hm_panic_subtype {
+        HM_PANIC_KERNEL       = 0x0,
+        HM_PANIC_SYSMGR,
+        HM_PANIC_INIT,
+        HGUARD_HG_ABNORMAL    = 0x7,
+        HGUARD_USRV_FAIL,
+        HGUARD_USRV_HEARTBEAT,
+        HGUARD_SSRV_FAIL,
+        HGUARD_DEADSCHED,
+        HGUARD_DEADLOCK,
+        HGUARD_STARTUP_STUCK,
+        HGUARD_SHUTDOWN_STUCK,
+        HM_PANIC_ELFLOADER,
+        HM_PANIC_HARDDOG = 0x10,
+        HM_PANIC_DEVHOST      = 0x11,
+        HGUARD_USER_CONFIG    = 0x12,
+        HM_PANIC_HKIP          = 0x13,
+        HM_PANIC_INJECT        = 0x14,
+        HM_PANIC_SERROR        = 0x15,
+        HM_PANIC_OOM           = 0x16,
+        HM_PANIC_LOWDOG    = 0x20,
+        HM_PANIC_HIGHDOG   = 0x30,
+        HM_PANIC_ELFLOADER_WDT   = 0x40,
+        HM_PANIC_VWATCHDOG    = 0x80,
+        HM_UVMM_PANIC    = 0x81,
+};
+
+/*lpm3 mntn*/
+typedef enum {
+	RDR_REG_BACKUP_IDEX_0 = 0,
+	RDR_REG_BACKUP_IDEX_1,
+	RDR_REG_BACKUP_IDEX_2,
+	RDR_REG_BACKUP_IDEX_3,
+	RDR_REG_BACKUP_IDEX_MAX
+} RDR_REG_BACKUP_IDEX;
+
+
+typedef enum {
+	CATEGORY_START = 0x0,
+	NORMALBOOT,
+	PANIC,
+	HWWATCHDOG,
+	LPM3EXCEPTION,
+	BOOTLOADER_CRASH,
+	TRUSTZONE_REBOOTSYS,
+	MODEM_REBOOTSYS,
+	BOOTFAIL,
+	HARDWARE_FAULT,
+	MODEMCRASH,
+	HIFICRASH,
+	AUDIO_CODEC_CRASH,
+	SENSORHUBCRASH,
+	ISPCRASH,
+	IVPCRASH,
+	TRUSTZONECRASH,
+	GENERAL_SEE_CRASH,
+	UNKNOWNS,
+	PRESS10S,
+	PRESS6S,
+	NPUEXCEPTION,
+	CONNEXCEPTION,
+	FDULCRASH,
+	DSSCRASH,
+	GPUEXCEPTION,
+	LPCPUEXCEPTION,
+	LPGPUEXCEPTION,
+	FFTSEXCEPTION,
+	VENCWD,
+	AOWD,
+	DDRXPUWD,
+	SYSCTRLWD,
+	GPUXPUWD,
+	CPUXPUWD,
+	SUBTYPE = 0xff,/* is used to mark whether it contains an abnormal subtype */
+}CATEGORY_SOURCE;
+
+struct exp_subtype {
+	unsigned int exception;
+	unsigned char category_name[24];
+	unsigned char subtype_name[24];
+	unsigned int subtype_num;
+};
+
+typedef struct exc_special_backup_data {
+	unsigned char reset_reason[RDR_REG_BACKUP_IDEX_MAX];
+	unsigned int slice;
+	unsigned int rtc;
+	unsigned int REG_Reg13;
+	unsigned int REG_LR1;
+	unsigned int REG_PC;
+	unsigned int REG_XPSR;
+	unsigned int NVIC_CFSR;	/*0xE000ED28 */
+	unsigned int NVIC_HFSR;	/*0xE000ED2C */
+	unsigned int NVIC_BFAR;	/*0xE000ED38 */
+	unsigned char exc_trace;
+	unsigned char ddr_exc;
+	unsigned short irq_id;
+	unsigned int task_id;
+} EXC_SPECIAL_BACKUP_DATA_STRU;
+
+
+typedef struct rdr_reg_backup_head {
+	unsigned int idex; /*值为RDR_REG_BACKUP_IDEX*/
+	unsigned int reason[RDR_REG_BACKUP_IDEX_MAX - 1];
+} RDR_REG_BACKUP_HEAD_STRU;
+
+/*
+ *  * Exception:
+ *   * order: r0~r13 msp psp lr(1) lr(2) pc xpsr  PRIMASK BASEPRI FAULTMASK
+ *    * r4~r11 call _save_reg, if no change in exc, as exc point
+ *     * lr(1)  enter exc handle, as EXC_RETURN
+ *      * r13 msp psp r0~r3,r12,lr(2),pc,xpsr  exc point
+ *       * */
+/*
+ *  * systemError:
+ *   * all current
+ *    * order: r0~r13 msp psp CONTROL lr(2) pc xpsr PRIMASK BASEPRI FAULTMASK
+ *     * */
+
+
+typedef struct rdr_reg_backup_data {
+	unsigned int Reg0;              /*0x00*/
+	unsigned int Reg1;              /*0x04*/
+	unsigned int Reg2;              /*0x08*/
+	unsigned int Reg3;              /*0x0c*/
+	unsigned int Reg4;              /*0x10*/
+	unsigned int Reg5;              /*0x14*/
+	unsigned int Reg6;              /*0x18*/
+	unsigned int Reg7;              /*0x1c*/
+	unsigned int Reg8;              /*0x20*/
+	unsigned int Reg9;              /*0x24*/
+	unsigned int Reg10;             /*0x28*/
+	unsigned int Reg11;             /*0x2c*/
+	unsigned int Reg12;             /*0x30*/
+	unsigned int Reg13;             /*0x34*/
+	unsigned int MSP;               /*0x38*/
+	unsigned int PSP;               /*0x3c*/
+	unsigned int LR0_CONTROL;       /*0x40*/
+	unsigned int LR1;               /*0x44*/
+	unsigned int PC;                /*0x48*/
+	unsigned int XPSR;              /*0x4c*/
+	unsigned int PRIMASK;           /*0x50*/
+	unsigned int BASEPRI;           /*0x54*/
+	unsigned int FAULTMASK;         /*0x58*/
+	unsigned int CONTROL;           /*0x5c*/
+} RDR_REG_BACKUP_DATA_STRU;  		/*0x60*/
+
+#endif

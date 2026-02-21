@@ -1,0 +1,15 @@
+# SPDX-License-Identifier: GPL-2.0-or-later
+# Copyright (c) 2023 Huawei Device Co., Ltd.
+#
+# Config for high randomize address of process manager
+#
+
+menu "High address randomize manager"
+
+config OH_HIGH_RANDOMIZE
+	default n
+	bool "High randomize memory address"
+	help
+	  Select high randomize memory address or not.
+endmenu
+# a blank line must be existed

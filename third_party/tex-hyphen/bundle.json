@@ -1,0 +1,38 @@
+{
+  "name": "@ohos/tex-hyphen",
+  "description": "This is the central repository for all hyphenation patterns",
+  "version": "5.1",
+  "license": "various",
+  "publishAs": "resource-file",
+  "segment": {
+    "destPath": "third_party/tex-hyphen"
+  },
+  "dirs": {},
+  "scripts": {},
+  "component": {
+    "name": "tex-hyphen",
+    "subsystem": "thirdparty",
+    "syscap": [],
+    "features": [],
+    "adapted_system_type": [
+      "mini",
+      "small",
+      "standard"
+    ],
+    "rom": "",
+    "ram": "",
+    "deps": {
+      "components": [
+        "icu"
+      ],
+      "third_party": []
+    },
+    "build": {
+      "sub_component": [
+        "//third_party/tex-hyphen:hyphenation_patterns"
+      ],
+      "inner_kits": [],
+      "test": []
+    }
+  }
+}

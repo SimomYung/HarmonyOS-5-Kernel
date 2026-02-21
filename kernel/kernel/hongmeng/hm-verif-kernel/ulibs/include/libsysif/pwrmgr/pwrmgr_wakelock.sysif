@@ -1,0 +1,56 @@
+/*
+ * Copyright (C) Huawei Technologies Co., Ltd. 2019-2020. All rights reserved.
+ * Description: Definition for pwrmgr wake lock sysif
+ * Author: Huawei OS Kernel Lab
+ * Create: Fri Aug 30 15:51:27 2019
+ */
+
+/*
+ * To support the mixed data model which means the client and the server
+ * may use different data model. See the document for limitation of data type
+ * used in the sysif interfaces in <Documentation/sysif_compat.md>.
+ */
+#ifdef SYSIF_EXPORT_API
+
+#include <libhmpm/wl_stat.h>
+
+#define WL_ACTION_ADD			__U(0)
+#define WL_ACTION_REMOVE		__U(1)
+#define WL_ACTION_ACQUIRE		__U(2)
+#define WL_ACTION_RELEASE		__U(3)
+
+struct wake_lock_name {
+	char string[WAKELOCK_NAME_MAX];
+};
+
+#endif
+
+DEFINE_MANAGER(wakelock, 8,
+	DEFINE_METHOD(wakelock, action,
+		      ARG(2, unsigned int, action,
+			  struct wake_lock_name, name),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_METHOD(wakelock, acquire_timeout,
+		      ARG(2, struct wake_lock_name, wakelock,
+			  unsigned long, msec),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_METHOD(wakelock, get_count,
+		      ARG_NO,
+		      RET(1, unsigned int, count),
+		      SLOWDATA_NO)
+
+	DEFINE_METHOD(wakelock, save_count,
+		      ARG(1, unsigned int, count),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_METHOD(wakelock, stat,
+		      ARG(2, struct wake_lock_name, name,
+			  struct bunch_ipc_attr, attr),
+		      RET_NO,
+		      SLOWDATA_NO)
+)

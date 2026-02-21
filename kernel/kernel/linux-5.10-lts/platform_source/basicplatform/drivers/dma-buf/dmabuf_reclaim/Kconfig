@@ -1,0 +1,20 @@
+config DMABUF_SWAP
+    bool "dmabuf swap"
+    depends on DMABUF_HEAPS
+    help
+      Choose this option to enable dmabuf swap of System Heap.
+      To store or resume the memory data from the UFS.
+
+config DMABUF_RECLAIM
+    bool "dmabuf reclaim"
+    select ION_FAULT
+    depends on DMABUF_HEAPS
+    help
+      Choose this option to enable Dmabuf Reclaim of System Heap.
+      Reclaiming and restoring
+
+config DMABUF_RECLAIM_TEST
+    bool "dmabuf reclaim test"
+    depends on DMABUF_RECLAIM
+    help
+      Choose this option to enable Dmabuf test program.

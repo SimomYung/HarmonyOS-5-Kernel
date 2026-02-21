@@ -1,0 +1,2 @@
+obj-m += sd.proxy.o
+ccflags-y += -I${HMSDKSYSROOTPATH}/usr/include

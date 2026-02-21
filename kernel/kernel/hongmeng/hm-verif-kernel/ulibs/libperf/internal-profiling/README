@@ -1,0 +1,64 @@
+Perf API markdown for Hongmeng
+========================================
+
+libperf is abstract configuration and management API library for User Space, here
+traditional perf is devided into kernel cap_cpucontext and user space conf & mgr,
+and further more:
+1) kernel cap_cpucontext contains PMU HW registers, e.g. 22 regs for AArch64 PMUv3,
+   kernel takes responsibility of PMU context switch while sched in/out threads,
+   or CPU migrations, so this gonna lead to another concept: cap_cpucontext is
+   attached to CPU or TCB.
+
+2) user space config & mgr API is a utility to facilitate user app and wcet tools,
+   such API would config all event counters chaos, read/write counters, and so on.
+   this could be regarded as an intermediate layer to let user do performance
+   monitoring regardless of PMU architecture knowledge.
+
+API intro for libperf
+---------------------------------------
+All public interfaces API are defined in header file:
+    #include "libperf/perf.h"
+
+	Abstract API.
+	(1) sys_perf_start call hw/sw_pmu_init to init PMU hw counters and initialize all counters to 0.
+	(2) config_events: config hw with default attributes,
+		 now the default measured events are:
+		(cycle, instruction, cache reference/miss, branch instructions/miss, bus cycles)
+	(3) pmu_start: start countering all configured events
+	(4) pmu_stop: stop countering
+	(5) read/write_counters: read/write all configured cycle and events counters' value.
+	(6) xxx_context: batch handling(sync/restore) PMU context regiters.
+	(7) reset: reset all counters to 0.
+	(8) perf_disable/enable:  temporarily disable countering but did not reset counter
+		values to 0, and perf_enable would continue counting beginning with previous value.
+	(9) handle_irq: reserved for future handling pmu overflow status.
+	(10) profilling_report: read out all counters' value, and print it out with a report format.
+
+WCET plugin API Intro:
+WCET is short for Worst Case Execution Time, based on Gcc Intermediate Gimple analysis
+to get current function's Basic Block info and its Control Flow Graph, which utilize
+perf to count each Basic Block's (cycles, cache miss...) statistics.
+
+Note: right now perf_disable/perf_enable/perf_read_counter are specially added for support
+      Basic Block's measurement within a function, as following:
+                    ---------------
+                    | entry block |
+                    | perf_start()|
+                    ---------------
+                       /        \
+               BB1    /          \    BB2
+        ------------------     ------------------
+        | perf_disable() |     | perf_disable() |
+        | read_counters()|     | read_counters()|
+        | perf_enable()  |     | perf_enable()  |
+        ------------------     ------------------
+                      \         /
+                       \       /
+                    ---------------
+                    | exit block  |
+                    | perf_stop() |
+                    ---------------
+
+Example
+---------------------
+Example Code Demo

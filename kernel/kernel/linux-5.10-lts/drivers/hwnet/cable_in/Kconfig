@@ -1,0 +1,1 @@
+source "drivers/hwnet/cable_in/cable_in_detect/Kconfig"

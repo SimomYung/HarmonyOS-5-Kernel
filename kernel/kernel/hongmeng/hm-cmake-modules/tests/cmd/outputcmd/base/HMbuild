@@ -1,0 +1,17 @@
+# Copyright (c) Huawei Technologies Co., Ltd. 2021-2021. All rights reserved.
+# Description: HMbuild
+# Author: Huawei OS Kernel Lab
+# Create: Tue Nov 23 12:01:49 2021
+
+exec-dynamic-y: test
+output-test: test_output
+src-test-y: output_main.c
+
+lib-dynamic-y: test_dynamic
+output-test_dynamic: test-dynamic
+src-test_dynamic-y: lib.c
+
+lib-static-y: test_static
+output-test_static: test-static
+src-test_static-y: lib.c
+# vim:ts=4:sw=4:expandtab

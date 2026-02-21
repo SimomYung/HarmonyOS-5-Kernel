@@ -1,0 +1,136 @@
+From 48b8fde337cefc926d4840a73c9e07186c08d8f4 Mon Sep 17 00:00:00 2001
+From: g00650597 <g00650597@notesmail.huawei.com/>
+Date: Sat, 28 Dec 2024 14:54:36 +0800
+Subject: [PATCH] TicketNo:DTS2024121134413 Description:get askpass config from
+ system vpn
+
+Team:OTHERS
+Feature or Bugfix:Feature
+Binary Source:NO
+PrivateCode(Yes/No):No
+
+Change-Id: Ife9cac0f606eaf57dcca960adda1daff3ce46e81
+---
+ src/ipc/netmanager/include/nm_type.h |  4 +---
+ src/openvpn/misc.c                   | 29 ++++++++++++++++++++++++++--
+ src/openvpn/options.c                |  3 +++
+ 3 files changed, 31 insertions(+), 5 deletions(-)
+
+diff --git a/src/ipc/netmanager/include/nm_type.h b/src/ipc/netmanager/include/nm_type.h
+index 7caa074..1c0c7c3 100644
+--- a/src/ipc/netmanager/include/nm_type.h
++++ b/src/ipc/netmanager/include/nm_type.h
+@@ -23,9 +23,7 @@ extern "C" {
+ #endif
+ 
+ enum vpn_cert_type : int32_t {
+-    CA_CERT = 0,
+-    USER_CERT,
+-    SERVER_CERT,
++    OPENVPN_ASKPASS = 0,
+ };
+ 
+ enum vpn_state : int32_t {
+diff --git a/src/openvpn/misc.c b/src/openvpn/misc.c
+index ce6e4fd..3837169 100644
+--- a/src/openvpn/misc.c
++++ b/src/openvpn/misc.c
+@@ -45,6 +45,10 @@
+ 
+ #include "memdbg.h"
+ 
++#ifdef SUPPORT_SYSVPN
++#include "net_manager_api.h"
++#endif
++
+ #ifdef ENABLE_IPROUTE
+ const char *iproute_path = IPROUTE_PATH; /* GLOBAL */
+ #endif
+@@ -209,17 +213,29 @@ get_user_pass_cr(struct user_pass *up,
+             /*
+              * Try to get username/password from a file.
+              */
+-            FILE *fp;
+             char password_buf[USER_PASS_LEN] = { '\0' };
+ 
++#ifdef SUPPORT_SYSVPN
++            uint8_t conf_buf[USER_PASS_LEN] = { '\0' };
++            int ret = load_vpn_cert_uri(OPENVPN_ASKPASS, conf_buf, USER_PASS_LEN);
++            if (ret == 0) {
++                msg(M_FATAL, "Error reading password.");
++            }
++#else
++            FILE *fp;
+             fp = platform_fopen(auth_file, "r");
+             if (!fp)
+             {
+                 msg(M_ERR, "Error opening '%s' auth file: %s", prefix, auth_file);
+             }
+-
++#endif /* SUPPORT_SYSVPN */
+             if ((flags & GET_USER_PASS_PASSWORD_ONLY) == 0)
+             {
++#ifdef SUPPORT_SYSVPN
++                if (strncpy(up->username, (char *)conf_buf, USER_PASS_LEN) == NULL) {
++                    msg(M_FATAL, "Error reading username");
++                }
++#else
+                 /* Read username first */
+                 if (fgets(up->username, USER_PASS_LEN, fp) == NULL)
+                 {
+@@ -227,10 +243,15 @@ get_user_pass_cr(struct user_pass *up,
+                         prefix,
+                         auth_file);
+                 }
++#endif /* SUPPORT_SYSVPN */
+             }
+             chomp(up->username);
+ 
++#ifdef SUPPORT_SYSVPN
++            if (strncpy(password_buf,  (char *)conf_buf, USER_PASS_LEN) != NULL)
++#else
+             if (fgets(password_buf, USER_PASS_LEN, fp) != NULL)
++#endif /* SUPPORT_SYSVPN */
+             {
+                 chomp(password_buf);
+             }
+@@ -256,7 +277,9 @@ get_user_pass_cr(struct user_pass *up,
+                 msg(D_LOW, "No password found in %s authfile '%s'. Querying the management interface", prefix, auth_file);
+                 if (!auth_user_pass_mgmt(up, prefix, flags, auth_challenge))
+                 {
++#ifndef SUPPORT_SYSVPN
+                     fclose(fp);
++#endif /* SUPPORT_SYSVPN */
+                     return false;
+                 }
+             }
+@@ -266,7 +289,9 @@ get_user_pass_cr(struct user_pass *up,
+                 password_from_stdin = 1;
+             }
+ 
++#ifndef SUPPORT_SYSVPN
+             fclose(fp);
++#endif /* SUPPORT_SYSVPN */
+ 
+             if (!(flags & GET_USER_PASS_PASSWORD_ONLY) && strlen(up->username) == 0)
+             {
+diff --git a/src/openvpn/options.c b/src/openvpn/options.c
+index 9030607..ec84f27 100644
+--- a/src/openvpn/options.c
++++ b/src/openvpn/options.c
+@@ -4145,9 +4145,12 @@ options_postprocess_filechecks(struct options *options)
+     errs |= check_file_access(CHKACC_DIRPATH|CHKACC_FILEXSTWR,
+                               options->packet_id_file, R_OK|W_OK, "--replay-persist");
+ 
++#ifndef SUPPORT_SYSVPN
+     /* ** Password files ** */
+     errs |= check_file_access(CHKACC_FILE|CHKACC_ACPTSTDIN|CHKACC_PRIVATE,
+                               options->key_pass_file, R_OK, "--askpass");
++#endif /* SUPPORT_SYSVPN */
++
+ #ifdef ENABLE_MANAGEMENT
+     errs |= check_file_access(CHKACC_FILE|CHKACC_ACPTSTDIN|CHKACC_PRIVATE,
+                               options->management_user_pass, R_OK,
+-- 
+2.34.1
+

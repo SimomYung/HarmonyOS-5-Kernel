@@ -1,0 +1,861 @@
+/**
+ * Copyright (c) @CompanyNameMagicTag 2021-2023. All rights reserved.
+ *
+ * Description: UART Function Implementation
+ * Author: @CompanyNameTag
+ */
+
+/* 头文件包含 */
+#include <linux/tty.h>
+#include <linux/tty_flip.h>
+#include <linux/platform_device.h>
+
+#include "chr_user.h"
+#include "oal_ext_if.h"
+#include "plat_exception_rst.h"
+
+#include "plat_debug.h"
+#include "bfgx_dev.h"
+#include "bfgx_core.h"
+#include "bfgx_data_parse.h"
+#include "plat_uart.h"
+
+#ifndef _PRE_CONFIG_USE_OCTTY
+#define BUS_SEMA_WAIT_TIME           (10 * HZ)   /* 10s 等待信号量 */
+
+/* ir only mode use baudrate 921600 */
+unsigned long g_ir_only_baud_rate = IR_ONLY_BAUD_RATE;
+
+/* no lock while getting the state, just statistic */
+/* call only in one place!!! */
+void ps_tty_tx_cnt_add(struct ps_core_s *ps_core_d, uint32_t cnt)
+{
+    oal_atomic_add(&(ps_core_d->tty_tx_cnt), cnt);
+}
+
+/* call only in one place!!! */
+static void ps_tty_rx_cnt_add(struct ps_core_s *ps_core_d, uint32_t cnt)
+{
+    oal_atomic_add(&(ps_core_d->tty_rx_cnt), cnt);
+}
+
+#ifdef _PRE_PRODUCT_HI1620S_KUNPENG
+void ps_uart_state_dump(struct ps_core_s *ps_core_d)
+{
+    return;
+}
+
+#else
+static void ps_uart_state_print(struct tty_struct *tty)
+{
+    struct serial_icounter_struct icount;
+
+    ps_print_info("stopped:%x  hw_stopped:%x\n", tty->stopped, tty->hw_stopped);
+
+    if (tty->ops->get_icount == NULL) {
+        ps_print_info("get icount is NULL\n");
+        return;
+    }
+
+    if (tty->ops->get_icount(tty, &icount) < 0) {
+        ps_print_err("get icount error\n");
+        return;
+    }
+
+    ps_print_info("uart tx:%x    rx:%x\n", icount.tx, icount.rx);
+    ps_print_info("uart cts:%x,dsr:%x,rng:%x,dcd:%x,frame:%x,overrun:%x,parity:%x,brk:%x,buf_overrun:%x\n",
+                  icount.cts, icount.dsr, icount.rng, icount.dcd,
+                  icount.frame, icount.overrun, icount.parity, icount.brk,
+                  icount.buf_overrun);
+    return;
+}
+
+static void ps_tty_buffer_print(struct tty_struct *tty)
+{
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 35))
+    struct tty_buffer *thead = NULL;
+    struct tty_bufhead *buf = NULL;
+    struct tty_port *port;
+
+    if (tty == NULL || tty->port == NULL) {
+        ps_print_err("tty port has not inited\n");
+        return;
+    }
+    port = tty->port;
+    buf = &port->buf;
+    ps_print_info("tty[%s] rx work_pending[%d]", tty->name, oal_work_is_busy(&buf->work));
+
+    if ((oal_in_interrupt() != 0) || (oal_in_atomic() != 0)) {
+        ps_print_info("in_interrupt or in_atomic\n");
+        return;
+    }
+
+    tty_buffer_lock_exclusive(port);
+    thead = buf->head;
+    while (thead != NULL) {
+        ps_print_info("tty rx buf:used=0x%x,size=0x%x,commit=0x%x,read=0x%x\n",
+                      thead->used, thead->size, thead->commit, thead->read);
+        thead = thead->next;
+    }
+    tty_buffer_unlock_exclusive(port);
+#endif
+}
+
+void ps_uart_state_dump(struct ps_core_s *ps_core_d)
+{
+    struct tty_struct *tty = NULL;
+
+    /* user版本受控 */
+    if (is_hi110x_debug_type() == OAL_FALSE) {
+        return;
+    }
+
+    tty = ps_core_d->tty;
+    if (tty == NULL || tty_kref_get(tty) == NULL) {
+        ps_print_err("ps_core_d or tty is NULL\n");
+        return;
+    }
+
+    ps_print_info("tty tx:0x%x, rx:0x%x, tty_chars_in_buffer=0x%x\n", oal_atomic_read(&(ps_core_d->tty_tx_cnt)),
+                  oal_atomic_read(&(ps_core_d->tty_rx_cnt)), tty_chars_in_buffer(tty));
+
+    ps_uart_state_print(tty);
+    ps_tty_buffer_print(tty);
+    tty_kref_put(tty);
+
+    return;
+}
+#endif
+
+/*
+ * Prototype    : is_hisi_connetivity_tty
+ * Description  : check the tty can match hisi connectivity ldisc
+ */
+static bool is_hisi_connetivity_tty(struct ps_core_s *ps_core_d)
+{
+    struct ps_plat_s *ps_plat_d = NULL;
+    const char *tty_name = NULL;
+
+    if (ps_core_d == NULL) {
+        ps_print_err("ps core is NULL\n");
+        return false;
+    }
+
+    ps_plat_d = (struct ps_plat_s *)(ps_core_d->ps_plat);
+    if (unlikely(ps_plat_d == NULL)) {
+        ps_print_err("ps_plat_d is NULL\n");
+        return false;
+    }
+
+    tty_name = get_tty_name(ps_plat_d);
+    if (unlikely(ps_core_d->tty == NULL)) {
+        ps_print_err("ps_core_d->tty is NULL\n");
+        return false;
+    }
+    if (strcmp(tty_name, ps_core_d->tty->name) != 0) {
+        return false;
+    }
+    return true;
+}
+
+
+/*
+ * Prototype    : ps_tty_open
+ * Description  : called by tty uart itself when open tty uart from octty
+ * input        : tty -> have opened tty
+ */
+static int32_t ps_tty_open(struct tty_struct *tty)
+{
+    struct ps_core_s *ps_core_d = NULL;
+
+    ps_print_info("[%s]%s enter\n", tty_name(tty), __func__);
+
+    ps_core_d = ps_get_core_by_uart_name(tty->name);
+    if (unlikely(ps_core_d == NULL)) {
+        ps_print_err("ps_core_d is NULL\n");
+        return -EINVAL;
+    }
+
+    tty->disc_data = ps_core_d;
+
+    /* don't do an wakeup for now */
+    clear_bit(TTY_DO_WRITE_WAKEUP, &tty->flags);
+
+    /* set mem already allocated */
+    tty->receive_room = PUBLIC_BUF_MAX;
+    /* Flush any pending characters in the driver and discipline. */
+    tty_ldisc_flush(tty);
+    tty_driver_flush_buffer(tty);
+
+    return 0;
+}
+
+/*
+ * Prototype    : ps_tty_close
+ * Description  : called by tty uart when close tty uart from octty
+ * input        : tty -> have opened tty
+ */
+static void ps_tty_close(struct tty_struct *tty)
+{
+    ps_print_info("[%s]%s enter\n", tty_name(tty), __func__);
+
+    if (!is_hisi_connetivity_tty(tty->disc_data)) {
+        ps_print_err("tty %s recognize fail\n", tty_name(tty));
+        return;
+    }
+
+    /* Flush any pending characters in the driver and discipline. */
+    tty_ldisc_flush(tty);
+    tty_driver_flush_buffer(tty);
+    tty->disc_data = NULL;
+    ps_print_info("tty %s flush done!\n", tty_name(tty));
+}
+
+static int32_t ps_tty_receive_check(struct tty_struct *tty, int32_t count, const uint8_t *data)
+{
+#ifdef PLATFORM_DEBUG_ENABLE
+    struct ps_core_s *ps_core_d = NULL;
+#endif
+
+    if (unlikely(st_tty_recv == NULL)) {
+        ps_print_err("[%s] st_tty_recv is NULL\n", tty_name(tty));
+        return -EINVAL;
+    }
+
+    if (!is_hisi_connetivity_tty(tty->disc_data)) {
+        ps_print_err("tty %s recognize fail\n", tty_name(tty));
+        return -EINVAL;
+    }
+
+    if (unlikely(data == NULL)) {
+        ps_print_err("[%s] received null from TTY\n", tty_name(tty));
+        return -EINVAL;
+    }
+
+    if (unlikely(count < 0)) {
+        ps_print_err("[%s] received count from TTY err\n", tty_name(tty));
+        return -EINVAL;
+    }
+
+#ifdef PLATFORM_DEBUG_ENABLE
+    // 心跳超时DFR打桩验证
+    ps_core_d = tty->disc_data;
+    if (is_dfr_test_en(HEARTBEATER_TIMEOUT_FAULT, (uintptr_t)ps_core_d)) {
+        if (oal_print_rate_limit(PRINT_RATE_SECOND)) {
+            ps_print_info("[%s]heartbeat dfr test, drop TTY data\n", tty_name(tty));
+        }
+        return -EINVAL;
+    }
+#endif
+
+    return 0;
+}
+
+static int32_t ps_tty_parity_check(struct tty_struct *tty, const uint8_t *data, char *tty_flags, int32_t count)
+{
+    int i;
+    char flags;
+    const char *cp = NULL;
+    int32_t ret = OAL_SUCC;
+
+    if (tty_flags == NULL) {
+        // uart parity check
+        return ret;
+    }
+
+    for (i = 0, cp = tty_flags; i < count; i++, cp++) {
+        flags = *cp;
+        switch (flags) {
+            case TTY_NORMAL:
+                // parity pass
+                break;
+            case TTY_OVERRUN:
+            case TTY_BREAK:
+            case TTY_PARITY:
+            case TTY_FRAME:
+                /* fall-throuth */
+                // tty errors
+                ret = -OAL_EIO;
+                ps_print_err("[%s][%d][parity check error]: tty err flag:%d\n", tty_name(tty), i, flags);
+                break;
+            default:
+                ret = -OAL_EIO;
+                ps_print_err("[%s][%d][parity check error]: unkown tty flag:%d\n", tty_name(tty), i, flags);
+                break;
+        }
+
+        if (oal_unlikely(ret != OAL_SUCC)) {
+            break;
+        }
+    }
+
+    if (oal_unlikely(ret != OAL_SUCC)) {
+        // dump parity error memory
+        oal_print_hex_dump((uint8_t *)data, count, 32, "tty receive: "); // 32B col
+        oal_print_hex_dump((uint8_t *)tty_flags, count, 32, "tty flags: "); // 32B col
+        declare_dft_trace_key_info("tty_parity_error", OAL_DFT_TRACE_EXCEP);
+    }
+
+    return ret;
+}
+/*
+ * Prototype    : ps_tty_receive_parity_check
+ * Description  : called by tty uart when recive data from tty uart, with uart parity check
+ * input        : tty   -> have opened tty
+ *                data -> recive data ptr
+ *                count-> recive data count
+ */
+static int32_t ps_tty_receive_parity_check(struct tty_struct *tty, const uint8_t *data, char *tty_flags, int32_t count)
+{
+    int32_t ret = OAL_SUCC;
+    struct ps_core_s *ps_core_d = tty->disc_data;
+    struct ps_plat_s *ps_plat_data = (struct ps_plat_s *)(ps_core_d->ps_plat);
+
+    oal_spin_lock(&ps_core_d->rx_lock);
+    /* 没有使能奇偶校验，不做检查，避免性能损失 */
+    if (ps_plat_data->paren == OAL_TRUE) {
+        ret = ps_tty_parity_check(tty, data, tty_flags, count);
+    }
+
+    ps_tty_rx_cnt_add(ps_core_d, count);
+    if (oal_likely(st_tty_recv != NULL)) {
+        st_tty_recv(tty->disc_data, data, count);
+    }
+    oal_spin_unlock(&ps_core_d->rx_lock);
+    return ret;
+}
+
+/*
+ * Prototype    : ps_tty_receive
+ * Description  : called by tty uart when recive data from tty uart
+ * input        : tty   -> have opened tty
+ *                data -> recive data ptr
+ *                count-> recive data count
+ */
+static void ps_tty_receive(struct tty_struct *tty, const uint8_t *data, char *tty_flags, int32_t count)
+{
+    int32_t ret;
+
+    if (ps_tty_receive_check(tty, count, data) < 0) {
+        return;
+    }
+
+    ret = ps_tty_receive_parity_check(tty, data, tty_flags, count);
+    if (oal_unlikely(ret != OAL_SUCC)) {
+        // uart loss pkts, do dfr same as hb timeout
+        chr_exception_report(CHR_PLATFORM_EXCEPTION_EVENTID, CHR_SYSTEM_PLAT, CHR_LAYER_DRV,
+                             CHR_PLT_DRV_EVENT_DEV, CHR_PLAT_DRV_ERROR_BEAT_TIMEOUT);
+    }
+}
+
+/*
+ * Prototype    : ps_tty_wakeup
+ * Description  : called by tty uart when wakeup from suspend
+ * input        : tty   -> have opened tty
+ */
+static void ps_tty_wakeup(struct tty_struct *tty)
+{
+    struct ps_core_s *ps_core_d = NULL;
+
+    PS_PRINT_FUNCTION_NAME;
+
+    if (!is_hisi_connetivity_tty(tty->disc_data)) {
+        return;
+    }
+
+    ps_core_d = tty->disc_data;
+    /* don't do an wakeup for now */
+    clear_bit(TTY_DO_WRITE_WAKEUP, &tty->flags);
+
+    /* call our internal wakeup */
+    ps_core_tx_work_add(ps_core_d);
+}
+
+static void ps_clean_tx_skb_buf(struct ps_core_s *ps_core_d)
+{
+#define WAIT_TX_WORK_DELAY 20
+    uint8_t delay_times = RELEASE_DELAT_TIMES;
+    if (ps_core_d == NULL) {
+        ps_print_err("ps_core_d is NULL\n");
+        return;
+    }
+
+    ps_kfree_skb(ps_core_d, TX_HIGH_QUEUE);
+    ps_kfree_skb(ps_core_d, TX_LOW_QUEUE);
+
+    ps_print_info("free tx sbk buf done!\n");
+
+    /* clean all tx sk_buff */
+    while ((oal_netbuf_list_len(&ps_core_d->tx_high_seq) ||
+           oal_netbuf_list_len(&ps_core_d->tx_low_seq)) && (delay_times)) {
+        msleep(10); // sleep 10ms
+        delay_times--;
+    }
+
+    if (oal_work_is_busy(&ps_core_d->tx_skb_work)) {
+        ps_print_info("hisi bfgx notify tx work exit\n");
+        atomic_set(&ps_core_d->force_tx_exit, 1);
+        // wait for tx work exit
+        msleep(WAIT_TX_WORK_DELAY);
+    }
+
+    if (!oal_is_err_or_null(ps_core_d->tty)) {
+        if (tty_chars_in_buffer(ps_core_d->tty)) {
+            ps_print_info("uart tx buf need clean, or it will block in uart close\n");
+            tty_driver_flush_buffer(ps_core_d->tty);
+        }
+    }
+}
+
+/*
+ * Prototype    : ps_tty_flush_buffer
+ * Description  : called by tty uart when flush buffer
+ * input        : tty   -> have opened tty
+ */
+static void ps_tty_flush_buffer(struct tty_struct *tty)
+{
+    struct ps_core_s *ps_core_d = NULL;
+
+    ps_print_info("%s: entered\n", __func__);
+
+    ps_core_d = tty->disc_data;
+    if (!is_hisi_connetivity_tty(ps_core_d)) {
+        ps_print_err("tty or tty->disc_data is NULL\n");
+        return;
+    }
+
+    reset_uart_rx_buf(ps_core_d);
+}
+
+int32_t ps_tty_resume(struct tty_struct *tty)
+{
+#define MAX_TTYRESUME_LOOPCNT 300
+
+#ifdef ASYNCB_SUSPENDED
+    uint32_t loop_tty_resume_cnt = 0;
+#endif
+
+    if (tty == NULL || tty->port == NULL) {
+        ps_print_err("tty port has not inited\n");
+        return OAL_FALSE;
+    }
+
+#if ((LINUX_VERSION_CODE >= KERNEL_VERSION(4, 7, 0)) && (_PRE_OS_VERSION_LINUX == _PRE_OS_VERSION))
+    while (tty_port_suspended(tty->port)) {
+#ifdef ASYNCB_SUSPENDED
+        if (loop_tty_resume_cnt++ >= MAX_TTYRESUME_LOOPCNT) {
+            ps_print_err("tty is not ready, state:%d!\n", tty_port_suspended(tty->port));
+            return OAL_FALSE;
+        }
+#endif
+        oal_msleep(10); // 等待10ms，tty从suspend恢复
+    }
+#ifdef ASYNCB_SUSPENDED
+    ps_print_info("tty state:0x%x,loop_cnt:%d\n", tty_port_suspended(tty->port), loop_tty_resume_cnt);
+#endif
+#else
+    ps_print_info("tty port flag 0x%x\n", (unsigned int)tty->port->flags);
+#ifdef ASYNCB_SUSPENDED
+    while (test_bit(ASYNCB_SUSPENDED, (volatile unsigned long *)&(tty->port->flags))) {
+        if (loop_tty_resume_cnt++ >= MAX_TTYRESUME_LOOPCNT) {
+            ps_print_err("tty is not ready, flag is 0x%x!\n", (unsigned int)tty->port->flags);
+            return OAL_FALSE;
+        }
+        oal_msleep(10); // 等待10ms，tty从suspend恢复
+    }
+#endif
+#endif
+
+    return OAL_TRUE;
+}
+
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(4, 14, 0)
+static int32_t ps_uart_pm_resume(struct tty_struct *tty)
+{
+    int32_t try_cnt = 0;
+    struct uart_state *state = NULL;
+
+    state = (struct uart_state *)(tty->driver_data);
+
+    while (state->uart_port->suspended != 0) {
+        oal_msleep(10); // 单次等待10ms
+        try_cnt++;
+        if (try_cnt > 300) { // 最多等待300次(3s)
+            ps_print_info("wait port resume timeout");
+            return -ETIME;
+        }
+    }
+    if (try_cnt > 0) {
+        ps_print_info("tty wait pm resume cnt %d\n", try_cnt);
+    }
+
+    return 0;
+}
+#endif
+
+static struct tty_struct *ps_tty_kopen(const char* dev_name)
+{
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(4, 14, 0)
+    struct tty_struct *tty = NULL;
+    int ret;
+    dev_t dev_no;
+
+    ps_print_info("%s\n", __func__);
+
+    ret = tty_dev_name_to_number(dev_name, &dev_no);
+    if (ret != 0) {
+        ps_print_err("can't found tty:%s ret=%d\n", dev_name, ret);
+        return NULL;
+    }
+    ps_print_info("%s open....\n", dev_name);
+    /* open tty */
+    tty = tty_kopen(dev_no);
+    if (oal_is_err_or_null(tty)) {
+        ps_print_err("open tty %s failed ret=%d\n", dev_name, PTR_ERR_OR_ZERO(tty));
+        return NULL;
+    }
+    ps_print_info("tty_kopen tty %s succ", dev_name);
+
+    if (ps_uart_pm_resume(tty) < 0) {
+        tty_unlock(tty);
+        ps_print_err("tty open wait exit suspend fail\n");
+        return NULL;
+    }
+
+    if (tty->ops->open) {
+        ret = tty->ops->open(tty, NULL);
+    } else {
+        ps_print_err("tty->ops->open is NULL\n");
+        ret = -ENODEV;
+    }
+
+    if (ret) {
+        tty_unlock(tty);
+        return NULL;
+    } else {
+        return tty;
+    }
+#else
+    return NULL;
+#endif
+}
+
+static void ps_tty_kclose(struct ps_core_s *ps_core_d)
+{
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(4, 14, 0)
+    struct tty_struct *tty = ps_core_d->tty;
+
+    ps_print_info("%s\n", __func__);
+
+    /* close tty */
+    if (tty == NULL) {
+        ps_print_err("tty is null, ignore\n");
+        return;
+    }
+
+    tty_lock(tty);
+    if (tty->ops->close) {
+        tty->ops->close(tty, NULL);
+    } else {
+        ps_print_warning("tty->ops->close is null\n");
+    }
+    tty_unlock(tty);
+
+    tty_kclose(tty);
+#endif
+}
+
+static void ps_ktty_set_termios(struct tty_struct *tty, long baud_rate, uint8_t enable_flowctl, uint8_t paren)
+{
+    struct ktermios ktermios;
+
+    ktermios = tty->termios;
+
+    /* close soft flowctrl */
+    ktermios.c_iflag &= ~IXON;
+
+    /* set uart cts/rts flowctrl */
+    ktermios.c_cflag &= ~CRTSCTS;
+    if (enable_flowctl == FLOW_CTRL_ENABLE) {
+        ktermios.c_cflag |= CRTSCTS;
+    }
+
+    /* set csize */
+    ktermios.c_cflag &= ~(CSIZE);
+    ktermios.c_cflag |= CS8;
+
+    /* set uart baudrate */
+    ktermios.c_cflag &= ~CBAUD;
+    ktermios.c_cflag |= BOTHER;
+
+    ktermios.c_iflag &= ~INPCK;
+    ktermios.c_cflag &= ~PARENB;
+    ktermios.c_cflag &= ~PARODD;
+
+    if (paren == OAL_TRUE) {
+        // if parodd enable, must enable both side
+        ktermios.c_iflag |= INPCK;
+        ktermios.c_cflag |= PARENB;
+        ktermios.c_cflag |= PARODD;
+        ps_print_info("uart odd parity enable\n");
+    }
+
+    tty_termios_encode_baud_rate(&ktermios, baud_rate, baud_rate);
+    tty_set_termios(tty, &ktermios);
+
+    ps_print_info("set baud_rate=%d, expect=%d, paren=%d\n",
+                  (int)tty_termios_baud_rate(&tty->termios), (int)baud_rate, paren);
+}
+
+/* ps_set_tty_termios ttyUart in kernel driver */
+/*
+ * Prototype    : ps_set_tty_termios
+ * Description  : set uart attr
+ */
+static int32_t ps_set_tty_termios(struct ps_core_s *ps_core_d, long baud_rate, uint8_t flowctl, uint8_t paren)
+{
+    struct tty_struct *tty = NULL;
+
+    ps_print_info("%s\n", __func__);
+
+    mutex_lock(&ps_core_d->tty_mutex);
+
+    tty = ps_core_d->tty;
+    if (tty == NULL) {
+        mutex_unlock(&ps_core_d->tty_mutex);
+        ps_print_err("tty is closed\n");
+        return -ENODEV;
+    }
+
+    ps_ktty_set_termios(tty, baud_rate, flowctl, paren);
+
+    mutex_unlock(&ps_core_d->tty_mutex);
+
+    return 0;
+}
+
+unsigned long ps_get_default_baud_rate(struct ps_core_s *ps_core_d)
+{
+    struct ps_plat_s *ps_plat_d = (struct ps_plat_s *)(ps_core_d->ps_plat);
+
+    return ps_plat_d->baud_rate;
+}
+
+/* remove octty process access ttyUart in kernel driver */
+/*
+ * Prototype    : ps_change_uart_baud_rate
+ * Description  : change arm platform uart baud rate to secend
+ *                baud rate for high baud rate when download patch
+ */
+int32_t ps_change_uart_baud_rate(struct ps_core_s *ps_core_d, long baud_rate, uint8_t enable_flowctl)
+{
+    struct ps_plat_s *ps_plat_d = (struct ps_plat_s *)(ps_core_d->ps_plat);
+
+    ps_print_info("%s:%s %lu\n", __func__, get_tty_name(ps_plat_d), baud_rate);
+
+    /* for debug only */
+    dump_uart_rx_buf(ps_core_d);
+
+    if (wait_bfgx_memdump_complete(ps_core_d) != EXCEPTION_SUCCESS) {
+        ps_print_err("wait memdump complete failed\n");
+    }
+
+    if (!oal_is_err_or_null(ps_core_d->tty)) {
+        if (tty_chars_in_buffer(ps_core_d->tty)) {
+            ps_print_info("uart tx buf is not empty\n");
+            tty_driver_flush_buffer(ps_core_d->tty);
+        }
+    }
+
+    return ps_set_tty_termios(ps_core_d, baud_rate, enable_flowctl, ps_plat_d->paren);
+}
+
+/*
+ * Prototype    : open_tty_drv
+ * Description  : called from PS Core when BT protocol stack drivers
+ *                registration,or FM/GNSS hal stack open FM/GNSS inode
+ */
+int32_t open_tty_drv(struct ps_core_s *ps_core_d)
+{
+    int ret;
+    struct tty_struct *tty = NULL;
+    struct ps_plat_s *ps_plat_d = (struct ps_plat_s *)(ps_core_d->ps_plat);
+    const char *tty_name = NULL;
+
+    tty_name = get_tty_name(ps_plat_d);
+
+    ps_print_info("%s:%s\n", __func__, tty_name);
+
+    /* wait for bus wakeup */
+    ret = down_timeout(&ps_core_d->sr_wake_sema, BUS_SEMA_WAIT_TIME);
+    if (ret == -ETIME) {
+        ps_print_err("%s driver is not ready!", tty_name);
+        return -OAL_ERR_CODE_SEMA_TIMEOUT;
+    }
+    up(&ps_core_d->sr_wake_sema);
+
+    mutex_lock(&ps_core_d->tty_mutex);
+
+    if (ps_core_d->tty_have_open == true) {
+        ps_print_warning("hisi bfgx line discipline have installed\n");
+        mutex_unlock(&ps_core_d->tty_mutex);
+        return 0;
+    }
+
+    reset_uart_rx_buf(ps_core_d);
+
+    /* open tty */
+    tty = ps_tty_kopen(tty_name);
+    if (tty == NULL) {
+        ps_print_err("failed to open ktty\n");
+        mutex_unlock(&ps_core_d->tty_mutex);
+        return -ENODEV;
+    }
+
+    ps_core_d->tty = tty;
+
+    // uart download mode config in cfg
+    if (oal_atomic_read(&ps_core_d->ir_only) != 0) {
+        ps_ktty_set_termios(tty, g_ir_only_baud_rate, ps_plat_d->flow_cntrl, ps_plat_d->paren);
+    } else {
+        ps_ktty_set_termios(tty, ps_plat_d->baud_rate, ps_plat_d->flow_cntrl, ps_plat_d->paren);
+    }
+
+    // tty_lock在tty_kopen时执行，成功时不释放锁，只有失败的时候才会释放
+    tty_unlock(tty);
+
+    ps_print_info("start tty set ldisc num=%d\n", ps_plat_d->ldisc_num);
+
+    /* set line ldisc */
+    ret = tty_set_ldisc(ps_core_d->tty, ps_plat_d->ldisc_num); /* export after 4.13 */
+    if (ret != 0) {
+        ps_print_err("failed to set ldisc on tty, ret=%d\n", ret);
+        mutex_unlock(&ps_core_d->tty_mutex);
+        return ret;
+    }
+
+    ps_core_d->tty_have_open = true;
+
+    mutex_unlock(&ps_core_d->tty_mutex);
+    ps_print_info("open tty success\n");
+
+    return 0;
+}
+
+static void tty_trx_data_verify(struct ps_core_s *ps_core_d)
+{
+    struct tty_struct *tty = NULL;
+    struct serial_icounter_struct icount;
+    int32_t tty_rx, tty_tx;
+
+    tty = ps_core_d->tty;
+    if ((tty == NULL) || (tty->ops->get_icount == NULL)) {
+        ps_print_info("tty or get_icount is NULL\n");
+        return;
+    }
+
+    if (tty->ops->get_icount(tty, &icount) < 0) {
+        ps_print_err("get icount error\n");
+        return;
+    }
+
+    tty_tx = oal_atomic_read(&(ps_core_d->tty_tx_cnt));
+    tty_rx = oal_atomic_read(&(ps_core_d->tty_rx_cnt));
+
+    ps_print_info("tty: tx %d rx %d uart tx:%d rx %d\n",
+                  tty_tx, tty_rx, icount.tx, icount.rx);
+
+    if (tty_tx != icount.tx || tty_rx != icount.rx) {
+        declare_dft_trace_key_info("uart trx not match", OAL_DFT_TRACE_FAIL);
+        chr_exception_report(CHR_PLATFORM_EXCEPTION_EVENTID, CHR_SYSTEM_PLAT, CHR_LAYER_DRV,
+                             CHR_PLT_DRV_EVENT_UART, CHR_PLAT_DRV_ERROR_CLOSE_TTY_REAMAIN_DATA);
+        ps_uart_state_dump(ps_core_d);
+
+        oal_atomic_set(&(ps_core_d->tty_tx_cnt), icount.tx);
+        oal_atomic_set(&(ps_core_d->tty_rx_cnt), icount.rx);
+    }
+}
+
+/*
+ * Prototype    : release_tty_drv
+ * Description  : called from PS Core when BT protocol stack drivers
+ *                  unregistration,or FM/GNSS hal stack close FM/GNSS inode
+ */
+int32_t release_tty_drv(struct ps_core_s *ps_core_d)
+{
+    struct ps_plat_s *ps_plat_d = (struct ps_plat_s *)(ps_core_d->ps_plat);
+
+    ps_print_info("%s:%s\n", __func__, get_tty_name(ps_plat_d));
+
+    // 置位tty发送中断标志位
+    atomic_set(&ps_core_d->force_tx_exit, 1);
+
+    mutex_lock(&ps_core_d->tty_mutex);
+
+    /* tx队列在tty没有打开的异常处理流程中也需要清理 */
+    ps_clean_tx_skb_buf(ps_core_d);
+
+    if (ps_core_d->tty_have_open == false) {
+        atomic_set(&ps_core_d->force_tx_exit, 0);
+        ps_print_info("hisi bfgx line discipline have uninstalled, ignored\n");
+        mutex_unlock(&ps_core_d->tty_mutex);
+        return 0;
+    }
+
+    /* 确保tty和uart上的数据包均已处理完 */
+    tty_trx_data_verify(ps_core_d);
+
+    /* close tty */
+    ps_tty_kclose(ps_core_d);
+    ps_core_d->tty = NULL;
+    atomic_set(&ps_core_d->force_tx_exit, 0);
+    ps_core_d->tty_have_open = false;
+
+    ps_print_info("close tty success\n");
+    mutex_unlock(&ps_core_d->tty_mutex);
+    return 0;
+}
+
+static struct tty_ldisc_ops g_ps_ldisc_ops = {
+    .magic = TTY_LDISC_MAGIC,
+    .name = "n_ps",
+    .open = ps_tty_open,
+    .close = ps_tty_close,
+    .receive_buf = ps_tty_receive,
+    .write_wakeup = ps_tty_wakeup,
+    .flush_buffer = ps_tty_flush_buffer,
+    .owner = THIS_MODULE
+};
+
+int32_t plat_uart_init(struct ps_plat_s *ps_plat_d)
+{
+    uint32_t ldisc_num = ps_plat_d->ldisc_num;
+#ifdef N_HW_BFG
+    if (ldisc_num < 0 || ldisc_num > N_HW_BFG) {
+        ps_print_err("ldisc num %d invalid\n", ldisc_num);
+        return -OAL_FAIL;
+    }
+
+    return tty_register_ldisc(ldisc_num, &g_ps_ldisc_ops);
+#else
+    return OAL_SUCC;
+#endif
+}
+
+void plat_uart_exit(int32_t ldisc_num)
+{
+#ifdef N_HW_BFG
+    int32_t  ret;
+
+    if (ldisc_num < 0 || ldisc_num > N_HW_BFG) {
+        ps_print_err("ldisc num %d invalid\n", ldisc_num);
+        return;
+    }
+
+    ret = tty_unregister_ldisc(ldisc_num);
+    if (ret != 0) {
+        ps_print_err("unregister ldisc ret %d\n", ret);
+    }
+#endif
+}
+#endif

@@ -1,0 +1,176 @@
+/*
+ * Copyright (c) Huawei Technologies Co., Ltd. 2021-2021. All rights reserved.
+ * Description: Generate for uvmm sysif api
+ * Author: Huawei OS Kernel Lab
+ * Create: Tue May 18 14:42:19 2021
+ */
+
+#ifdef SYSIF_EXPORT_API
+
+#include <limits.h>
+
+#define CHN_NAME_MAX_LEN 32
+#define VM_SHUTDOWN_REASON_MAX_LEN 64
+
+#define VM_SHUTDOWN_TIMEOUT_NO_WAIT	UINT_MAX
+#define VM_SHUTDOWN_MAX_TIMEOUT_MS	(120U * 1000) /* 120 sec */
+
+enum vminfo_option {
+	VMINFO_STATUS,
+	VMINFO_MEM_REGION,
+	VMINFO_IRQ,
+	VMINFO_INVALID,
+};
+
+struct vm_attach_chn_arg_s {
+	unsigned long long faddr;
+	char name[CHN_NAME_MAX_LEN];
+	unsigned int flags;
+};
+
+struct vm_chn_owner_info_s {
+	pid_t pid;
+	uid_t uid;
+	gid_t gid;
+};
+
+struct vm_shutdown_arg_s {
+	unsigned int timeout_ms;
+	char reason[VM_SHUTDOWN_REASON_MAX_LEN];
+};
+
+struct vnotify_msg_s;
+struct vnotify_resp_s;
+#endif
+
+/*
+ * To support the mixed data model which means the client and the server
+ * may use different data model. See the document for limitation of data type
+ * used in the sysif interfaces in <Documentation/sysif_compat.md>.
+ */
+DEFINE_MANAGER(uvmm, 32,
+	DEFINE_METHOD(uvmm, vm_shm_open,
+		      ARG(3, int, shm_id, unsigned int, flags, unsigned short, acc_mode),
+		      RET(3, unsigned long long, shm_id, unsigned long, len, __u64, paddr),
+		      SLOWDATA_NO)
+
+	DEFINE_METHOD(uvmm, vm_shm_close,
+		      ARG(1, int, shm_id),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_METHOD(uvmm, vm_get_info,
+		      ARG(2, enum vminfo_option, opt, struct bunch_ipc_attr, attr),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_METHOD(uvmm, vm_process_attach_chn,
+		      ARG(1, struct vm_attach_chn_arg_s, args),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_METHOD(uvmm, vm_process_delete_chn,
+		      ARG(3, unsigned int, chn_id, bool, sync, __u64, ts),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_METHOD(uvmm, vm_process_notify_chn,
+		      ARG(1, unsigned int, chn_id),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_METHOD(uvmm, vm_process_inject_chn,
+		      ARG(1, unsigned int, chn_id),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_METHOD(uvmm, vm_process_read_chn_status,
+		      ARG(1, unsigned int, chn_id),
+		      RET(1, unsigned int, status),
+		      SLOWDATA_NO)
+
+	DEFINE_METHOD(uvmm, vnotify_attach_fd,
+		      ARG(1, unsigned int, chn_id),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_METHOD(uvmm, handle_vm_process_exit,
+		      ARG(1, __u32, cnode_idx),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_METHOD(uvmm, vm_pause,
+		      ARG_NO,
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_METHOD(uvmm, vm_unpause,
+		      ARG_NO,
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_METHOD(uvmm, vm_resume,
+		      ARG_NO,
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_METHOD(uvmm, vm_shutdown,
+		      ARG(1, struct vm_shutdown_arg_s, args),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_METHOD(uvmm, vm_vnotify_chns_info,
+		      ARG(1, struct bunch_ipc_attr, attr),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_METHOD(uvmm, mclone_to_vm,
+		      ARG(4, uint64_t, src_va,
+			  uint64_t, tgt_gpa,
+			  uint64_t, len,
+			  uint32_t, prot),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_METHOD(uvmm, vnotify_send_ctrl_msg,
+		      ARG_NO,
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_METHOD(uvmm, vm_process_query_chn_status,
+		      ARG(2, unsigned int, chn_id,
+			  unsigned int, query_type),
+		      RET(2, struct vm_chn_owner_info_s, host_info,
+		      	  struct vm_chn_owner_info_s, guest_info),	
+		      SLOWDATA_NO)
+
+	DEFINE_METHOD(uvmm, vm_cpu_hotplug,
+		      ARG_NO,
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_METHOD(uvmm, vm_trace_stats,
+		      ARG(3, int, act, struct bunch_ipc_attr, attr, uint64_t, args),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_METHOD(uvmm, vnotify_update_futex,
+		      ARG(3, unsigned int, chn_id, const int *, futex, bool, shared),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_METHOD(uvmm, vm_set_trap_wfi,
+		      ARG(1, uint64_t, state),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_METHOD(uvmm, vm_set_trap_wfe,
+		      ARG(1, uint64_t, state),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_METHOD(uvmm, vm_set_tickless,
+		      ARG_NO,
+		      RET_NO,
+		      SLOWDATA_NO)
+)

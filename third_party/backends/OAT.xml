@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright (c) 2021 Huawei Device Co., Ltd.
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+          http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+
+     Notes:
+     This is project config file for OpenHarmony OSS Audit Tool, if you have any questions or concerns, please email chenyaxun.
+-->
+<!-- OAT(OSS Audit Tool) configuration guide:
+basedir: Root dir, the basedir + project path is the real source file location.
+licensefile:
+1.If the project don't have "LICENSE" in root dir, please define all the license files in this project in , OAT will check license files according to this rule.
+
+tasklist(only for batch mode):
+1. task: Define oat check thread, each task will start a new thread.
+2. task name: Only an name, no practical effect.
+3. task policy: Default policy for projects under this task, this field is required and the specified policy must defined in policylist.
+4. task filter: Default filefilter for projects under this task, this field is required and the specified filefilter must defined in filefilterlist.
+5. task project: Projects to be checked, the path field define the source root dir of the project.
+
+
+policyList:
+1. policy: All policyitems will be merged to default OAT.xml rules, the name of policy doesn't affect OAT check process.
+2. policyitem: The fields type, name, path, desc is required, and the fields rule, group, filefilter is optional,the default value is:
+<policyitem type="" name="" path="" desc="" rule="may" group="defaultGroup" filefilter="defaultPolicyFilter"/>
+3. policyitem type:
+    "compatibility" is used to check license compatibility in the specified path;
+    "license" is used to check source license header in the specified path;
+    "copyright" is used to check source copyright header in the specified path;
+    "import" is used to check source dependency in the specified path, such as import ... ,include ...
+    "filetype" is used to check file type in the specified path, supported file types: archive, binary
+    "filename" is used to check whether the specified file exists in the specified path(support projectroot in default OAT.xml), supported file names: LICENSE, README, README.OpenSource
+
+4. policyitem name: This field is used for define the license, copyright, "*" means match all, the "!" prefix means could not match this value. For example, "!GPL" means can not use GPL license. 
+5. policyitem path: This field is used for define the source file scope to apply this policyitem, the "!" prefix means exclude the files. For example, "!.*/lib/.*" means files in lib dir will be exclude while process this policyitem.
+6. policyitem rule and group: These two fields are used together to merge policy results. "may" policyitems in the same group means any one in this group passed, the result will be passed.
+7. policyitem filefilter: Used to bind filefilter which define filter rules.
+8. filefilter: Filter rules, the type filename is used to filter file name, the type filepath is used to filter file path.
+
+Note:If the text contains special characters, please escape them according to the following rules:
+" == &gt;
+& == &gt;
+' == &gt;
+< == &gt;
+> == &gt;
+-->
+
+<configuration>
+    <oatconfig>
+        <licensefile>LICENSE</licensefile>
+        <policylist>
+            <policy name="projectPolicy" desc="">
+                <policyitem type="compatibility" name="GPL-2.0+" path=".*" desc="实际为GPL 2.0 with SANE Exception"/>
+                <policyitem type="compatibility" name="GPLStyleLicense" path=".*" desc="实际为GPL 2.0 with SANE Exception"/>
+                <policyitem type="compatibility" name="JPEG License" path=".*" desc="JPEG"/>
+                <policyitem type="compatibility" name="public domain" path=".*" desc="public domain"/>
+            </policy>
+        </policylist>
+        <filefilterlist>
+            <filefilter name="defaultPolicyFilter" desc="Filters for compatibility, license header policies">
+                <filteritem type="filename" name="git-version-gen" desc="git version check script"/>
+                <filteritem type="filename" name="README*|*.po|*.am|*.sh|INSTALL*|*change*|*.desc|*.ref|Makevars|*.man" desc="README"/>
+                <filteritem type="filepath" name="backend/epson2-cct.c" desc="本文件不使用"/>
+                <filteritem type="filepath" name="lib/snprintf.c" desc="本文件不使用"/>
+                <filteritem type="filepath" name="tools/hotplug-ng/libsane.hotplug" desc="插件"/>
+            </filefilter>
+            <filefilter name="binaryFileTypePolicyFilter" desc="Filters for compatibility, license header policies">
+                <filteritem type="filename" name="*.jpg" desc="jpg build files, not used"/>
+                <filteritem type="filename" name="*.png" desc="png build files, not used"/>
+            </filefilter>
+        </filefilterlist>
+        <licensematcherlist>
+            <licensematcher name="GPL 2.0 with SANE Exception" desc="SANE Exception description">
+                <licensetext name="
+                    This program is free software; you can redistribute it and/or
+                    modify it under the terms of the GNU General Public License as
+                    published by the Free Software Foundation; either version 2 of the
+                    License, or (at your option) any later version.
+
+                    This program is distributed in the hope that it will be useful, but
+                    WITHOUT ANY WARRANTY; without even the implied warranty of
+                    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+                    General Public License for more details.
+
+                    You should have received a copy of the GNU General Public License
+                    along with this program.  If not, see &lt;https://www.gnu.org/licenses/&gt;.
+
+                    As a special exception, the authors of SANE give permission for
+                    additional uses of the libraries contained in this release of SANE.
+
+                    The exception is that, if you link a SANE library with other files
+                    to produce an executable, this does not by itself cause the
+                    resulting executable to be covered by the GNU General Public
+                    License.  Your use of that executable is in no way restricted on
+                    account of linking the SANE library code into it.
+
+                    This exception does not, however, invalidate any other reasons why
+                    the executable file might be covered by the GNU General Public
+                    License.
+
+                    If you submit changes to SANE to the maintainers to be included in
+                    a subsequent release, you agree by submitting the changes that
+                    those changes may be distributed with this exception intact.
+
+                    If you write modifications of your own for SANE, it is your choice
+                    whether to permit this exception to apply to your modifications.
+                    If you do not wish that, delete this exception notice.
+				 " desc="SANE exception description"/>
+            </licensematcher>
+            <licensematcher name="JPEG License" desc="JPEG description">
+                <licensetext name="
+                    This file is part of the Independent JPEG Group's software
+				 " desc=""/>
+            </licensematcher>
+            <licensematcher name="public domain" desc="JPEG description">
+                <licensetext name="
+                    This file is in the public domain.  You may use and modify it as
+   you see fit, as long as this copyright message is included and
+   that there is an indication as to what modifications have been
+   made (if any).
+				 " desc=""/>
+            </licensematcher>
+        </licensematcherlist>
+    </oatconfig>
+</configuration>

@@ -1,0 +1,198 @@
+{
+    "root": {
+        "data": {
+            "id": "cihs98iflq80",
+            "created": 1647077532175,
+            "text": "线程/调度"
+        },
+        "children": [
+            {
+                "data": {
+                    "id": "cihsdiuj8eo0",
+                    "created": 1647077868131,
+                    "text": "创建线程",
+                    "layout_mind_offset": {
+                        "x": 10,
+                        "y": -141
+                    },
+                    "usecase": 1
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "cij7j3awplc0",
+                            "created": 1647222181083,
+                            "text": "syscall(create)"
+                        },
+                        "children": []
+                    }
+                ]
+            },
+            {
+                "data": {
+                    "id": "cihsdv40s600",
+                    "created": 1647077894826,
+                    "text": "设置调度属性",
+                    "layout_mind_offset": {
+                        "x": -4,
+                        "y": -114
+                    },
+                    "usecase": 1
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "cij7j94n1u00",
+                            "created": 1647222193765,
+                            "text": "syscall(set_schedxxx)"
+                        },
+                        "children": []
+                    },
+                    {
+                        "data": {
+                            "id": "cijm7uvy0vc0",
+                            "created": 1647263617407,
+                            "text": "优先级单点测试，测试优先级对调度影响并测试调度属性可以被获取"
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "cijmhf1nvag0",
+                                    "created": 1647264366566,
+                                    "text": "hpecli task、trace指令观察"
+                                },
+                                "children": []
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "data": {
+                    "id": "cihseiiwxy80",
+                    "created": 1647077945793,
+                    "text": "休眠/放权",
+                    "layout_mind_offset": {
+                        "x": -6,
+                        "y": -99
+                    },
+                    "usecase": 1
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "cij7jux0om00",
+                            "created": 1647222241193,
+                            "text": "syscall(yield)"
+                        },
+                        "children": []
+                    },
+                    {
+                        "data": {
+                            "id": "cij7k29jn740",
+                            "created": 1647222257188,
+                            "text": "syscall(nanosleep)"
+                        },
+                        "children": []
+                    }
+                ]
+            },
+            {
+                "data": {
+                    "id": "cihseqponig0",
+                    "created": 1647077963616,
+                    "text": "获取调度类信息",
+                    "layout_mind_offset": {
+                        "x": -15,
+                        "y": -85
+                    },
+                    "usecase": 1
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "cij7k9wru080",
+                            "created": 1647222273830,
+                            "text": "syscall(get_schedxxx)"
+                        },
+                        "children": []
+                    }
+                ]
+            },
+            {
+                "data": {
+                    "id": "cihsf23hs6w0",
+                    "created": 1647077988396,
+                    "text": "线程同步类操作",
+                    "layout_mind_offset": {
+                        "x": 692,
+                        "y": 346
+                    },
+                    "usecase": 1
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "cij7kiif4rc0",
+                            "created": 1647222292553,
+                            "text": "syscall(futex)"
+                        },
+                        "children": []
+                    }
+                ]
+            },
+            {
+                "data": {
+                    "id": "cihsfkitoh40",
+                    "created": 1647078028505,
+                    "text": "退出",
+                    "layout_mind_offset": {
+                        "x": 645,
+                        "y": 189
+                    },
+                    "usecase": 1
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "cij7l83xx5k0",
+                            "created": 1647222348274,
+                            "text": "syscall(exit_xxx)"
+                        },
+                        "children": []
+                    }
+                ]
+            },
+            {
+                "data": {
+                    "id": "cij7lqvj3qo0",
+                    "created": 1647222389124,
+                    "text": "转测策略：用户态代码继承musl-libc库，主要测试需要发起系统调用的函数hpk是否覆盖支持",
+                    "layout_mind_offset": {
+                        "x": 953,
+                        "y": 288
+                    }
+                },
+                "children": []
+            },
+            {
+                "data": {
+                    "id": "cijm693o7zk0",
+                    "created": 1647263491623,
+                    "text": "长期：补齐各接口测试，便于维护",
+                    "layout_mind_offset": {
+                        "x": 582,
+                        "y": 291
+                    }
+                },
+                "children": []
+            }
+        ]
+    },
+    "templatePath": null,
+    "singleTemplatePath": null,
+    "testcaseFilePath": "",
+    "template": "default",
+    "theme": "fresh-blue",
+    "version": "1.4.43"
+}

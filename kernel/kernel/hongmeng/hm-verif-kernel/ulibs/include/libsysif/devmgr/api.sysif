@@ -1,0 +1,33 @@
+/*
+ * Copyright (c) Huawei Technologies Co., Ltd. 2020-2020. All rights reserved.
+ * Description: Generate devmgr sysif apis using code generator
+ * Author: Huawei OS Kernel Lab
+ * Create: Mon 07 Dec 2020 07:37:37 PM CST
+ */
+
+/* for struct reboot_cmd */
+INCLUDE_C_HEADER(libhmpm/shutdown.h)
+/* for struct wl_stat_queue_info */
+INCLUDE_C_HEADER(libhmpm/wl_stat.h)
+INCLUDE_C_HEADER(libbunch/bunch_ipc.h)
+INCLUDE_C_HEADER(libsysif/devmgr/types.h)
+
+USE_CALL_PREFIX(drvcall_devmgr)
+USE_HANDLER_PREFIX(drvhandler_devmgr)
+USE_SERVER_NAME(devmgr)
+
+/* devmgr path */
+DECLARE_DATATYPE_BEGIN
+#define DEVMGR_PATH	"devmgr.actv"
+DECLARE_DATATYPE_END
+
+INCLUDE_SUBSYSTEM(libsysif/devmgr/devmgr_core.sysif)
+INCLUDE_SUBSYSTEM(libsysif/devmgr/devmgr_device_mgmt.sysif)
+INCLUDE_SUBSYSTEM(libsysif/devmgr/devmgr_mgmt.sysif)
+INCLUDE_SUBSYSTEM(libsysif/devmgr/devmgr_irq.sysif)
+INCLUDE_SUBSYSTEM(libsysif/devmgr/devmgr_net.sysif)
+INCLUDE_SUBSYSTEM(libsysif/devmgr/devmgr_pm.sysif)
+INCLUDE_SUBSYSTEM(libsysif/devmgr/devmgr_procfs.sysif)
+INCLUDE_SUBSYSTEM(libsysif/devmgr/devmgr_sysfs.sysif)
+INCLUDE_SUBSYSTEM(libsysif/devmgr/devmgr_fw.sysif)
+INCLUDE_SUBSYSTEM(libsysif/devmgr/devmgr_sec.sysif)

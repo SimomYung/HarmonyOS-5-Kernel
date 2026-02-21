@@ -1,0 +1,52 @@
+# Copyright (c) 2022 Huawei Device Co., Ltd.
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+import("//build/ohos.gni")
+
+ohos_static_library("libxtables") {
+  sources = [
+    "//third_party/iptables/libxtables/xtables.c",
+    "//third_party/iptables/libxtables/xtoptions.c",
+  ]
+
+  include_dirs = [
+    "//third_party/iptables",
+    "//third_party/iptables/extensions",
+    "//third_party/iptables/include",
+    "//third_party/iptables/iptables",
+    "//third_party/iptables/libiptc",
+  ]
+  license_file = "//third_party/iptables/COPYING"
+  cflags = [
+    "-D_LARGEFILE_SOURCE=1",
+    "-D_LARGE_FILES",
+    "-D_FILE_OFFSET_BITS=64",
+    "-D_REENTRANT",
+    "-DENABLE_IPV4",
+    "-DENABLE_IPV6",
+    "-Wall",
+    "-Werror",
+    "-Wno-pointer-arith",
+    "-Wno-sign-compare",
+    "-Wno-unused-parameter",
+    "-DNO_SHARED_LIBS=1",
+    "-DXTABLES_INTERNAL",
+    "-DXTABLES_LIBDIR=\"xtables_libdir_not_used\"",
+    "-Wno-missing-field-initializers",
+  ]
+
+  deps = []
+
+  part_name = "netmanager_base"
+  subsystem_name = "communication"
+}

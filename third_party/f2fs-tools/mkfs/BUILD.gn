@@ -1,0 +1,52 @@
+# Copyright (c) 2021 Huawei Device Co., Ltd.
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License version 2 as
+# published by the Free Software Foundation.
+
+import("//build/ohos.gni")
+
+config("f2fs-defaults") {
+  cflags = [
+    "-Wno-pointer-sign",
+    "-Wno-unused-variable",
+    "-Wno-string-plus-int",
+    "-Wno-error=format",
+  ]
+}
+
+###################################################
+##Build mkfs.f2fs
+ohos_executable("mkfs.f2fs") {
+  configs = [ ":f2fs-defaults" ]
+  sources = [
+    "../tools/hmfs_tools/hmfs_tools.c",
+    "f2fs_format.c",
+    "f2fs_format_main.c",
+    "f2fs_format_utils.c",
+  ]
+
+  include_dirs = [
+    ".",
+    "../tools/hmfs_tools",
+    "//third_party/f2fs-tools",
+    "//third_party/f2fs-tools/lib",
+    "//third_party/f2fs-tools/include",
+    "//third_party/e2fsprogs/e2fsprogs/lib",
+  ]
+
+  deps = [
+    "//third_party/e2fsprogs:libext2_uuid",
+    "//third_party/f2fs-tools/lib:libf2fs",
+  ]
+
+  defines = [ "HAVE_CONFIG_H" ]
+
+  install_enable = true
+  subsystem_name = "thirdparty"
+  part_name = "f2fs-tools"
+  install_images = [
+    "system",
+    "updater",
+  ]
+}

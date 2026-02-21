@@ -1,0 +1,24 @@
+<hwlcd>
+	<PanelEntry>
+	<PanelCompatible>"auo-def-2-11p45"</PanelCompatible>
+	<!--Product type:0-normal type(1 panel), 1-folder type(2 panel) -->
+	<ProductType>1</ProductType>
+	<PanelXres>1440</PanelXres>
+	<PanelYres>2200</PanelYres>
+
+	<!--event send
+	event, data, delay
+	event:0-NONE, 1-VCI, 2-IOVCC, 3-VSP, 4-VSN, 5-RESET, 6-MIPI, 7-TS early-event, 8-TS later-event, 9-vdd 97-BridgeRst 98-BridgeVdd
+	data:0-power off, 1-power on
+	delay:ms/TS:0-no-sync 1-sync
+	-->
+	<!--Power on timming-->
+	<PowerOnStage>"0, 0, 0"</PowerOnStage>
+	<LPOnStage>"0, 0, 0"</LPOnStage>
+	<HSOnStage>"0, 0, 0"</HSOnStage>
+	<!--Power off timming-->
+	<HSOffStage>"0, 0, 0"</HSOffStage>
+	<LPOffStage>"0, 0, 0"</LPOffStage>
+	<PowerOffStage>"0, 0, 0"</PowerOffStage>
+</PanelEntry>
+</hwlcd>

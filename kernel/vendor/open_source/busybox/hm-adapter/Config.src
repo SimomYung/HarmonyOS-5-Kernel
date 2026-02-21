@@ -1,0 +1,6 @@
+comment "Hongmeng Tuning"
+
+INSERT
+
+source hm-adapter/hmmac/Config.in
+source hm-adapter/misc/Config.in

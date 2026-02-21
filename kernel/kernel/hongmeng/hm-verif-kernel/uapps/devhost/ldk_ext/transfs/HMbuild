@@ -1,0 +1,14 @@
+lib-dynamic-y: dhext_transfs
+
+cflags-dhext_transfs-y: -D_DH_PLUGIN_NAME=transfs -fvisibility=hidden
+linklib-dhext_transfs-y: -Tksymtab.lds
+linklib-dhext_transfs-y: -Tdhext_transfs_hdlr.lds
+
+cflags-.-CONFIG_NO_COMPAT: -D__sysif_server_devhost_no_compat32_handlers__
+
+src-dhext_transfs-y: table.c
+src-dhext_transfs-y: transfs_if.c
+src-dhext_transfs-y: transfs_dev.c
+src-dhext_transfs-y: ext_main.c
+
+install-dhext_transfs-y: BASE_LIBDIR

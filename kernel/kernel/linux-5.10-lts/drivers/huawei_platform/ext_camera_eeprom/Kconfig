@@ -1,0 +1,5 @@
+config HW_CAMERA_EXTERNAL_EEPROM
+	bool "huawei external CAMERA EEPROM device control"
+	default n
+	help
+	  Say yes here to support external CAMERA EEPROM device control.

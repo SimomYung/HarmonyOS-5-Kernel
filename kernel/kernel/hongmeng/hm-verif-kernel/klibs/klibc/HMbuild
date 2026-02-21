@@ -1,0 +1,26 @@
+# Copyright (C) Huawei Technologies Co., Ltd. 2022. All rights reserved.
+# Description: HMbuild for klibc subdir
+# Author: Huawei OS Kernel Lab
+# Create: Thu Mar 17 16:15:24 2022
+
+src-y: bzero.c
+src-y: bsearch.c
+src-y: memchr.c
+src-y: memcmp.c
+src-y: memcpy.c
+src-y: memmove.c
+src-y: memset.c
+src-y: strchr.c
+src-y: strcmp.c
+src-y: strlen.c
+src-y: strncmp.c
+src-y: strncpy.c
+src-y: strnlen.c
+src-y: strrchr.c
+src-y: strtol.c
+
+include-.-y: ../include/lib/stdinc
+
+cflags-memset.c: -Wno-implicit-fallthrough
+
+cflags-.-CONFIG_USE_LIBOPT: -DUSE_LIBOPT

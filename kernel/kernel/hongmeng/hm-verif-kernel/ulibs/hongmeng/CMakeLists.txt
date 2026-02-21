@@ -1,0 +1,6 @@
+# Copyright (c) Huawei Technologies Co., Ltd. 2023-2023. All rights reserved.
+# Description: CMakeLists.txt
+# Author: Huawei OS Kernel Lab
+# Create: Tue Sep 19 08:34:53 2023
+
+include(HongmengCMakeNG/HMbuild)

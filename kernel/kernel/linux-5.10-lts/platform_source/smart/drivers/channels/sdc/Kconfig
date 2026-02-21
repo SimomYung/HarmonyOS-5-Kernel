@@ -1,0 +1,21 @@
+config SENSOR_DIRECT_CHANNEL
+	bool "sensor direct channel support"
+	depends on INPUTHUB_30
+	default n
+	help
+	Say yes here to support the sensor direct channel
+
+config SENSOR_DIRECT_CHANNEL_EXPAND
+	bool "sensor direct channel expand 9 sensors"
+	depends on SENSOR_DIRECT_CHANNEL
+	default n
+	help
+	Say yes here to support the sensor direct channel expand
+
+config SENSOR_DIRECT_CHANNEL_EXPAND_V1
+        bool "sensor direct channel v1 expand 2 sensors"
+        depends on SENSOR_DIRECT_CHANNEL
+        default n
+        help
+        Say yes here to support the sensor direct channel expand v1
+

@@ -1,0 +1,8 @@
+add_hm_library(elf.c)
+add_hm_library(elf32.c)
+add_hm_library(elf64.c)
+add_hm_library(elf_ex.c)
+add_hm_library(elf_load.c)
+add_hm_library(symbol.c)
+add_hm_library(vsymbol.c)
+add_hm_library(elf_phdr.c)

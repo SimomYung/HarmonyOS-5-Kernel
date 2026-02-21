@@ -1,0 +1,9 @@
+#
+# tv flash adapter driver configuration
+#
+
+config TV_FLASH_ADAPTER
+	bool "TV_FLASH_ADAPTER"
+	default n
+	help
+		Say yes here to support TV FLASH ADAPTER

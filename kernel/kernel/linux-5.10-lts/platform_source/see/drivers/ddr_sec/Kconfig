@@ -1,0 +1,9 @@
+menu "DDR SEC"
+
+config SEC_REGION_MNTN
+	bool "sec region mntn support"
+	default n
+	help
+	  Say yes here to support sec region in kernel
+
+endmenu

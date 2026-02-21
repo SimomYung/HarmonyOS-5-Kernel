@@ -1,0 +1,12 @@
+config HUAWEI_KSTATE
+    tristate "Huawei Kernel State"
+    help
+        Huawei kernel state, please choose it.
+
+config HW_BINDER_RECORD
+	bool "Huawei Binder Record"
+	depends on HUAWEI_KSTATE
+	default n
+	help
+		Record the binder time, Unfrozen processes do not report the binder.
+

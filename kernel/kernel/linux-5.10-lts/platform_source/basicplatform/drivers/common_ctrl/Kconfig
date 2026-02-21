@@ -1,0 +1,11 @@
+config COMMON_CTRL
+	bool "common ctrl module support"
+	default n
+ 
+config WHITELIST_CHECK_STRONG_POLICY
+  bool "whitelist check use strong policy or not"
+  default n
+ 
+config WHITELIST_CHECK_FAIL_TO_REBOOT
+  bool "whitelist check fail to reboot"
+  default n

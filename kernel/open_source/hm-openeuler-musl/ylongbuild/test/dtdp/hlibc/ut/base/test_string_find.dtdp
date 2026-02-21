@@ -1,0 +1,688 @@
+{
+    "root": {
+        "data": {
+            "id": "ci26txcan080",
+            "created": 1645493689739,
+            "text": "HLIBC",
+            "usecase": 99
+        },
+        "children": [
+            {
+                "data": {
+                    "id": "ci2ejxg77w00",
+                    "created": 1645515475212,
+                    "text": "字符串查找-字符串查找memchr",
+                    "usecase": 1,
+                    "layout_mind_offset": {
+                        "x": 6,
+                        "y": -19
+                    },
+                    "layout": null
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "ci51asofsw00",
+                            "created": 1645782764990,
+                            "text": "入参分析"
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "ci51axqy20g0",
+                                    "created": 1645782776026,
+                                    "text": "查找结束符",
+                                    "usecase": 2
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "ci51by25tko0",
+                                            "created": 1645782855068,
+                                            "text": "查找非空字符串中的结束符，传入长度strlen(string)，返回空指针",
+                                            "usecase": 4,
+                                            "author": "x50021790",
+                                            "showId": "00022"
+                                        },
+                                        "children": []
+                                    },
+                                    {
+                                        "data": {
+                                            "id": "ci51byxokso0",
+                                            "created": 1645782856974,
+                                            "text": "查找非空字符串中的结束符，传入长度strlen(string)+1，返回空指针",
+                                            "usecase": 4,
+                                            "author": "x50021790",
+                                            "showId": "00023"
+                                        },
+                                        "children": []
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "data": {
+                            "id": "ci2ejxg6vqo0",
+                            "created": 1645515475212,
+                            "text": "功能分析",
+                            "usecase": null,
+                            "expandState": "expand",
+                            "layout": null
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "ci2ejxg78js0",
+                                    "created": 1645515475212,
+                                    "text": "在一个串中查找给定字符的第一个匹配之处",
+                                    "usecase": 2,
+                                    "layout": null
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "ci2ejxg74o00",
+                                            "created": 1645515475212,
+                                            "text": "在“aaababccdd0001122223”中查找'b'，传入最大长度128 ，返回第一个'b'处的指针",
+                                            "usecase": 4,
+                                            "author": "x50021790",
+                                            "showId": "00020",
+                                            "layout": null
+                                        },
+                                        "children": []
+                                    },
+                                    {
+                                        "data": {
+                                            "id": "ci2ejxg6rfk0",
+                                            "created": 1645515475212,
+                                            "text": "在“aaababccdd0001122223”中查找'z'，传入最大长度128 ，返回NULL",
+                                            "usecase": 4,
+                                            "author": "x50021790",
+                                            "showId": "00021",
+                                            "layout_left_offset": {
+                                                "x": -4,
+                                                "y": 16
+                                            },
+                                            "layout": null
+                                        },
+                                        "children": []
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "data": {
+                            "id": "ci51e0qfhpk0",
+                            "created": 1645783017618,
+                            "text": "可靠性分析",
+                            "usecase": null,
+                            "layout": null
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "ci51e0qfqqg0",
+                                    "created": 1645783017618,
+                                    "text": "空指针",
+                                    "usecase": 2,
+                                    "layout": null
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "ci51e0qfhsw0",
+                                            "created": 1645783017618,
+                                            "text": "查找空指针中的字符，函数错误",
+                                            "usecase": 4,
+                                            "author": "x50021790",
+                                            "showId": "00027",
+                                            "priority": null,
+                                            "layout": null
+                                        },
+                                        "children": []
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "data": {
+                    "id": "ci26yfp7p400",
+                    "created": 1645494043159,
+                    "text": "字符串查找-字符串查找strchr",
+                    "usecase": 1,
+                    "layout_mind_offset": {
+                        "x": -40,
+                        "y": -4
+                    },
+                    "layout": null
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "ci51f396hgw0",
+                            "created": 1645783101469,
+                            "text": "入参分析"
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "ci51f396j8g0",
+                                    "created": 1645783101469,
+                                    "text": "查找结束符",
+                                    "usecase": 2
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "ci51f396o800",
+                                            "created": 1645783101469,
+                                            "text": "查找字符串中的结束符，返回非空指针",
+                                            "usecase": 4,
+                                            "author": "x50021790",
+                                            "showId": "00028"
+                                        },
+                                        "children": []
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "data": {
+                            "id": "ci270vepp9k0",
+                            "created": 1645494234080,
+                            "text": "功能分析",
+                            "usecase": null,
+                            "expandState": "expand",
+                            "layout": null
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "ci27e5wi46o0",
+                                    "created": 1645495275658,
+                                    "text": "在一个串中查找给定字符的第一个匹配之处",
+                                    "usecase": 2,
+                                    "layout": null
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "ci27etyv5f40",
+                                            "created": 1645495328044,
+                                            "text": "在“aaababccdd0001122223”中查找'b'，返回第一个'b'处的指针",
+                                            "usecase": 4,
+                                            "author": "x50021790",
+                                            "showId": "00003",
+                                            "layout": null
+                                        },
+                                        "children": []
+                                    },
+                                    {
+                                        "data": {
+                                            "id": "ci27jmhj8lk0",
+                                            "created": 1645495703579,
+                                            "text": "在“aaababccdd0001122223”中查找'z'，返回NULL",
+                                            "usecase": 4,
+                                            "author": "x50021790",
+                                            "showId": "00008",
+                                            "layout": null
+                                        },
+                                        "children": []
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "data": {
+                            "id": "ci51fx49qmg0",
+                            "created": 1645783166476,
+                            "text": "可靠性分析",
+                            "usecase": null,
+                            "layout": null
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "ci51fx49pl40",
+                                    "created": 1645783166476,
+                                    "text": "空指针",
+                                    "usecase": 2,
+                                    "layout": null
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "ci51fx49xeo0",
+                                            "created": 1645783166476,
+                                            "text": "查找空指针中的字符，函数错误",
+                                            "usecase": 4,
+                                            "author": "x50021790",
+                                            "showId": "00030",
+                                            "priority": null,
+                                            "layout": null
+                                        },
+                                        "children": []
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "data": {
+                    "id": "ci2dzljn0s00",
+                    "created": 1645513882016,
+                    "text": "字符串查找-字符串查找strrchr",
+                    "usecase": 1,
+                    "layout_mind_offset": {
+                        "x": -97,
+                        "y": 158
+                    },
+                    "layout": null
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "ci51g15c97k0",
+                            "created": 1645783175247,
+                            "text": "入参分析"
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "ci51g15bzjc0",
+                                    "created": 1645783175247,
+                                    "text": "查找结束符",
+                                    "usecase": 2
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "ci51g15bppc0",
+                                            "created": 1645783175247,
+                                            "text": "查找字符串中的结束符，返回非空指针",
+                                            "usecase": 4,
+                                            "author": "x50021790",
+                                            "showId": "00031"
+                                        },
+                                        "children": []
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "data": {
+                            "id": "ci2dzljnhk00",
+                            "created": 1645513882016,
+                            "text": "功能分析",
+                            "usecase": null,
+                            "expandState": "expand",
+                            "layout": null
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "ci2dzljn1q80",
+                                    "created": 1645513882016,
+                                    "text": "查找字符在指定字符串中从右面开始的第一次出现的位置，返回该字符以及其后面的字符",
+                                    "usecase": 2,
+                                    "layout": null
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "ci2dzljnfgw0",
+                                            "created": 1645513882016,
+                                            "text": "在“aaababccdd0001122223”中查找'b'，返回第二个'b'处的指针",
+                                            "usecase": 4,
+                                            "author": "x50021790",
+                                            "showId": "00013",
+                                            "layout": null
+                                        },
+                                        "children": []
+                                    },
+                                    {
+                                        "data": {
+                                            "id": "ci2dzljnma80",
+                                            "created": 1645513882017,
+                                            "text": "在“aaababccdd0001122223”中查找'z'，返回NULL",
+                                            "usecase": 4,
+                                            "author": "x50021790",
+                                            "showId": "00014",
+                                            "layout": null
+                                        },
+                                        "children": []
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "data": {
+                            "id": "ci51g3ir0xs0",
+                            "created": 1645783180412,
+                            "text": "可靠性分析",
+                            "usecase": null,
+                            "layout": null
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "ci51g3iqzig0",
+                                    "created": 1645783180412,
+                                    "text": "空指针",
+                                    "usecase": 2,
+                                    "layout": null
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "ci51g3ir1xc0",
+                                            "created": 1645783180412,
+                                            "text": "查找空指针中的字符，函数错误",
+                                            "usecase": 4,
+                                            "author": "x50021790",
+                                            "showId": "00032",
+                                            "priority": null,
+                                            "layout": null
+                                        },
+                                        "children": []
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "data": {
+                    "id": "ci2e2bwoshk0",
+                    "created": 1645514096129,
+                    "text": "字符串查找-字符串长度strlen",
+                    "usecase": 1,
+                    "layout_mind_offset": {
+                        "x": 71,
+                        "y": 281
+                    },
+                    "layout": null
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "ci52hz0u2bk0",
+                            "created": 1645786148460,
+                            "text": "入参分析"
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "ci52hz0uxu00",
+                                    "created": 1645786148461,
+                                    "text": "空字符串",
+                                    "usecase": 2
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "ci52hz0uvg80",
+                                            "created": 1645786148461,
+                                            "text": "查找字符串长度，返回0",
+                                            "usecase": 4,
+                                            "author": "x50021790",
+                                            "showId": "00034"
+                                        },
+                                        "children": []
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "data": {
+                            "id": "ci2e2bwo9ww0",
+                            "created": 1645514096129,
+                            "text": "功能分析",
+                            "usecase": null,
+                            "expandState": "expand",
+                            "layout": null
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "ci2e2bwonv40",
+                                    "created": 1645514096129,
+                                    "text": "计算给定的字符串的长度",
+                                    "usecase": 2,
+                                    "layout_left_offset": {
+                                        "x": 33,
+                                        "y": -1
+                                    },
+                                    "layout": null
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "ci2e2bwoo2o0",
+                                            "created": 1645514096129,
+                                            "text": "计算\"a\"的长度，返回1",
+                                            "usecase": 4,
+                                            "author": "x50021790",
+                                            "showId": "00015",
+                                            "layout": null
+                                        },
+                                        "children": []
+                                    },
+                                    {
+                                        "data": {
+                                            "id": "ci2e2bwoqso0",
+                                            "created": 1645514096129,
+                                            "text": "计算\"ac\"的长度，返回2",
+                                            "usecase": 4,
+                                            "author": "x50021790",
+                                            "showId": "00016",
+                                            "layout": null
+                                        },
+                                        "children": []
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "data": {
+                            "id": "ci51gbcycco0",
+                            "created": 1645783197476,
+                            "text": "可靠性分析",
+                            "usecase": null,
+                            "layout": null
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "ci51gbczg3k0",
+                                    "created": 1645783197477,
+                                    "text": "空指针",
+                                    "usecase": 2,
+                                    "layout": null
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "ci51gbcz0740",
+                                            "created": 1645783197477,
+                                            "text": "查找空指针对应字符串的长度，函数错误",
+                                            "usecase": 4,
+                                            "author": "x50021790",
+                                            "showId": "00033",
+                                            "priority": null,
+                                            "layout": null
+                                        },
+                                        "children": []
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "data": {
+                    "id": "ci2e4niluq00",
+                    "created": 1645514278128,
+                    "text": "字符串查找-字符串长度strnlen",
+                    "usecase": 1,
+                    "layout_mind_offset": {
+                        "x": 63,
+                        "y": -176
+                    },
+                    "layout": null
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "ci52ifnahy00",
+                            "created": 1645786184646,
+                            "text": "入参分析"
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "ci52ifnamcg0",
+                                    "created": 1645786184646,
+                                    "text": "空字符串",
+                                    "usecase": 2
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "ci52ifnaq2g0",
+                                            "created": 1645786184646,
+                                            "text": "查找字符串长度，返回0",
+                                            "usecase": 4,
+                                            "author": "x50021790",
+                                            "showId": "00035"
+                                        },
+                                        "children": []
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "data": {
+                            "id": "ci2e4nimc280",
+                            "created": 1645514278128,
+                            "text": "功能分析",
+                            "usecase": null,
+                            "expandState": "expand",
+                            "layout": null
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "ci2e4niltfc0",
+                                    "created": 1645514278128,
+                                    "text": "计算给定的字符串的长度",
+                                    "usecase": 2,
+                                    "layout_left_offset": {
+                                        "x": 35,
+                                        "y": -2
+                                    },
+                                    "layout": null
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "ci2e4nimlnc0",
+                                            "created": 1645514278129,
+                                            "text": "计算\"12345678\"的长度，传入最大长度32，返回8",
+                                            "usecase": 4,
+                                            "author": "x50021790",
+                                            "showId": "00017",
+                                            "layout": null
+                                        },
+                                        "children": []
+                                    },
+                                    {
+                                        "data": {
+                                            "id": "ci2e4nimhi80",
+                                            "created": 1645514278129,
+                                            "text": "计算\"12345678\"的长度，传入最大长度8，返回8",
+                                            "usecase": 4,
+                                            "author": "x50021790",
+                                            "showId": "00018",
+                                            "layout": null
+                                        },
+                                        "children": []
+                                    },
+                                    {
+                                        "data": {
+                                            "id": "ci2e5zx8tww0",
+                                            "created": 1645514383498,
+                                            "text": "计算\"12345678\"的长度，传入最大长度2，返回2",
+                                            "usecase": 4,
+                                            "author": "x50021790",
+                                            "showId": "00019",
+                                            "layout": null
+                                        },
+                                        "children": []
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "data": {
+                            "id": "ci52iha7kwo0",
+                            "created": 1645786188209,
+                            "text": "可靠性分析",
+                            "usecase": null,
+                            "layout": null
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "ci52iha7mp40",
+                                    "created": 1645786188209,
+                                    "text": "空指针",
+                                    "usecase": 2,
+                                    "layout": null
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "ci52iha7nlc0",
+                                            "created": 1645786188209,
+                                            "text": "查找空指针对应字符串的长度，函数错误",
+                                            "usecase": 4,
+                                            "author": "x50021790",
+                                            "showId": "00036",
+                                            "priority": null,
+                                            "layout": null
+                                        },
+                                        "children": []
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    "templatePath": null,
+    "singleTemplatePath": null,
+    "testcaseFilePath": "",
+    "template": "right",
+    "theme": "fresh-blue",
+    "version": "1.4.43"
+}

@@ -1,0 +1,48 @@
+/*
+ * Copyright (C) Huawei Technologies Co., Ltd. 2022-2022. All rights reserved.
+ * Author: Huawei OS Kernel Lab
+ * Description: Definition of ecmgr sysif api
+ * Create: Wed Aug 17 21:18:46 2022
+ */
+
+/*
+ * To support the mixed data model which means the client and the server
+ * may use different data model. See the document for limitation of data type
+ * used in the sysif interfaces in <Documentation/sysif_compat.md>.
+ */
+
+#ifdef SYSIF_EXPORT_API
+#include <hmkernel/drivers/ec.h>
+#endif
+
+DEFINE_MANAGER(ec, 5,
+	DEFINE_SIMPLE_METHOD(ec, create_ep,
+			     ARG(1,
+				 struct __ec_ep_args *, args),
+			     RET(1,
+				 cref_t, ep_cref),
+			     SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(ec, destroy_ep,
+			     ARG(1,
+				 cref_t, ep_cref),
+			     RET_NO,
+			     SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(ec, is_ep_owner,
+			     ARG(1,
+				 cref_t, ep_cref),
+			     RET(1,
+				 bool, is_owner),
+			     SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(ec, attach_chn,
+			     ARG(5,
+				 cref_t, ep_cref,
+				 const char *, chn_name, size_t, chn_name_len,
+				 int, flag, mode_t, mode),
+			     RET_NO,
+			     SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(ec, detach_chn,
+			     ARG(1,
+				 cref_t, ep_cref),
+			     RET_NO,
+			     SLOWDATA_NO)
+)

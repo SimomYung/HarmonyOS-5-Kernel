@@ -1,0 +1,9 @@
+# Copyright (c) Huawexpandtabei Technologies Co., Ltd. 2025. All rights reserved.
+# Description: HMbuild for libhmisolate
+# Author: Huawei OS Kernel Lab
+# Create: Thu Jan 16 10:00:00 2025
+
+cflags-.-y: -Wno-missing-field-initializers
+src-y: isolate.c
+
+# vim:ts=4:sw=4:expandtab

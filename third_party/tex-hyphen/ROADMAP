@@ -1,0 +1,562 @@
+remember:
+set lccode for - and '
+
+TODO checklist:
+- no comments were left out during conversion
+- same set of patterns
+- no commands and \'-like sequences left
+
+already converted:
+
+# language	original_file	code	supported_encoding(s)
+
+croatian	hrhyph.tex	hr[_HR]	ec
+========
+čćđšž
+^^a3 -> č	ccaron
+^^a2 -> ć	cacute
+^^9e -> đ	dcroat
+^^b2 -> š	scaron
+^^ba -> ž	zcaron
+
+serbian	sh
+=======
+
+latin	shhyphl.tex	sr-latn	ec
+-----
+\'c -> ć	cacute
+\v c -> č	ccaron
+\v s -> š	scaron
+\v z -> ž	zcaron
+
+^^a3 -> č	ccaron
+^^a2 -> ć	cacute
+^^9e -> đ	dcroat
+^^b2 -> š	scaron
+^^ba -> ž	zcaron
+
+cyrillic	srhyphc.tex	sr-cyrl	t2a
+--------
+
+convert from iso-8859-5
+
+
+dutch	nehyph96.tex	nl[_NL]	ec
+=====
+^^e4 -> ä adieresis
+^^e7 -> ç ccedilla
+^^e8 -> è egrave
+^^e9 -> é eacute
+^^ea -> ê ecircumflex
+^^eb -> ë edieresis
+^^ef -> ï idieresis
+^^ee -> î icircumflex
+^^f1 -> ñ ntilde
+^^f6 -> ö odieresis
+^^fc -> ü udieresis
+^^fb -> û ucircumflex
+
+patterns can be loaded as ec only, and the same patterns are usable under texnansi as well (same position of letters)
+
+
+finnish	fihyph.tex	fi[_FI]	ec
+=======
+åäö
+^^e4 -> ä adieresis
+^^f6 -> ö odieresis
+
+apparently there is no å in patterns?
+(šž may accur in foreign words)
+patterns can be loaded as ec only, and the same patterns are usable under texnansi as well (same position of letters)
+
+
+italian	ithyph.tex	it[_IT]	ascii/none
+========
+only ' is treated as a letter, patterns don't include any other accented character
+how does that interact with mapping=tex-text?
+
+
+polish	plhyph.tex	pl[_PL]	qx
+======
+ąćęłńóśźż
+/a -> ą	aogonek
+/c -> ć	cacute
+/e -> ę	eogonek
+/l -> ł	lslash
+/n -> ń	nacute
+/o -> ó	oacute
+/s -> ś	sacute
+/x -> ź	zacute
+/z -> ż	zdotaccent
+
+
+portuguese	pthyph.tex	pt	ec
+==========
+
+^^e0 -> à - agrave (not used)
+^^e1 -> á - aacute
+^^e2 -> â - acircumflex
+^^e3 -> ã - atilde
+^^e7 -> ç - ccedilla
+^^e8 -> è - egrave (not used)
+^^e9 -> é - eacute 
+^^ea -> ê - ecircumflex
+^^ed -> í - iacute
+^^ee -> î - icircumflex
+^^ef -> ï - idieresis (not used)
+^^f3 -> ó - oacute 
+^^f4 -> ô - ocircumflex
+^^f5 -> õ - otilde
+^^f6 -> ö - odieresis (not used)
+^^fa -> ú - uacute 
+^^fb -> û - ucircumflex (not used)
+
+patterns can be loaded as ec only, and the same patterns are usable under texnansi as well (same position of letters)
+
+
+slovenian (slovene)	sihyph.tex	sl[-si]	ec
+=========
+čšž
+"c -> č	ccaron
+"s -> š	scaron
+"z -> ž	zcaron
+
+
+swedish	svhyph.tex	sv[-se]	ec
+=======
+åäö
+^^e5 -> å aring
+^^e4 -> ä adieresis
+^^f6 -> ö odieresis
+àé are considered a variant of the same letter
+^^e9 -> é eacute
+
+patterns can be loaded as ec only, and the same patterns are usable under texnansi as well (same position of letters)
+
+
+"ukenglish"	ukhyphen.tex	en-gb	ascii/none
+===========
+
+spanish (espanol)	eshyph.tex	es	ec
+=======
+áéíóúüñ
+convert from latin1 to utf-8
+
+^^f1 ntilde
+^^e1 aacute
+^^e9 eacute
+^^ed iacute
+^^f3 oacute
+^^fa uacute
+^^fc udieresis
+
+patterns can be loaded as ec only, and the same patterns are usable under texnansi as well (same position of letters)
+
+
+catalan	cahyph.tex	ca	ec
+=======
+
+^^e0 -> à	agrave
+^^e7 -> ç - ccedilla
+^^e8 -> è - egrave
+^^e9 -> é - eacute
+^^ed -> í - iacute
+^^ef -> ï - idieresis
+^^f2 -> ò - ograve
+^^f3 -> ó - oacute
+^^fa -> ú - uacute
+^^fc -> ü - udieresis
+
+patterns can be loaded as ec only, and the same patterns are usable under texnansi as well (same position of letters)
+
+galician	glhyph.tex	gl	ec
+========
+
+áéíóú ñ üï
+
+source in latin1 -> convert to utf-8
+
+patterns can be loaded as ec only, and the same patterns are usable under texnansi as well (same position of letters)
+
+
+uppersorbian	sorhyph.tex	hsb	ec
+============
+
+^^a3 -> č - ccaron
+^^a2 -> ć - cacute
+^^a5 -> ě - ecaron
+^^aa -> ł - lslash
+^^ab -> ń - nacute
+^^f3 -> ó - oacute
+^^b0 -> ř - rcaron
+^^b2 -> š - scaron
+^^ba -> ž - zcaron
+^^b9 -> ź - zacute
+
+welsh	cyhyph.tex	cy	ec
+=====
+^^e1 -> á - aacute
+^^e2 -> â - acircumflex
+^^ea -> ê - ecircumflex
+^^f4 -> ô - ocircumflex
+^^eb -> ë - edieresis
+^^ef -> ï - idieresis
+^^f6 -> ö - odieresis
+
+
+irish	gahyph.tex	ga	ec
+=====
+^^e1 -> á - aacute
+^^e9 -> é - eacute
+^^ed -> í - iacute
+^^f3 -> ó - oacute
+^^fa -> ú - uacute
+
+pinyin	pyhyph.tex	zh-latn	ec
+======
+^^fc -> ü - udieresis
+
+patterns can be loaded as ec only, and the same patterns are usable under texnansi as well (same position of letters)
+
+interlingua	iahyphen.tex	ia	ascii
+===========
+
+pure copy
+
+romanian	rohyphen.tex	ro	ec
+========
+ăâîșț ĂÂÎȘȚ
+
+"a -> ă
+"A -> â
+"i -> î
+"s -> ș
+"t -> ț
+
+"a = \u{a}
+"A = \^{a}
+"i = \^{\i}
+"s = \c{s}
+"t = \c{t}
+
+%				[-]  \u{A} [not encoded]
+%	"A = \^{a}			[-]  \^{A} [not encoded]
+%	"i = \^{\i}			"I = \^{I}
+%	"s = \c{s}			"S = \c{S}
+%	"t = \c{t}			"T = \c{T}
+
+"a -> ^^a0
+"A -> ^^e2
+"i -> ^^ee
+"s -> ^^b3
+"t -> ^^b5
+
+estonian	ethyph.tex	et	ec
+========
+šžäöüõ
+
+^^b2 -> š - scaron
+^^ba -> ž - zcaron
+
+^^e4 -> ä - adieresis
+^^f6 -> ö - odieresis
+^^fc -> ü - udieresis
+
+^^f5 -> õ - otilde
+
+hungarian	huhyphn.tex	hu	ec
+=========
+
+saved in ec encoding (that no editor can read)
+
+^^e1
+^^e9
+^^f3
+^^f6
+^^ae
+^^fc
+^^fa
+^^b6
+^^ed
+^^e4
+
+\lccode"E1="E1 % á - aacute
+\lccode"E9="E9 % é - eacute
+\lccode"ED="ED % í - iacute
+\lccode"F3="F3 % ó - oacute
+\lccode"FA="FA % ú - uacute
+
+\lccode"AE="AE % ő - ohungarumlaut
+\lccode"B6="B6 % ű - uhungarumlaut
+
+\lccode"E4="E4 % ä - adieresis
+\lccode"F6="F6 % ö - odieresis
+\lccode"FC="FC % ü - udieresis
+
+icelandic	icehyph.tex	is	ec
+=========
+
+^^e1 á - aacute
+^^e9 é - eacute
+^^ed í - iacute
+^^f3 ó - oacute
+^^fa ú - uacute
+^^fd ý - yacute
+^^fe þ - thorn
+^^e6 æ - ae
+^^f6 ö - odieresis
+^^f0 ð - eth
+
+turkish	tkhyph.tex	tr	ec
+=======
+
+weird conversion, see additional notes
+
+^^11 -> ı - dotlessi % error
+^^e2 -> â - acircumflex
+^^ee -> î - icircumflex
+^^f4 -> ô - ocircumflex
+^^f6 -> ö - odieresis
+^^fc -> ü - udieresis
+
+^^e7 ->  ç - ccedilla
+^^a7 ->  ğ - gbreve
+^^f1 ->  ñ - ntilde
+^^b3 ->  ş - scedilla
+
+---------------------
+
+czech - not to be included this year ? - works fine with ec, but probably includes other tricks as well
+=====
+
+\v e -> ě	ecaron
+\v c -> č	ccaron
+\v d -> ď	dcaron
+\v l -> ľ	lcaron (not used)
+\v n -> ň	ncaron
+\v r -> ř	rcaron
+\v s -> š	scaron
+\v t -> ť	tcaron
+\v z -> ž	zcaron
+\r u -> ů	uring
+\'a -> á	aacute
+\'e -> é	eacute
+\'i -> í	iacute
+\'o -> ó	oacute
+\'u -> ú	uacute
+\'r -> ŕ	racute (not used)
+\'y -> ý	yacute
+\"a -> ä	adieresis (not used)
+\^o -> ô	ocircumflex (not used)
+
+slovak
+======
+
+\v e -> ě	ecaron (not used)
+\v c -> č	ccaron
+\v d -> ď	dcaron
+\v l -> ľ	lcaron
+\v n -> ň	ncaron
+\v r -> ř	rcaron (not used)
+\v s -> š	scaron
+\v t -> ť	tcaron
+\v z -> ž	zcaron
+\r u -> ů	uring (not used)
+\'a -> á	aacute
+\'e -> é	eacute
+\'i -> í	iacute
+\'o -> ó	oacute
+\'u -> ú	uacute
+\'r -> ŕ	racute
+\'y -> ý	yacute
+\"a -> ä	adieresis
+\^o -> ô	ocircumflex
+
+csaccents that Jonathan has written have some more characters available:
+\"o
+\"u
+\'l
+\`a
+
+
+german - not to be included this year
+======
+ec, also texnansi; original "supports" ot1 as well
+äöü are positioned at equal places in both ec & texnansi, while ß is at a different place in ec/texnansi/OT1
+
+          0x19 0xDF 0xFF
+ec         ı    SS   ß
+texnansi   ß    ß    ÿ
+OT1        ß    -    -
+
+äöüß
+"a -> ä
+"o -> ö
+"u -> ü
+/3 -> ß
+
+/9 duplicated entry for ß, only inside \c
+\n - keep pattern
+\c - delete pattern (duplicated)
+
+german - old	dehypht.tex
+german - new (ngerman)	dehyphn.tex
+
+hyphenation exceptions apparently loaded separately
+
+
+latin
+=====
+\ae -> æ
+\oe -> œ
+
+\n - delete pattern (duplicated)
+
+french	frhyph	fr[_FR]	ec - not to be included this year
+======
+=patois
+=francais
+
+also kind-of-supports \oe in ot1, TODO: check for texnansi
+
+æ - ae (*unused*)
+œ - oe
+
+\`a à e0
+\`e è e8
+\`u ù f9 (*unused*)
+
+\'e é e9
+
+\^a â e2
+\^e ê ea
+\^i î ee
+\^o ô f4
+\^u û fb
+
+\"e ë eb (*unused*)
+\"i ï ef
+\"u ü fc (*unused*)
+\"y ÿ b8 (*unused*)
+
+\cc ç e7 ccedilla
+
+\oe œ f7 oe
+
+\n - remove pattern (only duplicated \oe inside)
+remove 0 from \oe0
+
+% For \oe which exists in T1 _and_ OT1 encoded fonts but with
+% different glyph codes, patterns for both glyphs are included.
+% Thus you can use either T1 encoded fonts, or OT1 encoded fonts
+% and MLTeX's character substitution definition.
+
+danish
+======
+
+the same problem
+
+danish		dkhyph.tex
+dkcommon.tex
+dkhyph.tex
+dkspecial.tex
+
+X -> æ
+Y -> ø
+Z -> å
+
+esperanto	latin3
+=========
+
+^c -> ĉ (E6)
+^g -> ĝ (F8)
+^h -> ĥ (B6)
+^j -> ĵ (BC)
+^s -> ŝ (FE)
+^u -> ŭ (FD)
+
+^C -> Ĉ (C6)
+^G -> Ĝ (D8)
+^H -> Ĥ (A6)
+^J -> Ĵ (AC)
+^S -> Ŝ (DE)
+^U -> Ŭ (DD)
+
+special converter needed (and already done):
+
+coptic		xu-copthyph.tex		utf8-copthyph.tex		copthyph.tex
+
+
+
+english		hyphen.tex  % do not change!
+=usenglish/USenglish/american
+%
+% ushyphmax.tex, on the other hand, includes Gerard Kuiken's additional
+% patterns; it is not frozen.
+usenglishmax	ushyphmax.tex
+
+
+
+TODO (delete all the three entries once patterns are converted):
+
+norsk		xu-nohyphbx.tex
+=norwegian
+nynorsk         nnhyph.tex
+bokmal          nbhyph.tex
+
+indonesian	inhyph.tex
+welsh		cyhyph.tex
+
+greek variants:
+- ibycus ibyhyph.tex
+- greek		xu-grphyph4.tex
+  =polygreek
+- monogreek	xu-grmhyph4.tex
+- ancientgreek	xu-grahyph4.tex
+
+cyrilic variants:
+- bulgarian	xu-bghyphen.tex
+- mongolian	xu-mnhyph.tex
+- mongolian2a	mnhyphn.tex
+- serbian	xu-srhyphc.tex
+- russian	xu-ruhyphen.tex
+- ukrainian	xu-ukrhyph.tex
+
+
+TODO:
+
+waiting list:
+
+czech
+slovak
+german		xu-dehypht.tex
+ngerman		xu-dehyphn.tex
+latin		xu-lahyph.tex
+esperanto	xu-eohyph.tex
+
+consult the authors:
+
+basque		xu-bahyph.tex
+bahyph.sh
+bahyph.tex
+galician	xu-glhyph.tex
+turkish		xu-tkhyph.tex
+
+
+xu-cp866nav.tex
+xu-dehyphtex.tex
+xu-eohyph.tex
+xu-nohyphbx.tex
+xu-ruhyphen.tex
+xu-ukrhyph.tex
+
+cyhyph.tex
+eohyph.tex
+grahyph4.tex
+grmhyph4.tex
+grphyph4.tex
+hyphen.tex
+hypht1.tex
+ibyhyph.tex
+inhyph.tex
+ushyphmax.tex

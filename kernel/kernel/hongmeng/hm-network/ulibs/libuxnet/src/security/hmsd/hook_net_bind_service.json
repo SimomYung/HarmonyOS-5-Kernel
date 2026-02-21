@@ -1,0 +1,27 @@
+{
+    "template": "hook",
+    "server": "net",
+    "manager": "net_bind_service",
+    "hooks": {
+        "net_bind_service": {
+            "generation": {
+                "performance_compatibility": true
+            },
+            "scheme": "security check/privilege",
+            "arguments": [],
+            "ac": {
+                "ability": {
+                    "alias": "sec_chk_ability_net_bind_service",
+                    "permission": "ab_net_bind"
+                },
+                "capability": {
+                    "alias": "sec_chk_posix_cap_net_bind_service",
+                    "enabled": true,
+                    "permission": [
+                        "NET_BIND_SERVICE"
+                    ]
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,40 @@
+{
+  "name": "@ohos/exfat",
+  "description": "Free exFAT file system implementation",
+  "version": "1.4.0",
+  "license": "GPL-2.0",
+  "publishAs": "code-segment",
+  "segment": {
+      "destPath": "vendor/open_source/exfat"
+  },
+  "dirs": {},
+  "scripts": {},
+"licensePath": "COPYING",
+"readmePath": {
+      "en": "README"
+  },
+  "component": {
+      "name": "exfat",
+      "subsystem": "open_source",
+      "syscap": [],
+      "features": [],
+      "adapted_system_type": [
+          "standard"
+      ],
+      "rom": "",
+      "ram": "",
+      "deps": {
+          "components": [],
+          "third_party": [
+            "libfuse"
+          ]
+      },
+      "build": {
+          "sub_component": [
+            "//vendor/open_source/exfat:mount.exfat"
+          ],
+          "inner_kits": [],
+          "test": []
+      }
+  }
+}

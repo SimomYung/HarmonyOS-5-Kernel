@@ -1,0 +1,3 @@
+config TEE_RESET
+	bool "tee reset module support"
+	default n

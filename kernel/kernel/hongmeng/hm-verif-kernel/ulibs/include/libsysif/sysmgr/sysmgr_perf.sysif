@@ -1,0 +1,56 @@
+/*
+ * Copyright (C) Huawei Technologies Co., Ltd. 2020. All rights reserved.
+ * Description: Perf interface in sysmgr
+ * Author: Huawei OS Kernel Lab
+ * Create: Thu Jul 30 10:05:16 2020
+ */
+#ifdef SYSIF_EXPORT_API
+#include <libperf/perf_event.h>
+#endif
+
+/*
+ * To support the mixed data model which means the client and the server
+ * may use different data model. See the document for limitation of data type
+ * used in the sysif interfaces in <Documentation/sysif_compat.md>.
+ */
+DEFINE_MANAGER(perf, 8,
+	DEFINE_SIMPLE_METHOD(perf, create_session,
+			     ARG(1, unsigned int, buffer_page_nr),
+			     RET_NO,
+			     SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(perf, config_event,
+			     ARG(2, const void *, addr, unsigned long, size),
+			     RET_NO,
+			     SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(perf, start_session,
+			     ARG_NO,
+			     RET_NO,
+			     SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(perf, stop_session,
+			     ARG_NO,
+			     RET_NO,
+			     SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(perf, release_session,
+			     ARG_NO,
+			     RET_NO,
+			     SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(perf, read_data,
+			     ARG(2, void *, dst, unsigned int, size),
+			     RET(1, struct perf_read_data_ret_s, data_ret),
+			     SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(perf, get_kernel_load_info,
+			     ARG(2, void *, dst, unsigned int, size),
+			     RET_NO,
+			     SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(perf, set_callgraph_enabled,
+			     ARG(1, bool, callgraph_enabled),
+			     RET_NO,
+			     SLOWDATA_NO)
+)

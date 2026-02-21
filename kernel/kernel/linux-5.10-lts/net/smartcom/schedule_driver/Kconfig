@@ -1,0 +1,5 @@
+config HUAWEI_SCHEDULE_DRIVER
+	bool "Huawei schedule_driver feature support"
+	default n
+
+

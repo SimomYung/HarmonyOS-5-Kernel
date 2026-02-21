@@ -1,0 +1,41 @@
+/*
+ * Copyright (C) Huawei Technologies Co., Ltd. 2018-2020. All rights reserved.
+ * Description: Generate mqueuemgr sysif client interface
+ * Author: Huawei OS Kernel Lab
+ * Create: Mon Nov 19 14:00:34 2018
+ */
+#ifdef SYSIF_EXPORT_API
+#include <sys/stat.h>
+#include <libhmsrv_sys/hm_mqueue.h>
+
+struct mqueuemgr_name {
+	char name[MQUEUEMGR_NAME_MAX];
+};
+
+#endif
+
+/*
+ * To support the mixed data model which means the client and the server
+ * may use different data model. See the document for limitation of data type
+ * used in the sysif interfaces in <Documentation/sysif_compat.md>.
+ */
+DEFINE_MANAGER(mqueue, 8,
+	DEFINE_LSYSCALL_METHOD(open, SYS_mq_open,
+			  ARG(4, void *, name, int, oflag, mode_t, mode, void *, attr))
+	DEFINE_LSYSCALL_METHOD(send, SYS_mq_timedsend,
+		      ARG(5, int, mqd, void *, msg, size_t, msg_len,
+			  unsigned int, msg_prio, void *, abs_timeout))
+	DEFINE_LSYSCALL_METHOD(recv, SYS_mq_timedreceive,
+		      ARG(5, int, mqd, void *, msg, size_t, msg_len,
+			  void *, msg_prio, void *, abs_timeout))
+	DEFINE_LSYSCALL_METHOD(getsetattr, SYS_mq_getsetattr,
+			  ARG(3, int, mqd, void *, new_attr, void *, old_attr))
+	DEFINE_LSYSCALL_METHOD(close, SYS_mq_close,
+		      ARG(1, int, mqd))
+	DEFINE_LSYSCALL_METHOD(unlink, SYS_mq_unlink,
+		      ARG(1, void *, name))
+	DEFINE_SIMPLE_METHOD(mqueue, chmod,
+		      ARG(2, const char *, name, mode_t, mode),
+		      RET_NO,
+		      SLOWDATA_NO)
+)

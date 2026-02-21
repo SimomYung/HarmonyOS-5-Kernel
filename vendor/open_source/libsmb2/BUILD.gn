@@ -1,0 +1,148 @@
+# Copyright (c) 2025 Huawei Device Co., Ltd.
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+import("//build/ohos.gni")
+
+config("libsmb2_shared_config") {
+  include_dirs = [
+    "./include"
+  ]
+}
+
+ohos_shared_library("libsmb2_shared") {
+  public_configs = [ ":libsmb2_shared_config" ]
+
+  include_dirs = [
+    "./include/smb2",
+    "./include",
+    "./lib"
+  ]
+ 
+  sources = [
+    "lib/aes.c",
+    "lib/aes128ccm.c",
+    "lib/alloc.c",
+    "lib/asn1-ber.c",
+    "lib/compat.c",
+    "lib/dcerpc-lsa.c",
+    "lib/dcerpc-srvsvc.c",
+    "lib/dcerpc.c",
+    "lib/errors.c",
+    "lib/hmac-md5.c",
+    "lib/hmac.c",
+    "lib/init.c",
+    "lib/krb5-wrapper.c",
+    "lib/libsmb2.c",
+    "lib/md4c.c",
+    "lib/md5.c",
+    "lib/ntlmssp.c",
+    "lib/pdu.c",
+    "lib/sha1.c",
+    "lib/sha224-256.c",
+    "lib/sha384-512.c",
+    "lib/smb2-cmd-close.c",
+    "lib/smb2-cmd-create.c",
+    "lib/smb2-cmd-echo.c",
+    "lib/smb2-cmd-error.c",
+    "lib/smb2-cmd-flush.c",
+    "lib/smb2-cmd-ioctl.c",
+    "lib/smb2-cmd-logoff.c",
+    "lib/smb2-cmd-lock.c",
+    "lib/smb2-cmd-negotiate.c",
+    "lib/smb2-cmd-notify-change.c",
+    "lib/smb2-cmd-oplock-break.c",
+    "lib/smb2-cmd-query-directory.c",
+    "lib/smb2-cmd-query-info.c",
+    "lib/smb2-cmd-read.c",
+    "lib/smb2-cmd-session-setup.c",
+    "lib/smb2-cmd-set-info.c",
+    "lib/smb2-cmd-tree-connect.c",
+    "lib/smb2-cmd-tree-disconnect.c",
+    "lib/smb2-cmd-write.c",
+    "lib/smb2-data-file-info.c",
+    "lib/smb2-data-filesystem-info.c",
+    "lib/smb2-data-reparse-point.c",
+    "lib/smb2-data-security-descriptor.c",
+    "lib/smb2-share-enum.c",
+    "lib/smb2-signing.c",
+    "lib/smb3-seal.c",
+    "lib/socket.c",
+    "lib/spnego-wrapper.c",
+    "lib/sync.c",
+    "lib/timestamps.c",
+    "lib/unicode.c",
+    "lib/usha.c"
+  ]
+ 
+  defines = [
+    "_U_=__attribute__((unused))"
+  ]
+ 
+  defines += [
+    "HAVE_ARPA_INET_H=1",
+    "HAVE_DLFCN_H=1",
+    "HAVE_GSSAPI_GSSAPI_H=1",
+    "HAVE_INTTYPES_H=1",
+    "HAVE_MEMORY_H=1",
+    "HAVE_NETDB_H=1",
+    "HAVE_NETINET_IN_H=1",
+    "HAVE_NETINET_TCP_H=1",
+    "HAVE_NET_IF_H=1",
+    "HAVE_POLL_H=1",
+    "HAVE_STDINT_H=1",
+    "HAVE_STDLIB_H=1",
+    "HAVE_STRINGS_H=1",
+    "HAVE_STRING_H=1",
+    "HAVE_SYS_FILIO_H=1",
+    "HAVE_SYS_IOCTL_H=1",
+    "HAVE_SYS_SOCKET_H=1",
+    "HAVE_SYS_SOCKIO_H=1",
+    "HAVE_SYS_STATVFS_H=1",
+    "HAVE_SYS_STAT_H=1",
+    "HAVE_SYS_SYSMACROS_H=1",
+    "HAVE_SYS_TIME_H=1",
+    "HAVE_SYS_TYPES_H=1",
+    "HAVE_SYS_UIO_H=1",
+    "HAVE_SYS_VFS_H=1",
+    "HAVE_UNISTD_H=1",
+    "HAVE_UTIME_H=1",
+    "HAVE_TIME_H=1",
+    "HAVE_LINGER=1",
+    "STDC_HEADERS=1",
+    "HAVE_FCNTL_H=1",
+    "HARMONYOS=1",
+  ]
+
+  cflags = [
+    "-Wall",
+    "-Wno-sign-compare",
+    "-Wno-implicit-function-declaration",
+    "-Wno-array-bounds",
+    "-Wno-array-parameter",
+    "-Wno-missing-prototypes",
+    "-Wno-incompatible-function-pointer-types",
+    "-Wno-deprecated-non-prototype",
+    "-Wno-implicit-fallthrough",
+    "-fstack-protector-all"
+  ]
+
+  output_name = "smb2"
+  part_name = "libsmb2"
+  subsystem_name = "open_source"
+}
+ 
+group("libsmb2") {
+  deps = [
+    ":libsmb2_shared"
+  ]
+}

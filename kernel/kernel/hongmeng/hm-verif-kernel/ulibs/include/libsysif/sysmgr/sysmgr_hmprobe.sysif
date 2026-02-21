@@ -1,0 +1,25 @@
+/*
+ * Copyright (c) Huawei Technologies Co., Ltd. 2023-2023. All rights reserved.
+ * Description: Sysmgr probe
+ * Author: Huawei OS Kernel Lab
+ * Create: Tue Sep 12 10:41:00 2023
+ */
+
+/*
+ * To support the mixed data model which means the client and the server
+ * may use different data model. See the comment for limitation of data type
+ * used in the sysif interfaces in <libsysif/base/api.h>.
+ */
+#ifdef SYSIF_EXPORT_API
+#include <stdint.h>
+#include <lib/hmprobe/utils.h>
+#endif
+
+DEFINE_MANAGER(hmprobe, 1,
+	DEFINE_LSYSCALL_METHOD(event_ctl, SYS_hmprobe_event_ctl,
+			       ARG(4, unsigned int, cmd,
+				   void *, event_attr,
+				   unsigned int, event_id,
+				   void *, prog_attr),
+			       ARCH(__aarch64__))
+)

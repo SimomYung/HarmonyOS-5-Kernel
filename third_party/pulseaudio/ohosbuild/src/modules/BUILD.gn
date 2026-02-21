@@ -1,0 +1,148 @@
+# Copyright (c) 2021-2022 Huawei Device Co., Ltd.
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+import("//build/ohos.gni")
+
+group("native-modules") {
+  deps = [
+    ":module-cli-protocol-unix",
+    ":module-native-protocol-fd",
+    ":module-native-protocol-tcp",
+    ":module-native-protocol-unix",
+    ":module-suspend-on-idle",
+  ]
+}
+
+group("common_deps") {
+  deps = [
+    "../../src:pulsecommon",
+    "../../src/pulsecore:pulsecore",
+  ]
+}
+
+config("common_config") {
+  visibility = [ ":*" ]
+
+  include_dirs = [
+    "../../../include",
+    "../../../src/modules",
+    "../../../src",
+    "../../../",
+    "../../src",
+    "../../include",
+  ]
+
+  cflags = [
+    "-Wall",
+    "-Werror",
+    "-DHAVE_CONFIG_H",
+    "-D_GNU_SOURCE",
+    "-D__INCLUDED_FROM_PULSE_AUDIO",
+  ]
+}
+
+ohos_shared_library("module-native-protocol-fd") {
+  sources = [ "../../../src/modules/module-native-protocol-fd.c" ]
+  cflags = [ "-DPA_MODULE_NAME=libmodule_native_protocol_fd_z_so" ]
+  ldflags = [
+    "-Wl",
+    "--no-undefined",
+  ]
+  configs = [ ":common_config" ]
+  deps = [
+    ":common_deps",
+    "../../src/pulsecore:protocol-native",
+  ]
+  external_deps = [ "hilog:libhilog" ]
+  subsystem_name = "thirdparty"
+  part_name = "pulseaudio"
+}
+
+ohos_shared_library("module-native-protocol-tcp") {
+  sources = [ "../../../src/modules/ohos_module-protocol-stub.c" ]
+  cflags = [
+    "-DPA_MODULE_NAME=libmodule_native_protocol_tcp_z_so",
+    "-DUSE_PROTOCOL_NATIVE",
+    "-DUSE_TCP_SOCKETS",
+  ]
+  ldflags = [
+    "-Wl",
+    "--no-undefined",
+  ]
+  configs = [ ":common_config" ]
+  deps = [
+    ":common_deps",
+    "../../src/pulsecore:protocol-native",
+  ]
+  external_deps = [ "hilog:libhilog" ]
+  subsystem_name = "thirdparty"
+  part_name = "pulseaudio"
+}
+
+ohos_shared_library("module-native-protocol-unix") {
+  sources = [ "../../../src/modules/ohos_module-protocol-stub.c" ]
+  cflags = [
+    "-DPA_MODULE_NAME=libmodule_native_protocol_unix_z_so",
+    "-DUSE_PROTOCOL_NATIVE",
+    "-DUSE_UNIX_SOCKETS",
+  ]
+  ldflags = [
+    "-Wl",
+    "--no-undefined",
+  ]
+  configs = [ ":common_config" ]
+  deps = [
+    ":common_deps",
+    "../../src/pulsecore:protocol-native",
+  ]
+  external_deps = [ "hilog:libhilog" ]
+  subsystem_name = "thirdparty"
+  part_name = "pulseaudio"
+}
+
+ohos_shared_library("module-cli-protocol-unix") {
+  sources = [ "../../../src/modules/ohos_module-protocol-stub.c" ]
+  cflags = [
+    "-DPA_MODULE_NAME=libmodule_cli_protocol_unix_z_so",
+    "-DUSE_PROTOCOL_CLI",
+    "-DUSE_UNIX_SOCKETS",
+  ]
+  ldflags = [
+    "-Wl",
+    "--no-undefined",
+  ]
+  configs = [ ":common_config" ]
+  deps = [
+    ":common_deps",
+    "../../src/pulsecore:protocol-cli",
+  ]
+  external_deps = [ "hilog:libhilog" ]
+  subsystem_name = "thirdparty"
+  part_name = "pulseaudio"
+}
+
+ohos_shared_library("module-suspend-on-idle") {
+  sources = [ "../../../src/modules/module-suspend-on-idle.c" ]
+  cflags = [ "-DPA_MODULE_NAME=libmodule_suspend_on_idle_z_so" ]
+
+  ldflags = [
+    "-Wl",
+    "--no-undefined",
+  ]
+
+  configs = [ ":common_config" ]
+  deps = [ ":common_deps" ]
+  external_deps = [ "hilog:libhilog" ]
+  subsystem_name = "thirdparty"
+  part_name = "pulseaudio"
+}

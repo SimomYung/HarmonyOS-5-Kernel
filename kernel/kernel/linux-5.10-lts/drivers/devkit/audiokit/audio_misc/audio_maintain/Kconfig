@@ -1,0 +1,5 @@
+config CUST_AUDIO_MAINTAIN
+    bool "collec audio info driver"
+    default n
+    help
+    Say Y to enable collec audio info driver support

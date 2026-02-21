@@ -1,0 +1,16 @@
+/*
+ * Copyright (c) Huawei Technologies Co., Ltd. 2020-2020. All rights reserved.
+ * Description: Generate srvmgr sysif apis using code generator
+ * Author: Huawei OS Kernel Lab
+ * Create: Mon 07 Dec 2020 07:41:08 PM CST
+ */
+
+DECLARE_DATATYPE_BEGIN
+#define SRVMGR_SERVER_PATH		"srvmgr-actv"
+DECLARE_DATATYPE_END
+
+USE_CALL_PREFIX(srvcall)
+USE_HANDLER_PREFIX(srvhandler)
+USE_SERVER_NAME(srvmgr)
+
+INCLUDE_SUBSYSTEM(libsysif/srvmgr/srvmgr_mgmt.sysif)

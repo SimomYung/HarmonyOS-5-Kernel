@@ -1,0 +1,73 @@
+From 7e724f9df38bf7d9029bbf034b2708da9821365a Mon Sep 17 00:00:00 2001
+From: h00852261 <h00852261@notesmail.huawei.com/>
+Date: Mon, 14 Jul 2025 19:47:15 +0800
+Subject: [PATCH] [Init] modify open source ppp
+
+TicketNo:DTS2025070403444
+Description:fix connect fail
+Team:OTHERS
+Feature or Bugfix:Bugfix
+Binary Source:No
+PrivateCode(Yes/No):No
+
+Change-Id: I942769c80f8b5e4a6bbcc52978dec84fb4abad68
+---
+ pppd/chap.c    | 3 ---
+ pppd/ipcp.c    | 4 ++++
+ pppd/options.c | 4 ++--
+ 3 files changed, 6 insertions(+), 5 deletions(-)
+
+diff --git a/pppd/chap.c b/pppd/chap.c
+index a7b23a3..5bbffd5 100644
+--- a/pppd/chap.c
++++ b/pppd/chap.c
+@@ -572,9 +572,6 @@ chap_handle_status(struct chap_client_state *cs, int code, int id,
+ 	}
+ 	if (code == CHAP_SUCCESS) {
+ 		auth_withpeer_success(0, PPP_CHAP, cs->digest->code);
+-#ifdef SUPPORT_SYSVPN
+-		WriteStageAndStatus("pppdstart", 0);
+-#endif // SUPPORT_SYSVPN
+ 	} else {
+ 		cs->flags |= AUTH_FAILED;
+ 		error("CHAP authentication failed");
+diff --git a/pppd/ipcp.c b/pppd/ipcp.c
+index 5d9ff11..b275837 100644
+--- a/pppd/ipcp.c
++++ b/pppd/ipcp.c
+@@ -1990,6 +1990,10 @@ ipcp_up(fsm *f)
+     if (ip_up_hook)
+ 	ip_up_hook();
+ 
++#ifdef SUPPORT_SYSVPN
++	WriteStageAndStatus("pppdstart", 0);
++#endif // SUPPORT_SYSVPN
++
+     /*
+      * Execute the ip-up script, like this:
+      *	/etc/ppp/ip-up interface tty speed local-IP remote-IP
+diff --git a/pppd/options.c b/pppd/options.c
+index e8063d5..56e86fa 100644
+--- a/pppd/options.c
++++ b/pppd/options.c
+@@ -560,7 +560,7 @@ getword_from_conf_buf(uint8_t conf_buf[], int *conf_buf_index, char *word, int *
+     for (;;) {
+ 	c = conf_buf[*conf_buf_index];
+ 	*conf_buf_index += 1;
+-	if (c == EOF)
++	if (c == 0)
+ 	    break;
+ 
+ 	/*
+@@ -614,7 +614,7 @@ getword_from_conf_buf(uint8_t conf_buf[], int *conf_buf_index, char *word, int *
+ 	/*
+ 	 * Process characters until the end of the word.
+ 	 */
+-	while (c != EOF)
++	while (c != 0)
+ 	{
+ 		if (escape)
+ 		{
+-- 
+2.34.1
+

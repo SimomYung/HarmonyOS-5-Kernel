@@ -1,0 +1,39 @@
+From d30af8e69029a59246d81198e35a0ddc08cb9023 Mon Sep 17 00:00:00 2001
+From: g00650597 <g00650597@notesmail.huawei.com/>
+Date: Wed, 19 Feb 2025 14:48:48 +0800
+Subject: [PATCH] TicketNo:DTS2025021417340 Description:modify ipsec route
+ Team:SP_XA_PTL Feature or Bugfix:Bugfix Binary Source:No
+ PrivateCode(Yes/No):No
+
+Change-Id: Ia053ee390e565fd004b83093e3ca9e22bf30a64a
+---
+ src/_updown/_updown.in | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/src/_updown/_updown.in b/src/_updown/_updown.in
+index 0b274de..59bf9e1 100644
+--- a/src/_updown/_updown.in
++++ b/src/_updown/_updown.in
+@@ -352,6 +352,9 @@ up-client:iptables)
+ 		ip route add table 97 default dev ipsec0
+ 		ip rule add from $PLUTO_PEER_CLIENT lookup 97
+ 		ip rule add to $PLUTO_PEER_CLIENT lookup 97
++		ip route add to $PLUTO_PEER via $PLUTO_ME table 96
++		ip rule add from $PLUTO_PEER lookup 96
++		ip rule add to $PLUTO_PEER lookup 96
+ 	fi
+ 	;;
+ down-client:iptables)
+@@ -407,6 +410,9 @@ down-client:iptables)
+ 		ip rule delete from $PLUTO_PEER_CLIENT lookup 97
+ 		ip rule delete to $PLUTO_PEER_CLIENT lookup 97
+ 		ip route delete table 97 default dev ipsec0
++		ip rule delete to $PLUTO_PEER lookup 96
++		ip rule delete from $PLUTO_PEER lookup 96
++		ip route delete to $PLUTO_PEER via $PLUTO_ME table 96
+ 	fi
+ 	;;
+ #
+-- 
+1.9.1
+

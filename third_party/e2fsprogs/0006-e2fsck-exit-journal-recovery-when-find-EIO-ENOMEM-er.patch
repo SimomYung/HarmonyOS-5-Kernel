@@ -1,0 +1,51 @@
+From dc4c71c6192f9709a2d833f9aa63d3463da6155a Mon Sep 17 00:00:00 2001
+From: lihaotian <lihaotian9@huawei.com>
+Date: Tue, 15 Dec 2020 11:46:07 +0000
+Subject: [PATCH] e2fsck: exit journal recovery when find EIO, ENOMEM
+ errors
+
+jbd2_journal_revocer() may fail when some error occers
+such as ENOMEM. However, jsb->s_start is still cleared
+by func e2fsck_journal_release(). This may break
+consistency between metadata and data in disk. Sometimes,
+failure in jbd2_journal_revocer() is temporary but retry
+e2fsck will skip the journal recovery when the temporary
+problem is fixed.
+
+To fix this case, we use "fatal_error" instead "goto errout"
+when recover journal failed. If journal recovery fails, we
+will send error message to user and reserve the recovery
+flags to recover the journal when try e2fsck again.
+
+Fix issue: https://gitee.com/src-openeuler/e2fsprogs/issues/I4RZUT?from=project-issue
+
+conflict: journal_recover -> jbd2_journal_recover
+
+Reported-by: Liangyun <liangyun2@huawei.com>
+Signed-off-by: Haotian Li <lihaotian9@huawei.com>
+Signed-off-by: Zhiqiang Liu <liuzhiqiang26@huawei.com>
+---
+ e2fsck/journal.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
+
+diff --git a/e2fsck/journal.c b/e2fsck/journal.c
+index e83f3a9..a5f7088 100644
+--- a/e2fsck/journal.c
++++ b/e2fsck/journal.c
+@@ -942,6 +942,13 @@ static errcode_t recover_ext3_journal(e2fsck_t ctx)
+ 		goto errout;
+ 
+ 	retval = -jbd2_journal_recover(journal);
++	if (retval == EIO || retval == ENOMEM || retval == EXT2_ET_NO_MEMORY) {
++		ctx->fs->flags &= ~EXT2_FLAG_VALID;
++		com_err(ctx->program_name, 0,
++				_("Journal recovery failed "
++				"on %s, retval=%d \n"), ctx->device_name, retval);
++		fatal_error(ctx, 0);
++	}
+ 	if (retval)
+ 		goto errout;
+ 
+-- 
+2.21.1 (Apple Git-122.3)
+

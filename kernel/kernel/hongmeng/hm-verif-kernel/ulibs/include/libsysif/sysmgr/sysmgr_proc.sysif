@@ -1,0 +1,561 @@
+/*
+ * Copyright (C) Huawei Technologies Co., Ltd. 2018-2020. All rights reserved.
+ * Description: Generate procmgr sysif client interface
+ * Author: Huawei OS Kernel Lab
+ * Create: Wed Nov 14 20:03:51 2018
+ */
+
+#ifdef SYSIF_EXPORT_API
+#include <libhmsrv_sys/hm_procmgr.h>
+#include <libhmsrv_sys/hm_proc_affinity.h>
+#endif
+
+/*
+ * To support the mixed data model which means the client and the server
+ * may use different data model. See the document for limitation of data type
+ * used in the sysif interfaces in <Documentation/sysif_compat.md>.
+ */
+DEFINE_MANAGER(proc, 153,
+	DEFINE_SIMPLE_METHOD(proc, spawn,
+		      ARG(1, struct hm_spawn_req, spawn_req),
+		      RET(2, pid_t, pid, unsigned int, child_cnode_idx),
+		      SLOWDATA_NO)
+
+	DEFINE_LSYSCALL_METHOD(spawn_lsyscall, NATIVE, SYS_process_spawn,
+			ARG(6, void *, pid, void *, path, void *, fa,
+			    void *, attr, void *, argv, void *, envp))
+
+	DEFINE_LSYSCALL_METHOD(prctl, NATIVE, SYS_prctl,
+		ARG(5, int, option, unsigned long, arg2,
+		    unsigned long, arg3, unsigned long, arg4, unsigned long, arg5))
+
+	DEFINE_LSYSCALL_METHOD(waitid, SYS_waitid,
+		ARG(5, unsigned int, idtype, pid_t, pid,
+		    void *, infop, int, options, void *, ru))
+
+	DEFINE_LSYSCALL_METHOD_LONG(ptrace, NATIVE, SELFCALL, SYS_ptrace,
+		ARG(4, int, request, pid_t, pid, void *, addr, void *, data))
+
+	DEFINE_LSYSCALL_METHOD(wait4, NATIVE, SELFCALL, SYS_wait4,
+		ARG(4, pid_t, pid, int *, status,
+		    int, options, void *, ru))
+
+	DEFINE_LSYSCALL_METHOD(exit, NATIVE, SYS_exit_group,
+		ARG(1, int, status))
+
+	DEFINE_LSYSCALL_METHOD(getpid, NATIVE, SELFCALL, SYS_getpid,
+		ARG_NO)
+
+	DEFINE_SIMPLE_METHOD(proc, pid_of,
+		      ARG(2, unsigned int, cnode_idx, unsigned int, nsid),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_LSYSCALL_METHOD(getppid, NATIVE, SYS_getppid,
+		ARG_NO)
+
+	DEFINE_SIMPLE_METHOD(proc, cnode_idx_of,
+		      ARG(2, pid_t, pid, unsigned int, nsid),
+		      RET(1, unsigned int, cnode_idx),
+		      SLOWDATA_NO)
+
+	DEFINE_LSYSCALL_METHOD(getpgid, NATIVE, SYS_getpgid,
+		ARG(1, pid_t, pid))
+
+	DEFINE_SIMPLE_METHOD(proc, getpgid_xact,
+		ARG(1, pid_t, pid),
+		RET_NO,
+		SLOWDATA_NO)
+
+	DEFINE_LSYSCALL_METHOD(setpgid, SYS_setpgid,
+		ARG(2, pid_t, pid, pid_t, dst_pgrp))
+
+	DEFINE_LSYSCALL_METHOD(getsid, NATIVE, SELFCALL, SYS_getsid,
+		ARG(1, pid_t, pid))
+
+	DEFINE_SIMPLE_METHOD(proc, getsid_xact,
+		ARG(1, pid_t, pid),
+		RET_NO,
+		SLOWDATA_NO)
+
+	DEFINE_LSYSCALL_METHOD(setsid, SYS_setsid,
+		ARG_NO)
+
+	DEFINE_SIMPLE_METHOD(proc, setfgpgrp,
+		      ARG(2, pid_t, sid, pid_t, pgid),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(proc, getfgpgrp,
+		      ARG(1, pid_t, sid),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(proc, mysid,
+		      ARG_NO,
+		      RET(2, pid_t, sid, pid_t, pgid),
+		      SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(proc, signal_fgpgrp,
+		      ARG(2, pid_t, sid, int, signum),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(proc, signal_check_ignore,
+		      ARG(2, pid_t, pid, int, signum),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(proc, session_set_ttyinfo,
+		      ARG(2, pid_t, sid, struct ttyinfo_s, ttyinfo),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(proc, session_set_ttyinfo_xact,
+		      ARG(2, pid_t, sid, struct ttyinfo_s, ttyinfo),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(proc, session_get_ttyinfo,
+		      ARG_NO,
+		      RET(1, struct ttyinfo_s, info),
+		      SLOWDATA_NO)
+
+	DEFINE_LSYSCALL_METHOD(setuid, SYS_setuid,
+		ARG(1, uid_t, uid))
+
+	DEFINE_LSYSCALL_METHOD_UINT(getuid, NATIVE, SELFCALL, SYS_getuid, ARG_NO)
+
+	DEFINE_LSYSCALL_METHOD_UINT(geteuid, SYS_geteuid, ARG_NO)
+
+	DEFINE_LSYSCALL_METHOD(getresuid, SYS_getresuid,
+		ARG(3, uid_t *, ruid, uid_t *, euid, uid_t *, suid))
+
+	DEFINE_LSYSCALL_METHOD(setreuid, SYS_setreuid,
+		ARG(2, uid_t, ruid, uid_t, euid))
+
+	DEFINE_LSYSCALL_METHOD(setresuid, NATIVE, SYS_setresuid,
+		ARG(3, uid_t, ruid, uid_t, euid, uid_t, suid))
+
+	DEFINE_LSYSCALL_METHOD_UINT(getgid, SYS_getgid, ARG_NO)
+
+	DEFINE_LSYSCALL_METHOD_UINT(getegid, SYS_getegid, ARG_NO)
+
+	DEFINE_LSYSCALL_METHOD(getresgid, SYS_getresgid,
+		ARG(3, gid_t *, rgid, gid_t *, egid, gid_t *, sgid))
+
+	DEFINE_LSYSCALL_METHOD(setregid, SYS_setregid,
+		ARG(2, gid_t, rgid, gid_t, egid))
+
+	DEFINE_LSYSCALL_METHOD(setgid, SYS_setgid,
+		ARG(1, gid_t, gid))
+
+	DEFINE_LSYSCALL_METHOD(setresgid, NATIVE, SYS_setresgid,
+		ARG(3, gid_t, rgid, gid_t, egid, gid_t, sgid))
+
+	DEFINE_LSYSCALL_METHOD(setgroups, NATIVE, SYS_setgroups,
+		ARG(2, unsigned int, data_size, const gid_t *, group_list))
+
+	DEFINE_LSYSCALL_METHOD(getgroups, SYS_getgroups,
+		ARG(2, int, data_size, gid_t *, group_list))
+
+	DEFINE_LSYSCALL_METHOD(setfsuid, SYS_setfsuid,
+		ARG(1, uid_t, uid))
+
+	DEFINE_LSYSCALL_METHOD(setfsgid, SYS_setfsgid,
+		ARG(1, gid_t, gid))
+
+	DEFINE_LSYSCALL_METHOD(setuid32, SYS_setuid32,
+		ARG(1, uid_t, uid), ARCH(__arm__))
+
+	DEFINE_LSYSCALL_METHOD_UINT(getuid32, SYS_getuid32, ARG_NO, ARCH(__arm__))
+
+	DEFINE_LSYSCALL_METHOD_UINT(geteuid32, SYS_geteuid32, ARG_NO, ARCH(__arm__))
+
+	DEFINE_LSYSCALL_METHOD(getresuid32, SYS_getresuid32,
+		ARG(3, uid_t *, ruid, uid_t *, euid, uid_t *, suid), ARCH(__arm__))
+
+	DEFINE_LSYSCALL_METHOD(setreuid32, SYS_setreuid32,
+		ARG(2, uid_t, ruid, uid_t, euid), ARCH(__arm__))
+
+	DEFINE_LSYSCALL_METHOD(setresuid32, NATIVE, SYS_setresuid32,
+		ARG(3, uid_t, ruid, uid_t, euid, uid_t, suid), ARCH(__arm__))
+
+	DEFINE_LSYSCALL_METHOD_UINT(getgid32, SYS_getgid32, ARG_NO, ARCH(__arm__))
+
+	DEFINE_LSYSCALL_METHOD_UINT(getegid32, SYS_getegid32, ARG_NO, ARCH(__arm__))
+
+	DEFINE_LSYSCALL_METHOD(getresgid32, SYS_getresgid32,
+		ARG(3, gid_t *, rgid, gid_t *, egid, gid_t *, sgid), ARCH(__arm__))
+
+	DEFINE_LSYSCALL_METHOD(setregid32, SYS_setregid32,
+		ARG(2, gid_t, rgid, gid_t, egid), ARCH(__arm__))
+
+	DEFINE_LSYSCALL_METHOD(setgid32, SYS_setgid32,
+		ARG(1, gid_t, gid), ARCH(__arm__))
+
+	DEFINE_LSYSCALL_METHOD(setresgid32, NATIVE, SYS_setresgid32,
+		ARG(3, gid_t, rgid, gid_t, egid, gid_t, sgid), ARCH(__arm__))
+
+	DEFINE_LSYSCALL_METHOD(setgroups32, NATIVE, SYS_setgroups32,
+		ARG(2, unsigned int, data_size, const gid_t *, group_list), ARCH(__arm__))
+
+	DEFINE_LSYSCALL_METHOD(getgroups32, SYS_getgroups32,
+		ARG(2, int, data_size, gid_t *, group_list), ARCH(__arm__))
+
+	DEFINE_LSYSCALL_METHOD(setfsuid32, SYS_setfsuid32,
+		ARG(1, uid_t, uid), ARCH(__arm__))
+
+	DEFINE_LSYSCALL_METHOD(setfsgid32, SYS_setfsgid32,
+		ARG(1, gid_t, gid), ARCH(__arm__))
+
+	DEFINE_SIMPLE_METHOD(proc, stat,
+		      ARG(3, pid_t, pid, unsigned int, flags,
+		          struct bunch_ipc_attr, attr),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(proc, gettidpath,
+		      ARG(1, __u32, calling_tid),
+		      RET(1, struct get_tid_path_s, tid_path),
+		      SLOWDATA_NO)
+
+	DEFINE_LSYSCALL_METHOD(getrlimit, NATIVE, SYS_getrlimit,
+			       ARG(2, int, resource,
+				      void *, rlim), ARCH(__aarch64__))
+
+	DEFINE_LSYSCALL_METHOD(getrlimit, NATIVE, SYS_ugetrlimit,
+			       ARG(2, int, resource,
+				      void *, rlim), ARCH(__arm__))
+
+	DEFINE_LSYSCALL_METHOD(setrlimit, NATIVE, SYS_setrlimit,
+			       ARG(2, int, resource,
+				      const void *, rlim))
+
+	DEFINE_LSYSCALL_METHOD(prlimit, NATIVE, SYS_prlimit64,
+			       ARG(4, pid_t, pid,
+				      int, resource,
+				      const void *, new_rlim,
+				      void *, old_rlim))
+
+	DEFINE_SIMPLE_METHOD(proc, debug_thread,
+		      ARG(3, enum pdebug_thread_req, req, pid_t, tid,
+			  void *, arg),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(proc, notify_seccomp_event,
+		      ARG(1, void *, arg),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(proc, seccomp_refresh_data,
+		      ARG_NO,
+		      RET(1, struct hm_seccomp_data_s, sc_data),
+		      SLOWDATA_NO)
+
+	DEFINE_METHOD(proc, config_debugctx,
+			  ARG(4, enum __debug_config_cmd, req, pid_t, tid,
+			  struct __debug_config_arg *, debug_arg,
+			  struct __debug_config_result *, result),
+			  RET_NO,
+			  SLOWDATA_NO)
+
+	DEFINE_METHOD(proc, yama_ptrace_check,
+			  ARG(1, pid_t, pid),
+			  RET_NO,
+			  SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(proc, debug_wait_status,
+		      ARG(3, pid_t, tid, void *, event, int, option),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(proc, debug_vspace,
+		      ARG(4, enum pdebug_vspace_req, req, pid_t, pid,
+			  uintptr_t, addr, unsigned long, data),
+		      RET(1, unsigned long long, data),
+		      SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(proc, get_coredump,
+		      ARG(2, pid_t, pid, enum coredump_request, request),
+		      RET(1, union coredump_attr, result),
+		      SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(proc, set_coredump,
+		      ARG(3, pid_t, pid, union coredump_attr, value,
+			  enum coredump_request, request),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(proc, nsid_of_cnode_idx,
+		      ARG(2, unsigned int, cnode_idx, int, flag),
+		      RET(1, unsigned int, nsid),
+		      SLOWDATA_NO)
+
+	DEFINE_LSYSCALL_METHOD(getrusage, NATIVE, SYS_getrusage,
+			       ARG(2, int, who,
+				      void*, usage))
+
+	DEFINE_LSYSCALL_METHOD(execve, NATIVE, SYS_execve,
+			       ARG(3, const char *, path,
+				      const char **, argv,
+				      const char **, envp))
+
+	DEFINE_LSYSCALL_METHOD(execveat, SYS_execveat,
+			       ARG(5, int, dirfd,
+				      const char *, path,
+				      const char **, argv,
+				      const char **, envp,
+				      int, flags))
+
+	DEFINE_SIMPLE_METHOD(proc, new_permission,
+			     ARG(1, unsigned long long, permission),
+			     RET(1, cref_t, cref),
+			     SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(proc, pcpinfo,
+			     ARG_NO,
+			     RET(1, unsigned long long, pcpinfo_vaddr),
+			     SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(proc, new_cpucontext,
+			     ARG(2, cref_t, base_pmem, struct cpucontext_name, name),
+			     RET(1, cref_t, cref),
+			     SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(proc, new_dsucontext,
+			     ARG(1, cref_t, base_pmem),
+			     RET(1, cref_t, cref),
+			     SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(proc, elf_load_info,
+		      ARG(2, pid_t, pid, struct bunch_ipc_attr, attr),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(proc, pm_config_add,
+		      ARG(1, struct proc_pm_config, config),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(proc, pm_config_cleanup,
+		      ARG_NO,
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(proc, pm_dormancy_enter,
+		      ARG(3, cref_t, src_tcb_cref,
+			  enum proc_pm_attr, attr, int, enter),
+		      RET(1, struct proc_pm_dormancy_info, pm_info),
+		      SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(proc, pm_dormancy_check,
+		      ARG_NO,
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(proc, pm_set_freezable,
+			     ARG_NO,
+			     RET_NO,
+			     SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(proc, pm_freezing,
+			     ARG_NO,
+			     RET_NO,
+			     SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(proc, pm_try_to_freeze,
+			     ARG_NO,
+			     RET_NO,
+			     SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(proc, show_pte,
+		      ARG(1, const void *, vaddr),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_LSYSCALL_METHOD(check_regs, SYS_proc_check_regs,
+		      ARG(3, unsigned int, which, unsigned long, addr,
+		          size_t, size))
+	/*
+	 * To retain the RPC communication method, avoid inheriting the caller's
+	 * properties such as compat and ilp32 when creating a sysmgr native thread
+	 * in actv.
+	 * eg:
+	 * compat app -> vfs -> (raw_thread_create selfcall) -> sysmgr proc clone
+	 * The created vfs thread will inherit compat app properties.
+	 * When it calls other system services such as devhost, it will be regards
+	 * as a compat client mistakenly, clone can't have selfcall.
+	 */
+	DEFINE_LSYSCALL_METHOD(clone, NATIVE, SYS_clone,
+		ARG(5, unsigned int, clone_flags, unsigned long, child_stack,
+		    int *, ptid, unsigned long, tls, int *, ctid))
+
+	DEFINE_METHOD(proc, hm_clone,
+		      ARG(5, unsigned long long, clone_flags, unsigned long, child_stack,
+		      int *, ptid, unsigned long, tls, int *, ctid),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_LSYSCALL_METHOD(fork, NATIVE, SYS_fork, ARG_NO, ARCH(__arm__))
+
+	DEFINE_LSYSCALL_METHOD(vfork, SYS_vfork, ARG_NO, ARCH(__arm__))
+
+	DEFINE_SIMPLE_METHOD(proc, dyn_libs_data,
+		      ARG(2, unsigned int, libs_cnt,
+			  struct hm_actv_buf, dyn_buf),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(proc, register_event,
+		      ARG(2, unsigned int, type, struct event_args_s, args),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(proc, affinity_get,
+		      ARG(1, pid_t, pid),
+		      RET(1, struct proc_affinity_info_s, proc_affinity_info),
+		      SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(proc, set_signal_dump,
+		      ARG(4, pid_t, pid, uint32_t, signum, bool, dump_once, bool, dump_main_thread_only),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(proc, current_pgrp_isorphaned,
+		      ARG_NO,
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_METHOD(proc, get_nr,
+		      ARG(2, int, type, pid_t, pid),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_METHOD(proc, sched_stat,
+		      ARG(4, int, type, pid_t, id, struct proc_sched_stat_s *,
+		      sched_stat, int , num),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(proc, acquire_fdtable_rref,
+		      ARG(2, unsigned int, cnode_idx, rref_t, rref),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_METHOD(proc, binder_stats_request,
+		      ARG(3, void *, stats, int *, count, int, max_count),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_METHOD(proc, dubai_cpu_stat,
+		      ARG(4, void *, stat, int *, count, unsigned long, size, int, type),
+		      RET_NO,
+		      SLOWDATA_NO)
+	DEFINE_METHOD(proc, abnormal_task_load_stat_request,
+		      ARG(4, void *, task_load_stat, size_t, stat_size,
+			     void *, load_chk_args, size_t, args_size),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_METHOD(proc, dubai_proc_cmdline,
+		      ARG(6, uid_t, uid, pid_t, pid, char *, cmdline, size_t, size, char *, comm, size_t, comm_size),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_METHOD(proc, dubai_pids_of_uid,
+		      ARG(4, void *, info, size_t, uid_info_size,
+			  void *, pid_set, size_t, pid_set_size),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_METHOD(proc, dubai_decomposed_procs_update,
+		      ARG(2, void *, proc_info, int, count),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(proc, sync_cred_for_ap,
+		      ARG(1, cref_t, ap_cref),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(proc, get_cred_by_id,
+		      ARG(5, void *, ptr, size_t, len, unsigned long long, proc_id,
+			  unsigned int, nsid, int, flags),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(proc, rlimit_of,
+		      ARG(2, unsigned int, cnode_idx, unsigned int, type),
+		      RET(2, unsigned long, rlim_cur, unsigned long, rlim_max),
+		      SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(proc, capget_native,
+		      ARG(2, int, tid, unsigned int, version),
+		      RET(6, unsigned long long, effective,
+			  unsigned long long, permitted,
+			  unsigned long long, inheritable,
+			  unsigned long long, bset,
+			  unsigned long long, amb,
+			  unsigned, sbits),
+		      SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(proc, syssrv_loadinfo_save,
+			     ARG(1, pid_t, pid),
+			     RET_NO,
+			     SLOWDATA_NO)
+
+	DEFINE_LSYSCALL_METHOD(capget, SYS_capget,
+		      ARG(2,
+			  void *, hdrp,
+			  void *, datap))
+
+	DEFINE_LSYSCALL_METHOD(capset, NATIVE, SYS_capset,
+			  ARG(2,
+			  void *, hdrp,
+			  const void *, datap))
+	DEFINE_SIMPLE_METHOD(proc, query_main_thread,
+			     ARG(3,
+				 pid_t, current_tid,
+				 void *, main_thread_comm,
+				 unsigned int, comm_len),
+			     RET(1,
+				 pid_t, main_tid),
+			     SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(proc, fd_query_file,
+			     ARG(2,
+				 pid_t, pid,
+				 int, fd),
+			     RET(2,
+				 unsigned long long, file_idx,
+				 unsigned int, fastpath),
+			     SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(proc, lock_pid,
+		      ARG(2,
+		      pid_t, root_pid,
+		      bool, put),
+		      RET_NO,
+		      SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(proc, rootpid_to_pidinns,
+			     ARG(2,
+				 pid_t, root_pid,
+				 unsigned int, nsid),
+			     RET(1,
+				 pid_t, ret_pid),
+			     SLOWDATA_NO)
+	DEFINE_METHOD(proc, current_exec_path,
+		      ARG(2, char *, buf, size_t, len),
+		      RET_NO,
+		      SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(proc, pid_to_pidinns,
+				 ARG(3,
+				 pid_t, from_pid,
+				 unsigned int, from_nsid,
+				 unsigned int, to_nsid),
+			     RET(1,
+				 pid_t, to_pid),
+			     SLOWDATA_NO)
+)

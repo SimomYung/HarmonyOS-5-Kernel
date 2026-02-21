@@ -1,0 +1,8 @@
+#
+#adc config driver configuration
+#
+menuconfig SND_SOC_ES7243L
+        bool "es7243l config driver"
+        default n
+        help
+        Say yes here to support for es7243l config driver.

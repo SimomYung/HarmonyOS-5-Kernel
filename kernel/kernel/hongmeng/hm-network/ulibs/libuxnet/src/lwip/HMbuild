@@ -1,0 +1,11 @@
+# Copyright (C) Huawei Technologies Co., Ltd. 2021. All rights reserved.
+# Description: HMbuild
+# Author: Huawei OS Kernel Lab
+# Create: Wed Nov 03 16:24:19 2021
+
+src-y: ux_liblwip.c
+src-y: ux_lwip_netdev.c
+src-y: ux_lwip_socket.c
+
+inclib: HMLwIPLib::HMLwIPLib_include
+inclib: HMLwIPLib::HMLwIPConfigLib_include

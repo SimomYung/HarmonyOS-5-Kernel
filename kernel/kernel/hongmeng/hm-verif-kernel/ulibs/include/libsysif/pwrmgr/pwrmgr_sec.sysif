@@ -1,0 +1,19 @@
+/*
+ * Copyright (C) Huawei Technologies Co., Ltd. 2023-2023. All rights reserved.
+ * Description: pwrmgr security sysif APIs
+ * Author: Huawei OS Kernel Lab
+ * Create: Mon Feb 27 10:30:35 2023
+ */
+
+DEFINE_MANAGER(sec, 2,
+       DEFINE_METHOD(sec, mgmt,
+                     ARG(2,
+                         unsigned int, module,
+                         unsigned int, command),
+                     RET_NO,
+                     SLOWDATA)
+       DEFINE_METHOD(pac, cfi,
+                     ARG_NO,
+                     RET_NO,
+                     SLOWDATA_NO)
+)

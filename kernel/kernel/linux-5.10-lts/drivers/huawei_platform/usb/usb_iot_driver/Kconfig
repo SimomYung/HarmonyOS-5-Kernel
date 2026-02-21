@@ -1,0 +1,18 @@
+config USB_IOT_DRIVERS
+	bool "Enable USB IoT drivers"
+	default n
+	help
+		This option enables support for USB IoT drivers
+
+source "drivers/huawei_platform/usb/usb_iot_driver/hid_hdrc/Kconfig"
+source "drivers/huawei_platform/usb/usb_iot_driver/usb_mode_switch/Kconfig"
+source "drivers/huawei_platform/usb/usb_iot_driver/tv_flash_adapter/Kconfig"
+source "drivers/huawei_platform/usb/usb_iot_driver/tv_pwm_adapter/Kconfig"
+source "drivers/huawei_platform/usb/usb_iot_driver/power_key/Kconfig"
+source "drivers/huawei_platform/usb/usb_iot_driver/input/misc/Kconfig"
+source "drivers/huawei_platform/usb/usb_iot_driver/i2c/Kconfig"
+source "drivers/huawei_platform/usb/usb_iot_driver/leds/Kconfig"
+-source "drivers/huawei_platform/usb/usb_iot_driver/net/ethernet/yt6801/Kconfig"
+-source "drivers/huawei_platform/usb/usb_iot_driver/lsw/Kconfig"
+source "drivers/huawei_platform/usb/usb_iot_driver/fan/Kconfig"
+source "drivers/huawei_platform/usb/usb_iot_driver/audio/adc/Kconfig"

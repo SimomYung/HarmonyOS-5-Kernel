@@ -1,0 +1,38 @@
+From 73590d9573148804034a88ceb2f6b7ca1545561f Mon Sep 17 00:00:00 2001
+From: Paul Blakey <paulb@nvidia.com>
+Date: Sun, 5 Dec 2021 15:20:25 +0200
+Subject: [PATCH] tc: flower: Fix buffer overflow on large labels
+
+Buffer is 64bytes, but label printing can take 66bytes printing
+in hex, and will overflow when setting the string delimiter ('\0').
+
+Fix that by increasing the print buffer size.
+
+Example of overflowing ct_label:
+ct_label 11111111111111111111111111111111/11111111111111111111111111111111
+
+Fixes: 2fffb1c03056 ("tc: flower: Add matching on conntrack info")
+Signed-off-by: Paul Blakey <paulb@nvidia.com>
+Signed-off-by: Stephen Hemminger <stephen@networkplumber.org>
+Conflict: NA
+Reference: https://git.kernel.org/pub/scm/network/iproute2/iproute2.git/commit?id=73590d95731
+---
+ tc/f_flower.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/tc/f_flower.c b/tc/f_flower.c
+index 7f78195f..6d70b92a 100644
+--- a/tc/f_flower.c
++++ b/tc/f_flower.c
+@@ -2195,7 +2195,7 @@ static void flower_print_ct_label(struct rtattr *attr,
+ 	const unsigned char *str;
+ 	bool print_mask = false;
+ 	int data_len, i;
+-	SPRINT_BUF(out);
++	char out[128];
+ 	char *p;
+ 
+ 	if (!attr)
+-- 
+2.23.0
+

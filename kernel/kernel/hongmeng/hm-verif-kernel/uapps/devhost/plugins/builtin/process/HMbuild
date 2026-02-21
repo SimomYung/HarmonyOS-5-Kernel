@@ -1,0 +1,8 @@
+# Copyright (c) Huawei Technologies Co., Ltd. 2023. All rights reserved.
+# Description: HMbuild for devhost
+# Author: Huawei OS Kernel Lab
+# Create: Thu May 04 14:26:54 2023
+
+cflags-y: -D_DH_PLUGIN_NAME=process
+
+src-y: process_if.c

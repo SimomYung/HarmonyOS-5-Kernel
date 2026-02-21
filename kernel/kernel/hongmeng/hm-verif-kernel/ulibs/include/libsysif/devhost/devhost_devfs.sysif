@@ -1,0 +1,38 @@
+/*
+ * Copyright (c) Huawei Technologies Co., Ltd. 2023-2023. All rights reserved.
+ * Description: devhost devfs operation sysif APIs
+ * Author: Huawei OS Kernel Lab
+ * Create: Tue Jun 27 20:10:00 2023
+ */
+
+DEFINE_MANAGER(devfs, 9,
+	DEFINE_LSYSCALL_METHOD_LONG(read, SYS_read,
+			ARG(3, long long, file, void *, buf, size_t, count))
+
+	DEFINE_LSYSCALL_METHOD_LONG(write, SYS_write,
+			ARG(3, long long, file, const void *, buf, size_t, count))
+
+	DEFINE_LSYSCALL_METHOD(ioctl, SYS_ioctl,
+			ARG(3, long long, file, unsigned int, cmd, unsigned long, arg))
+
+	DEFINE_LSYSCALL_METHOD_LONG(readv, SYS_readv,
+			ARG(3, long long, file, const void *, vec, int, vlen))
+
+	DEFINE_LSYSCALL_METHOD_LONG(writev, SYS_writev,
+			ARG(3, long long, file, const void *, vec, int, vlen))
+
+	DEFINE_LSYSCALL_METHOD_LONG(lseek, SYS_lseek,
+			ARG(3, long long, file, long, offset, int, whence))
+
+	DEFINE_LSYSCALL_METHOD(_llseek, SYS__llseek,
+			ARG(5, long long, file, unsigned long, offset_high, unsigned long, offset_low,
+			    long long *, res, int, whence),
+			ARCH(__arm__))
+
+	DEFINE_LSYSCALL_METHOD(fcntl, SYS_fcntl,
+			ARG(4, long long, file, int, cmd, unsigned long, val, int, fd))
+
+	DEFINE_LSYSCALL_METHOD(fcntl64, SYS_fcntl64,
+			ARG(4, long long, file, int, cmd, unsigned long, val, int, fd),
+			ARCH(__arm__))
+)

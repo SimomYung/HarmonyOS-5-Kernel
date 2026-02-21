@@ -1,0 +1,25 @@
+# Copyright (c) Huawei Technologies Co., Ltd. 2021. All rights reserved.
+# Description: HMbuild for devhost
+# Author: Huawei OS Kernel Lab
+# Create: Fri Nov 19 11:26:07 2021
+
+cflags-y: -D_DH_PLUGIN_NAME=security
+
+include-y: .
+
+src-y: ability_clock.c
+src-y: ability_fops.c
+src-y: ability_net.c
+src-y: ability_pm.c
+src-y: ability_rpc.c
+src-y: ability_net_socket.c
+src-y: ability_iaware_notify.c
+src-y: ability_kstate.c
+src-y: ability_fileguard.c
+src-y: ability_common.c
+src-y: security.c
+src-y: security_base.c
+src-CONFIG_SEHARMONY: security_seharmony.c
+
+src-CONFIG_POSIX_CAPS: posix_cap_clock.c
+src-CONFIG_DEVHOST_ENTROPY_COLLECT: ability_entropy.c

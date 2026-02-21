@@ -1,0 +1,76 @@
+From d37a9f1818fa04fc91a497b3541ed205804720af Mon Sep 17 00:00:00 2001
+From: "lihaoxiang (F)" <lihaoxiang9@huawei.com>
+Date: Tue, 15 Nov 2022 16:29:55 +0800
+Subject: [PATCH] debugfs: fix repeated output problem with `logdump -O -n
+ <num_trans>`
+
+Previously, patch 6e4cc3d5eeb2dfaa055e652b5390beaa6c3d05da introduces
+the function of printing the specified number of logs. But there exists
+a shortage when n is larger than the total number of logs, it dumped the
+duplicated records circulately.
+
+For example, the disk sda only has three records, but using instruction logdump
+-On5, it would output the result as follow:
+----------------------------------------------------------------------
+Journal starts at block 1, transaction 6
+Found expected sequence 6, type 1 (descriptor block) at block 1
+Found expected sequence 6, type 2 (commit block) at block 4
+No magic number at block 5: end of journal.
+Found sequence 2 (not 7) at block 7: end of journal.
+Found expected sequence 2, type 2 (commit block) at block 7
+Found sequence 3 (not 8) at block 8: end of journal.
+Found expected sequence 3, type 1 (descriptor block) at block 8
+Found sequence 3 (not 8) at block 15: end of journal.
+Found expected sequence 3, type 2 (commit block) at block 15
+Found sequence 6 (not 9) at block 1: end of journal.       <---------begin loop
+Found expected sequence 6, type 1 (descriptor block) at block 1
+Found sequence 6 (not 9) at block 4: end of journal.
+Found expected sequence 6, type 2 (commit block) at block 4
+Found sequence 2 (not 10) at block 7: end of journal.
+Found expected sequence 2, type 2 (commit block) at block 7
+logdump: short read (read 0, expected 1024) while reading journal
+
+In this commit, we solve the problem above by exiting dumping if the
+blocknr had already encountered, displayed the total number of logs
+that the disk only possessed.
+
+Signed-off-by: lihaoxiang <lihaoxiang9@huawei.com>
+Signed-off-by: Theodore Ts'o <tytso@mit.edu>
+---
+ debugfs/logdump.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
+
+diff --git a/debugfs/logdump.c b/debugfs/logdump.c
+index 614414e..036b50b 100644
+--- a/debugfs/logdump.c
++++ b/debugfs/logdump.c
+@@ -376,6 +376,7 @@ static void dump_journal(char *cmdname, FILE *out_file,
+ 	journal_header_t	*header;
+ 	tid_t			transaction;
+ 	unsigned int		blocknr = 0;
++	unsigned int		first_transaction_blocknr;
+ 	int			fc_done;
+ 	__u64			total_len;
+ 	__u32			maxlen;
+@@ -470,10 +471,18 @@ static void dump_journal(char *cmdname, FILE *out_file,
+ 			blocknr = 1;
+ 	}
+ 
++	first_transaction_blocknr = blocknr;
++
+ 	while (1) {
+ 		if (dump_old && (dump_counts != -1) && (cur_counts >= dump_counts))
+ 			break;
+ 
++		if ((blocknr == first_transaction_blocknr) &&
++		    (cur_counts != 0) && dump_old && (dump_counts != -1)) {
++			fprintf(out_file, "Dump all %lld journal records.\n", cur_counts);
++			break;
++		}
++
+ 		retval = read_journal_block(cmdname, source,
+ 				((ext2_loff_t) blocknr) * blocksize,
+ 				buf, blocksize);
+-- 
+1.8.3.1
+

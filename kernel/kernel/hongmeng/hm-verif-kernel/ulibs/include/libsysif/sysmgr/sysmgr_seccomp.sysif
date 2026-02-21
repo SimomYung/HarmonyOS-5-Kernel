@@ -1,0 +1,11 @@
+/*
+ * Copyright (c) Huawei Technologies Co., Ltd. 2023-2023. All rights reserved.
+ * Description: Provide ipc interfaces for seccomp
+ * Author: Huawei OS Kernel Lab
+ * Create: Fri Jan 13 15:29:16 2023
+ */
+
+DEFINE_MANAGER(seccomp, 2,
+	DEFINE_LSYSCALL_METHOD(do_config, SYS_seccomp,
+			       ARG(3, unsigned int, option, unsigned int, flags, void *, args))
+)

@@ -1,0 +1,73 @@
+# Copyright (c) Huawei Technologies Co., Ltd. 2022-2022. All rights reserved.
+# Description: Kconfig for hmld.so
+# Author: Huawei OS Kernel Lab
+# Create: Tue Feb 08 16:04:58 2022
+
+# HMCMAKENG_KCONFIG is injected by HongmengCMakeNG/Kconfig.cmake
+# which defines multiple config options which is useful for HMbuild.
+source "$(HMCMAKENG_KCONFIG)"
+
+menu "Common Options"
+choice
+  prompt "Related choice Target Arch"
+  default AARCH64
+  config ARM
+    bool "ARM"
+  config AARCH64
+    bool "AARCH64"
+endchoice
+
+endmenu
+
+menu "Unrelated Options"
+
+config AUDIT
+  bool "Unrelated option AUDIT"
+  default n
+
+config MMIO_DISPATCHER
+  bool "Unrelated option MMIO_DISPATCHER"
+  default n
+
+config SLAB_FREELIST_RANDOM
+  bool "unrelated option SLAB_FREELIST_RANDOM"
+  default n
+
+config SYSMGR_BUDDY_MAX_ORDER
+  bool "unrelated option SYSMGR_BUDDY_MAX_ORDER"
+  default n
+
+config DOPRA_TICK
+  bool "Unrelated option DOPRA_TICK"
+  default n
+
+config RRU_PERF_HACK
+  bool "Unrelated option RRU_PERF_HACK"
+  default n
+
+config STRICT_FOR_CODEDEX
+  bool "unrelated option STRICT_FOR_CODEDEX"
+  default n
+
+config STRICT_NO_OVERFLOW
+  bool "unrelated option"
+  default n
+
+config RT_FUTEX
+  bool "Unrelated option RT_FUTEX"
+  default n
+
+config STRICT_UNUSED
+  bool "Unrelated option STRICT_UNUSED"
+  default n
+
+config SUPPORT_MULT_LIBC
+  bool "Support for multiple libc"
+  default n
+
+config OPENHARMONY
+  bool "Enable openharmony functions"
+  default n
+
+endmenu
+

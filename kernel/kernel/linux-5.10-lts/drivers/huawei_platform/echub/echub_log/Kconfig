@@ -1,0 +1,17 @@
+#
+# echub dfx interface
+#
+
+config ARMPC_ECHUB_LOG
+	bool "echub log"
+	depends on ARMPC_ECHUB
+	default n
+	help
+	  This driver supports echub log interface.
+
+config ARMPC_ECHUB_COMBINE_KEY_FASTBOOT
+	bool "echub combine key to fastboot"
+	depends on ARMPC_ECHUB_HMI
+	default n
+	help
+	  This driver supports press combine key to fastboot.

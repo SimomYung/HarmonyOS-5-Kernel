@@ -1,0 +1,397 @@
+# Copyright (C) Huawei Technologies Co., Ltd. 2021. All rights reserved.
+# Description: Kconfig for klibs
+# Author: Huawei OS Kernel Lab
+# Create: Mon Jul 12 14:54:52 2021
+
+# HMCMAKENG_KCONFIG is injected by HongmengCMakeNG/Kconfig.cmake
+# which defines multiple config options which is useful for HMbuild.
+source "$(HMCMAKENG_KCONFIG)"
+
+menu "Build Profile Options"
+
+choice
+  prompt "Build profile options"
+  default DEBUG_BUILD
+  config DEBUG_BUILD
+    bool "Build kernel with debug mode"
+  config RELEASE_BUILD
+    bool "Build kernel with release mode"
+endchoice
+
+endmenu
+
+choice
+  prompt "Instruction set"
+  default AARCH64
+  config AARCH64
+    bool "Arm64 instruction set"
+  config ARM
+    bool "Arm32 instruction set"
+endchoice
+
+menu "Common options"
+
+config ACTV_LOCAL_AREA_K
+  bool "Support to synchronize some kernel information to TLS"
+  default n
+  help
+    Support to obtain some real-time kernel information about
+    the current activation quickly, which is synchronized from
+    kernel to actv stack in user space. For example, the raising
+    hmsignals of the current actv: the actv handler can read it
+    in user mode and decide how to react.
+
+# Unconfigurable
+config NO_NEED_PHYSMEM_MAX_BITS
+  bool
+  default y
+
+config ARM_UNALIGNED_ACCESS_EMU
+  bool "Instruction emulation for arm 32bit apps' unaligned access"
+  depends on (AARCH64 && COMPAT) || (ARM)
+  default y
+
+config AUDIT
+  bool "Enable the audit feature"
+  default n
+
+config BIG_ENDIAN
+  bool "Build with big endianness"
+  default n if AARCH64
+  default y if ARM
+  help
+    Build with big endianness
+
+config BKL
+  bool "Lock kernel with one big lock"
+  default n
+
+config CACHELINE_SIZE_L1
+  int "Cache line size for L1"
+  default 64 if AARCH64
+  default 32 if ARM
+
+config CAP_PMEM_MAX_ORDER
+  int "PMEM: Max order of physical memory support"
+  default 63
+  help
+    Range of physical memory should in 0 ~ (1 << CONFIG_CAP_PMEM_MAX_ORDER)
+
+config CC_USE_CLANG
+  bool "Use Clang as compiler"
+  default n
+
+# Unconfigurable
+config CNODE_CACHE
+  def_bool y
+
+config CNODE_CACHE_SIZE
+  int "Cache size for each CNode"
+  depends on CNODE_CACHE
+  default 5
+  range 1 12
+
+config CNODE_CACHE_STATISTICS
+  bool "Enable cnode cache hit rate statistics"
+  depends on CNODE_CACHE
+  default n
+
+config DLIST_DEBUG
+  bool "Dlist check data corruption debug"
+  default y if DEBUG_BUILD
+  default n
+
+config EXT_ACTV
+  bool "Enable actv related extensions"
+  default n
+
+config EXT_ELAMBDA
+  bool "Enable actv elambda related extensions"
+  depends on EXT_ACTV
+  default n
+  help
+    Make microkernel extensions depends on special actv elambda
+    selectable.
+
+config FUZZER
+  bool "Enable the fuzz driver"
+  help
+    If set, this option will enable the fuzz driver uapp,
+    but disable the interrupt for all tcbs except the idle.
+    For more information about fuzzing please refer to the
+    hm-fuzz repository.
+    This is intended for developer use only, you should say
+    "no" unless you know what this is.
+  default n
+
+config HARDENED_USERCOPY
+  bool "Support hardened user copy"
+  default y
+
+config HAVE_ARM_REV_INSN
+  bool "HAVE_ARM_REV_INSN"
+  default n
+
+config HISI_SD7601_LLC
+  bool "Hisi sd7601 llc support"
+  default n
+
+config HW_UNALIGN_ACCESS
+  bool "Hardware unalign access support"
+  default y
+
+config IPC_NOTIF_MSG_SIZE
+  int "IPC notification message maxium size"
+  default 128
+
+config REC_SPINLOCK_WFE
+  bool "Enable WFE support for rec_spinlock"
+  depends on AARCH64
+  default n
+
+choice
+  prompt "Stack protector"
+  config CC_STACKPROTECTOR_STRONG
+    bool "Strong (-fstack-protector-strong)"
+  config CC_STACKPROTECTOR_REGULAR
+    bool "Regular (-fstack-protector)"
+  config CC_STACKPROTECTOR_NONE
+    bool "None (-fno-stack-protector)"
+endchoice
+
+config CC_STACKPROTECTOR
+  def_bool (!CC_STACKPROTECTOR_NONE && HMBUILD_LLVM_RETURN_GUARD_DISABLE)
+
+config KASLR
+  bool "Address space layout randomization(ASLR) of kernel"
+  default y
+  help
+    This feature causes that many sections of processes begin with random
+    offsets to avoid leaks of section bases against some attacks.
+
+config KERNEL_BASE_ADDR
+  hex "kernel load address"
+  default "0x40000000" if AARCH64
+  default "0x60000000" if ARM
+
+config KEV_TRACING
+  bool "Kernel event tracing"
+  default n
+
+config KLOCK_TRACE
+  bool "Kernel lock trace"
+  depends on SMP && !BKL && DEBUG_BUILD
+  default y
+  help
+    Enable the lock trace for kernel.
+
+config KLOG_PURE_NOLOCK
+  bool "Support to nolock print pure logs without any prefixes"
+  default n
+
+choice
+  prompt "Lightweight Address Space Protection implementations"
+  depends on PRIVILEGED_SERVICE
+  help
+    LASP avoid that privileged services access the kernel and each
+    others. When SPIN is enabled, some privileged services is running
+    in the kernel address space.
+  config LASP_DOMAIN
+    bool "LASP by domain access control"
+    depends on ARCH_LASP_DOMAIN
+  config LASP_WP
+    bool "LASP by hardware watchpoint"
+    depends on ARCH_LASP_WP
+  config LASP_EMPTY
+    bool "Disable LASP but enable PRIVILEGED_SERVICE"
+    help
+      It should not be used usually. Don't use it in released products.
+      It's for cases where some constrains of LASP implementations can't
+      be satisfied.
+endchoice
+
+config MISCDATA
+  bool "Enable miscdata related syscall"
+  default y
+  help
+    Enable miscdata_read/write/readv/writev/readv_cas/writev_cas and
+    corresponding Thread cap methods. Miscdata is a mechanism which
+    enables adding user app and sysmgr store something into kernel
+    objects. Kernel doesn't define semantic of miscdata.
+
+config MODULE_SCHED_CLASS
+  bool "Sched Class module"
+  default y
+
+choice
+  prompt "Timer algorithm"
+  default MODULE_TIMER
+  config TIMEWHEEL_TIMER
+    bool "Timewheel timer"
+  # When at least one timer is implemented by modules, enable
+  # this MODULE_TIMER and create a choice option in module kconfig
+  # to select implementation.
+  # One implementation should be: CONFIG_MODULE_TIMER_RBTREE.
+  config MODULE_TIMER
+    bool "Timer implemented by modules"
+endchoice
+
+choice
+  prompt "Module Timer Implementation"
+  default MODULE_TIMER_RBTREE
+  depends on MODULE_TIMER
+  config MODULE_TIMER_RBTREE
+    bool "Rbtree timer"
+endchoice
+
+config NR_CPUS
+  int "Maximum number of CPUs supported by the kernel"
+  range 1 32 if SMP
+  default 8 if SMP
+  range 1 1 if !SMP
+  default 1 if !SMP
+  help
+    The maximum available range for NR_CPUS is limited by
+    the sizeof `__cpuset_t`.
+
+config PIE
+  bool "Compile kernel with pie"
+  default y
+  depends on KASLR
+
+config PRIVILEGED_SERVICE
+  bool "Kernel Supports privileged service"
+  default n
+
+config PROFILING_SWINC
+  bool "Use PMSWINC to profile kernel events"
+  default n
+
+config PROFILING_FASTPATH_SWINC
+  bool "Profiling fastpath use PMU SWINC"
+  depends on PROFILING_SWINC
+  default y
+  help
+    Use hardware PMU to profile fastpath EBB Call.
+
+config PROFILING_RREF_CACHE_SWINC
+  bool "Profiling rref cache use PMU SWINC"
+  depends on PROFILING_SWINC
+  default y
+  help
+    Use hardware PMU to profile rref cache.
+
+config RT_FUTEX
+  bool "RT futex support"
+  default y
+
+config SMP
+  bool "Enable Symmetric multi-processing support"
+  default y
+  help
+    Enable SMP
+
+config SPECV1_MITIGATION
+  bool "Mitigate kernel spectre variant 1"
+  default n
+
+config STRICT_UNUSED
+  bool "Enable unused macro definition"
+  default y
+  help
+    Enable mizra check unused macro definition
+
+choice
+  prompt "User interrupt mode"
+  default DISABLE_BASED_USER_IRQ
+  help
+    Choice user interrupt run mode,
+    default use disable based user irq mode
+  config SWIFT_USER_IRQ
+    bool "Swift user irq mode"
+  config DISABLE_BASED_USER_IRQ
+    bool "Disable based user irq mode"
+endchoice
+
+config SPIF
+  bool "Enable spif support"
+  default n
+
+config TCB_STAT_SCHED
+  bool "TCB schedule statistics"
+  default y
+
+config TCB_TICKLESS
+  bool "Support tcb tickless"
+  depends on SMP
+  default y
+  help
+    TCB_TICKLESS can set the tick requirements of tcb during running.
+
+config UBSAN
+  bool "Enable ubsan in kernel"
+  default n
+
+config KLIBS_PGTBL
+  bool "Support klibs/pgtbl apis"
+  default y
+
+config HMPSF
+  bool "Enable programmable system framework"
+  default n
+
+config HMPSF_TEST
+  bool "Enable programmable system framework test"
+  depends on HMPSF
+  depends on DEBUG_BUILD || LLT
+  default y
+
+config SECCOMP
+  bool "Enable the secure computing feature"
+  default n
+
+config TRACEMGR
+  bool "Trace manager"
+  default n
+
+config HMPERF_NG
+  bool "Enable hmperf_ng compatible implementations"
+  depends on AARCH64
+  default n
+  help
+    Enable hmperf_ng compatible implementations
+
+config HMXVM
+  bool "Enable hongmeng xvm"
+  depends on HMPSF
+  default n
+
+config PTR_TO_HASHVAL
+    bool "Enable ptr to hashval"
+    default n
+
+config HMPROBE
+  bool "Enable hongmeng probe"
+  depends on HMXVM
+  default n
+
+config SYSEVENT
+  bool "Sysevent support"
+  default n
+
+config KDP_STRICT_CHECK
+  bool "kdp check enhance"
+  depends on AARCH64
+  default n
+
+endmenu
+
+if AARCH64
+source "arch/aarch64/Kconfig"
+endif
+
+if ARM
+source "arch/arm/Kconfig"
+endif
+
+source "exts/hisi/Kconfig"

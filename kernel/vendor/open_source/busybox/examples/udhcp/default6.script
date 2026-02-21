@@ -1,0 +1,75 @@
+#!/bin/sh
+
+# Copyright (c) Huawei Technologies Co., Ltd. 2023-2024.
+# Description: to support the use of dhcp in the IPv6 environment, add a script for udhcpc6
+# Author: zhousiqi <zhousiqi5@huawei.com>
+# Create: 2023-10-25
+
+# Just specify -s when starting the client.
+# like -s PROG	Run PROG at DHCP events (default /usr/share/udhcpc/default.script)
+
+RESOLV_CONF="/etc/resolv.conf"
+
+[ -n "$1" ] || { echo "udhcpc6:Error: should be called from udhcpc"; exit 1; }
+
+NETMASK=""
+if command -v ip >/dev/null; then
+	[ -n "$subnet" ] && NETMASK="/$subnet"
+else
+	[ -n "$subnet" ] && NETMASK="netmask $subnet"
+fi
+BROADCAST="broadcast +"
+[ -n "$broadcast" ] && BROADCAST="broadcast $broadcast"
+
+case "$1" in
+	deconfig)
+		echo "Clearing IP addresses on $interface, upping it"
+		if command -v ip >/dev/null; then
+			ip -6 route flush dev $interface
+			ip -6 addr flush dev $interface scope global
+		else
+			ifconfig $interface 0.0.0.0
+		fi
+		;;
+
+	renew|bound)
+		echo "udhcpc6:Setting IP address $ipv6 on $interface"
+		if command -v ip >/dev/null; then
+			ip -6 addr add $ipv6 dev $interface
+		else
+			ifconfig $interface inet6 add $ipv6
+		fi
+
+		if [ -n "$router" ] ; then
+			echo "udhcpc6:Deleting routers"
+			while route del default gw 0.0.0.0 dev $interface ; do
+				:
+			done
+
+			metric=0
+			for i in $router ; do
+				echo "udhcpc6:Adding router $i"
+				if [ "$subnet" = "255.255.255.255" ]; then
+	# special case for /32 subnets:
+	# /32 instructs kernel to always use routing for all outgoing packets
+	# (they can never be sent to local subnet - there is no local subnet for /32).
+	# Used in datacenters, avoids the need for private ip-addresses between two hops.
+					ip route add $i dev $interface
+				fi
+				route add default gw $i dev $interface metric $((metric++))
+			done
+		fi
+
+		echo "udhcpc6:Recreating $RESOLV_CONF"
+		tmpfile="$RESOLV_CONF-$$"
+		> "$tmpfile"
+		for i in $dns ; do
+			echo "udhcpc6: Adding DNS server $i"
+			echo "nameserver $i" >> "$tmpfile"
+		done
+		mv "$tmpfile" "$RESOLV_CONF"
+		;;
+esac
+
+exit 0
+

@@ -1,0 +1,3 @@
+-source "drivers/communication/dpa/Kconfig"
+-source "drivers/communication/interface/host/Kconfig"
+

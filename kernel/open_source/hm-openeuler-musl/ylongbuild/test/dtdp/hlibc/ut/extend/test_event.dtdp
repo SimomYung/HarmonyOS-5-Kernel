@@ -1,0 +1,108 @@
+{
+    "root": {
+        "data": {
+            "id": "ci27l63cu8w0",
+            "created": 1645495824622,
+            "text": "HLIBC",
+            "usecase": 99
+        },
+        "children": [
+            {
+                "data": {
+                    "id": "cj0iajn0ak00",
+                    "created": 1648979062838,
+                    "text": "支持event模块，提供线程间通知机制",
+                    "usecase": 1
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "cj0ijx93jh40",
+                            "created": 1648979797749,
+                            "text": "guest_app和host_app分别根据同一名称创建event",
+                            "expandState": "expand",
+                            "usecase": 3
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "cj0ib513p1k0",
+                                    "created": 1648979109403,
+                                    "text": "阻塞唤醒功能",
+                                    "usecase": 2
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "cj0ijd218eg0",
+                                            "created": 1648979753787,
+                                            "text": "guest_app阻塞，host_app唤醒",
+                                            "usecase": 4,
+                                            "author": "z00572669",
+                                            "showId": "00030",
+                                            "usecaseType": 2
+                                        },
+                                        "children": []
+                                    },
+                                    {
+                                        "data": {
+                                            "id": "cj0ijln16zc0",
+                                            "created": 1648979772471,
+                                            "text": "host_app阻塞，guest_app唤醒",
+                                            "usecase": 4,
+                                            "author": "z00572669",
+                                            "showId": "00031",
+                                            "usecaseType": 2
+                                        },
+                                        "children": []
+                                    }
+                                ]
+                            },
+                            {
+                                "data": {
+                                    "id": "cj0ibnen3i80",
+                                    "created": 1648979149403,
+                                    "text": "事件收发功能",
+                                    "usecase": 2,
+                                    "expandState": "expand"
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "cj0iglcmmvk0",
+                                            "created": 1648979536749,
+                                            "text": "guest_app发送事件，host_app接收事件并校验",
+                                            "usecase": 4,
+                                            "author": "z00572669",
+                                            "showId": "00027",
+                                            "usecaseType": 2
+                                        },
+                                        "children": []
+                                    },
+                                    {
+                                        "data": {
+                                            "id": "cj0ihinzz0g0",
+                                            "created": 1648979609270,
+                                            "text": "host_app发送事件，guest_app接收事件并校验",
+                                            "usecase": 4,
+                                            "author": "z00572669",
+                                            "showId": "00028",
+                                            "usecaseType": 2
+                                        },
+                                        "children": []
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    "templatePath": null,
+    "singleTemplatePath": null,
+    "testcaseFilePath": "",
+    "template": "right",
+    "theme": "fresh-blue",
+    "version": "1.4.43"
+}

@@ -1,0 +1,10 @@
+#
+# tv pwm adapter driver configuration
+#
+
+config BLPWM_TV_ADAPTER
+	bool "blpwm tv adapter"
+	depends on BLPWM
+	default n
+	help
+		Say yes here to support BLPWM TV ADAPTER

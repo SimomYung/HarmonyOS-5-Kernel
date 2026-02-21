@@ -1,0 +1,22 @@
+#
+# Copyright (c) Hisilicon Technologies Co., Ltd. 2021-2021. All rights reserved.
+#
+
+ifeq ($(HVGR_FEATURE_HTS), 1)
+ifneq ($(HVGR_USE_PCIE), 1)
+ifeq ($(CONFIG_FFRT_HTS), y)
+DEFINES += -DHVGR_FEATURE_HTS=$(HVGR_FEATURE_HTS)
+include $(HVGR_PATH)/ffrt/hts/Kbuild
+endif
+ifeq ($(CONFIG_FFRT_HTS_OHOS), y)
+DEFINES += -DHVGR_FEATURE_HTS=$(HVGR_FEATURE_HTS)
+include $(HVGR_PATH)/ffrt/hts/Kbuild
+endif
+endif
+endif
+
+DEFINES += -DHVGR_FE_FFTS=$(HVGR_FE_FFTS)
+
+ifeq ($(HVGR_FE_FFTS), 1)
+	include $(HVGR_PATH)/ffrt/ffts/Kbuild
+endif

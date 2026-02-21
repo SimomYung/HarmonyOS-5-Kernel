@@ -1,0 +1,91 @@
+From 68f7ce71106d083f8e7828a77264224930cc059e Mon Sep 17 00:00:00 2001
+From: lvyongzhao <lvyongzhao1@huawei.com>
+Date: Thu, 22 May 2025 18:40:35 +0800
+Subject: [PATCH] blkid support skip specified filesystem
+
+Signed-off-by: lvyongzhao <lvyongzhao1@huawei.com>
+---
+ lib/blkid/blkidP.h | 2 ++
+ lib/blkid/probe.c  | 8 +++++---
+ misc/blkid.c       | 6 +++++-
+ 3 files changed, 12 insertions(+), 4 deletions(-)
+
+diff --git a/lib/blkid/blkidP.h b/lib/blkid/blkidP.h
+index b3fe4a6..e300f27 100644
+--- a/lib/blkid/blkidP.h
++++ b/lib/blkid/blkidP.h
+@@ -167,6 +167,8 @@ static inline int blkidP_is_disk_device(mode_t mode)
+ #endif
+ }
+ 
++extern const char *g_no_check_fs;
++
+ /* devno.c */
+ struct dir_list {
+ 	char	*name;
+diff --git a/lib/blkid/probe.c b/lib/blkid/probe.c
+index b8b6558..a4ea41e 100644
+--- a/lib/blkid/probe.c
++++ b/lib/blkid/probe.c
+@@ -38,6 +38,8 @@
+ #include "uuid/uuid.h"
+ #include "probe.h"
+ 
++const char *g_no_check_fs = "unknown";
++
+ static int figure_label_len(const unsigned char *label, int len)
+ {
+ 	const unsigned char *end = label + len - 1;
+@@ -1730,15 +1732,15 @@ try_again:
+ 	if (!dev->bid_type || !strcmp(dev->bid_type, "mdraid")) {
+ 		uuid_t	uuid;
+ 
+-		if (check_mdraid(probe.fd, uuid) == 0) {
++		if (strcmp(g_no_check_fs, "mdraid") && check_mdraid(probe.fd, uuid) == 0) {
+ 			set_uuid(dev, uuid, 0);
+ 			type = "mdraid";
+ 			goto found_type;
+ 		}
+ 	}
+ 	for (id = type_array; id->bim_type; id++) {
+-		if (dev->bid_type &&
+-		    strcmp(id->bim_type, dev->bid_type))
++		if ((dev->bid_type && strcmp(id->bim_type, dev->bid_type)) ||
++			!strcmp(g_no_check_fs, id->bim_type))
+ 			continue;
+ 
+ 		idx = id->bim_kboff + (id->bim_sboff >> 10);
+diff --git a/misc/blkid.c b/misc/blkid.c
+index 472f017..368f3f5 100644
+--- a/misc/blkid.c
++++ b/misc/blkid.c
+@@ -57,6 +57,7 @@ static void usage(int error)
+ 		"\t-h\tprint this usage message and exit\n"
+ 		"\t-g\tgarbage collect the blkid cache\n"
+ 		"\t-s\tshow specified tag(s) (default show all tags)\n"
++		"\t-n\tskip specified filesystem check\n"
+ 		"\t-t\tfind device with a specific token (NAME=value pair)\n"
+ 		"\t-l\tlookup the the first device with arguments specified by -t\n"
+ 		"\t-v\tprint version and exit\n"
+@@ -292,7 +293,7 @@ int main(int argc, char **argv)
+ 	int lookup = 0, gc = 0;
+ 	int c;
+ 
+-	while ((c = getopt (argc, argv, "c:f:ghlLo:s:t:w:v")) != EOF)
++	while ((c = getopt (argc, argv, "c:f:ghlLo:s:t:w:v:n:")) != EOF)
+ 		switch (c) {
+ 		case 'c':
+ 			read = optarg;
+@@ -350,6 +351,9 @@ int main(int argc, char **argv)
+ 		case 'w':
+ 			write = optarg;
+ 			break;
++		case 'n':
++			g_no_check_fs = optarg;
++			break;
+ 		case 'h':
+ 			err = 0;
+ 			/* fallthrough */
+-- 
+2.34.1
+

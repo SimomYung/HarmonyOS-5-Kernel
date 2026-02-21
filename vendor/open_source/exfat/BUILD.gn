@@ -1,0 +1,65 @@
+# Copyright (c) 2021 Huawei Device Co., Ltd.
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+
+import("//build/ohos.gni")
+import("//build/ohos/ndk/ndk.gni")
+
+config("exfat_config") {
+  include_dirs = [
+    "./fuse",
+    "./libexfat",
+    "//third_party/libfuse/include",
+  ]
+  cflags_cc = [
+    "-Wall",
+    "-D_FILE_OFFSET_BITS=64",
+    "-Wno-unused-parameter",
+    "-Wno-pragma-pack",
+    "-Wno-error=header-hygiene",
+    "-Wno-register",
+    "-Wno-unused-but-set-variable",
+  ]
+}
+ohos_executable("mount.exfat") {
+  sources = [
+    "./fuse/main.c",
+  ]
+  public_configs = [ ":exfat_config" ]
+  deps = [
+    "//third_party/libfuse:libfuse",
+    ":libexfat",
+  ]
+  install_enable = true
+  subsystem_name = "open_source"
+  part_name = "exfat"
+  install_images = [
+    "system",
+    "updater",
+  ]
+}
+
+static_library("libexfat") {
+  sources = [
+    "./libexfat/mount.c",
+    "./libexfat/cluster.c",
+    "./libexfat/io.c",
+    "./libexfat/log.c",
+    "./libexfat/lookup.c",
+    "./libexfat/node.c",
+    "./libexfat/repair.c",
+    "./libexfat/time.c",
+    "./libexfat/utf.c",
+    "./libexfat/utils.c",
+    "./libexfat/byteorder.h",
+    "./libexfat/compiler.h",
+    "./libexfat/config.h",
+    "./libexfat/exfatfs.h",
+    "./libexfat/exfat.h",
+    "./libexfat/platform.h",
+  ]
+  public_configs = [ ":exfat_config" ]
+}

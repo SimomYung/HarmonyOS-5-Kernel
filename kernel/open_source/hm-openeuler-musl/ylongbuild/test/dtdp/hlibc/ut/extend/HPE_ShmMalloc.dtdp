@@ -1,0 +1,469 @@
+{
+    "root": {
+        "data": {
+            "id": "cghk7jql0280",
+            "created": 1639742514125,
+            "text": "HpeShmMalloc",
+            "usecase": 99,
+            "expandState": "expand"
+        },
+        "children": [
+            {
+                "data": {
+                    "id": "cijk5wd1qeo0",
+                    "created": 1647257821670,
+                    "text": "HPE_ShmMalloc(info, size)",
+                    "usecase": 1
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "cijkf6m8nk80",
+                            "created": 1647258549271,
+                            "text": "入参分析",
+                            "usecase": 2,
+                            "layout_right_offset": {
+                                "x": 16,
+                                "y": -29
+                            }
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "cijkiexp4c80",
+                                    "created": 1647258802470,
+                                    "text": "size"
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "cijkkxia5340",
+                                            "created": 1647258999625,
+                                            "text": "size > 640KB, 返回失败",
+                                            "usecase": 4,
+                                            "author": "w00568150",
+                                            "showId": "00054"
+                                        },
+                                        "children": []
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "data": {
+                            "id": "cijkitz13kw0",
+                            "created": 1647258835202,
+                            "text": "功能性分析",
+                            "usecase": 2,
+                            "layout_right_offset": {
+                                "x": 6.666666799121344,
+                                "y": -15.333332803514281
+                            }
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "cijkj0ze3fk0",
+                                    "created": 1647258850462,
+                                    "text": "heap算法",
+                                    "layout_right_offset": {
+                                        "x": 3.3333332008786556,
+                                        "y": -8.333333002196468
+                                    }
+                                },
+                                "children": []
+                            },
+                            {
+                                "data": {
+                                    "id": "cijl36ck3e00",
+                                    "created": 1647260429425,
+                                    "text": "申请内存",
+                                    "usecase": 2,
+                                    "layout_right_offset": {
+                                        "x": 11.666666203074783,
+                                        "y": -13.33333280351411
+                                    },
+                                    "layout": null
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "cijl36ck3yg0",
+                                            "created": 1647260429425,
+                                            "text": "内存真正使用情况",
+                                            "usecase": 2,
+                                            "layout": null
+                                        },
+                                        "children": [
+                                            {
+                                                "data": {
+                                                    "id": "cijl36cjxj40",
+                                                    "created": 1647260429425,
+                                                    "text": "赋值，观察实际使用量",
+                                                    "usecase": 4,
+                                                    "author": "w00568150",
+                                                    "showId": "00135",
+                                                    "layout_right_offset": {
+                                                        "x": 0,
+                                                        "y": 0.8333333002196923
+                                                    },
+                                                    "layout": null
+                                                },
+                                                "children": []
+                                            },
+                                            {
+                                                "data": {
+                                                    "id": "cijl36cjua00",
+                                                    "created": 1647260429425,
+                                                    "text": "最大使用量",
+                                                    "usecase": 4,
+                                                    "author": "w00568150",
+                                                    "showId": "00136",
+                                                    "layout_right_offset": {
+                                                        "x": 0,
+                                                        "y": 10.833332902855375
+                                                    },
+                                                    "layout": null
+                                                },
+                                                "children": []
+                                            },
+                                            {
+                                                "data": {
+                                                    "id": "cijl36ckdzk0",
+                                                    "created": 1647260429426,
+                                                    "text": "1字节申请x次，直到内存使用完",
+                                                    "usecase": 2,
+                                                    "layout_right_offset": {
+                                                        "x": 6.666666401757311,
+                                                        "y": 8.333333002196468
+                                                    },
+                                                    "layout": null
+                                                },
+                                                "children": [
+                                                    {
+                                                        "data": {
+                                                            "id": "cijl36ckeow0",
+                                                            "created": 1647260429426,
+                                                            "text": "从前往后释放",
+                                                            "usecase": 4,
+                                                            "author": "w00568150",
+                                                            "showId": "00137",
+                                                            "layout_right_offset": {
+                                                                "x": 4.166666501098007,
+                                                                "y": -0.8333333002196355
+                                                            },
+                                                            "layout": null
+                                                        },
+                                                        "children": []
+                                                    },
+                                                    {
+                                                        "data": {
+                                                            "id": "cijl36ckic00",
+                                                            "created": 1647260429426,
+                                                            "text": "从后往前释放",
+                                                            "usecase": 4,
+                                                            "author": "w00568150",
+                                                            "showId": "00138",
+                                                            "layout_right_offset": {
+                                                                "x": 4.166666501098007,
+                                                                "y": -0.8333333002196355
+                                                            },
+                                                            "layout": null
+                                                        },
+                                                        "children": []
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "data": {
+                                                    "id": "cijl36ckdyw0",
+                                                    "created": 1647260429426,
+                                                    "text": "随机大小字节申请，直到内存申请完",
+                                                    "usecase": 2,
+                                                    "layout_right_offset": {
+                                                        "x": 0,
+                                                        "y": 0
+                                                    },
+                                                    "layout": null
+                                                },
+                                                "children": [
+                                                    {
+                                                        "data": {
+                                                            "id": "cijl36ckl0g0",
+                                                            "created": 1647260429426,
+                                                            "text": "从前往后释放",
+                                                            "usecase": 4,
+                                                            "author": "w00568150",
+                                                            "showId": "00139",
+                                                            "layout": null
+                                                        },
+                                                        "children": []
+                                                    },
+                                                    {
+                                                        "data": {
+                                                            "id": "cijl36ckid40",
+                                                            "created": 1647260429426,
+                                                            "text": "从后往前释放",
+                                                            "usecase": 4,
+                                                            "author": "w00568150",
+                                                            "showId": "00140",
+                                                            "layout": null
+                                                        },
+                                                        "children": []
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    }
+                                ]
+                            },
+                            {
+                                "data": {
+                                    "id": "cijl36ckwrc0",
+                                    "created": 1647260429426,
+                                    "text": "申请到的内存使用",
+                                    "usecase": 2,
+                                    "layout_right_offset": {
+                                        "x": -1.6666666004393846,
+                                        "y": 6.6666664017571975
+                                    },
+                                    "layout": null
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "cijl36ckz940",
+                                            "created": 1647260429427,
+                                            "text": "指针使用范围",
+                                            "usecase": 2,
+                                            "layout": null
+                                        },
+                                        "children": [
+                                            {
+                                                "data": {
+                                                    "id": "cijl36cl95s0",
+                                                    "created": 1647260429427,
+                                                    "text": "范围内的内存都可以访问",
+                                                    "usecase": 4,
+                                                    "author": "w00568150",
+                                                    "showId": "00141",
+                                                    "layout_right_offset": {
+                                                        "x": 10.666668587260574,
+                                                        "y": -0.8333333002196923
+                                                    },
+                                                    "layout": null
+                                                },
+                                                "children": []
+                                            }
+                                        ]
+                                    }
+                                ]
+                            },
+                            {
+                                "data": {
+                                    "id": "cijl36ckxc00",
+                                    "created": 1647260429427,
+                                    "text": "并发",
+                                    "usecase": 2,
+                                    "layout_right_offset": {
+                                        "x": -0.833333300219465,
+                                        "y": 27.499998907248255
+                                    },
+                                    "layout": null
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "cijl36cl5kg0",
+                                            "created": 1647260429427,
+                                            "text": "多进程申请内存并释放，插入数据，查询数据",
+                                            "usecase": 4,
+                                            "author": "w00568150",
+                                            "showId": "00142",
+                                            "layout": null
+                                        },
+                                        "children": []
+                                    },
+                                    {
+                                        "data": {
+                                            "id": "cijl36cl94g0",
+                                            "created": 1647260429427,
+                                            "text": "多线程申请内存并释放，插入数据，查询数据",
+                                            "usecase": 4,
+                                            "author": "w00568150",
+                                            "showId": "00143",
+                                            "layout_right_offset": {
+                                                "x": 0,
+                                                "y": 1.6666666004393278
+                                            },
+                                            "layout": null
+                                        },
+                                        "children": []
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "data": {
+                            "id": "cijl4deuhnk0",
+                            "created": 1647260523165,
+                            "text": "内存申请释放压力测试",
+                            "usecase": 2,
+                            "layout_right_offset": {
+                                "x": 2.4999999006588496,
+                                "y": 38.33333181010329
+                            },
+                            "layout": null
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "cijl4deu8rs0",
+                                    "created": 1647260523165,
+                                    "text": "碎片化+大量申请",
+                                    "usecase": 4,
+                                    "author": "w00568150",
+                                    "showId": "00152",
+                                    "layout": null
+                                },
+                                "children": []
+                            },
+                            {
+                                "data": {
+                                    "id": "cijl4deugu00",
+                                    "created": 1647260523165,
+                                    "text": "申请+随机释放",
+                                    "usecase": 4,
+                                    "author": "w00568150",
+                                    "showId": "00153",
+                                    "layout": null
+                                },
+                                "children": []
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "data": {
+                    "id": "cijkuefbso80",
+                    "created": 1647259741729,
+                    "text": " HPE_ShmFree(void **ppBuf)",
+                    "usecase": 1,
+                    "layout_right_offset": {
+                        "x": 4.166666302416104,
+                        "y": 192.8333269423913
+                    }
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "cijkumsnsxc0",
+                            "created": 1647259759950,
+                            "text": "入参分析",
+                            "usecase": 2,
+                            "layout_right_offset": {
+                                "x": 16.833333300219692,
+                                "y": -9.833334094948043
+                            }
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "cijkumsnzyo0",
+                                    "created": 1647259759950,
+                                    "text": "ppBuf"
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "cijkumso6540",
+                                            "created": 1647259759950,
+                                            "text": "*ppBuf是否为空",
+                                            "usecase": 4,
+                                            "author": "w00568150",
+                                            "showId": "00070"
+                                        },
+                                        "children": []
+                                    },
+                                    {
+                                        "data": {
+                                            "id": "cijkumsnm5c0",
+                                            "created": 1647259759950,
+                                            "text": "ppBuf是否为空",
+                                            "usecase": 4,
+                                            "author": "w00568150",
+                                            "showId": "00071"
+                                        },
+                                        "children": []
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "data": {
+                            "id": "cijmmiy7tm00",
+                            "created": 1647264766885,
+                            "text": "申请到的内存使用量",
+                            "usecase": 2
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "cijmmiy8bns0",
+                                    "created": 1647264766886,
+                                    "text": "申请内存使用，再次释放，观察实际内存使用量",
+                                    "usecase": 4,
+                                    "author": "w00568150",
+                                    "showId": "00160"
+                                },
+                                "children": []
+                            }
+                        ]
+                    },
+                    {
+                        "data": {
+                            "id": "cijmmiy816o0",
+                            "created": 1647264766886,
+                            "text": "并发",
+                            "usecase": 2
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "cijmmiy82eo0",
+                                    "created": 1647264766886,
+                                    "text": "多线程，同上",
+                                    "usecase": 4,
+                                    "author": "w00568150",
+                                    "showId": "00161"
+                                },
+                                "children": []
+                            },
+                            {
+                                "data": {
+                                    "id": "cijmmiy8jbk0",
+                                    "created": 1647264766886,
+                                    "text": "多进程，同上",
+                                    "usecase": 4,
+                                    "author": "w00568150",
+                                    "showId": "00162"
+                                },
+                                "children": []
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    "templatePath": null,
+    "singleTemplatePath": null,
+    "testcaseFilePath": "",
+    "template": "right",
+    "theme": "fresh-blue-compat",
+    "version": "1.4.43"
+}

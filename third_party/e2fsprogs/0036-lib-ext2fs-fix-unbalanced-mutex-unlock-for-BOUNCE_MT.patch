@@ -1,0 +1,31 @@
+From c640cf1f3a9a7ac6ecbf82c27539c8e158f8ea24 Mon Sep 17 00:00:00 2001
+From: "Ritesh Harjani (IBM)" <ritesh.list@gmail.com>
+Date: Mon, 7 Nov 2022 17:50:49 +0530
+Subject: lib/ext2fs: fix unbalanced mutex unlock for BOUNCE_MTX in unix_io
+
+f_crashdisk test failed with UNIX_IO_FORCE_BOUNCE=yes due to unbalanced
+mutex unlock in below path.
+
+This patch fixes it.
+
+Signed-off-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
+Signed-off-by: Theodore Ts'o <tytso@mit.edu>
+---
+ lib/ext2fs/unix_io.c | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/lib/ext2fs/unix_io.c b/lib/ext2fs/unix_io.c
+index e53db333..5b894826 100644
+--- a/lib/ext2fs/unix_io.c
++++ b/lib/ext2fs/unix_io.c
+@@ -305,7 +305,6 @@ bounce_read:
+ 	while (size > 0) {
+ 		actual = read(data->dev, data->bounce, align_size);
+ 		if (actual != align_size) {
+-			mutex_unlock(data, BOUNCE_MTX);
+ 			actual = really_read;
+ 			buf -= really_read;
+ 			size += really_read;
+-- 
+cgit 
+

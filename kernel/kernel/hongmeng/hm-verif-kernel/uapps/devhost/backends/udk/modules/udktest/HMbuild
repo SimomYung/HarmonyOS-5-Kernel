@@ -1,0 +1,27 @@
+# Copyright (c) Huawei Technologies Co., Ltd. 2022. All rights reserved.
+# Description: HMbuild for udk
+# Author: Huawei OS Kernel Lab
+# Create: Wed Mar 02 11:51:30 2022
+
+lib-dynamic-y: udktest
+
+include-udktest-y: .
+
+cflags-udktest-y: -DUDK_MODULE
+
+src-udktest-y: udktest.c
+src-udktest-y: device/udktest__device.c
+src-udktest-y: device/udktest__device_alloc.c
+src-udktest-y: device/udktest__device_add.c
+src-udktest-y: device/udktest__device_resprop.c
+src-udktest-y: device/udktest__device_local.c
+src-udktest-y: driver/udktest__driver.c
+src-udktest-y: driver/udktest__driver_register.c
+src-udktest-y: udktest__fops.c
+src-udktest-y: udktest__shmlock.c
+src-udktest-y: udktest__mm.c
+src-udktest-y: udktest__mempool.c
+src-udktest-y: udktest__thread.c
+
+subdir-y: udktest-net
+subdir-y: udktest-unload

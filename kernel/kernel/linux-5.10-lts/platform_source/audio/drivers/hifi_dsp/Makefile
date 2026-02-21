@@ -1,0 +1,103 @@
+GCOV_PROFILE := $(CONFIG_GCOV_KERNEL)
+subdir-ccflags-y += -Werror -Wdate-time -Wfloat-equal -Wformat=2
+
+ifeq ($(CONFIG_DP_MULTI_CHANNELS),y)
+EXTRA_CFLAGS += -DCONFIG_DP_MULTI_CHANNELS
+endif
+
+ifeq ($(CONFIG_HIFI_SUPPORT_VIBRATOR),y)
+EXTRA_CFLAGS += -DCONFIG_HIFI_SUPPORT_VIBRATOR
+endif
+
+
+ifeq ($(CONFIG_HIFI_IPC_6250),y)
+EXTRA_CFLAGS += -DEXPAND_HIFI_RUNNING_REGION
+endif
+
+EXTRA_CFLAGS += -I$(srctree)/platform_source/audio/sound/soc/platforms/common_image/
+EXTRA_CFLAGS += -I$(srctree)/platform_source/audio/drivers/hifi_mailbox/mailbox/
+EXTRA_CFLAGS += -I$(srctree)/platform_source/audio/drivers/hifi_mailbox/ipcm/
+EXTRA_CFLAGS += -I$(srctree)/platform_source/audio/drivers/soundtrigger/
+EXTRA_CFLAGS += -I$(srctree)/platform_source/audio/drivers/hifi_dsp/om/
+EXTRA_CFLAGS += -I$(srctree)/platform_source/audio/drivers/comm/
+EXTRA_CFLAGS += -I$(srctree)/platform_source/audio/sound/usb/hifi/
+EXTRA_CFLAGS += -I$(srctree)/include/platform_include/audio/ipc
+EXTRA_CFLAGS += -I$(srctree)/platform_source/audio/include/
+EXTRA_CFLAGS += -I$(srctree)/platform_source/audio/drivers/rdr/
+ifeq ($(CONFIG_HIFI_SECOS_LOAD),y)
+EXTRA_CFLAGS += -I$(srctree)/drivers/platform_drivers/tzdriver/
+endif
+ifeq ($(CONFIG_AUDIO_DEBUG),y)
+ifeq ($(CONFIG_KCOV),y)
+EXTRA_CFLAGS += -DENABLE_AUDIO_KCOV
+else
+EXTRA_CFLAGS += -DENABLE_HIFI_DEBUG
+EXTRA_CFLAGS += -DAUDIO_DATA_INJECTION_SUPPORT
+endif
+endif
+ifeq ($(CONFIG_HIFI_AUDIO_NN_SUPPORT),y)
+EXTRA_CFLAGS += -I$(srctree)/include/platform_include/ffrt/uniform_id
+ifeq ($(CONFIG_FFRT_UNIFORM_ID_OHOS),y)
+EXTRA_CFLAGS += -DCONFIG_FFRT_UNIFORM_ID
+endif
+endif
+
+ifeq ($(CONFIG_HIFI_RUNTIME_LITE_SUPPORT),y)
+EXTRA_CFLAGS += -I$(srctree)/include/platform_include/ffrt/uniform_id
+ifeq ($(CONFIG_FFRT_UNIFORM_ID_OHOS),y)
+EXTRA_CFLAGS += -DCONFIG_FFRT_UNIFORM_ID
+endif
+endif
+
+
+obj-$(CONFIG_HIFI_DSP_ONE_TRACK)	+= om/
+obj-$(CONFIG_HIFI_DSP_ONE_TRACK)	+= dsp_misc.o
+obj-$(CONFIG_HIFI_DSP_ONE_TRACK)	+= dsp_mmap.o
+obj-$(CONFIG_HIFI_DSP_ONE_TRACK)	+= dsp_msg.o
+obj-$(CONFIG_HIFI_DSP_ONE_TRACK)	+= dsp_lpp.o
+obj-$(CONFIG_HIFI_DSP_ONE_TRACK)	+= algorithm_dft.o
+obj-$(CONFIG_RDA_AUDIO)		+= dsp_shmec.o
+
+ifeq ($(CONFIG_HIFI_EXTEND_MISC),y)
+obj-$(CONFIG_HIFI_DSP_ONE_TRACK)	+= dsp_extend_misc.o
+endif
+
+ifeq ($(CONFIG_HIFI_NPU_ROUTE),y)
+obj-$(CONFIG_HIFI_DSP_ONE_TRACK)	+= nn_dsp_route.o
+endif
+
+ifeq ($(CONFIG_HIFI_SECOS_LOAD),y)
+obj-$(CONFIG_HIFI_DSP_ONE_TRACK)	+= dsp_load.o
+obj-$(CONFIG_HIFI_DSP_ONE_TRACK)	+= dsp_load_ca.o
+endif
+ifeq ($(CONFIG_HIFI_EXTRA_MODEM_MODE),y)
+obj-$(CONFIG_HIFI_DSP_ONE_TRACK)	+= audio_pcie_proc.o
+obj-$(CONFIG_HIFI_DSP_ONE_TRACK)	+= modem_strategy_acore.o
+EXTRA_CFLAGS += -DEXTERNAL_MODEM
+endif
+ifeq ($(CONFIG_AUDIO_DEBUG),y)
+obj-$(CONFIG_SND_SOC_CODEC_STUB)	+= memcpy_opt.o
+EXTRA_CFLAGS += -DDYNAMIC_LOAD_HIFIIMG
+endif
+
+obj-y	+= voice_proxy/
+
+ifeq ($(CONFIG_HIFI_EXTRA_MODEM_MODE),y)
+obj-y	+= ap_clk_correct/
+endif
+
+ifeq ($(CONFIG_HIBERNATION),y)
+obj-y += audio_s4_pm.o
+EXTRA_CFLAGS += -DCONFIG_AP_CUST_PAD_MEM
+endif
+
+ccflags-$(CONFIG_HIFI_DSP_ONE_TRACK) += -I$(srctree)/drivers/devkit/audiokit/
+
+ifeq ($(CONFIG_HIFI_BLOW_RES_UPDATE_CDEV),y)
+obj-y += blow_res_update.o
+EXTRA_CFLAGS += -DHIFI_BLOW_RES_UPDATE_CDEV
+endif
+
+ifeq ($(CONFIG_AUDIO_HAPTIC),y)
+obj-y += audio_haptic.o
+endif

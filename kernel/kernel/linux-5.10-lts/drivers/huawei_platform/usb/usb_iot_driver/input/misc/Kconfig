@@ -1,0 +1,7 @@
+# SPDX-License-Identifier: GPL-2.0
+
+config GPIO_KEY
+	bool "GPIO_KEY"
+	default n
+	help
+	  Say Y to enable support for gpio key.

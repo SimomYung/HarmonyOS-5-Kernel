@@ -1,0 +1,14 @@
+lib-dynamic-y: dhext_kstate
+
+cflags-dhext_kstate-y: -D_DH_PLUGIN_NAME=kstate -fvisibility=hidden
+linklib-dhext_kstate-y: -Tksymtab.lds
+linklib-dhext_kstate-y: -Tdhext_kstate_hdlr.lds
+
+src-dhext_kstate-y: kstate_if.c
+src-dhext_kstate-y: ext_main.c
+src-dhext_kstate-y: kstate.c
+
+include-.-y: include/
+
+installinc: include/
+install-dhext_kstate-y: BASE_LIBDIR

@@ -1,0 +1,32 @@
+/*
+ * Copyright (c) Huawei Technologies Co., Ltd. 2023-2023. All rights reserved.
+ * Description: Event callback sysif interfaces
+ * Author: Huawei OS Kernel Lab
+ * Create: Mon Mar 06 09:15:38 2023
+ */
+#ifdef SYSIF_EXPORT_API
+#include <hmsysmgr/eventmgr/event_def.h>
+#endif
+/*
+ * To support the mixed data model which means the client and the server
+ * may use different data model. See the document for limitation of data type
+ * used in the sysif interfaces in <Documentation/sysif_compat.md>.
+ */
+
+DEFINE_MANAGER(eventcb, 8,
+	DEFINE_METHOD(eventcb, thread_msg_ctrl,
+		      ARG(1, struct evtcb_thread_msg_s, msg),
+		      RET_NO,
+		      SLOWDATA_NO)
+	DEFINE_METHOD(eventcb, process_exit,
+			ARG(3,
+				unsigned int, cnode_idx,
+				pid_t, pid,
+				uid_t, uid),
+			RET_NO,
+			SLOWDATA_NO)
+	DEFINE_METHOD(eventcb, path_clean_entry,
+		      ARG(1, unsigned int, cnode_idx),
+		      RET_NO,
+		      SLOWDATA)
+)

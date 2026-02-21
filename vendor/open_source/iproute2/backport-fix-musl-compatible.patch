@@ -1,0 +1,85 @@
+diff --git a/iproute2-5.15.0/include/uapi/linux/if.h b/iproute2-5.15.0/include/uapi/linux/if.h
+index b287b2a..7347fbc 100644
+--- a/iproute2-5.15.0/include/uapi/linux/if.h
++++ b/iproute2-5.15.0/include/uapi/linux/if.h
+@@ -131,9 +131,6 @@ enum net_device_flags {
+ #define IFF_ECHO			IFF_ECHO
+ #endif /* __UAPI_DEF_IF_NET_DEVICE_FLAGS_LOWER_UP_DORMANT_ECHO */
+ 
+-#define IFF_VOLATILE	(IFF_LOOPBACK|IFF_POINTOPOINT|IFF_BROADCAST|IFF_ECHO|\
+-		IFF_MASTER|IFF_SLAVE|IFF_RUNNING|IFF_LOWER_UP|IFF_DORMANT)
+-
+ #define IF_GET_IFACE	0x0001		/* for querying only */
+ #define IF_GET_PROTO	0x0002
+ 
+diff --git a/iproute2-5.15.0/include/uapi/linux/socket.h b/iproute2-5.15.0/include/uapi/linux/socket.h
+index ca7c25a..663fbc8 100644
+--- a/iproute2-5.15.0/include/uapi/linux/socket.h
++++ b/iproute2-5.15.0/include/uapi/linux/socket.h
+@@ -26,6 +26,8 @@ struct __kernel_sockaddr_storage {
+ 	};
+ };
+ 
++#define sockaddr_storage __kernel_sockaddr_storage
++
+ #define SOCK_SNDBUF_LOCK	1
+ #define SOCK_RCVBUF_LOCK	2
+ 
+diff --git a/iproute2-5.15.0/include/uapi/linux/sockios.h b/iproute2-5.15.0/include/uapi/linux/sockios.h
+index 7d1bccb..08a3ba4 100644
+--- a/iproute2-5.15.0/include/uapi/linux/sockios.h
++++ b/iproute2-5.15.0/include/uapi/linux/sockios.h
+@@ -37,17 +37,6 @@
+ /* Get stamp (timespec) */
+ #define SIOCGSTAMPNS_NEW _IOR(SOCK_IOC_TYPE, 0x07, long long[2])
+ 
+-#if __BITS_PER_LONG == 64 || (defined(__x86_64__) && defined(__ILP32__))
+-/* on 64-bit and x32, avoid the ?: operator */
+-#define SIOCGSTAMP	SIOCGSTAMP_OLD
+-#define SIOCGSTAMPNS	SIOCGSTAMPNS_OLD
+-#else
+-#define SIOCGSTAMP	((sizeof(struct timeval))  == 8 ? \
+-			 SIOCGSTAMP_OLD   : SIOCGSTAMP_NEW)
+-#define SIOCGSTAMPNS	((sizeof(struct timespec)) == 8 ? \
+-			 SIOCGSTAMPNS_OLD : SIOCGSTAMPNS_NEW)
+-#endif
+-
+ /* Routing table calls. */
+ #define SIOCADDRT	0x890B		/* add routing table entry	*/
+ #define SIOCDELRT	0x890C		/* delete routing table entry	*/
+diff --git a/iproute2-5.15.0/ip/ipnexthop.c b/iproute2-5.15.0/ip/ipnexthop.c
+index 9478aa5..e153057 100644
+--- a/iproute2-5.15.0/ip/ipnexthop.c
++++ b/iproute2-5.15.0/ip/ipnexthop.c
+@@ -546,7 +546,7 @@ static void parse_nh_group_type_res(struct nlmsghdr *n, int maxlen, int *argcp,
+ 
+ 			NEXT_ARG();
+ 			if (get_unsigned(&idle_timer, *argv, 0) ||
+-			    idle_timer >= ~0UL / 100)
++			    idle_timer >= UINT32_MAX / 100)
+ 				invarg("invalid idle timer value", *argv);
+ 
+ 			addattr32(n, maxlen, NHA_RES_GROUP_IDLE_TIMER,
+@@ -556,7 +556,7 @@ static void parse_nh_group_type_res(struct nlmsghdr *n, int maxlen, int *argcp,
+ 
+ 			NEXT_ARG();
+ 			if (get_unsigned(&unbalanced_timer, *argv, 0) ||
+-			    unbalanced_timer >= ~0UL / 100)
++			    unbalanced_timer >= UINT32_MAX / 100)
+ 				invarg("invalid unbalanced timer value", *argv);
+ 
+ 			addattr32(n, maxlen, NHA_RES_GROUP_UNBALANCED_TIMER,
+diff --git a/iproute2-5.15.0/lib/libnetlink.c b/iproute2-5.15.0/lib/libnetlink.c
+index 7e977a6..c786952 100644
+--- a/iproute2-5.15.0/lib/libnetlink.c
++++ b/iproute2-5.15.0/lib/libnetlink.c
+@@ -151,7 +151,9 @@ int nl_dump_ext_ack_done(const struct nlmsghdr *nlh, int error)
+ 	return 0;
+ }
+ #else
++#ifndef OHOS
+ #warning "libmnl required for error support"
++#endif
+ 
+ /* No extended error ack without libmnl */
+ int nl_dump_ext_ack(const struct nlmsghdr *nlh, nl_ext_ack_fn_t errfn)

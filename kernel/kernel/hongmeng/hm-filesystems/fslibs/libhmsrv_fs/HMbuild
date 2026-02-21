@@ -1,0 +1,48 @@
+# Copyright (c) Huawei Technologies Co., Ltd. 2021-2024. All rights reserved.
+# Description: HMbuild
+# Author: Huawei OS Kernel Lab
+# Create: Fri Sep 10 10:23:24 2021
+
+lib-static-y: hmsrv_fs
+install-hmsrv_fs-y: LIBDIR
+
+lib-dynamic-y: hmsrv_fs_shared
+libversion-hmsrv_fs_shared: 0.1
+output-hmsrv_fs_shared: hmsrv_fs
+install-hmsrv_fs_shared-y: LIBDIR
+
+subdir-y: src
+
+# install header
+installinc-fs: include/fs/version.h
+installinc-fs: include/fs/comp.h
+
+installinc-utils: include/utils/fs_malloc.h
+installinc-utils: include/utils/fs_build_bug.h
+installinc-utils: include/utils/str.h
+
+installinc: include/vfs.h
+installinc: include/vfs_device.h
+installinc: include/vfs_secfd.h
+#ifdef CONFIG_FSLIB_SECURITY_XPM
+installinc: include/vfs_dev_xpm.h
+#endif
+#ifdef CONFIG_FSLIB_ENCAPS
+installinc: include/vfs_dev_encaps.h
+#endif
+installinc: include/vfs_epoll.h
+installinc: include/fd.h
+installinc: include/fs_ioaccount.h
+installinc: include/binderfs_data.h
+installinc: include/fs_server.h
+installinc: include/fs_transfer_fd.h
+installinc: include/fs_mutex.h
+installinc: include/fs_err.h
+installinc: include/mnt_namespace.h
+installinc: include/fslib_common.h
+installinc: include/fs_cmd.h
+installinc: include/spif_fs.h
+installinc: include/fscrypt_u.h
+installinc: include/vfs_devfs.h
+installinc: include/vfs_dev_exagear.h
+# vim:ts=4:sw=4:expandtab

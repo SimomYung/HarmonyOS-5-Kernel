@@ -1,0 +1,323 @@
+{
+    "file_path": "../../hyph-utf8/tex/generic/hyph-utf8/patterns/tex",
+    "tex_files": [
+        {
+            "filename": "hyph-be.tex",
+            "words": []
+        },
+        {
+            "filename": "hyph-cs.tex",
+            "words": [
+                "vzorek",
+                "funkce"
+            ]
+        },
+        {
+            "filename": "hyph-cy.tex",
+            "words": [
+                "helo",
+                "enghraifft",
+                "allbwn"
+            ]
+        },
+        {
+            "filename": "hyph-da.tex",
+            "words": [
+                "eksempel",
+                "data",
+                "output",
+                "proces",
+                "funktion"
+            ]
+        },
+        {
+            "filename": "hyph-de-1901.tex",
+            "words": [
+                "daten",
+                "ausgabe",
+                "funktion"
+            ]
+        },
+        {
+            "filename": "hyph-de-ch-1901.tex",
+            "words": []
+        },
+        {
+            "filename": "hyph-el-monoton.tex",
+            "words": [
+                "λειτουργία"
+            ]
+        },
+        {
+            "filename": "hyph-el-polyton.tex",
+            "words": [
+                "λειτουργία"
+            ]
+        },
+        {
+            "filename": "hyph-en-gb.tex",
+            "words": [
+                "input",
+                "output",
+                "process",
+                "function"
+            ]
+        },
+        {
+            "filename": "hyph-en-us.tex",
+            "words": [
+                "hello",
+                "data",
+                "input",
+                "output"
+            ]
+        },
+        {
+            "filename": "hyph-es.tex",
+            "words": []
+        },
+        {
+            "filename": "hyph-et.tex",
+            "words": [
+                "tere",
+                "maailm",
+                "näide",
+                "sisend",
+                "väljund",
+                "protsess",
+                "funktsioon"
+            ]
+        },
+        {
+            "filename": "hyph-fr.tex",
+            "words": [
+                "bonjour",
+                "test",
+                "échantillon",
+                "données",
+                "processus",
+                "fonction"
+            ]
+        },
+        {
+            "filename": "hyph-ga.tex",
+            "words": [
+                "sampla",
+                "sonraí",
+                "ionchur",
+                "aschur"
+            ]
+        },
+        {
+            "filename": "hyph-gl.tex",
+            "words": [
+                "mundo",
+                "exemplo",
+                "proba",
+                "proceso",
+                "función"
+            ]
+        },
+        {
+            "filename": "hyph-hr.tex",
+            "words": [
+                "zdravo",
+                "svijete",
+                "primjer",
+                "uzorak",
+                "podaci",
+                "ulaz",
+                "izlaz",
+                "proces",
+                "funkcija"
+            ]
+        },
+        {
+            "filename": "hyph-hu.tex",
+            "words": [
+                "adatok",
+                "folyamat"
+            ]
+        },
+        {
+            "filename": "hyph-id.tex",
+            "words": [
+                "contoh",
+                "sampel",
+                "keluaran",
+                "proses"
+            ]
+        },
+        {
+            "filename": "hyph-is.tex",
+            "words": [
+                "heimur",
+                "dæmi",
+                "inntak",
+                "ferli",
+                "aðgerð"
+            ]
+        },
+        {
+            "filename": "hyph-it.tex",
+            "words": [
+                "processo"
+            ]
+        },
+        {
+            "filename": "hyph-ka.tex",
+            "words": [
+                "გამარჯობა",
+                "მსოფლიო",
+                "მაგალითი",
+                "ტესტი",
+                "ნიმუში",
+                "მონაცემები",
+                "შეყვანა",
+                "გამოყვანა",
+                "პროცესი",
+                "ფუნქცია"
+            ]
+        },
+        {
+            "filename": "hyph-lt.tex",
+            "words": [
+                "pavyzdys",
+                "testas",
+                "pavyzdys",
+                "duomenys",
+                "įvestis",
+                "išvestis",
+                "procesas",
+                "funkcija"
+            ]
+        },
+        {
+            "filename": "hyph-lv.tex",
+            "words": [
+                "sveiki",
+                "pasaule",
+                "paraugs",
+                "ievade",
+                "izvade",
+                "process",
+                "funkcija"
+            ]
+        },
+        {
+            "filename": "hyph-mk.tex",
+            "words": [
+                "здраво",
+                "пример",
+                "тест",
+                "примерок",
+                "податоци",
+                "функција"
+            ]
+        },
+        {
+            "filename": "hyph-mn-cyrl.tex",
+            "words": [
+                "дэлхий",
+                "жишээ",
+                "тест",
+                "жишээ",
+                "өгөгдөл",
+                "функц"
+            ]
+        },
+        {
+            "filename": "hyph-nl.tex",
+            "words": [
+                "hallo",
+                "monster",
+                "gegevens",
+                "invoer",
+                "uitvoer",
+                "functie"
+            ]
+        },
+        {
+            "filename": "hyph-pt.tex",
+            "words": [
+                "olá"
+            ]
+        },
+        {
+            "filename": "hyph-ru.tex",
+            "words": [
+                "привет"
+            ]
+        },
+        {
+            "filename": "hyph-sh-cyrl.tex",
+            "words": []
+        },
+        {
+            "filename": "hyph-sh-latn.tex",
+            "words": []
+        },
+        {
+            "filename": "hyph-sk.tex",
+            "words": []
+        },
+        {
+            "filename": "hyph-sl.tex",
+            "words": [
+                "izhod",
+                "proces",
+                "funkcija"
+            ]
+        },
+        {
+            "filename": "hyph-sr-cyrl.tex",
+            "words": []
+        },
+        {
+            "filename": "hyph-sv.tex",
+            "words": [
+                "värld",
+                "test",
+                "inmatning",
+                "utmatning"
+            ]
+        },
+        {
+            "filename": "hyph-th.tex",
+            "words": [
+                "ทดสอบ",
+                "นำเข้า",
+                "กระบวนการ",
+                "ฟังก์ชัน"
+            ]
+        },
+        {
+            "filename": "hyph-tk.tex",
+            "words": [
+                "salam",
+                "mysal",
+                "synag",
+                "maglumat",
+                "giriş",
+                "çykaryş",
+                "proses"
+            ]
+        },
+        {
+            "filename": "hyph-tr.tex",
+            "words": []
+        },
+        {
+            "filename": "hyph-uk.tex",
+            "words": []
+        },
+        {
+            "filename": "hyph-zh-latn-pinyin.tex",
+            "words": [
+                "yàngpǐn",
+                "guòchéng",
+                "gōngnéng"
+            ]
+        }
+    ]
+}

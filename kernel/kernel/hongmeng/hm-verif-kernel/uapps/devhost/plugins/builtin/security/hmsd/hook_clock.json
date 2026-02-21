@@ -1,0 +1,68 @@
+{
+    "template": "hook",
+    "server": "devhost",
+    "manager": "clock",
+    "generation": {
+        "header": {
+            "embedded_code": {
+                "hook": ""
+            }
+        }
+    },
+    "hooks": {
+        "clock_gettime": {
+            "scheme": "security check/inner constraint",
+            "arguments": [],
+            "ac": {
+                "buckle": {
+                    "alias": "sec_chk_ability_clock_gettime",
+                    "permission": "ab_devhost_fops"
+                }
+            }
+        },
+        "clock_settime": {
+            "scheme": "security check/privilege",
+            "arguments": [],
+            "ac": {
+                "ability": {
+                    "alias": "sec_chk_ability_clock_settime",
+                    "permission": "ab_devhost_fops"
+                },
+                "capability": {
+                    "alias": "sec_chk_posix_cap_clock_settime",
+                    "permission": "SYS_TIME"
+                }
+            }
+        },
+        "clock_getres": {
+            "scheme": "security check/inner constraint",
+            "arguments": [],
+            "ac": {
+                "buckle": {
+                    "alias": "sec_chk_ability_clock_getres",
+                    "permission": "ab_devhost_fops"
+                }
+            }
+        },
+        "clock_adjtime": {
+            "scheme": "security check/inner constraint",
+            "arguments": [],
+            "ac": {
+                "buckle": {
+                    "alias": "sec_chk_ability_clock_adjtime",
+                    "permission": "ab_devhost_fops"
+                }
+            }
+        },
+        "clock_poweroff_alarm": {
+            "scheme": "security check/inner constraint",
+            "arguments": [],
+            "ac": {
+                "buckle": {
+                    "alias": "sec_chk_ability_clock_poweroff_alarm",
+                    "permission": "ab_devhost_fops"
+                }
+            }
+        }
+    }
+}

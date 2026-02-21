@@ -1,0 +1,43 @@
+From 1c966c9dffef7e823a020a2f3982e9b9b1953e8b Mon Sep 17 00:00:00 2001
+From: zhanchengbin <zhanchengbin1@huawei.com>
+Date: Fri, 31 Dec 2021 15:43:36 +0800
+Subject: libext2fs: fix memory leak in error path while opening test_io
+ manager
+
+Link: https://lore.kernel.org/r/d0632bbc-9713-38a9-c914-137b702f6ae1@huawei.com
+Signed-off-by: zhanchengbin <zhanchengbin1@huawei.com>
+Signed-off-by: Theodore Ts'o <tytso@mit.edu>
+---
+ lib/ext2fs/test_io.c | 2 ++
+ lib/ext2fs/undo_io.c | 2 ++
+ 2 files changed, 4 insertions(+)
+
+diff --git a/lib/ext2fs/test_io.c b/lib/ext2fs/test_io.c
+index 480e68fc..6843edbc 100644
+--- a/lib/ext2fs/test_io.c
++++ b/lib/ext2fs/test_io.c
+@@ -248,6 +248,8 @@ static errcode_t test_open(const char *name, int flags, io_channel *channel)
+ 	return 0;
+ 
+ cleanup:
++	if (io && io->name)
++		ext2fs_free_mem(&io->name);
+ 	if (io)
+ 		ext2fs_free_mem(&io);
+ 	if (data)
+diff --git a/lib/ext2fs/undo_io.c b/lib/ext2fs/undo_io.c
+index eb56f53d..f4a6d526 100644
+--- a/lib/ext2fs/undo_io.c
++++ b/lib/ext2fs/undo_io.c
+@@ -790,6 +790,8 @@ cleanup:
+ 		io_channel_close(data->real);
+ 	if (data)
+ 		ext2fs_free_mem(&data);
++	if (io && io->name)
++		ext2fs_free_mem(&io->name);
+ 	if (io)
+ 		ext2fs_free_mem(&io);
+ 	return retval;
+-- 
+cgit 
+

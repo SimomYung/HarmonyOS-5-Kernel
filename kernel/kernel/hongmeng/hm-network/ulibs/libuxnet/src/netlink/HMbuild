@@ -1,0 +1,13 @@
+# Copyright (C) Huawei Technologies Co., Ltd. 2021. All rights reserved.
+# Description: HMbuild
+# Author: Huawei OS Kernel Lab
+# Create: Wed Nov 03 18:27:51 2021
+
+src-CONFIG_AUDIT: ux_netlink_audit.c
+src-y: ux_netlink_core.c
+src-y: ux_netlink_proto.c
+src-y: ux_netlink_table.c
+src-y: ux_netlink_route.c
+src-y: ux_netlink_generic.c
+
+subdir-y: modules

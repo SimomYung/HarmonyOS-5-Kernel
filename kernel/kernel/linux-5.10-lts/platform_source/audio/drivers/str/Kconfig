@@ -1,0 +1,5 @@
+config STR_NOTIFY_DSP
+	tristate "entry or exit STR mode will notify dsp"
+	default n
+	help
+	  STR mode status will notify dsp.

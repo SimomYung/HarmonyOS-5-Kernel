@@ -1,0 +1,13 @@
+# SPDX-License-Identifier: GPL-2.0
+
+config POWERKEY_TV
+	bool "huawei tv power key"
+	default n
+	help
+	  Say Y to enable support for the tv power key driver.
+
+config POWERKEY_PWRON
+	bool "huawei poweron power key"
+	default n
+	help
+	  Say Y to enable support for the poweron power key driver.

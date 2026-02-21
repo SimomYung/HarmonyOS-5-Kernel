@@ -1,0 +1,28 @@
+/*
+ * Copyright (c) Huawei Technologies Co., Ltd. 2022. All rights reserved.
+ * Description: Definition for thermmgr sysif
+ * Author: Huawei OS Kernel Lab
+ * Create: Mon May 08 09:56:45 2023
+ */
+
+/*
+ * To support the mixed data model which means the client and the server
+ * may use different data model. See the comment for limitation of data type
+ * used in the sysif interfaces in <libsysif/base/api.h>.
+ */
+#ifdef SYSIF_EXPORT_API
+
+#define THERMAL_ZONE_TYPE_MAX			32
+
+struct thermal_zone_type {
+	char string[THERMAL_ZONE_TYPE_MAX];
+};
+
+#endif
+
+DEFINE_MANAGER(thermmgr, 4,
+	DEFINE_METHOD(thermmgr, stat,
+		      ARG(2, struct thermal_zone_type, type,
+			  struct bunch_ipc_attr, attr),
+		      RET_NO, SLOWDATA_NO)
+)

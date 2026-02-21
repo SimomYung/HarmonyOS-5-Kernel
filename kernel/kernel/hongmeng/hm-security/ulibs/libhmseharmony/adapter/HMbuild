@@ -1,0 +1,7 @@
+# Copyright (c) Huawei Technologies Co., Ltd. 2023-2023. All rights reserved.
+# Description: HMbuild for libhmseharmony adapter
+# Author: Huawei OS Kernel Lab
+# Create: Tue Jan 31 10:25:23 2023
+
+include-y: ../../../include
+src-y: policydb.c

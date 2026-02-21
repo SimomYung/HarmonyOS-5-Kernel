@@ -1,0 +1,11 @@
+config HW_DP_SOURCE
+        bool "huawei DP_SOURCE"
+        default n
+        help
+            if you say yes here you get support for huawei DP source switch check.
+
+config SUPPORT_MULTI_DP_DISPLAY
+        bool "huawei SUPPORT_MULTI_DP_DISPLAY
+        default n
+        help
+            if you say yes here you get support for multi dp display.

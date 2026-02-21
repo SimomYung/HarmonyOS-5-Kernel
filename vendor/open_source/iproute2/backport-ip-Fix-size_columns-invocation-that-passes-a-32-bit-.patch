@@ -1,0 +1,53 @@
+From 329fda1861560b06e60a7bd1004647bb65708295 Mon Sep 17 00:00:00 2001
+From: Petr Machata <petrm@nvidia.com>
+Date: Tue, 28 Jun 2022 12:17:31 +0200
+Subject: [PATCH] ip: Fix size_columns() invocation that passes a 32-bit
+ quantity
+
+In print_stats64(), the last size_columns() invocation passes number of
+carrier changes as one of the arguments. The value is decoded as a 32-bit
+quantity, but size_columns() expects a 64-bit one. This is undefined
+behavior.
+
+The reason valgrind does not cite this is that the previous size_columns()
+invocations prime the ABI area used for the value transfer. When these
+other invocations are commented away, valgrind does complain that
+"conditional jump or move depends on uninitialised value", as would be
+expected.
+
+Fixes: 49437375b6c1 ("ip: dynamically size columns when printing stats")
+Signed-off-by: Petr Machata <petrm@nvidia.com>
+Signed-off-by: Stephen Hemminger <stephen@networkplumber.org>
+Conflict: NA
+Reference: https://git.kernel.org/pub/scm/network/iproute2/iproute2.git/commit?id=329fda18615
+---
+ ip/ipaddress.c | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
+
+diff --git a/ip/ipaddress.c b/ip/ipaddress.c
+index 5a3b1cae..a288341c 100644
+--- a/ip/ipaddress.c
++++ b/ip/ipaddress.c
+@@ -783,13 +783,15 @@ void print_stats64(FILE *fp, struct rtnl_link_stats64 *s,
+ 			     s->tx_bytes, s->tx_packets, s->tx_errors,
+ 			     s->tx_dropped, s->tx_carrier_errors,
+ 			     s->collisions, s->tx_compressed);
+-		if (show_stats > 1)
++		if (show_stats > 1) {
++			uint64_t cc = carrier_changes ?
++				      rta_getattr_u32(carrier_changes) : 0;
++
+ 			size_columns(cols, ARRAY_SIZE(cols), 0, 0,
+ 				     s->tx_aborted_errors, s->tx_fifo_errors,
+ 				     s->tx_window_errors,
+-				     s->tx_heartbeat_errors,
+-				     carrier_changes ?
+-				     rta_getattr_u32(carrier_changes) : 0);
++				     s->tx_heartbeat_errors, cc);
++		}
+ 
+ 		/* RX stats */
+ 		fprintf(fp, "    RX: %*s %*s %*s %*s %*s %*s %*s%s",
+-- 
+2.23.0
+

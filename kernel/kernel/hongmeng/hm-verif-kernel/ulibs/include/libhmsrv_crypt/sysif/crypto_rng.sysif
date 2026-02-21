@@ -1,0 +1,77 @@
+/*
+ * Copyright (C) Huawei Technologies Co., Ltd. 2019-2020. All rights reserved.
+ * Description: Provide sysif interfaces of crypto rng
+ * Author: Huawei OS Kernel Lab
+ * Create: Fri Apr 12 19:23:12 2019
+ */
+/*
+ * To support the mixed data model which means the client and the server
+ * may use different data model. See the document for limitation of data type
+ * used in the sysif interfaces in <Documentation/sysif_compat.md>.
+ */
+#ifdef SYSIF_EXPORT_API
+
+#include <stdint.h>
+
+enum crypt_rng_type {
+	CRYPT_RNG_DEFAULT = 0,
+	CRYPT_RNG_SYSTEM,
+	CRYPT_RNG_HW,
+
+	CRYPT_RNG_MAX
+};
+
+#define CRYPT_RNG_RAND_DATA_MAX	256
+struct crypt_rng_rand_data {
+	unsigned int len;
+	unsigned char buf[CRYPT_RNG_RAND_DATA_MAX];
+};
+
+enum crypt_rng_rand_val_type {
+	CRYPT_RNG_RAND_VAL_U8 = 0,
+	CRYPT_RNG_RAND_VAL_U16,
+	CRYPT_RNG_RAND_VAL_U32,
+	CRYPT_RNG_RAND_VAL_U64,
+
+	CRYPT_RNG_RAND_VAL_MAX
+};
+
+union crypt_rng_rand_value {
+	uint8_t data_u8;
+	uint16_t data_u16;
+	uint32_t data_u32;
+	uint64_t data_u64;
+};
+
+#endif
+
+DEFINE_MANAGER(rng, 4,
+	DEFINE_METHOD(rng, random_bytes,
+		      ARG(4,
+			  enum crypt_rng_type, rng_type,
+			  void *, udata,
+			  unsigned int, bytes_len,
+			  int, flags),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_METHOD(rng, random_value,
+		      ARG(4,
+			  enum crypt_rng_type, rng_type,
+			  enum crypt_rng_rand_val_type, value_type,
+			  void *, uvalue,
+			  int, flags),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_METHOD(rng, random_entropy_avail,
+		      ARG_NO,
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_LSYSCALL_METHOD(getrandom, SYS_getrandom,
+			  ARG(3,
+			  void *, buf,
+			  size_t, buflen,
+			  unsigned int, flags))
+)

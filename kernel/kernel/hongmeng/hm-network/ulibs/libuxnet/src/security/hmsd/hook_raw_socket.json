@@ -1,0 +1,27 @@
+{
+    "template": "hook",
+    "server": "net",
+    "manager": "raw_socket",
+    "hooks": {
+        "raw_socket": {
+            "generation": {
+                "performance_compatibility": true
+            },
+            "scheme": "security check/privilege",
+            "arguments": [],
+            "ac": {
+                "ability": {
+                    "alias": "sec_chk_ability_raw_socket",
+                    "permission": "ab_raw_socket"
+                },
+                "capability": {
+                    "alias": "sec_chk_posix_cap_raw_socket",
+                    "enabled": true,
+                    "permission": [
+                        "NET_RAW"
+                    ]
+                }
+            }
+        }
+    }
+}

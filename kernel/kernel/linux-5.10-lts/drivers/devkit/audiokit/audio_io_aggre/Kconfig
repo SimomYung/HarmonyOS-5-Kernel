@@ -1,0 +1,5 @@
+config AUDIO_IO_AGGRE
+	tristate "audio io aggre driver"
+	default n
+	help
+	  Say Y to enable audio io aggre driver support

@@ -1,0 +1,23 @@
+# Copyright (C) Huawei Technologies Co., Ltd. 2021. All rights reserved.
+# Description: HMbuild
+# Author: Huawei OS Kernel Lab
+# Create: Wed Nov 03 16:09:54 2021
+
+findpkg: HMVispLibs
+
+subdir-CONFIG_UXNET_VISP_PPP: visp_ppp
+
+src-y: ux_libvisp.c
+src-y: ux_visp_netdev.c
+src-y: ux_visp_socket.c
+src-y: ux_visp_arp.c
+src-y: ux_visp_netstat.c
+src-y: ux_visp_route.c
+
+inclib-.: HMVispLibs::HMVispLib_include
+
+cflags-y: -Wno-implicit-function-declaration
+cflags-y: -Wno-missing-declarations
+cflags-ux_visp_netdev.c-y: -Wno-unused-parameter
+cflags-ux_visp_socket.c-y: -Wno-unused-parameter
+cflags-ux_visp_arp.c-y: -Wno-unused-parameter

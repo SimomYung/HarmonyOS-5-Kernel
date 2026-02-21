@@ -1,0 +1,14 @@
+# Copyright (c) Huawei Technologies Co., Ltd. 2022-2022. All rights reserved.
+# Description: HMbuild
+# Author: Huawei OS Kernel Lab
+# Create: Thu May 26 19:17:20 2022
+
+src-y: actv_id.c
+src-y: actv.c
+src-y: actv_vm.c
+src-y: actv_pure.c
+src-y: actv_threadpool.c
+src-y: actv_setup.c
+src-y: actv_assist.c
+src-y: actv_local_area.c
+src-y: actv_thread_info.c

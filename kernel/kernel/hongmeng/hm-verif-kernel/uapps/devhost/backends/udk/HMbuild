@@ -1,0 +1,40 @@
+# Copyright (c) Huawei Technologies Co., Ltd. 2022. All rights reserved.
+# Description: HMbuild for udk
+# Author: Huawei OS Kernel Lab
+# Create: Wed Feb 09 11:51:30 2022
+
+lib-dynamic-y: dh_udk
+lib-static-y: dh_udk_static
+output-dh_udk: dh-udk
+output-dh_udk_static: dh_udk
+libversion-dh_udk: 0.1
+
+findpkg-y: HWSecurec
+
+findpkg: HISILibs
+
+cflags-.-y: -DUDK_FRAMEWORK
+cflags-.-CONFIG_TRACEMGR: -D__HM_TRACEPOINT__
+
+include-.-y: include
+include-.-y: include/udk/tty/
+include-.-y: include/internal/tty/
+
+subdir-y: base
+subdir-y: dal
+subdir-y: security
+subdir-y: utils
+subdir-y: exts/hisi
+
+linklib-dh_udk-y: HWSecureC::HWSecureC_shared
+
+installinc: include/udk
+install-dh_udk-y: BASE_LIBDIR
+install-dh_udk_static-y: BASE_LIBDIR
+installfindmodule: modules/scripts/Findmodules/FindLibdh_udk.cmake
+
+subdir-CONFIG_HMBUILD_PROFILE_DEBUG: tests
+subdir-CONFIG_UDK_FUSION: fusion
+subdir-CONFIG_TRACEMGR: trace
+
+findpkg: HISILibs

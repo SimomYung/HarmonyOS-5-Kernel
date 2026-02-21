@@ -1,0 +1,14 @@
+/*
+ * Copyright (c) Huawei Technologies Co., Ltd. 2023-2023. All rights reserved.
+ * Description: pwrmgr devhost sysif APIs
+ * Author: Huawei OS Kernel Lab
+ * Create: Thu Jan 05 19:50:05 2023
+ */
+
+DEFINE_MANAGER(dh, 1,
+	DEFINE_METHOD(dh, register,
+		      ARG(2, unsigned long long, dh_ap_uref,
+		      unsigned int, type),
+		      RET_NO,
+		      SLOWDATA_NO)
+)

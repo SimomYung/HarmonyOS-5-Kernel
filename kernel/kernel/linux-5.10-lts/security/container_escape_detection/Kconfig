@@ -1,0 +1,6 @@
+config SECURITY_CONTAINER_ESCAPE_DETECTION
+	bool "Enable container escape detection"
+	default n
+	depends on SECURITY_SELINUX
+	help
+	  Build support for container escape detection.

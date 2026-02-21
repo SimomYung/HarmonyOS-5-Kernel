@@ -1,0 +1,18 @@
+/*
+ * Copyright (C) Huawei Technologies Co., Ltd. 2021-2021. All rights reserved.
+ * Description: Header file for epoll sysif api
+ * Author: Huawei OS Kernel Lab
+ * Create: Wed Mar 17 15:18:02 2021
+ */
+
+/*
+ * To support the mixed data model which means the client and the server
+ * may use different data model. See the comment for limitation of data type
+ * used in the sysif interfaces in <libsysif/base/api.h>.
+ */
+DEFINE_MANAGER(epoll, 2,
+	DEFINE_SIMPLE_METHOD(epoll, recheck_revents,
+			     ARG(1, void *, data),
+			     RET_NO,
+			     SLOWDATA_NO)
+)

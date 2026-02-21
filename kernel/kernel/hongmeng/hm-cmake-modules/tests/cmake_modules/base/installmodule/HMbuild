@@ -1,0 +1,20 @@
+# Copyright (C) Huawei Technologies Co., Ltd. 2021. All rights reserved.
+# Description: HMbuild
+# Author: Huawei OS Kernel Lab
+# Create: Wed Sep 22 16:23:44 2021
+
+lib-dynamic-y: test_pkg
+libversion-test_pkg-y: 3.3
+src-test_pkg-y: test_pkg.c
+install-test_pkg-y: LIBDIR
+
+lib-static-y: test_pkg_static
+output-test_pkg_static: test_pkg
+src-test_pkg_static-y: test_pkg.c
+install-test_pkg_static-y: LIBDIR
+
+installinc-test_pkg: test_pkg.h
+
+installfindmodule: FindTestPkg.cmake
+
+# vim:ts=4:sw=4:expandtab

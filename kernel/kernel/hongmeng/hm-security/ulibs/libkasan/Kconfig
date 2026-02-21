@@ -1,0 +1,25 @@
+# Copyright (c) Huawei Technologies Co., Ltd. 2021-2021. All rights reserved.
+# Description: Kconfig for libkasan
+# Author: Huawei OS Kernel Lab
+# Create: Wed Dec 01 08:52:37 2021
+
+# HMCMAKENG_KCONFIG is injected by HongmengCMakeNG/Kconfig.cmake
+# which defines multiple config options which is useful for HMbuild.
+source "$(HMCMAKENG_KCONFIG)"
+
+config KASAN_RUNTIME
+  bool "KASAN runtime for libraries"
+  default y
+
+config PRIVILEGED_KASAN
+  bool "Enable KASAN for privilege"
+  default n
+
+config KASAN_DELAY_FREE_SIZE_MB
+  int "Size (in Mb) of kasan delayed free"
+  range 0 256
+  default 8
+
+config PRIV_VS_SIZE_SYSMGR
+  hex "Privilege services vspace size"
+  default 0x400000000

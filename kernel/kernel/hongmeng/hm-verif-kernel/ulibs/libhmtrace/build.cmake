@@ -1,0 +1,5 @@
+add_hm_library(hmtracectrl.c)
+include(${CMAKE_CURRENT_LIST_DIR}/hmtrace/build.cmake)
+include(${CMAKE_CURRENT_LIST_DIR}/hmtracemgr/build.cmake)
+include(${CMAKE_CURRENT_LIST_DIR}/ring_buffer/build.cmake)
+include(${CMAKE_CURRENT_LIST_DIR}/ftrace/build.cmake)

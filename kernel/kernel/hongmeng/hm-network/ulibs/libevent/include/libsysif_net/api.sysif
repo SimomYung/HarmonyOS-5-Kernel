@@ -1,0 +1,26 @@
+/*
+ * Copyright (c) Huawei Technologies Co., Ltd. 2021-2021 All rights reserved.
+ * Description: DSL for code generator to generate sysif apis for net
+ * Author: Huawei OS Kernel Lab
+ * Create: Tue 06 Apr 2021 09:38:05 PM CST
+ */
+
+INCLUDE_C_HEADER(sys/epoll.h)
+INCLUDE_C_HEADER(sys/socket.h)
+INCLUDE_C_HEADER(sys/types.h)
+INCLUDE_C_HEADER(net/if.h)
+
+USE_CALL_PREFIX(netcall)
+USE_HANDLER_PREFIX(nethandler)
+USE_SERVER_NAME(hmnet)
+
+INCLUDE_SUBSYSTEM(libsysif_net/socket.sysif)
+INCLUDE_SUBSYSTEM(libsysif_net/epoll.sysif)
+INCLUDE_SUBSYSTEM(libsysif_net/config.sysif)
+INCLUDE_SUBSYSTEM(libsysif_net/netdev.sysif)
+INCLUDE_SUBSYSTEM(libsysif_net/procfs.sysif)
+INCLUDE_SUBSYSTEM(libsysif_net/netlink.sysif)
+INCLUDE_SUBSYSTEM(libsysif_net/vsock.sysif)
+INCLUDE_SUBSYSTEM(libsysif_net/ldk.sysif)
+INCLUDE_SUBSYSTEM(libsysif_net/seharmony.sysif)
+INCLUDE_SUBSYSTEM(libsysif_net/namespace.sysif)

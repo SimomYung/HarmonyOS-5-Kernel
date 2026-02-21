@@ -1,0 +1,19 @@
+/*
+ * Copyright (C) Huawei Technologies Co., Ltd. 2018-2020. All rights reserved.
+ * Author: Huawei OS Kernel Lab
+ * Create: Thu Dec 07 19:12:00 2018
+ */
+#ifndef AARCH64_UAPI_ASM_SYSCONF_H
+#define AARCH64_UAPI_ASM_SYSCONF_H
+
+enum {
+	__SYSCONF_PAGE_SHIFT,
+	__SYSCONF_VSPACE_LIMIT,
+	__SYSCONF_PHYSMEM_MAX_BITS,
+	__SYSCONF_PRIVILEGE_VS_SIZE,
+	__SYSCONF_PRIVILEGE_VA_START,
+	__SYSCONF_VSPACE_MAX_VLIMIT_32,
+	__SYSCONF_ARCH_MAX,
+};
+
+#endif

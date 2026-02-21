@@ -1,0 +1,9 @@
+#
+# super privacy driver configuration
+#
+
+config SUPER_PRIVACY
+	bool "super privacy support"
+	default n
+	help
+	Say yes here to support super privacy feature.

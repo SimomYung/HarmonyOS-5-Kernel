@@ -1,0 +1,20 @@
+# SPDX-License-Identifier: GPL-2.0
+
+config EXT_LSW
+	bool "Support Ext Lan Switch"
+	default n
+
+config L2SW_DEBUG
+	bool "Lan Switch debug"
+	depends on EXT_LSW
+	default n
+
+config ESC2507_LSW
+	bool "ESC2507 Lan Switch"
+	depends on EXT_LSW
+	default n
+
+config RTL8367_LSW
+	bool "RTL8367 Lan Switch"
+	depends on EXT_LSW
+	default n

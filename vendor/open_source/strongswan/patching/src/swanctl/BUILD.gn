@@ -1,0 +1,83 @@
+# Copyright (c) 2024 Huawei Device Co., Ltd.
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+import("//build/ohos.gni")
+import("//vendor/open_source/strongswan/strongswan_config.gni")
+
+source_gen_dir = "${target_gen_dir}/../../../strongswan/src/swanctl"
+sources_list = [
+  "${source_gen_dir}/command.c",
+  "${source_gen_dir}/commands/counters.c",
+  "${source_gen_dir}/commands/flush_certs.c",
+  "${source_gen_dir}/commands/initiate.c",
+  "${source_gen_dir}/commands/install.c",
+  "${source_gen_dir}/commands/list_algs.c",
+  "${source_gen_dir}/commands/list_authorities.c",
+  "${source_gen_dir}/commands/list_certs.c",
+  "${source_gen_dir}/commands/list_conns.c",
+  "${source_gen_dir}/commands/list_pols.c",
+  "${source_gen_dir}/commands/list_pools.c",
+  "${source_gen_dir}/commands/list_sas.c",
+  "${source_gen_dir}/commands/load_all.c",
+  "${source_gen_dir}/commands/load_authorities.c",
+  "${source_gen_dir}/commands/load_conns.c",
+  "${source_gen_dir}/commands/load_creds.c",
+  "${source_gen_dir}/commands/load_pools.c",
+  "${source_gen_dir}/commands/log.c",
+  "${source_gen_dir}/commands/redirect.c",
+  "${source_gen_dir}/commands/rekey.c",
+  "${source_gen_dir}/commands/reload_settings.c",
+  "${source_gen_dir}/commands/stats.c",
+  "${source_gen_dir}/commands/terminate.c",
+  "${source_gen_dir}/commands/version.c",
+  "${source_gen_dir}/swanctl.c",
+]
+action("swanctl_install_action") {
+  script = "//vendor/open_source/strongswan/empty.py"
+  outputs = sources_list
+  deps = [ "../../../:strongswan_install_action" ]
+}
+
+ohos_executable("swanctl") {
+  sources = get_target_outputs(":swanctl_install_action")
+
+  include_dirs = [
+    "${source_gen_dir}",
+    "${source_gen_dir}/../libstrongswan",
+    "${source_gen_dir}/../libstrongswan/netmanager/include",
+    "${source_gen_dir}/../libcharon/plugins/vici",
+    "${source_gen_dir}/../libcharon/certmanager/include",
+  ]
+
+  cflags = common_cflags
+  cflags_cc = common_cflags_cc
+  defines = common_defines
+  defines += [ "PLUGINS=\"pkcs11 aes des rc2 sha2 sha1 md5 random nonce x509 revocation constraints pubkey pkcs1 pkcs7 pkcs12 pgp dnskey sshkey pem openssl pkcs8 af-alg fips-prf curve25519 xcbc cmac hmac kdf ctr ccm gcm drbg\"" ]
+
+  deps = [
+    ":swanctl_install_action",
+    "../libcharon:libcharon",
+    "../libstrongswan:libstrongswan",
+  ]
+
+  external_deps = [
+    "c_utils:utils",
+    "hilog:libhilog",
+    "ipc:ipc_single",
+    "netmanager_ext:net_vpn_manager_if",
+  ]
+
+  install_enable = true
+  part_name = "strongswan"
+  subsystem_name = "open_source"
+}

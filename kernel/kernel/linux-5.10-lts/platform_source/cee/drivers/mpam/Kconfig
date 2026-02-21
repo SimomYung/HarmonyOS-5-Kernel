@@ -1,0 +1,49 @@
+menu "MPAM"
+config MPAM
+	depends on ARM64
+	tristate "CPU MPAM ARMv8"
+	help
+	  MPAM Support for ARMv8.
+	  For debugging issues having to do with stability and overall system
+	  health, you should probably say 'Y' here.
+
+config MPAM_POLICY
+	depends on MPAM
+	tristate "CPU MPAM POLICY"
+	help
+	  MPAM POLICY SUPPORT.
+
+config MPAM_DEBUG
+	depends on MPAM
+	bool "MPAM debug"
+	default n
+	help
+	  Say y if you want to use MPAM debug function.
+
+config MPAM_MON_DEBUG
+	depends on MPAM_DEBUG
+	bool "MPAM debug"
+	default n
+	help
+	  Say y if you want to use MPAM MON debug function.
+
+config MPAM_CPBM_DEBUG
+	depends on MPAM_DEBUG
+	bool "MPAM debug"
+	default n
+	help
+	  Say y if you want to use MPAM CPBM debug function.
+
+config MPAM_QOS_DEBUG
+	depends on MPAM_DEBUG
+	bool "MPAM debug"
+	default n
+	help
+	  Say y if you want to use MPAM QOS debug function.
+
+config MPAM_UX_SPEEDUP_POLICY
+	depends on MPAM_POLICY
+	tristate "MPAM POLICY SYSCTL"
+	help
+	  MPAM POLICY SYSCTL.
+endmenu

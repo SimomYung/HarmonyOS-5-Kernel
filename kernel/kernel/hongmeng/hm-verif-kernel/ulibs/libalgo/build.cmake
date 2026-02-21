@@ -1,0 +1,6 @@
+add_hm_library(rb_htable.c)
+add_hm_library(easy_rbhtable.c)
+add_hm_library(id_generator.c)
+add_hm_library(radix_tree.c)
+add_hm_library(idr.c)
+add_hm_library(interval_tree.c)

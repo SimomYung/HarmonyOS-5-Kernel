@@ -1,0 +1,562 @@
+{
+    "root": {
+        "data": {
+            "id": "cghk7jql0280",
+            "created": 1639742514125,
+            "text": "HpeMenzone",
+            "usecase": 99,
+            "expandState": "expand"
+        },
+        "children": [
+            {
+                "data": {
+                    "id": "cijk5wd1qeo0",
+                    "created": 1647257821670,
+                    "text": "void *HPE_Smmap(const char *name, uint32_t size, int32_t *isJustCreated)",
+                    "usecase": 1,
+                    "layout_right_offset": {
+                        "x": 16,
+                        "y": 1
+                    }
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "cijkf6m8nk80",
+                            "created": 1647258549271,
+                            "text": "入参分析",
+                            "usecase": 2,
+                            "layout_right_offset": {
+                                "x": 16,
+                                "y": -29
+                            }
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "cijkh1tft3k0",
+                                    "created": 1647258695550,
+                                    "text": "name"
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "cijkh4ccqs80",
+                                            "created": 1647258701048,
+                                            "text": "长度",
+                                            "usecase": 4,
+                                            "author": "w00568150",
+                                            "showId": "00051"
+                                        },
+                                        "children": []
+                                    },
+                                    {
+                                        "data": {
+                                            "id": "cijkh92pc1s0",
+                                            "created": 1647258711348,
+                                            "text": "是否为空",
+                                            "usecase": 4,
+                                            "author": "w00568150",
+                                            "showId": "00052"
+                                        },
+                                        "children": []
+                                    }
+                                ]
+                            },
+                            {
+                                "data": {
+                                    "id": "cijkiexp4c80",
+                                    "created": 1647258802470,
+                                    "text": "size"
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "cijkij83mr40",
+                                            "created": 1647258811806,
+                                            "text": "size=0，表示查找",
+                                            "usecase": 4,
+                                            "author": "w00568150",
+                                            "showId": "00053"
+                                        },
+                                        "children": []
+                                    },
+                                    {
+                                        "data": {
+                                            "id": "cijkkxia5340",
+                                            "created": 1647258999625,
+                                            "text": "size > 2MB, 返回失败",
+                                            "usecase": 4,
+                                            "author": "w00568150",
+                                            "showId": "00054"
+                                        },
+                                        "children": []
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "data": {
+                            "id": "cijkitz13kw0",
+                            "created": 1647258835202,
+                            "text": "功能性分析",
+                            "usecase": 2,
+                            "layout_right_offset": {
+                                "x": 10,
+                                "y": -2
+                            }
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "cijkj0ze3fk0",
+                                    "created": 1647258850462,
+                                    "text": "heap算法"
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "cijkjxfn2ts0",
+                                            "created": 1647258921101,
+                                            "text": "HpeMemzoneReserve/HpeMemzoneFree"
+                                        },
+                                        "children": []
+                                    }
+                                ]
+                            },
+                            {
+                                "data": {
+                                    "id": "cijkjh148yo0",
+                                    "created": 1647258885395,
+                                    "text": "首次创建，返回64位对齐的地址",
+                                    "usecase": 4,
+                                    "author": "w00568150",
+                                    "showId": "00055"
+                                },
+                                "children": []
+                            },
+                            {
+                                "data": {
+                                    "id": "cijkpbgdzyw0",
+                                    "created": 1647259343442,
+                                    "text": "第二次调用，相同的name，size小于等于第一次创建的size，返回64位对齐的地址；",
+                                    "usecase": 4,
+                                    "author": "w00568150",
+                                    "showId": "00056"
+                                },
+                                "children": []
+                            },
+                            {
+                                "data": {
+                                    "id": "cik3yhzyguw0",
+                                    "created": 1647313664052,
+                                    "text": "第二次调用，相同的name，size大于等于第一次创建的size，返回失败",
+                                    "usecase": 4,
+                                    "author": "w00568150",
+                                    "showId": "00091"
+                                },
+                                "children": []
+                            }
+                        ]
+                    },
+                    {
+                        "data": {
+                            "id": "cijkqt8ukds0",
+                            "created": 1647259460533,
+                            "text": "可靠性测试",
+                            "usecase": 2
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "cijkqxb0ptk0",
+                                    "created": 1647259469371,
+                                    "text": "规格测试，128个memzone申请满，再次申请，返回NULL",
+                                    "usecase": 4,
+                                    "author": "w00568150",
+                                    "showId": "00059"
+                                },
+                                "children": []
+                            },
+                            {
+                                "data": {
+                                    "id": "cijkrdpxhu80",
+                                    "created": 1647259505101,
+                                    "text": "并发"
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "cijktbemotk0",
+                                            "created": 1647259656793,
+                                            "text": "多线程",
+                                            "usecase": 4,
+                                            "author": "w00568150",
+                                            "showId": "00060"
+                                        },
+                                        "children": []
+                                    },
+                                    {
+                                        "data": {
+                                            "id": "cijktfv98a80",
+                                            "created": 1647259666505,
+                                            "text": "多进程",
+                                            "usecase": 4,
+                                            "author": "w00568150",
+                                            "showId": "cijktfv98a80"
+                                        },
+                                        "children": []
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "data": {
+                    "id": "cijkuefbso80",
+                    "created": 1647259741729,
+                    "text": "HpeMemzone *HpeMemzoneReserve(const char *UserName, uint32_t memSize)",
+                    "usecase": 1,
+                    "layout_right_offset": {
+                        "x": 1,
+                        "y": 32
+                    }
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "cijkumsnsxc0",
+                            "created": 1647259759950,
+                            "text": "入参分析",
+                            "usecase": 2,
+                            "layout_right_offset": {
+                                "x": 16,
+                                "y": -29
+                            }
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "cijkumsnzyo0",
+                                    "created": 1647259759950,
+                                    "text": "name"
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "cijkumso6540",
+                                            "created": 1647259759950,
+                                            "text": "长度",
+                                            "usecase": 4,
+                                            "author": "w00568150",
+                                            "showId": "00070"
+                                        },
+                                        "children": []
+                                    },
+                                    {
+                                        "data": {
+                                            "id": "cijkumsnm5c0",
+                                            "created": 1647259759950,
+                                            "text": "是否为空",
+                                            "usecase": 4,
+                                            "author": "w00568150",
+                                            "showId": "00071"
+                                        },
+                                        "children": []
+                                    }
+                                ]
+                            },
+                            {
+                                "data": {
+                                    "id": "cijkumso5cw0",
+                                    "created": 1647259759950,
+                                    "text": "size"
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "cijkumsnt000",
+                                            "created": 1647259759950,
+                                            "text": "size=0，表示查找",
+                                            "usecase": 4,
+                                            "author": "w00568150",
+                                            "showId": "00072"
+                                        },
+                                        "children": []
+                                    },
+                                    {
+                                        "data": {
+                                            "id": "cijkumsnstc0",
+                                            "created": 1647259759950,
+                                            "text": "size > 2MB, 返回失败",
+                                            "usecase": 4,
+                                            "author": "w00568150",
+                                            "showId": "00073"
+                                        },
+                                        "children": []
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "data": {
+                            "id": "cijkumsnn400",
+                            "created": 1647259759950,
+                            "text": "功能性分析",
+                            "usecase": 2,
+                            "layout_right_offset": {
+                                "x": 10,
+                                "y": -2
+                            }
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "cijkumsnvso0",
+                                    "created": 1647259759950,
+                                    "text": "首次创建，返回64位对齐的地址，查看内存均可以使用",
+                                    "usecase": 4,
+                                    "author": "w00568150",
+                                    "showId": "00074"
+                                },
+                                "children": []
+                            },
+                            {
+                                "data": {
+                                    "id": "cijkumsnrvk0",
+                                    "created": 1647259759950,
+                                    "text": "第二次调用，相同的name，size小于等于第一次创建的size，返回64位对齐的地址；",
+                                    "usecase": 4,
+                                    "author": "w00568150",
+                                    "showId": "00075"
+                                },
+                                "children": []
+                            }
+                        ]
+                    },
+                    {
+                        "data": {
+                            "id": "cijkumsojn40",
+                            "created": 1647259759951,
+                            "text": "可靠性测试",
+                            "usecase": 2
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "cijkumsoeao0",
+                                    "created": 1647259759951,
+                                    "text": "规格测试，128个memzone申请满，再次申请，返回NULL",
+                                    "usecase": 4,
+                                    "author": "w00568150",
+                                    "showId": "00076"
+                                },
+                                "children": []
+                            },
+                            {
+                                "data": {
+                                    "id": "cijkumso9w80",
+                                    "created": 1647259759951,
+                                    "text": "并发"
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "cijkumsofa80",
+                                            "created": 1647259759951,
+                                            "text": "多线程",
+                                            "usecase": 4,
+                                            "author": "w00568150",
+                                            "showId": "00077"
+                                        },
+                                        "children": []
+                                    },
+                                    {
+                                        "data": {
+                                            "id": "cijkumsoqiw0",
+                                            "created": 1647259759951,
+                                            "text": "多进程",
+                                            "usecase": 4,
+                                            "showId": "cijkumsoqiw0"
+                                        },
+                                        "children": []
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "data": {
+                    "id": "cijkv5sqru80",
+                    "created": 1647259801314,
+                    "text": "int32_t HpeMemzoneFree(HpeMemzone *memZone)",
+                    "usecase": 1,
+                    "layout_right_offset": {
+                        "x": 34,
+                        "y": 111
+                    }
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "cijkvi6xxgg0",
+                            "created": 1647259828294,
+                            "text": "入参分析",
+                            "usecase": 2,
+                            "layout_right_offset": {
+                                "x": 16,
+                                "y": -29
+                            }
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "cijkvi6ywc00",
+                                    "created": 1647259828295,
+                                    "text": "memZone"
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "cijkvi6yh200",
+                                            "created": 1647259828295,
+                                            "text": "判断memZone的的状态",
+                                            "usecase": 4,
+                                            "author": "w00568150",
+                                            "showId": "00078"
+                                        },
+                                        "children": []
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "data": {
+                            "id": "cijkwngydrs0",
+                            "created": 1647259918147,
+                            "text": "功能性分析",
+                            "usecase": 2,
+                            "layout_right_offset": {
+                                "x": 10,
+                                "y": -2
+                            }
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "cijkwngy6hc0",
+                                    "created": 1647259918147,
+                                    "text": "间隔释放内存，查看内存使用量",
+                                    "usecase": 4,
+                                    "author": "w00568150",
+                                    "showId": "00084"
+                                },
+                                "children": []
+                            },
+                            {
+                                "data": {
+                                    "id": "cijkwngybq80",
+                                    "created": 1647259918147,
+                                    "text": "紧邻释放内存，查看内存使用量",
+                                    "usecase": 4,
+                                    "author": "w00568150",
+                                    "showId": "00085"
+                                },
+                                "children": []
+                            }
+                        ]
+                    },
+                    {
+                        "data": {
+                            "id": "cijkylzzb3s0",
+                            "created": 1647260071672,
+                            "text": "可靠性测试",
+                            "usecase": 2
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "cijkylzzeqw0",
+                                    "created": 1647260071672,
+                                    "text": "规格测试，128个memzone申请满，再次申请，返回NULL",
+                                    "usecase": 4,
+                                    "author": "w00568150",
+                                    "showId": "00088"
+                                },
+                                "children": []
+                            },
+                            {
+                                "data": {
+                                    "id": "cijkylzz09k0",
+                                    "created": 1647260071672,
+                                    "text": "并发"
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "cijkylzz9gg0",
+                                            "created": 1647260071672,
+                                            "text": "多线程",
+                                            "usecase": 4,
+                                            "author": "w00568150",
+                                            "showId": "00089"
+                                        },
+                                        "children": []
+                                    },
+                                    {
+                                        "data": {
+                                            "id": "cijkylzzei00",
+                                            "created": 1647260071672,
+                                            "text": "多进程",
+                                            "usecase": 4,
+                                            "showId": "cijkylzzei00"
+                                        },
+                                        "children": []
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "data": {
+                    "id": "cijkysq3eq00",
+                    "created": 1647260086312,
+                    "text": "HpeMemzone *HpeMemzoneLookup(const char *name)",
+                    "layout_right_offset": {
+                        "x": 15,
+                        "y": 230
+                    },
+                    "usecase": 1
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "cijkyyo1c3k0",
+                            "created": 1647260099248,
+                            "text": "观察已经申请的name的地址",
+                            "usecase": 4,
+                            "author": "w00568150",
+                            "showId": "00090"
+                        },
+                        "children": []
+                    }
+                ]
+            }
+        ]
+    },
+    "templatePath": null,
+    "singleTemplatePath": null,
+    "testcaseFilePath": "",
+    "template": "right",
+    "theme": "fresh-blue-compat",
+    "version": "1.4.43"
+}

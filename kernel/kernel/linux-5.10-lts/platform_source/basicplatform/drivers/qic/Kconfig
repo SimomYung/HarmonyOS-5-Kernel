@@ -1,0 +1,48 @@
+config DFX_SEC_QIC
+	bool "Support Secure QIC"
+	default n
+	help
+	  This driver supports xxx secure QIC,
+	  including qic driver
+config DFX_SEC_QIC_V100
+	depends on DFX_SEC_QIC
+	bool "Support Secure QIC V100"
+	default n
+	help
+	  Support Secure QIC V100
+config DFX_SEC_QIC_V100_MODID_REGISTER
+	depends on DFX_SEC_QIC_V100
+	bool "Support Secure QIC V100 modid register"
+	default n
+	help
+	  Support Secure QIC V100 modid register
+config DFX_SEC_QIC_V300
+	depends on DFX_SEC_QIC
+	bool "Support Secure QIC V300"
+	default n
+	help
+	  Support Secure QIC V300
+config DFX_SEC_QIC_V300_MODID_REGISTER
+	depends on DFX_SEC_QIC_V300
+	bool "Support Secure QIC V300 modid register"
+	default n
+	help
+	  Support Secure QIC V300 modid register
+config DFX_SEC_QIC_V300_ADVANCED
+        depends on DFX_SEC_QIC_V300
+        bool "Support QIC V300 Advanced"
+        default n
+        help
+          Support Diff for secondversion of QIC V300
+config DFX_SEC_QIC_V300_MDM_MODID_REGISTER
+	depends on DFX_SEC_QIC_V300 && !DFX_SEC_QIC_V300_ADVANCED
+	bool "Support QIC V300 modem modid register"
+	default n
+	help
+	  Support QIC V300 modem modid register
+config DFX_SEC_QIC_V300_CHIP_ERRLOG_MODIFY
+	depends on DFX_SEC_QIC_V300
+	bool "Support QIC V300 chip error log info modify"
+	default n
+	help
+	  Support QIC V300 chip error log info modify

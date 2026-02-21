@@ -1,0 +1,11 @@
+# Copyright (c) Huawei Technologies Co., Ltd. 2022-2022. All rights reserved.
+# Description: HMbuild for log
+# Author: Huawei OS Kernel Lab
+# Create: Tue Feb 08 16:24:29 2022
+
+src-y: bug_impl.c
+src-y: errno.c
+src-y: hmlog.c
+src-y: hmlog_printf.c
+src-y: panic_impl.c
+src-y: printf.c

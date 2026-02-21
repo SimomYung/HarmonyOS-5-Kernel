@@ -1,0 +1,1 @@
+obj-$(CONFIG_CUST_AUDIO_MAINTAIN) += audio_maintain.o

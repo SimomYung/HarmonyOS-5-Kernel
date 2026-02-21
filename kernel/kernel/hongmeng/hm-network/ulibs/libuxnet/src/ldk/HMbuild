@@ -1,0 +1,7 @@
+# Copyright (C) Huawei Technologies Co., Ltd. 2022. All rights reserved.
+# Description: HMbuild
+# Author: Huawei OS Kernel Lab
+# Create: Mon May 16 18:27:51 2022
+
+src-y: ux_ldk_socket.c
+src-y: ux_libldk.c

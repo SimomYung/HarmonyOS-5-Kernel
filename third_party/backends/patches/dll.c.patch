@@ -1,0 +1,17 @@
+diff --git a/backend/dll.c b/backend/dll.c
+index 7cb7fd508..69918099f 100644
+--- a/backend/dll.c
++++ b/backend/dll.c
+@@ -1349,6 +1349,12 @@ sane_open (SANE_String_Const full_name, SANE_Handle * meta_handle)
+     }
+   free(be_name);
+
++  if (!be)
++    {
++      DBG (3, "sane_open: be is nullptr\n");
++      return SANE_STATUS_NO_MEM;
++    }
++
+   if (!be->inited)
+     {
+       status = init (be);

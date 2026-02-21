@@ -1,0 +1,26 @@
+/*
+ * Copyright (C) Huawei Technologies Co., Ltd. 2020. All rights reserved.
+ * Description: Inotify manager header file
+ * Author: Huawei OS Kernel Lab
+ * Create: Sat Aug 29 12:47:04 2020
+ */
+
+/*
+ * To support the mixed data model which means the client and the server
+ * may use different data model. See the comment for limitation of data type
+ * used in the sysif interfaces in <libsysif/base/api.h>.
+ */
+DEFINE_MANAGER(inotify, 16,
+	DEFINE_LSYSCALL_METHOD(init1, SYS_inotify_init1,
+		      ARG(1, unsigned int, flags))
+
+	DEFINE_LSYSCALL_METHOD(init, SYS_inotify_init,
+		      ARG_NO,
+		      ARCH(__arm__))
+
+	DEFINE_LSYSCALL_METHOD(add_watch, SYS_inotify_add_watch,
+		      ARG(3, long long, inotify_fd, const char *, pathname, unsigned int, mask))
+
+	DEFINE_LSYSCALL_METHOD(rm_watch, SYS_inotify_rm_watch,
+		      ARG(2, long long, inotify_fd, int, wd))
+	)

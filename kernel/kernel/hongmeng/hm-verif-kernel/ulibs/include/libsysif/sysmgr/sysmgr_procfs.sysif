@@ -1,0 +1,201 @@
+/*
+ * Copyright (c) Huawei Technologies Co., Ltd. 2019-2020. All rights reserved.
+ * Description: Procfs manager interface header file
+ * Author: Huawei OS Kernel Lab
+ * Create: Sat May 25 13:56:17 CST 2019
+ */
+
+/*
+ * To support the mixed data model which means the client and the server
+ * may use different data model. See the document for limitation of data type
+ * used in the sysif interfaces in <Documentation/sysif_compat.md>.
+ */
+#ifdef SYSIF_EXPORT_API
+#define PROCFS_SIMPLE_DATA_LEN (SYSIF_REPLY_LEN_MAX - sizeof(unsigned long long))
+
+/*
+ * Note:
+ *   The client and the server shall see the same sizeof(struct)
+ */
+struct procfs_simple_data {
+	uint32_t size;
+	char data[PROCFS_SIMPLE_DATA_LEN];
+};
+
+#define PROCFS_TAGNAME_MAX_LEN 32
+struct procfs_tagname {
+	char name[PROCFS_TAGNAME_MAX_LEN];
+};
+#endif
+
+DEFINE_MANAGER(procfs, 34,
+	DEFINE_SIMPLE_METHOD(procfs, simple_read,
+		      ARG(1, struct hm_actv_buf, name_buf),
+		      RET(1, struct procfs_simple_data, result),
+		      SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(procfs, simple_pid_read,
+		      ARG(4, int, pid, unsigned long long, seq,
+		          unsigned int, nsid,
+		          struct hm_actv_buf, name_buf),
+		      RET(1, struct procfs_simple_data, result),
+		      SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(procfs, simple_tid_read,
+		      ARG(4, int, tid, unsigned long long, seq,
+		          unsigned int, nsid,
+		          struct hm_actv_buf, name_buf),
+		      RET(1, struct procfs_simple_data, result),
+		      SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(procfs, pid_read,
+		      ARG(6,
+		      int, pid, unsigned int, nsid,
+		      unsigned long long, seq,
+		      unsigned long, vaddr, size_t, len,
+		      struct hm_actv_buf, name_buf),
+		      RET_NO,
+		      SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(procfs, tid_read,
+		      ARG(6,
+		      int, tid, unsigned int, nsid,
+		      unsigned long long, seq,
+		      unsigned long, vaddr, size_t, len,
+		      struct hm_actv_buf, name_buf),
+		      RET_NO,
+		      SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(procfs, read,
+		      ARG(3,
+			  unsigned long, vaddr, size_t, len,
+			  struct hm_actv_buf, name_buf),
+		      RET_NO,
+		      SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(procfs, pid_write,
+		      ARG(6,
+			  struct procfs_tagname, name,
+			  int, pid, unsigned long long, seq,
+			  unsigned int, nsid,
+			  unsigned long long, pos,
+			  struct hm_actv_buf, name_buf),
+		      RET_NO,
+		      SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(procfs, tid_write,
+		      ARG(6,
+			  struct procfs_tagname, name,
+			  int, tid, unsigned long long, seq,
+			  unsigned int, nsid,
+			  unsigned long long, pos,
+			  struct hm_actv_buf, name_buf),
+			  RET_NO,
+			  SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(procfs, write,
+		      ARG(3, struct procfs_tagname, name, unsigned long long, pos,
+		          struct hm_actv_buf, name_buf),
+		      RET_NO,
+		      SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(procfs, yama_write,
+		      ARG(5,
+			  unsigned long long, pos,
+			  unsigned int, cnode_idx,
+			  struct procfs_tagname, name,
+			  const void *, send_buf,
+			  unsigned long, buf_len),
+			  RET_NO,
+			  SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(procfs, get_allpids,
+		      ARG(3, unsigned long, vaddr,
+		          size_t, len,
+		          unsigned int, nsid),
+			  RET_NO,
+			  SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(procfs, get_alltids,
+		      ARG(5, int, pid, unsigned int, nsid,
+		          unsigned long long, seq,
+			  unsigned long, vaddr, size_t, len),
+			  RET_NO,
+			  SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(procfs, get_irq_names,
+		      ARG(2, unsigned long, vaddr, size_t, len),
+		      RET_NO,
+		      SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(procfs, simple_irq_read,
+		      ARG(2, uint32_t, id, struct hm_actv_buf, name_buf),
+		      RET_NO,
+		      SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(procfs, irq_read,
+		      ARG(4,
+		      uint32_t, irq_id,
+		      unsigned long, vaddr, size_t, len,
+		      struct hm_actv_buf, name_buf),
+		      RET_NO,
+		      SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(procfs, irq_write,
+		      ARG(4,
+			  uint32_t, irq_id,
+			  struct procfs_tagname, tagname,
+			  unsigned long long, pos,
+			  struct hm_actv_buf, src_buf),
+		      RET_NO,
+		      SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(procfs, get_processes_nr,
+		      ARG_NO,
+		      RET_NO,
+		      SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(procfs, ptid_get_cnode_idx,
+		      ARG(2, pid_t, ptid, unsigned int, nsid),
+		      RET(3, pid_t, pid, unsigned int, cnode_idx, pid_t, tid),
+		      SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(procfs, ptid_ioctl,
+		      ARG(7,
+			  int, pid,
+			  int, tid,
+			  unsigned long long, seq,
+			  unsigned int, nsid,
+			  unsigned int, cmd,
+			  unsigned long, arg,
+			  struct hm_actv_buf, name_buf),
+			  RET_NO,
+		      SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(qos, sched_ioctl,
+		      ARG(2,
+			  unsigned int, cmd,
+			  unsigned long, arg),
+			  RET_NO,
+		      SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(procfs, epoll_ctl_ng,
+		      ARG(2,
+			  struct hm_actv_buf, name_buf,
+			  struct hm_actv_buf, ep_arg_buf),
+		      RET_NO,
+		      SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(procfs, epoll_remove,
+		      ARG(2,
+		          struct hm_actv_buf, name_buf,
+			  unsigned long long, ep_cref),
+		      RET_NO,
+		      SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(procfs, epoll_recheck_revents,
+		      ARG(2,
+		          struct hm_actv_buf, name_buf,
+			  unsigned long long, events),
+		      RET(1,
+			  unsigned long long, revents),
+		      SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(procfs, smt_privileged_user,
+			  ARG_NO,
+			  RET(1, bool, flag),
+			  SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(procfs, freq_privileged_user,
+			  ARG_NO,
+			  RET(1, bool, flag),
+			  SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(procfs, get_irq_num,
+			  ARG_NO,
+			  RET_NO,
+			  SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(procfs, get_threads_nr,
+			  ARG(3, unsigned int, nsid, int, pid, unsigned long long, seq),
+			  RET_NO,
+			  SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(procfs, get_log_usertype,
+			  ARG_NO,
+			  RET_NO,
+			  SLOWDATA_NO)
+)

@@ -1,0 +1,25 @@
+import("//build/ohos.gni")
+
+config("eigen_public_includes") {
+  include_dirs = [ "." ]
+
+  defines = [
+    "EIGEN_MPL2_ONLY",
+    "EIGEN_MAX_ALIGN_BYTES=64",
+    "EIGEN_HAS_TYPE_TRAITS=0",
+  ]
+}
+
+# As this target suppresses warnings, it should not be added to public_configs.
+# Only eigen_public_includes should be in public_configs.
+config("eigen_includes") {
+  cflags = [
+    "-Wno-deprecated-copy",
+    "-Wno-deprecated-declarations",
+    "-Wno-extra-semi",
+    "-Wno-unused-function",
+    "-Wno-unused-result",
+  ]
+
+  configs = [ ":eigen_public_includes" ]
+}

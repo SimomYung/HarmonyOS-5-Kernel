@@ -1,0 +1,51 @@
+category TLCore
+depend hyphen-base
+depend hyph-utf8
+shortdesc Latin hyphenation patterns.
+longdesc Hyphenation patterns for Latin in T1/EC and UTF-8 encodings,
+longdesc mainly in modern spelling (u when u is needed and v when v is needed),
+longdesc medieval spelling with the ligatures \ae and \oe and the (uncial)
+longdesc lowercase 'v' written as a 'u' is also supported.  Apparently
+longdesc there is no conflict between the patterns of modern Latin and
+longdesc those of medieval Latin.
+longdesc Hyphenation patterns for the Classical Latin in T1/EC and UTF-8
+longdesc encodings. Classical Latin hyphenation patterns are different from
+longdesc those of 'plain' Latin, the latter being more adapted to modern Latin.
+longdesc Hyphenation patterns for the Liturgical Latin in T1/EC and UTF-8
+longdesc encodings.
+execute AddHyphen \
+	name=latin \
+	lefthyphenmin=2 \
+	righthyphenmin=2 \
+	file=loadhyph-la.tex \
+	file_patterns=hyph-la.pat.txt \
+	file_exceptions=
+execute AddHyphen \
+	name=classiclatin \
+	lefthyphenmin=2 \
+	righthyphenmin=2 \
+	file=loadhyph-la-x-classic.tex \
+	file_patterns=hyph-la-x-classic.pat.txt \
+	file_exceptions=
+execute AddHyphen \
+	name=liturgicallatin \
+	lefthyphenmin=2 \
+	righthyphenmin=2 \
+	file=loadhyph-la-x-liturgic.tex \
+	file_patterns=hyph-la-x-liturgic.pat.txt \
+	file_exceptions=
+runpattern f texmf-dist/tex/generic/hyph-utf8/loadhyph/loadhyph-la-x-classic.tex
+runpattern f texmf-dist/tex/generic/hyph-utf8/loadhyph/loadhyph-la-x-liturgic.tex
+runpattern f texmf-dist/tex/generic/hyph-utf8/loadhyph/loadhyph-la.tex
+runpattern f texmf-dist/tex/generic/hyph-utf8/patterns/ptex/hyph-la-x-liturgic.ec.tex
+runpattern f texmf-dist/tex/generic/hyph-utf8/patterns/ptex/hyph-la.ec.tex
+runpattern f texmf-dist/tex/generic/hyph-utf8/patterns/tex-8bit/hyph-la-x-classic.ec.tex
+runpattern f texmf-dist/tex/generic/hyph-utf8/patterns/tex/hyph-la-x-classic.tex
+runpattern f texmf-dist/tex/generic/hyph-utf8/patterns/tex/hyph-la-x-liturgic.tex
+runpattern f texmf-dist/tex/generic/hyph-utf8/patterns/tex/hyph-la.tex
+runpattern f texmf-dist/tex/generic/hyph-utf8/patterns/txt/hyph-la-x-classic.hyp.txt
+runpattern f texmf-dist/tex/generic/hyph-utf8/patterns/txt/hyph-la-x-classic.pat.txt
+runpattern f texmf-dist/tex/generic/hyph-utf8/patterns/txt/hyph-la-x-liturgic.hyp.txt
+runpattern f texmf-dist/tex/generic/hyph-utf8/patterns/txt/hyph-la-x-liturgic.pat.txt
+runpattern f texmf-dist/tex/generic/hyph-utf8/patterns/txt/hyph-la.hyp.txt
+runpattern f texmf-dist/tex/generic/hyph-utf8/patterns/txt/hyph-la.pat.txt

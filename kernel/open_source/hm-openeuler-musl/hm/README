@@ -1,0 +1,69 @@
+## About
+
+hm-libc is a C standard library implementation based on musl libc
+and intended for use on HongmengOS.
+
+## Directories
+
+### hm-libc
+
+Root directory `hm-libc` is a snapshot from musl libc version 1.2.0:
+(https://www.musl-libc.org/releases/musl-1.2.0.tar.gz)
+
+### hm
+
+Directory `hm` contains newly created files besides musl code, the directory
+names should be identical with ones in `musl/`.
+
+## Adaption
+
+### existed interface
+
+To change the files exist in musl, modify the source files and commit them.
+
+### new interface
+
+To add new interfaces not exist in musl, put the new files under `hm`
+directory.
+
+## Compile
+
+NOTE: The self-developed compiler is used by default, and the path of the
+compiler should be set at first.
+(e.g., export PATH=$PATH:$your_sdk_path/sysroots/x86_64-eulersdk-linux/usr/bin/)
+
+There are two methods to compile hm-libc:
+
+1. Compile hm-libc using default argument setting:
+
+- aarch64 (little-endian)
+`cd hm; make ARCH=aarch64 -j` or `make -C hm ARCH=aarch64 -j`
+- aarch64 (big-endian)
+`cd hm; make ARCH=aarch64 SUBARCH=be -j` or `make -C hm ARCH=aarch64 SUBARCH=be -j`
+- arm (little-endian)
+`cd hm; make ARCH=arm -j` or `make -C hm ARCH=arm -j`
+- arm (big-endian)
+`cd hm; make ARCH=arm SUBARCH=be -j` or `make -C hm ARCH=arm SUBARCH=be -j`
+
+(Other architectures are not supported yet.)
+
+2. Set compile argument with configure in the srcdir or the builddir
+
+Enter the srcdir, run ./configure to set compile argument and you can get help with
+`./configure --help`
+For example,
+`cd hm; ./configure --target=rru --enable-heapmgr CROSS_COMPILE=armeb-linux-gnueabi-; make`
+
+Or you can do the configuration and compilation In the builddir:
+`mkdir build; cd build; $srcdir/configure --target=rru --enable-heapmgr
+CROSS_COMPILE=armeb-linux-gnueabi-; make`
+
+
+Use `V=1` for verbose compile output, such as
+`cd hm; make ARCH=aarch64 V=1 -j`
+
+The output contains `libhmc.a` and `libhmc-sys.a`, the latter
+is a subset of the former, which contains only libraries that
+do not depend on `sysmgr` so it can be used by `sysmgr` itself.
+
+> `sysmgr` is a key system service on HongmengOS.

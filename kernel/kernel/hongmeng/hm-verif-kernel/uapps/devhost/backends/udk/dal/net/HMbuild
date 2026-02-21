@@ -1,0 +1,13 @@
+# Copyright (c) Huawei Technologies Co., Ltd. 2022. All rights reserved.
+# Description: HMbuild for udk
+# Author: Huawei OS Kernel Lab
+# Create: Wed Feb 09 11:51:30 2022
+
+src-y: ethtool.c
+src-y: net.c
+src-y: net_udk.c
+src-y: pbuf.c
+src-y: queue.c
+
+src-CONFIG_UDK_NETPHY: phy.c
+cflags-.-y: -Wno-gnu-variable-sized-type-not-at-end

@@ -1,0 +1,98 @@
+/*
+ * Copyright (C) Huawei Technologies Co., Ltd. 2019-2020. All rights reserved.
+ * Description: Implementation of fs procfs
+ * Author: Huawei OS Kernel Lab
+ * Create: Wed Mar 13 12:47:04 2019
+ */
+#ifdef SYSIF_EXPORT_API
+
+#define PROCFS_PATH_NAME_MAX 256
+#define NET_PROCFS_MAX_NUM 8192
+#define SVP_NAME_MAX 32
+
+struct procfs_entry_node {
+	unsigned int mode;
+	void *ctx;
+	char path[PROCFS_PATH_NAME_MAX];
+};
+
+struct proc_path_list {
+	int len;
+	int max_len;
+	unsigned int nsid;
+	struct procfs_entry_node path[];
+};
+
+
+struct procfs_ops_cb {
+	char svpname[SVP_NAME_MAX];
+	unsigned int read_method_id;
+	unsigned int write_method_id;
+	unsigned int open_method_id;
+	unsigned int close_method_id;
+	int tagid;
+	unsigned long long ctx;
+	uint32_t need_passthrough;
+};
+
+struct net_procfs_node {
+	unsigned int nsid;
+	unsigned int mode;
+	struct procfs_ops_cb ops;
+	char name[PROCFS_PATH_NAME_MAX];
+};
+#endif
+
+/*
+ * To support the mixed data model which means the client and the server
+ * may use different data model. See the comment for limitation of data type
+ * used in the sysif interfaces in <libsysif/base/api.h>.
+ */
+DEFINE_MANAGER(procfs, 9,
+	DEFINE_METHOD(procfs, create_data,
+		      ARG(3,
+			  const char *, pathname,
+			  unsigned int, mode,
+			  struct procfs_ops_cb, ops),
+		      RET_NO,
+		      SLOWDATA)
+
+	DEFINE_METHOD(procfs, create_net_data,
+		      ARG(4,
+			  const char *, pathname,
+			  unsigned int, mode,
+			  struct procfs_ops_cb, ops,
+			  unsigned int, nsid),
+		      RET_NO,
+		      SLOWDATA)
+
+	DEFINE_METHOD(procfs, delete_data,
+		      ARG(1, const char *, pathname),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_METHOD(procfs, delete_net_data_specific,
+			  ARG(2,
+			  unsigned int, nsid,
+			  const char *, pathname),
+			  RET_NO,
+			  SLOWDATA)
+
+	DEFINE_METHOD(procfs, create_net_entries,
+			  ARG(2,
+			  void *, proc_entry_list,
+			  unsigned int, cnt),
+			  RET_NO,
+			  SLOWDATA)
+
+	DEFINE_METHOD(procfs, get_process_fds,
+		      ARG(3, unsigned int, cnode_idx, unsigned long long *, bitmap,
+			  unsigned int, max_files),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_METHOD(procfs, get_fd_mode,
+		      ARG(2, int, fd, unsigned int, cnode_idx),
+		      RET(1, mode_t, mode),
+		      SLOWDATA_NO)
+	)

@@ -1,0 +1,139 @@
+category TLCore
+depend hyphen-base
+depend hyph-utf8
+shortdesc Indic hyphenation patterns.
+longdesc Hyphenation patterns for Assamese, Bengali, Gujarati, Hindi, Kannada,
+longdesc Malayalam, Marathi, Oriya, Panjabi, Tamil and Telugu for Unicode
+longdesc engines.
+execute AddHyphen \
+	name=assamese \
+	lefthyphenmin=1 \
+	righthyphenmin=1 \
+	file=loadhyph-as.tex \
+	file_patterns=hyph-as.pat.txt \
+	file_exceptions=
+execute AddHyphen \
+	name=bengali \
+	lefthyphenmin=1 \
+	righthyphenmin=1 \
+	file=loadhyph-bn.tex \
+	file_patterns=hyph-bn.pat.txt \
+	file_exceptions=
+execute AddHyphen \
+	name=gujarati \
+	lefthyphenmin=1 \
+	righthyphenmin=1 \
+	file=loadhyph-gu.tex \
+	file_patterns=hyph-gu.pat.txt \
+	file_exceptions=
+execute AddHyphen \
+	name=hindi \
+	lefthyphenmin=1 \
+	righthyphenmin=1 \
+	file=loadhyph-hi.tex \
+	file_patterns=hyph-hi.pat.txt \
+	file_exceptions=
+execute AddHyphen \
+	name=kannada \
+	lefthyphenmin=1 \
+	righthyphenmin=1 \
+	file=loadhyph-kn.tex \
+	file_patterns=hyph-kn.pat.txt \
+	file_exceptions=
+execute AddHyphen \
+	name=malayalam \
+	lefthyphenmin=1 \
+	righthyphenmin=1 \
+	file=loadhyph-ml.tex \
+	file_patterns=hyph-ml.pat.txt \
+	file_exceptions=
+execute AddHyphen \
+	name=marathi \
+	lefthyphenmin=1 \
+	righthyphenmin=1 \
+	file=loadhyph-mr.tex \
+	file_patterns=hyph-mr.pat.txt \
+	file_exceptions=
+execute AddHyphen \
+	name=oriya \
+	lefthyphenmin=1 \
+	righthyphenmin=1 \
+	file=loadhyph-or.tex \
+	file_patterns=hyph-or.pat.txt \
+	file_exceptions=
+execute AddHyphen \
+	name=panjabi \
+	lefthyphenmin=1 \
+	righthyphenmin=1 \
+	file=loadhyph-pa.tex \
+	file_patterns=hyph-pa.pat.txt \
+	file_exceptions=
+execute AddHyphen \
+	name=pali \
+	lefthyphenmin=1 \
+	righthyphenmin=2 \
+	file=loadhyph-pi.tex \
+	file_patterns=hyph-pi.pat.txt \
+	file_exceptions=
+execute AddHyphen \
+	name=tamil \
+	lefthyphenmin=1 \
+	righthyphenmin=1 \
+	file=loadhyph-ta.tex \
+	file_patterns=hyph-ta.pat.txt \
+	file_exceptions=
+execute AddHyphen \
+	name=telugu \
+	lefthyphenmin=1 \
+	righthyphenmin=1 \
+	file=loadhyph-te.tex \
+	file_patterns=hyph-te.pat.txt \
+	file_exceptions=
+runpattern f texmf-dist/tex/generic/hyph-utf8/loadhyph/loadhyph-as.tex
+runpattern f texmf-dist/tex/generic/hyph-utf8/loadhyph/loadhyph-bn.tex
+runpattern f texmf-dist/tex/generic/hyph-utf8/loadhyph/loadhyph-gu.tex
+runpattern f texmf-dist/tex/generic/hyph-utf8/loadhyph/loadhyph-hi.tex
+runpattern f texmf-dist/tex/generic/hyph-utf8/loadhyph/loadhyph-kn.tex
+runpattern f texmf-dist/tex/generic/hyph-utf8/loadhyph/loadhyph-ml.tex
+runpattern f texmf-dist/tex/generic/hyph-utf8/loadhyph/loadhyph-mr.tex
+runpattern f texmf-dist/tex/generic/hyph-utf8/loadhyph/loadhyph-or.tex
+runpattern f texmf-dist/tex/generic/hyph-utf8/loadhyph/loadhyph-pa.tex
+runpattern f texmf-dist/tex/generic/hyph-utf8/loadhyph/loadhyph-pi.tex
+runpattern f texmf-dist/tex/generic/hyph-utf8/loadhyph/loadhyph-ta.tex
+runpattern f texmf-dist/tex/generic/hyph-utf8/loadhyph/loadhyph-te.tex
+runpattern f texmf-dist/tex/generic/hyph-utf8/patterns/tex/hyph-as.tex
+runpattern f texmf-dist/tex/generic/hyph-utf8/patterns/tex/hyph-bn.tex
+runpattern f texmf-dist/tex/generic/hyph-utf8/patterns/tex/hyph-gu.tex
+runpattern f texmf-dist/tex/generic/hyph-utf8/patterns/tex/hyph-hi.tex
+runpattern f texmf-dist/tex/generic/hyph-utf8/patterns/tex/hyph-kn.tex
+runpattern f texmf-dist/tex/generic/hyph-utf8/patterns/tex/hyph-ml.tex
+runpattern f texmf-dist/tex/generic/hyph-utf8/patterns/tex/hyph-mr.tex
+runpattern f texmf-dist/tex/generic/hyph-utf8/patterns/tex/hyph-or.tex
+runpattern f texmf-dist/tex/generic/hyph-utf8/patterns/tex/hyph-pa.tex
+runpattern f texmf-dist/tex/generic/hyph-utf8/patterns/tex/hyph-pi.tex
+runpattern f texmf-dist/tex/generic/hyph-utf8/patterns/tex/hyph-ta.tex
+runpattern f texmf-dist/tex/generic/hyph-utf8/patterns/tex/hyph-te.tex
+runpattern f texmf-dist/tex/generic/hyph-utf8/patterns/txt/hyph-as.hyp.txt
+runpattern f texmf-dist/tex/generic/hyph-utf8/patterns/txt/hyph-as.pat.txt
+runpattern f texmf-dist/tex/generic/hyph-utf8/patterns/txt/hyph-bn.hyp.txt
+runpattern f texmf-dist/tex/generic/hyph-utf8/patterns/txt/hyph-bn.pat.txt
+runpattern f texmf-dist/tex/generic/hyph-utf8/patterns/txt/hyph-gu.hyp.txt
+runpattern f texmf-dist/tex/generic/hyph-utf8/patterns/txt/hyph-gu.pat.txt
+runpattern f texmf-dist/tex/generic/hyph-utf8/patterns/txt/hyph-hi.hyp.txt
+runpattern f texmf-dist/tex/generic/hyph-utf8/patterns/txt/hyph-hi.pat.txt
+runpattern f texmf-dist/tex/generic/hyph-utf8/patterns/txt/hyph-kn.hyp.txt
+runpattern f texmf-dist/tex/generic/hyph-utf8/patterns/txt/hyph-kn.pat.txt
+runpattern f texmf-dist/tex/generic/hyph-utf8/patterns/txt/hyph-ml.hyp.txt
+runpattern f texmf-dist/tex/generic/hyph-utf8/patterns/txt/hyph-ml.pat.txt
+runpattern f texmf-dist/tex/generic/hyph-utf8/patterns/txt/hyph-mr.hyp.txt
+runpattern f texmf-dist/tex/generic/hyph-utf8/patterns/txt/hyph-mr.pat.txt
+runpattern f texmf-dist/tex/generic/hyph-utf8/patterns/txt/hyph-or.hyp.txt
+runpattern f texmf-dist/tex/generic/hyph-utf8/patterns/txt/hyph-or.pat.txt
+runpattern f texmf-dist/tex/generic/hyph-utf8/patterns/txt/hyph-pa.hyp.txt
+runpattern f texmf-dist/tex/generic/hyph-utf8/patterns/txt/hyph-pa.pat.txt
+runpattern f texmf-dist/tex/generic/hyph-utf8/patterns/txt/hyph-pi.hyp.txt
+runpattern f texmf-dist/tex/generic/hyph-utf8/patterns/txt/hyph-pi.pat.txt
+runpattern f texmf-dist/tex/generic/hyph-utf8/patterns/txt/hyph-ta.hyp.txt
+runpattern f texmf-dist/tex/generic/hyph-utf8/patterns/txt/hyph-ta.pat.txt
+runpattern f texmf-dist/tex/generic/hyph-utf8/patterns/txt/hyph-te.hyp.txt
+runpattern f texmf-dist/tex/generic/hyph-utf8/patterns/txt/hyph-te.pat.txt

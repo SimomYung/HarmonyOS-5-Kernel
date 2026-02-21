@@ -1,0 +1,24 @@
+/*
+ * Copyright (C) Huawei Technologies Co., Ltd. 2023. All rights reserved.
+ * Description: iaware notify operation sysif APIs
+ * Author: Huawei OS Kernel Lab
+ * Create: Tue Mar 28 12:15:54 2023
+ */
+
+/*
+ * To support the mixed data model which means the client and the server
+ * may use different data model. See the comment for limitation of data type
+ * used in the sysif interfaces in <libsysif/base/api.h>.
+ */
+#ifdef SYSIF_EXPORT_API
+
+#include <hmsysmgr/eventmgr/event_def.h>
+#endif
+
+DEFINE_MANAGER(iaware_notify, 5,
+	DEFINE_METHOD(iaware_notify, thread_msg,
+		      ARG(1,
+			  struct evtcb_thread_msg_s, msg),
+		      RET_NO,
+		      SLOWDATA_NO)
+)

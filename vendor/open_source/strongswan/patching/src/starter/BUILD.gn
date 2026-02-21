@@ -1,0 +1,106 @@
+# Copyright (c) 2024 Huawei Device Co., Ltd.
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+import("//build/ohos.gni")
+import("//vendor/open_source/strongswan/strongswan_config.gni")
+
+source_gen_dir = "${target_gen_dir}/../../../strongswan/src/starter"
+sources_list = [
+  "${source_gen_dir}/args.c",
+  "${source_gen_dir}/cmp.c",
+  "${source_gen_dir}/confread.c",
+  "${source_gen_dir}/invokecharon.c",
+  "${source_gen_dir}/parser/conf_parser.c",
+  "${source_gen_dir}/starter.c",
+  "${source_gen_dir}/starterstroke.c",
+]
+action("starter_install_action") {
+  script = "//vendor/open_source/strongswan/empty.py"
+  outputs = sources_list
+  deps = [ "../../../:strongswan_install_action" ]
+}
+
+action("parse_starter_l_install_action") {
+  script = "//vendor/open_source/strongswan/parse_l.py"
+  outputs = [ "${source_gen_dir}/parser/lexer.c" ]
+  deps = [ "../../../:strongswan_install_action" ]
+  args = [
+    "--gen-dir",
+    rebase_path("${source_gen_dir}", root_build_dir),
+    "--source-file",
+    rebase_path("//vendor/open_source/strongswan"),
+    "--parse-files",
+    "parser/lexer.l",
+  ]
+}
+
+action("parse_starter_y_install_action") {
+  script = "//vendor/open_source/strongswan/parse_y.py"
+  outputs = [ "${source_gen_dir}/parser/parser.c" ]
+  deps = [ "../../../:strongswan_install_action" ]
+  args = [
+    "--gen-dir",
+    rebase_path("${source_gen_dir}", root_build_dir),
+    "--source-file",
+    rebase_path("//vendor/open_source/strongswan"),
+    "--parse-files",
+    "parser/parser.y",
+  ]
+}
+
+action("parse_keywords_install_action") {
+  script = "//vendor/open_source/strongswan/parse_c.py"
+  outputs = [ "${source_gen_dir}/keywords.c" ]
+  deps = [ "../../../:strongswan_install_action" ]
+  args = [
+    "--gen-dir",
+    rebase_path("${source_gen_dir}", root_build_dir),
+    "--parse-files-h",
+    "keywords.h.in",
+    "--parse-files-txt",
+    "keywords.txt",
+    "--parse-args",
+    "-m 10 -C -G -D -t",
+  ]
+}
+
+ohos_executable("starter") {
+  sources = get_target_outputs(":starter_install_action")
+  sources += get_target_outputs(":parse_starter_l_install_action")
+  sources += get_target_outputs(":parse_starter_y_install_action")
+  sources += get_target_outputs(":parse_keywords_install_action")
+  include_dirs = [
+    "${source_gen_dir}",
+    "${source_gen_dir}/../libcharon",
+    "${source_gen_dir}/../libstrongswan",
+    "${source_gen_dir}/../libstrongswan/netmanager/include",
+    "${source_gen_dir}/../stroke",
+  ]
+
+  cflags = common_cflags
+  cflags_cc = common_cflags_cc
+  defines = common_defines
+
+  deps = [
+    ":parse_keywords_install_action",
+    ":parse_starter_l_install_action",
+    ":parse_starter_y_install_action",
+    ":starter_install_action",
+    "../libstrongswan:libstrongswan",
+    "../stroke:stroke",
+  ]
+
+  install_enable = true
+  part_name = "strongswan"
+  subsystem_name = "open_source"
+}

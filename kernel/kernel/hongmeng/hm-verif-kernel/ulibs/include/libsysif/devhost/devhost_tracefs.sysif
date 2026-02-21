@@ -1,0 +1,39 @@
+/*
+ * Copyright (C) Huawei Technologies Co., Ltd. 2023. All rights reserved.
+ * Description: tracefs sysif APIs
+ * Author: Huawei OS Kernel Lab
+ * Create: Tue Mar 28 12:15:54 2023
+ */
+
+/*
+ * To support the mixed data model which means the client and the server
+ * may use different data model. See the comment for limitation of data type
+ * used in the sysif interfaces in <libsysif/base/api.h>.
+ */
+#ifdef SYSIF_EXPORT_API
+#endif
+
+DEFINE_MANAGER(tracefs, 5,
+	DEFINE_METHOD(trace, enable_disable_ldk_event,
+		      ARG(2,
+			  unsigned int, tp_index,
+			  bool, enable),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_METHOD(trace, ldk_event_format,
+		      ARG(2,
+			  unsigned int, tp_index,
+			  char *, format),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_METHOD(trace, print_ldk_event,
+		      ARG(4,
+			  unsigned int, tp_index,
+			  void *, entry,
+			  size_t, entry_size,
+			  char *, event_st),
+		      RET_NO,
+		      SLOWDATA_NO)
+)

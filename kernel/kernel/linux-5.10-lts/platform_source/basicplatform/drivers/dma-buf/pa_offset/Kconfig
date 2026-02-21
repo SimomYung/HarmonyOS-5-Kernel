@@ -1,0 +1,2 @@
+config AI_IN_FLASH
+    bool "enable ai in flash"

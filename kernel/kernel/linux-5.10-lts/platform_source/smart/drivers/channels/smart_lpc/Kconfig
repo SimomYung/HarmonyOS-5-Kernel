@@ -1,0 +1,5 @@
+config CONTEXTHUB_LPC
+	bool "Smart LPC driver"
+	default n
+	help
+	smart lpc driver support aios.

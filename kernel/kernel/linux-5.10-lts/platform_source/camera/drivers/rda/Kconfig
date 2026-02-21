@@ -1,0 +1,17 @@
+config CAMERA_VM_CTRL
+    bool "camera vm control"
+    default n
+    help
+        This config controls camera on the system.
+
+config CAM_SENSOR_VM_DEV
+    bool "camera sensor vm support"
+    default n
+    help
+        This driver provides camera sensor vm on the system.
+
+config IDI2AXI_VM_DEV
+    bool "idi2axi vm support"
+    default n
+    help
+        This driver provides idi2axi vm on the system.

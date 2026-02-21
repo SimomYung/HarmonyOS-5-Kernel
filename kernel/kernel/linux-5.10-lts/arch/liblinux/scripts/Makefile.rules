@@ -1,0 +1,11 @@
+# SPDX-License-Identifier: GPL-2.0
+
+stackp-flags-y                                 := -fno-stack-protector
+stackp-flags-$(CONFIG_STACKPROTECTOR)          := -fstack-protector
+stackp-flags-$(CONFIG_STACKPROTECTOR_STRONG)   := -fstack-protector-strong
+
+USER_OBJS := $(foreach file,$(USER_OBJS),$(obj)/$(file))
+$(USER_OBJS:.o=.%): \
+	c_flags = -Wp,-MD,$(depfile) $(ccflags-y) -fPIC \
+				$(stackp-flags-y) \
+				-g $(CFLAGS_$(basetarget).o) ${KCPPFLAGS}

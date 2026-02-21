@@ -1,0 +1,23 @@
+<hwlcd>
+<PanelEntry>
+		<PanelCompatible>"190-20d-11p45-txz-default"</PanelCompatible>
+		<PanelName>"190_20D_11P45_TXZ_DEFAULT 11.5' VIDEO TFT 1600 x 2456"</PanelName>
+		<!--lcdtype: amoled_2, lcd_1-->
+		<PanelType>0x01</PanelType>
+		<PanelXres>1600</PanelXres>
+		<PanelYres>2456</PanelYres>
+		<PanelWidth>158</PanelWidth>
+		<PanelHeight>243</PanelHeight>
+
+		<PanelDisplayOnCommand>"0x05, 0x01, 0x00, 0x00, 0x14, 0x01, 0x01, 0x29"</PanelDisplayOnCommand>
+                <PanelOnCommandState>0</PanelOnCommandState>
+
+		<PanelOffCommand>"0x05, 0x01, 0x00, 0x00, 0x32, 0x01, 0x01, 0x28
+				0x05, 0x01, 0x00, 0x00, 0x78, 0x01, 0x01, 0x10"</PanelOffCommand>
+		<PanelOffCommandState>0</PanelOffCommandState>
+
+
+		<PanelBacklightCommand>"0x39, 0x01, 0x00, 0x00, 0x00, 0x00, 0x03, 0x51, 0x00, 0x00"</PanelBacklightCommand>
+		<PanelBacklightCommandState>0</PanelBacklightCommandState>
+</PanelEntry>
+</hwlcd>

@@ -1,0 +1,46 @@
+{
+    "name": "@ohos/exfatprogs",
+    "description": "exFAT filesystem userspace utilities.",
+    "version": "4.1",
+    "license": "GPL-2.0-or-later",
+    "publishAs": "code-segment",
+    "segment": {
+        "destPath": "third_party/exfatprogs"
+    },
+    "dirs": {},
+    "scripts": {},
+	"licensePath": "COPYING",
+    "component": {
+        "name": "exfatprogs",
+        "subsystem": "thirdparty",
+        "syscap": [],
+        "features": [],
+        "adapted_system_type": [
+            "standard"
+        ],
+        "rom": "",
+        "ram": "",
+        "deps": {
+            "components": [],
+            "third_party": []
+        },
+        "build": {
+            "sub_component": [],
+            "inner_kits": [
+                {
+                    "name": "//third_party/exfatprogs:libexfat"
+                },
+                {
+                    "name": "//third_party/exfatprogs:exfatlabel"
+                },
+                {
+                    "name": "//third_party/exfatprogs:fsck.exfat"
+                },
+                {
+                    "name": "//third_party/exfatprogs:mkfs.exfat"
+                }
+            ],
+            "test": []
+        }
+    }
+}

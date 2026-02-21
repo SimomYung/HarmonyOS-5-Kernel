@@ -1,0 +1,6 @@
+# Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights reserved.
+# Description: HMbuild
+# Author: Huawei OS Kernel Lab
+# Create: Mon Feb 26 19:25:17 2024
+
+subdir-y: shmem_lf_hash_map/

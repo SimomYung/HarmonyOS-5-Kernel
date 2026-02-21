@@ -1,0 +1,32 @@
+/*
+ * Copyright (c) Huawei Technologies Co., Ltd. 2019-2020. All rights reserved.
+ * Description: Provide ipc interfaces for sec
+ * Author: Huawei OS Kernel Lab
+ * Create: Thu May 09 10:51:16 2019
+ */
+
+/*
+ * To support the mixed data model which means the client and the server
+ * may use different data model. See the document for limitation of data type
+ * used in the sysif interfaces in <Documentation/sysif_compat.md>.
+ */
+#ifdef SYSIF_EXPORT_API
+#include <stdint.h>
+
+enum RULE_NOTIFY_OPERATION {
+	RULE_ADD    = 0,
+	RULE_DEL    = 1,
+};
+enum RULE_APPEND_TYPE {
+	TAIL_APPEND    = 0,
+	HEAD_APPEND    = 1,
+};
+#endif
+
+DEFINE_MANAGER(audit, 1,
+	DEFINE_SIMPLE_METHOD(audit, notify_rule_update,
+			     ARG(4, unsigned long long, ruleid, unsigned, list_num,
+			     int, type, int, operat),
+			     RET_NO,
+			     SLOWDATA_NO)
+)

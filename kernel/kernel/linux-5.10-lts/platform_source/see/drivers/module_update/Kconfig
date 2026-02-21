@@ -1,0 +1,6 @@
+config MODULE_UPDATE
+	bool "Support module update"
+	default n
+	help
+	module upate support
+

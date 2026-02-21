@@ -1,0 +1,13 @@
+config RPMB_AGENT
+	bool "Tzdriver Rpmb Agent"
+	default n
+	depends on TZDRIVER
+	help
+	  Tzdriver Rpmb Agent
+
+config SSD_VRPMB_SUPPORT
+	bool "Tzdriver vrpmb support"
+	default n
+	depends on TZDRIVER && RPMB_AGENT
+	help
+	  Tzdriver SSD vrpmb

@@ -1,0 +1,7 @@
+#
+# USB PM Driver
+#
+config HW_USB_PM
+	bool "USB PM Driver"
+	help
+	  Say Y to enable USB PM Driver

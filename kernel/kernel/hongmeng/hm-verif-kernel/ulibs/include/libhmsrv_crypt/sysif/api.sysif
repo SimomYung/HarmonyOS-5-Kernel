@@ -1,0 +1,14 @@
+/*
+ * Copyright (c) Huawei Technologies Co., Ltd. 2020-2020. All rights reserved.
+ * Description: Generate crypto sysif apis using code generator
+ * Author: Huawei OS Kernel Lab
+ * Create: Mon 07 Dec 2020 07:42:36 PM CST
+ */
+
+USE_CALL_PREFIX(cryptcall)
+USE_HANDLER_PREFIX(crypthandler)
+USE_SERVER_NAME(crypto)
+
+INCLUDE_SUBSYSTEM(libhmsrv_crypt/sysif/crypto_rng.sysif)
+INCLUDE_SUBSYSTEM(libhmsrv_crypt/sysif/crypto_procfs.sysif)
+INCLUDE_SUBSYSTEM(libhmsrv_crypt/sysif/crypto_register.sysif)

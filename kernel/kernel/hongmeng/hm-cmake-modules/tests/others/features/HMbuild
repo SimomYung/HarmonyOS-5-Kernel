@@ -1,0 +1,7 @@
+# Copyright (c) Huawei Technologies Co., Ltd. 2022. All rights reserved.
+# Description: HMbuild
+# Author: Huawei OS Kernel Lab
+# Create: Thu Sep 22 16:00:18 2022
+
+lib-dynamic-y: features
+src-y: foo.c

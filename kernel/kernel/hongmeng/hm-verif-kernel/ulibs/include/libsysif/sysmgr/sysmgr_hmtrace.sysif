@@ -1,0 +1,56 @@
+/*
+ * Copyright (C) Huawei Technologies Co., Ltd. 2019-2020. All rights reserved.
+ * Description: Ftrace API in sysmgr
+ * Author: Huawei OS Kernel Lab
+ * Create: Mon Sep 9 16:30:16 2019
+ */
+#ifdef SYSIF_EXPORT_API
+#include <stdint.h>
+#include <hmsysmgr/trace/trace_def.h>
+#endif
+
+/*
+ * To support the mixed data model which means the client and the server
+ * may use different data model. See the document for limitation of data type
+ * used in the sysif interfaces in <Documentation/sysif_compat.md>.
+ */
+DEFINE_MANAGER(ftrace, 2,
+	DEFINE_SIMPLE_METHOD(ftrace, modify_code,
+		      ARG(2, uintptr_t, addr, unsigned int, insn),
+		      RET_NO,
+		      SLOWDATA_NO)
+)
+
+DEFINE_MANAGER(hmtrace, 16,
+	DEFINE_SIMPLE_METHOD(hmtrace, alloc_eid,
+			     ARG_NO,
+			     RET(1, int, eid),
+			     SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(hmtrace, free_eid,
+			     ARG(1, int, eid),
+			     RET_NO,
+			     SLOWDATA_NO)
+)
+
+DEFINE_MANAGER(tracemgr, 16,
+	DEFINE_METHOD(tracemgr, register_devhost,
+	              ARG(1, unsigned long long, devhost_uref),
+	              RET_NO,
+	              SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(tracemgr, futex_wake,
+			     ARG(1, unsigned int, futex_type),
+			     RET_NO,
+			     SLOWDATA_NO)
+	DEFINE_METHOD(tracemgr, register_events,
+		      ARG(1, enum trace_event_module, module),
+		      RET_NO,
+		      SLOWDATA_NO)
+	DEFINE_METHOD(tracemgr, register_ldk_events,
+		      ARG(1, struct trace_register_events_param, param),
+		      RET_NO,
+		      SLOWDATA_NO)
+	DEFINE_METHOD(tracemgr, add_ldk_printk_format,
+		      ARG(2, char *, printk_format, size_t, size),
+		      RET_NO,
+		      SLOWDATA_NO)
+)

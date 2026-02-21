@@ -1,0 +1,190 @@
+/*
+ * Copyright (C) Huawei Technologies Co., Ltd. 2019-2020. All rights reserved.
+ * Description: Interfaces of raw_rwlock
+ * Author: Huawei OS Kernel Lab
+ * Create: Sun May 05 11:32:50 2019
+ */
+#ifndef LIBHMSYNC_RAW_RWLOCK_H
+#define LIBHMSYNC_RAW_RWLOCK_H
+
+#include <hmkernel/capability.h>
+#include <hmkernel/futex.h>
+#include <hongmeng/types.h>
+#include <vsync/atomic.h>
+#include <lib/dlist.h>
+#include <libhmsync/uspinlock.h>
+
+#define RAW_RWLOCK_XDEP_MAX_HOLDERS   __FUTEX_XDEP_MAX_BUCKET_HOLDERS
+
+/*
+ * RWLOCK_HAS_WAITERS means the lock has waiters
+ * RWLOCK_W_LOCKED means the lock's owner is a writer
+ * RWLOCK_W_REQUESTED means the lock requeseted by writers
+ *
+ *  lock info:
+ *  name: |-counts/owner-|-write req-|-write locked-|-waiting-|
+ *  Bits: |-Bit_31~Bit_3-|-  Bit_2  -|-    Bit_1   -|- Bit_0 -|
+ *  read: |- rd counts  -|-  1 / 0  -|-      0     -|- 1 / 0 -|
+ * write: |-  wr tls    -|-  1 / 0  -|-      1     -|- 1 / 0 -|
+ */
+#define RWLOCK_HAS_WAITERS		(0x1U)
+#define RWLOCK_W_LOCKED			(0x2U)
+#define RWLOCK_W_REQUESTED		(0x4U)
+#define RWLOCK_R_SHIFT			(0x3U)
+
+#define RWLOCK_R_BIAS			(1U << RWLOCK_R_SHIFT)
+#define RWLOCK_FLAGS			(RWLOCK_R_BIAS - 1U)
+#define RWLOCK_LOCK_MASK		(~RWLOCK_FLAGS)
+#define RWLOCK_RLOCK_MAX		RWLOCK_LOCK_MASK
+
+#define RWLOCK_GET_FLAG(val, flag)	((val) & (flag))
+#define RWLOCK_SET_FLAG(val, flag)	((val) | (flag))
+#define RWLOCK_CLR_FLAG(val, flag)	((val) & (~(flag)))
+
+#define LOCK_VALUE(val)			RWLOCK_GET_FLAG(val, RWLOCK_LOCK_MASK)
+#define RWLOCK_VALUE(val)		RWLOCK_GET_FLAG(val, RWLOCK_LOCK_MASK | RWLOCK_W_LOCKED)
+
+#define RWLOCK_IS_W_LOCKED(val)		(RWLOCK_GET_FLAG(val, RWLOCK_W_LOCKED) != 0U)
+#define RWLOCK_IS_LOCKED(val)		(RWLOCK_VALUE(val) != 0U)
+#define RWLOCK_IS_UNLOCK(val)		(RWLOCK_VALUE(val) == 0U)
+#define RWLOCK_IS_R_LOCKED(val)		({ uint32_t _val = (val); \
+		((!RWLOCK_IS_W_LOCKED(_val)) && (LOCK_VALUE(_val) != 0U)); })
+
+/*
+ * Only shared attribute is supported for now,
+ * may be extended with bit-field.
+ */
+struct raw_rwlock_attr {
+	union {
+		struct {
+			unsigned int wrhold	: 1;
+			unsigned int shared	: 1;
+			unsigned int xdep	: 1;
+			unsigned int xdep_trace	: 1;
+			unsigned int reserved	: 28;
+		};
+		unsigned int flags;
+	};
+};
+
+#define RAW_MUTEX_IMPL_WITH_LOCKID 1
+#define RAW_MUTEX_IMPL_NO_LOCKID 2
+#define RAW_MUTEX_IMPL @RAW_MUTEX_IMPL@
+
+#define RAW_MUTEX_WITH_LOCKTRACE 1
+#define RAW_MUTEX_NO_LOCKTRACE 2
+#define RAW_MUTEX_LOCKTRACE @RAW_MUTEX_LOCKTRACE@
+
+#define RAW_RWLOCK_IMPL_WITH_LOCKOWNER 1
+#define RAW_RWLOCK_IMPL_WITHOUT_LOCKOWNER 2
+#define RAW_RWLOCK_IMPL @RAW_RWLOCK_IMPL@
+
+/*
+ * lock records the number of rwlock callers:
+ * lock = 0 means rwlock unlock.
+ * positive lock values read lock callers.
+ * waiters means there is a write lock occupied.
+ * attr: rwlock attributes:
+ *	shared(1bit):
+ *		0 ==> private rwlock (default)
+ *		1 ==> shared rwlock
+ */
+struct raw_rwlock {
+	vatomic32_t lock;
+	vatomic32_t waiters;
+#if RAW_RWLOCK_IMPL == RAW_RWLOCK_IMPL_WITH_LOCKOWNER
+	struct dlist_node rd_owner_list;
+	struct uspinlock_s rd_owner_lock;
+#endif
+	struct raw_rwlock_attr attr;
+#if RAW_MUTEX_IMPL == RAW_MUTEX_IMPL_WITH_LOCKID
+	vatomic32_t lock_id;
+#endif
+};
+
+struct raw_rwlock_xdep {
+	struct raw_rwlock rwlock; /* must be the first position */
+	vatomic64_t holders_bm;
+	cref_t holders[RAW_RWLOCK_XDEP_MAX_HOLDERS];
+	uint16_t recursive_locks[RAW_RWLOCK_XDEP_MAX_HOLDERS];
+};
+
+#define RWLOCK_INIT_MAGIC 0x89ABCEF
+#define RWLOCK_INIT_BASE .lock = VATOMIC_INIT(0), \
+	.waiters = VATOMIC_INIT(0), \
+	.attr = { .wrhold = 0U, .shared = 0U, .xdep = 0U, .xdep_trace = 0U, .reserved = RWLOCK_INIT_MAGIC },
+
+#if RAW_MUTEX_IMPL == RAW_MUTEX_IMPL_WITH_LOCKID
+#define LOCKID_INIT_TRACE .lock_id = VATOMIC_INIT(0),
+#define LOCKID_INIT_NOTRACE .lock_id = VATOMIC_INIT(~0U),
+#else
+#define LOCKID_INIT_TRACE
+#define LOCKID_INIT_NOTRACE
+#endif
+
+#if RAW_RWLOCK_IMPL == RAW_RWLOCK_IMPL_WITH_LOCKOWNER
+#define LOCKOWNER_INIT(_name) .rd_owner_list = DLIST_HEAD_INIT(_name.rd_owner_list), .rd_owner_lock = USPINLOCK_INITIALIZER,
+#else
+#define LOCKOWNER_INIT(_name)
+#endif
+
+#define RAW_RWLOCK_INITIALIZER(_name) {		\
+		RWLOCK_INIT_BASE		\
+		LOCKOWNER_INIT(_name)		\
+		LOCKID_INIT_TRACE		\
+	}
+
+#define RAW_RWLOCK_INITIALIZER_NOTRACE(_name) {	\
+		RWLOCK_INIT_BASE		\
+		LOCKOWNER_INIT(_name)		\
+		LOCKID_INIT_NOTRACE		\
+	}
+
+#define STATIC_DEFINE_RAW_RWLOCK(_name) \
+	static struct raw_rwlock _name = RAW_RWLOCK_INITIALIZER(_name)
+#define STATIC_DEFINE_RAW_RWLOCK_NOTRACE(_name) \
+	static struct raw_rwlock _name = RAW_RWLOCK_INITIALIZER_NOTRACE(_name)
+
+#define DEFINE_RAW_RWLOCK(_name) \
+	struct raw_rwlock _name = RAW_RWLOCK_INITIALIZER(_name)
+#define DEFINE_RAW_RWLOCK_NOTRACE(_name) \
+	struct raw_rwlock _name = RAW_RWLOCK_INITIALIZER_NOTRACE(_name)
+
+#undef RAW_MUTEX_IMPL
+#undef RAW_RWLOCK_IMPL
+
+void raw_rwlock_init(struct raw_rwlock *rwlock, struct raw_rwlock_attr *attr);
+int raw_rwlock_tryrdlock(struct raw_rwlock *rwlock);
+int raw_rwlock_rdlock(struct raw_rwlock *rwlock);
+int raw_rwlock_wrlock(struct raw_rwlock *rwlock);
+int raw_rwlock_trywrlock(struct raw_rwlock *rwlock);
+int raw_rwlock_downgrade(struct raw_rwlock *rwlock);
+int raw_rwlock_try_upgrade(struct raw_rwlock *rwlock);
+int raw_rwlock_unlock(struct raw_rwlock *rwlock);
+void raw_rwlock_destroy(struct raw_rwlock *rwlock);
+int raw_rwlock_getwaiter(struct raw_rwlock *rwlock);
+
+void disable_raw_rwlock(void);
+void enable_raw_rwlock(void);
+_Bool is_raw_rwlock_disabled(void);
+
+void raw_rwlock_attr_setshared(struct raw_rwlock_attr *attr, int shared);
+void raw_rwlock_attr_set_wrhold(struct raw_rwlock_attr *attr, int wrhold);
+void raw_rwlock_init_shared(struct raw_rwlock *rwlock);
+void raw_rwlock_init_xdep(struct raw_rwlock_xdep *rwlock_xdep, struct raw_rwlock_attr *attr);
+
+static inline _Bool raw_rwlock_is_locked(struct raw_rwlock *rwlock)
+{
+	return RWLOCK_IS_LOCKED(vatomic32_read_rlx(&rwlock->lock));
+}
+
+static inline _Bool raw_rwlock_rdlock_is_locked(struct raw_rwlock *rwlock)
+{
+	return RWLOCK_IS_R_LOCKED(vatomic32_read_rlx(&rwlock->lock));
+}
+
+static inline _Bool raw_rwlock_wrlock_is_locked(struct raw_rwlock *rwlock)
+{
+	return RWLOCK_IS_W_LOCKED(vatomic32_read_rlx(&rwlock->lock));
+}
+#endif

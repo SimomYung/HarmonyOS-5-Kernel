@@ -1,0 +1,286 @@
+{
+    "root": {
+        "data": {
+            "id": "ci27yb8tsh40",
+            "created": 1645496854570,
+            "text": "hpecli",
+            "usecase": 99
+        },
+        "children": [
+            {
+                "data": {
+                    "id": "ci2853vu3c80",
+                    "created": 1645497387097,
+                    "text": "命令行查看",
+                    "usecase": 1
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "ci28enrxblk0",
+                            "created": 1645498135673,
+                            "text": "入参分析"
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "ci28lcvd5tk0",
+                                    "created": 1645498660486,
+                                    "text": "无参数",
+                                    "usecase": 2
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "ci2945bz87s0",
+                                            "created": 1645500132995,
+                                            "text": "help信息",
+                                            "usecase": 4,
+                                            "showId": "00002"
+                                        },
+                                        "children": []
+                                    }
+                                ]
+                            },
+                            {
+                                "data": {
+                                    "id": "ci28lec7faw0",
+                                    "created": 1645498663681,
+                                    "text": "参数无-p sysm 或 -p hppd",
+                                    "usecase": 2
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "cix7w1w2euw0",
+                                            "created": 1648645036136,
+                                            "text": "help信息",
+                                            "usecase": 4,
+                                            "author": "t00526974",
+                                            "showId": "00031"
+                                        },
+                                        "children": []
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "data": {
+                            "id": "ci28llogy540",
+                            "created": 1645498679660,
+                            "text": "功能分析"
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "ci296n0kf1k0",
+                                    "created": 1645500328216,
+                                    "text": "-p sysm 对接HPE命令行",
+                                    "usecase": 4,
+                                    "showId": "00005"
+                                },
+                                "children": []
+                            },
+                            {
+                                "data": {
+                                    "id": "ci298f7avqw0",
+                                    "created": 1645500467937,
+                                    "text": "-p hppd 对接hppd命令行",
+                                    "usecase": 4,
+                                    "showId": "00006"
+                                },
+                                "children": []
+                            },
+                            {
+                                "data": {
+                                    "id": "ci2993enrso0",
+                                    "created": 1645500520625,
+                                    "text": "默认对接hppd命令行",
+                                    "usecase": 4,
+                                    "showId": "00007"
+                                },
+                                "children": []
+                            },
+                            {
+                                "data": {
+                                    "id": "ci3yn8a86zc0",
+                                    "created": 1645673716043,
+                                    "text": "-i 支持交互模式",
+                                    "usecase": 4,
+                                    "showId": "00029",
+                                    "priority": null
+                                },
+                                "children": []
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "data": {
+                    "id": "ci289hcdle00",
+                    "created": 1645497729852,
+                    "text": "非诊断命令行注册",
+                    "usecase": 1
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "ci28mk8b00w0",
+                            "created": 1645498754870,
+                            "text": "入参分析"
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "ci29d0d993c0",
+                                    "created": 1645500827466,
+                                    "text": "cmdName",
+                                    "usecase": 2
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "ci29fdm6uyo0",
+                                            "created": 1645501013033,
+                                            "text": "空",
+                                            "usecase": 4,
+                                            "showId": "00008"
+                                        },
+                                        "children": []
+                                    }
+                                ]
+                            },
+                            {
+                                "data": {
+                                    "id": "ci29d1ctlbc0",
+                                    "created": 1645500829617,
+                                    "text": "func",
+                                    "usecase": 2
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "ci29fr7g14w0",
+                                            "created": 1645501042616,
+                                            "text": "空",
+                                            "usecase": 4,
+                                            "showId": "00009"
+                                        },
+                                        "children": []
+                                    }
+                                ]
+                            },
+                            {
+                                "data": {
+                                    "id": "cix8jekac480",
+                                    "created": 1648646866098,
+                                    "text": "enable",
+                                    "usecase": 2
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "cix8nbphb2g0",
+                                            "created": 1648647173338,
+                                            "text": "如果是1就默认使能该命令行，否侧不默认是能",
+                                            "usecase": 4,
+                                            "author": "t00526974",
+                                            "showId": "00032"
+                                        },
+                                        "children": []
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "data": {
+                            "id": "ci28mmwusgg0",
+                            "created": 1645498760708,
+                            "text": "功能分析"
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "ci29g3xskrk0",
+                                    "created": 1645501070331,
+                                    "text": " ",
+                                    "usecase": 4,
+                                    "showId": "00010",
+                                    "priority": null
+                                },
+                                "children": []
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "data": {
+                    "id": "ci289imk3s80",
+                    "created": 1645497732644,
+                    "text": "诊断命令行注册",
+                    "usecase": 1
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "ci28mw5xthk0",
+                            "created": 1645498780848,
+                            "text": "入参分析"
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "ci2dcrryx6o0",
+                                    "created": 1645512093204,
+                                    "text": "HpeDiagFunc",
+                                    "usecase": 2
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "ci2dcwt0znc0",
+                                            "created": 1645512104152,
+                                            "text": "检查边界",
+                                            "usecase": 4,
+                                            "showId": "00015"
+                                        },
+                                        "children": []
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "data": {
+                            "id": "ci28myes9k00",
+                            "created": 1645498785738,
+                            "text": "功能分析"
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "ci2de0u5ru80",
+                                    "created": 1645512191292,
+                                    "text": "注册诊断命令行成功，在diag下显示",
+                                    "usecase": 4,
+                                    "showId": "00016"
+                                },
+                                "children": []
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    "templatePath": null,
+    "singleTemplatePath": null,
+    "testcaseFilePath": "",
+    "template": "right",
+    "theme": "fresh-blue-compat",
+    "version": "1.4.43"
+}

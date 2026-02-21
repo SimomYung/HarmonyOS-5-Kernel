@@ -1,0 +1,136 @@
+From 13f1ce96046fba15d93a90733b791312284fbb62 Mon Sep 17 00:00:00 2001
+From: Andreas Dilger <adilger@whamcloud.com>
+Date: Mon, 28 Feb 2022 21:17:06 -0700
+Subject: [PATCH] tests: fix ACL-printing tests
+
+Fix the ACL-printing tests to be more flexible for different systems.
+If the MKFS_DIR is on tmpfs, it will not list "system.posix_acl*"
+xattrs, so they will not be copied.  Create this on a real filesystem
+or skip the test if that doesn't work.
+
+Filter out the security.selinux xattr if it is printed, since this
+depends on the selinux configuration of the host system.  However,
+this also spills xattrs for "acl_dir/file" into an external xattr
+block, and causes it to fail due to different block allocations.
+Increase the filesystem inode size so that the allocation is the same
+regardless of whether selinux is enabled or not.
+
+Fixes: 67e6ae0a35 ("mke2fs: fix a importing a directory with an ACL")
+Signed-off-by: Andreas Dilger <adilger@whamcloud.com>
+Reviewed-by: Artem Blagodarenko <artem.blagodarenko@hpe.com>
+Reviewed-by: Li Dongyang <dongyangli@ddn.com>
+Signed-off-by: Theodore Ts'o <tytso@mit.edu>
+---
+ tests/filter.sed           |  1 +
+ tests/m_rootdir_acl/expect | 18 +++++++++---------
+ tests/m_rootdir_acl/script | 13 +++++++++----
+ 3 files changed, 19 insertions(+), 13 deletions(-)
+
+diff --git a/tests/filter.sed b/tests/filter.sed
+index 796186e..5fd68f3 100644
+--- a/tests/filter.sed
++++ b/tests/filter.sed
+@@ -20,6 +20,7 @@ s/\\015//g
+ /^Maximum mount count:/d
+ /^Next check after:/d
+ /^Suggestion:/d
++/security.selinux/d
+ /Reserved blocks uid:/s/ (user .*)//
+ /Reserved blocks gid:/s/ (group .*)//
+ /whichever comes first/d
+diff --git a/tests/m_rootdir_acl/expect b/tests/m_rootdir_acl/expect
+index babd802..57f03e5 100644
+--- a/tests/m_rootdir_acl/expect
++++ b/tests/m_rootdir_acl/expect
+@@ -10,8 +10,8 @@ Filesystem OS type:       Linux
+ Inode count:              1024
+ Block count:              16384
+ Reserved block count:     819
+-Overhead clusters:        1543
+-Free blocks:              14788
++Overhead clusters:        1799
++Free blocks:              14533
+ Free inodes:              1003
+ First block:              1
+ Block size:               1024
+@@ -21,14 +21,14 @@ Reserved GDT blocks:      127
+ Blocks per group:         8192
+ Fragments per group:      8192
+ Inodes per group:         512
+-Inode blocks per group:   128
++Inode blocks per group:   256
+ Flex block group size:    16
+ Mount count:              0
+ Check interval:           15552000 (6 months)
+ Reserved blocks uid:      0
+ Reserved blocks gid:      0
+ First inode:              11
+-Inode size:	          256
++Inode size:	          512
+ Required extra isize:     32
+ Desired extra isize:      32
+ Journal inode:            8
+@@ -49,16 +49,16 @@ Group 0: (Blocks 1-8192)
+   Reserved GDT blocks at 3-129
+   Block bitmap at 130 (+129)
+   Inode bitmap at 132 (+131)
+-  Inode table at 134-261 (+133)
+-  7750 free blocks, 491 free inodes, 5 directories, 491 unused inodes
+-  Free blocks: 443-8192
++  Inode table at 134-389 (+133)
++  7495 free blocks, 491 free inodes, 5 directories, 491 unused inodes
++  Free blocks: 698-8192
+   Free inodes: 22-512
+ Group 1: (Blocks 8193-16383) [INODE_UNINIT]
+   Backup superblock at 8193, Group descriptors at 8194-8194
+   Reserved GDT blocks at 8195-8321
+   Block bitmap at 131 (bg #0 + 130)
+   Inode bitmap at 133 (bg #0 + 132)
+-  Inode table at 262-389 (bg #0 + 261)
++  Inode table at 390-645 (bg #0 + 389)
+   7038 free blocks, 512 free inodes, 0 directories, 512 unused inodes
+   Free blocks: 9346-16383
+   Free inodes: 513-1024
+@@ -116,4 +116,4 @@ Pass 2: Checking directory structure
+ Pass 3: Checking directory connectivity
+ Pass 4: Checking reference counts
+ Pass 5: Checking group summary information
+-test.img: 21/1024 files (0.0% non-contiguous), 1596/16384 blocks
++test.img: 21/1024 files (0.0% non-contiguous), 1851/16384 blocks
+diff --git a/tests/m_rootdir_acl/script b/tests/m_rootdir_acl/script
+index e81c82c..a00e4c4 100644
+--- a/tests/m_rootdir_acl/script
++++ b/tests/m_rootdir_acl/script
+@@ -16,12 +16,10 @@ if [ "$os" = "GNU" ]; then
+ 	return 0
+ fi
+ 
+-MKFS_DIR=$TMPFILE.dir
++MKFS_DIR=$(mktemp -d ./$test_name-XXXXXX.tmp)
+ OUT=$test_name.log
+ EXP=$test_dir/expect
+ 
+-rm -rf $MKFS_DIR
+-mkdir -p $MKFS_DIR
+ touch $MKFS_DIR/emptyfile
+ dd if=/dev/zero bs=1024 count=32 2> /dev/null | tr '\0' 'a' > $MKFS_DIR/bigfile
+ echo "M" | dd of=$MKFS_DIR/sparsefile bs=1 count=1 seek=1024 2> /dev/null
+@@ -60,7 +58,14 @@ mask::r-x
+ other::r-x
+ EOF
+ 
+-$MKE2FS -q -F -o Linux -T ext4 -O metadata_csum,inline_data,64bit -E lazy_itable_init=1 -b 1024 -d $MKFS_DIR $TMPFILE 16384 > $OUT 2>&1
++if ! getfattr -d -m - $MKFS_DIR/acl_dir | grep -q posix_acl; then
++	echo "$test_name: $test_description: skipped (no posix_acl xattrs)"
++	rm -rf $MKFS_DIR
++	return 0
++fi
++
++# use 512-byte inodes so with/out security.selinux xattr doesn't fail
++$MKE2FS -q -F -o Linux -T ext4 -I 512 -O metadata_csum,inline_data,64bit -E lazy_itable_init=1 -b 1024 -d $MKFS_DIR $TMPFILE 16384 > $OUT 2>&1
+ 
+ $DUMPE2FS $TMPFILE >> $OUT 2>&1
+ cat > $TMPFILE.cmd << ENDL
+-- 
+1.8.3.1
+

@@ -1,0 +1,46 @@
+# Copyright (c) 2024 Huawei Device Co., Ltd.
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+import("//build/ohos.gni")
+import("//vendor/open_source/strongswan/strongswan_config.gni")
+
+source_gen_dir = "${target_gen_dir}/../../../strongswan/src/charon"
+sources_list = [ "${source_gen_dir}/charon.c" ]
+action("charon_install_action") {
+  script = "//vendor/open_source/strongswan/empty.py"
+  outputs = sources_list
+  deps = [ "../../../:strongswan_install_action" ]
+}
+
+ohos_executable("charon") {
+  sources = get_target_outputs(":charon_install_action")
+
+  include_dirs = [
+    "${source_gen_dir}/../libcharon",
+    "${source_gen_dir}/../libstrongswan",
+  ]
+
+  defines = [ "PLUGINS=\"pkcs11 aes des rc2 sha2 sha1 md5 random nonce x509 revocation constraints pubkey pkcs1 pkcs7 pkcs12 pgp dnskey sshkey pem openssl pkcs8 af-alg fips-prf curve25519 xcbc cmac hmac kdf ctr ccm gcm drbg attr kernel-libipsec kernel-pfkey kernel-netlink resolve socket-default farp stroke vici updown eap-identity eap-mschapv2 xauth-generic counters\"" ]
+  defines += common_defines
+  cflags = common_cflags
+  cflags_cc = common_cflags_cc
+
+  deps = [
+    ":charon_install_action",
+    "../libcharon:libcharon",
+    "../libstrongswan:libstrongswan",
+  ]
+  install_enable = true
+  part_name = "strongswan"
+  subsystem_name = "open_source"
+}

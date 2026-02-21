@@ -1,0 +1,123 @@
+From 30781d12dee32e99fda6e30463817f9269ba81d9 Mon Sep 17 00:00:00 2001
+From: g00650597 <g00650597@notesmail.huawei.com/>
+Date: Mon, 6 Jan 2025 10:01:40 +0800
+Subject: [PATCH] TicketNo:DTS2024121134413 Description:get ovconfig to ipc
+
+Team:OTHERS
+Feature or Bugfix:Feature
+Binary Source:No
+PrivateCode(Yes/No):No
+
+Change-Id: I1a483c15e3467cf1f54a994365c28075d3600716
+---
+ src/ipc/netmanager/include/nm_type.h |  1 +
+ src/openvpn/options.c                | 46 ++++++++++++++++++++++++++++
+ 2 files changed, 47 insertions(+)
+
+diff --git a/src/ipc/netmanager/include/nm_type.h b/src/ipc/netmanager/include/nm_type.h
+index 1c0c7c3..2ddcd34 100644
+--- a/src/ipc/netmanager/include/nm_type.h
++++ b/src/ipc/netmanager/include/nm_type.h
+@@ -24,6 +24,7 @@ extern "C" {
+ 
+ enum vpn_cert_type : int32_t {
+     OPENVPN_ASKPASS = 0,
++    OPENVPN_CONFIG,
+ };
+ 
+ enum vpn_state : int32_t {
+diff --git a/src/openvpn/options.c b/src/openvpn/options.c
+index ec84f27..9db097d 100644
+--- a/src/openvpn/options.c
++++ b/src/openvpn/options.c
+@@ -66,6 +66,9 @@
+ 
+ #ifdef SUPPORT_SYSVPN
+ #include <cert_manager_api.h>
++#include "net_manager_api.h"
++
++#define MASK_OPENVPN_CONFIG_LEN 10240
+ #endif
+ 
+ const char title_string[] =
+@@ -5267,6 +5270,7 @@ check_inline_file(struct in_src *is, char *p[], struct gc_arena *gc)
+     return num_inline_lines;
+ }
+ 
++#ifndef SUPPORT_SYSVPN
+ static int
+ check_inline_file_via_fp(FILE *fp, char *p[], struct gc_arena *gc)
+ {
+@@ -5275,6 +5279,7 @@ check_inline_file_via_fp(FILE *fp, char *p[], struct gc_arena *gc)
+     is.u.fp = fp;
+     return check_inline_file(&is, p, gc);
+ }
++#endif
+ 
+ static int
+ check_inline_file_via_buf(struct buffer *multiline, char *p[],
+@@ -5298,6 +5303,39 @@ add_option(struct options *options,
+            unsigned int *option_types_found,
+            struct env_set *es);
+ 
++#ifdef SUPPORT_SYSVPN
++static void
++read_config(const char *prefix,
++                   struct options *options,
++                   const char *config,
++                   const int msglevel,
++                   const unsigned int permission_mask,
++                   unsigned int *option_types_found,
++                   struct env_set *es)
++{
++    char line[OPTION_LINE_SIZE];
++    struct buffer multiline;
++    int line_num = 0;
++    buf_set_read(&multiline, (uint8_t *)config, strlen(config));
++    while (buf_parse(&multiline, '\n', line, sizeof(line)))
++    {
++        char *p[MAX_PARMS+1];
++        CLEAR(p);
++        ++line_num;
++        if (parse_line(line, p, SIZE(p)-1, prefix, line_num, msglevel, &options->gc))
++        {
++            bypass_doubledash(&p[0]);
++            int lines_inline = check_inline_file_via_buf(&multiline, p, &options->gc);
++            add_option(options, p, lines_inline, prefix, line_num, 0, msglevel,
++                       permission_mask, option_types_found, es);
++            line_num += lines_inline;
++        }
++        CLEAR(p);
++    }
++    secure_memzero(line, sizeof(line));
++}
++#endif
++
+ static void
+ read_config_file(struct options *options,
+                  const char *file,
+@@ -5309,6 +5347,7 @@ read_config_file(struct options *options,
+                  unsigned int *option_types_found,
+                  struct env_set *es)
+ {
++#ifndef SUPPORT_SYSVPN
+     const int max_recursive_levels = 10;
+     FILE *fp;
+     int line_num;
+@@ -5371,6 +5410,13 @@ read_config_file(struct options *options,
+     }
+     secure_memzero(line, sizeof(line));
+     CLEAR(p);
++#else
++    uint8_t conf_buf[MASK_OPENVPN_CONFIG_LEN];
++    int ret = load_vpn_cert_uri(OPENVPN_CONFIG, conf_buf, MASK_OPENVPN_CONFIG_LEN);
++    if (ret > 0) {
++        read_config("[CONFIG-STRING]", options, (const char*)conf_buf, msglevel, permission_mask, option_types_found, es);
++    }
++#endif
+ }
+ 
+ static void
+-- 
+2.34.1
+

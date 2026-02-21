@@ -1,0 +1,18 @@
+config USB_MODE_SWITCH
+	bool "USB MODE SWITCH support"
+	depends on USB_HIUSB
+	default n
+	help
+	  Say yes here to support the usb mode switch to device by gpio
+
+config USB_NDEV_CONFIG
+	bool "USB TO ETH ndev config support"
+	default n
+	help
+	  Say yes here to support reconfig eth usb to eth ndev
+
+config USB_MODE_SWITCH_ATTR
+	bool "USB MODE SWITCH ATTR support"
+	default n
+	help
+	  Say yes here to support the usb mode switch to device by attr

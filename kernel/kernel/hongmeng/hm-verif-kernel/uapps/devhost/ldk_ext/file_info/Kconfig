@@ -1,0 +1,20 @@
+# Copyright (c) Huawei Technologies Co., Ltd. 2023. All rights reserved.
+# Description: Kconfig for ldk extension
+# Author: Huawei OS Kernel Lab
+# Create: Wed Sep 13 09:13:06 2023
+
+# HMCMAKENG_KCONFIG is injected by HongmengCMakeNG/Kconfig.cmake
+# which defines multiple config options which is useful for HMbuild.
+source "$(HMCMAKENG_KCONFIG)"
+
+config DFX_MEMCHECK
+	bool "consist with ldk CONFIG_DFX_MEMCHECK"
+	default y
+
+config DMABUF_MM
+	bool "consist with ldk CONFIG_DMABUF_MM"
+	default y
+
+config DEBUG_BUILD
+	bool "Build kernel with debug mode"
+	default n

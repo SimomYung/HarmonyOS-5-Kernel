@@ -1,0 +1,1 @@
+obj-$(CONFIG_HW_MCU_DRIVER) += mcu/

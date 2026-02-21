@@ -1,0 +1,238 @@
+{
+    "root": {
+        "data": {
+            "id": "ci2d5ln5ls80",
+            "created": 1645511531303,
+            "text": "内存重置接口",
+            "priority": null
+        },
+        "children": [
+            {
+                "data": {
+                    "id": "ci2d916ej1c0",
+                    "created": 1645511800211,
+                    "text": "HLIBC",
+                    "layout_mind_offset": {
+                        "x": -1.1666678297850694,
+                        "y": -5.583342445806892
+                    },
+                    "usecase": 99,
+                    "expandState": "expand"
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "ci2d916edig0",
+                            "created": 1645511800211,
+                            "text": "HpeBlockPoolClear",
+                            "usecase": 1,
+                            "layout_right_offset": {
+                                "x": -13.749999484668194,
+                                "y": -43.74999549860786
+                            }
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "ci2d916e6q80",
+                                    "created": 1645511800211,
+                                    "text": "入参分析",
+                                    "expandState": "expand"
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "ci2d916e59s0",
+                                            "created": 1645511800211,
+                                            "text": "pool"
+                                        },
+                                        "children": [
+                                            {
+                                                "data": {
+                                                    "id": "ci2d916edqw0",
+                                                    "created": 1645511800211,
+                                                    "text": "是否为空",
+                                                    "usecase": 2,
+                                                    "layout_right_offset": {
+                                                        "x": -9,
+                                                        "y": -4
+                                                    }
+                                                },
+                                                "children": [
+                                                    {
+                                                        "data": {
+                                                            "id": "ci2d916eh8o0",
+                                                            "created": 1645511800211,
+                                                            "text": "传入空指针，预期返回失败",
+                                                            "usecase": 4,
+                                                            "author": "w00568150",
+                                                            "showId": "00001",
+                                                            "usecaseType": null
+                                                        },
+                                                        "children": []
+                                                    },
+                                                    {
+                                                        "data": {
+                                                            "id": "ci2d916f3a80",
+                                                            "created": 1645511800212,
+                                                            "text": "池子销毁后又重新传入，预期返回失败",
+                                                            "usecase": 4,
+                                                            "author": "w00568150",
+                                                            "showId": "00002",
+                                                            "layout_right_offset": {
+                                                                "x": -19.666666004392937,
+                                                                "y": -3.3333335982428594
+                                                            },
+                                                            "usecaseType": null
+                                                        },
+                                                        "children": []
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    }
+                                ]
+                            },
+                            {
+                                "data": {
+                                    "id": "ci2d916f6lc0",
+                                    "created": 1645511800213,
+                                    "text": "功能分析"
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "ci2d916fhls0",
+                                            "created": 1645511800213,
+                                            "text": "重置接口功能",
+                                            "usecase": 2,
+                                            "layout_right_offset": {
+                                                "x": 19,
+                                                "y": -4
+                                            }
+                                        },
+                                        "children": [
+                                            {
+                                                "data": {
+                                                    "id": "ci2di5q9c340",
+                                                    "created": 1645512515397,
+                                                    "text": "设置单个池子最大内存值为1MB，达到上限后，调用重置接口，能够再次申请出内存。 ",
+                                                    "usecase": 4,
+                                                    "author": "w00568150",
+                                                    "showId": "00022",
+                                                    "usecaseType": null
+                                                },
+                                                "children": []
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "data": {
+                            "id": "ci2dslefp7c0",
+                            "created": 1645513333152,
+                            "text": "HpePagePoolClear",
+                            "usecase": 1
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "ci2dsyh68rc0",
+                                    "created": 1645513361616,
+                                    "text": "入参分析",
+                                    "usecase": null
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "ci2dthi8z4g0",
+                                            "created": 1645513403039,
+                                            "text": "pool "
+                                        },
+                                        "children": [
+                                            {
+                                                "data": {
+                                                    "id": "ci2dto6bwjk0",
+                                                    "created": 1645513417556,
+                                                    "text": "是否为空",
+                                                    "usecase": 2
+                                                },
+                                                "children": [
+                                                    {
+                                                        "data": {
+                                                            "id": "ci2dttjlrfc0",
+                                                            "created": 1645513429243,
+                                                            "text": "传入空指针，预期返回失败",
+                                                            "usecase": 4,
+                                                            "author": "w00568150",
+                                                            "showId": "00024"
+                                                        },
+                                                        "children": []
+                                                    },
+                                                    {
+                                                        "data": {
+                                                            "id": "ci2duojewg80",
+                                                            "created": 1645513496712,
+                                                            "text": "池子销毁后又重新传入，预期返回失败",
+                                                            "usecase": 4,
+                                                            "author": "w00568150",
+                                                            "showId": "00026"
+                                                        },
+                                                        "children": []
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    }
+                                ]
+                            },
+                            {
+                                "data": {
+                                    "id": "ci2du4ro3140",
+                                    "created": 1645513453675,
+                                    "text": "功能分析"
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "ci2du8n7r3s0",
+                                            "created": 1645513462113,
+                                            "text": "重置接口功能",
+                                            "usecase": 2
+                                        },
+                                        "children": [
+                                            {
+                                                "data": {
+                                                    "id": "ci2duglpebc0",
+                                                    "created": 1645513479436,
+                                                    "text": "最大值20个页，第一次申请20个页，调用重置接口，再次申请20个页，预期申请成功。",
+                                                    "usecase": 4,
+                                                    "author": "w00568150",
+                                                    "showId": "00025",
+                                                    "layout_right_offset": {
+                                                        "x": 2.499999900658622,
+                                                        "y": 11.66666620307501
+                                                    }
+                                                },
+                                                "children": []
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    "templatePath": null,
+    "singleTemplatePath": null,
+    "testcaseFilePath": "",
+    "template": "default",
+    "theme": "fresh-blue",
+    "version": "1.4.43"
+}

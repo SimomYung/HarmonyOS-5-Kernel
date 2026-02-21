@@ -1,0 +1,12 @@
+# Copyright (C) Huawei Technologies Co., Ltd. 2022. All rights reserved.
+# Description: Kconfig for ldk extension
+# Author: Huawei OS Kernel Lab
+# Create: Wed Jul 6 09:24:07 2022
+
+# HMCMAKENG_KCONFIG is injected by HongmengCMakeNG/Kconfig.cmake
+# which defines multiple config options which is useful for HMbuild.
+source "$(HMCMAKENG_KCONFIG)"
+
+config EXPORT_HM_PROC_SHOW_PTE
+	bool "Export symbol hm_proc_show_pte"
+	default n

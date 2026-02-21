@@ -1,0 +1,4 @@
+config CLK_HIBERNATION
+	depends on PLAT_CLK
+	bool "clock hibernation suspend-resume"
+	default n

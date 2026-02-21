@@ -1,0 +1,19 @@
+comment "Hongmeng Tuning"
+
+INSERT
+
+config HMMAC
+	bool "Support HMMAC"
+	default n
+	help
+	Enable support for HMMAC in applets ls, ps, and id. Also provide
+	the option of compiling in HMMAC applets.
+
+config HM_RESTORECON
+	bool "hm restorecon"
+	default n
+	depends on HMMAC
+	select RESTORECON
+	help
+	Enable support to relabel files. The feature is almost
+	the same as setfiles, but usage is a little different.

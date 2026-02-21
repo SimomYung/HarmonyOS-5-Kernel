@@ -1,0 +1,16 @@
+# Copyright (c) Huawei Technologies Co., Ltd. 2022-2022. All rights reserved.
+# Description: HMbuild
+# Author: Huawei OS Kernel Lab
+# Create: Tue May 24 09:40:37 2022
+
+subdir-y: include
+subdir-y: libhmtrace
+subdir-y: libhmsync
+
+src-y: actv_rpc.S
+src-y: actv_pure_rpc.S
+src-y: actv_emrg_entry.S
+src-y: sigcontext.c
+src-y: lsyscall.S
+src-y: memzero.S
+src-y: hmlog_switch_stack.S

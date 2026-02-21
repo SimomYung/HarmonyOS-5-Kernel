@@ -1,0 +1,706 @@
+import("//build/ohos.gni")
+import("//build/ohos_var.gni")
+import("e2fsprogs.gni")
+
+group("e2fsprogs") {
+  deps = [
+    ":blkid",
+    ":e2fsck",
+    ":libext2_blkid",
+    ":libext2_com_err",
+    ":libext2_e2p",
+    ":libext2_misc",
+    ":libext2_quota",
+    ":libext2_uuid",
+    ":libext2fs",
+    ":mke2fs",
+    ":resize2fs",
+  ]
+  deps += [ ":e2fsdroid" ]
+}
+
+group("e2fsprogs_host_toolchain") {
+  deps = [
+    ":e2fsck($host_toolchain)",
+    ":mke2fs($host_toolchain)",
+  ]
+  deps += [ ":e2fsdroid($host_toolchain)" ]
+}
+
+ohos_static_library("libdacconfig") {
+  output_name = "libdacconfig"
+
+  sources = [ "e2fsprogs/contrib/android/dac_config.cpp" ]
+
+  part_name = "e2fsprogs"
+  subsystem_name = "thirdparty"
+}
+config("e2fsdroid-defaults") {
+  cflags = [
+    "-Wno-incompatible-pointer-types",
+    "-Wno-tautological-constant-out-of-range-compare",
+  ]
+}
+
+config("e2fsdroid_libext2_uuid") {
+  include_dirs = [ "e2fsprogs/lib/uuid/" ]
+}
+
+######################################################
+##Build e2fsdroid
+ohos_executable("e2fsdroid") {
+  configs = [ ":e2fsdroid-defaults" ]
+
+  defines = [ "HAVE_SYS_TYPES_H" ]
+  sources = [
+    "e2fsprogs/contrib/android/base_fs.c",
+    "e2fsprogs/contrib/android/basefs_allocator.c",
+    "e2fsprogs/contrib/android/block_list.c",
+    "e2fsprogs/contrib/android/block_range.c",
+    "e2fsprogs/contrib/android/e2fsdroid.c",
+    "e2fsprogs/contrib/android/fsmap.c",
+    "e2fsprogs/contrib/android/perms.c",
+  ]
+
+  include_dirs = [
+    "//third_party/e2fsprogs/e2fsprogs/contrib/android/",
+    "//third_party/e2fsprogs/e2fsprogs/lib",
+    "//third_party/e2fsprogs/e2fsprogs/lib/ext2fs",
+    "//third_party/e2fsprogs/e2fsprogs/misc",
+  ]
+
+  deps = [
+    ":libdacconfig",
+    ":libext2_com_err",
+    ":libext2_misc",
+    ":libext2fs",
+  ]
+
+  external_deps = [ "selinux:libselinux" ]
+
+  install_enable = true
+  subsystem_name = "thirdparty"
+  part_name = "e2fsprogs"
+  install_images = [
+    "system",
+    "updater",
+  ]
+}
+
+###################################################
+###Build e2fsck
+config("e2fsck-defaults") {
+  cflags = [
+    "-Wno-pointer-sign",
+    "-Wno-unused-variable",
+    "-Wno-error=format",
+  ]
+}
+
+ohos_executable("e2fsck") {
+  configs = [ ":e2fsck-defaults" ]
+  sources = [
+    "e2fsprogs/e2fsck/badblocks.c",
+    "e2fsprogs/e2fsck/dirinfo.c",
+    "e2fsprogs/e2fsck/dx_dirinfo.c",
+    "e2fsprogs/e2fsck/e2fsck.c",
+    "e2fsprogs/e2fsck/ea_refcount.c",
+    "e2fsprogs/e2fsck/ehandler.c",
+    "e2fsprogs/e2fsck/encrypted_files.c",
+    "e2fsprogs/e2fsck/extents.c",
+    "e2fsprogs/e2fsck/journal.c",
+    "e2fsprogs/e2fsck/logfile.c",
+    "e2fsprogs/e2fsck/message.c",
+    "e2fsprogs/e2fsck/pass1.c",
+    "e2fsprogs/e2fsck/pass1b.c",
+    "e2fsprogs/e2fsck/pass2.c",
+    "e2fsprogs/e2fsck/pass3.c",
+    "e2fsprogs/e2fsck/pass4.c",
+    "e2fsprogs/e2fsck/pass5.c",
+    "e2fsprogs/e2fsck/problem.c",
+    "e2fsprogs/e2fsck/quota.c",
+    "e2fsprogs/e2fsck/readahead.c",
+    "e2fsprogs/e2fsck/recovery.c",
+    "e2fsprogs/e2fsck/region.c",
+    "e2fsprogs/e2fsck/rehash.c",
+    "e2fsprogs/e2fsck/revoke.c",
+    "e2fsprogs/e2fsck/sigcatcher.c",
+    "e2fsprogs/e2fsck/super.c",
+    "e2fsprogs/e2fsck/unix.c",
+    "e2fsprogs/e2fsck/util.c",
+  ]
+
+  include_dirs = [
+    "//third_party/e2fsprogs/e2fsprogs/e2fsck",
+    "//third_party/e2fsprogs/e2fsprogs/lib",
+    "//third_party/e2fsprogs/e2fsprogs/lib/ext2fs",
+  ]
+
+  deps = [
+    ":libext2_blkid",
+    ":libext2_com_err",
+    ":libext2_e2p",
+    ":libext2_quota",
+    ":libext2_uuid",
+    ":libext2fs",
+  ]
+
+  install_enable = true
+  subsystem_name = "thirdparty"
+  part_name = "e2fsprogs"
+  install_images = [
+    "system",
+    "updater",
+  ]
+}
+
+###################################################
+###Build libext2_blkid
+config("libext2-headers") {
+  include_dirs = [ "//third_party/e2fsprogs/e2fsprogs/lib" ]
+}
+
+config("libext2_blkid-defaults") {
+  cflags = [
+    "-Wno-implicit-function-declaration",
+    "-Wno-int-conversion",
+  ]
+  defines = [ "secure_getenv=getenv" ]
+}
+
+config("libext2_blkid_public_config") {
+  include_dirs = [ "//third_party/e2fsprogs/e2fsprogs/lib" ]
+}
+
+ohos_shared_library("libext2_blkid") {
+  configs = [
+    ":libext2_blkid-defaults",
+    ":libext2-headers",
+  ]
+  public_configs = [ ":libext2_blkid_public_config" ]
+  sources = [
+    "e2fsprogs/lib/blkid/cache.c",
+    "e2fsprogs/lib/blkid/dev.c",
+    "e2fsprogs/lib/blkid/devname.c",
+    "e2fsprogs/lib/blkid/devno.c",
+    "e2fsprogs/lib/blkid/getsize.c",
+    "e2fsprogs/lib/blkid/llseek.c",
+    "e2fsprogs/lib/blkid/probe.c",
+    "e2fsprogs/lib/blkid/read.c",
+    "e2fsprogs/lib/blkid/resolve.c",
+    "e2fsprogs/lib/blkid/save.c",
+    "e2fsprogs/lib/blkid/tag.c",
+    "e2fsprogs/lib/blkid/version.c",
+  ]
+
+  include_dirs = [ "//third_party/e2fsprogs/e2fsprogs/lib/blkid" ]
+  deps = [ ":libext2_uuid" ]
+  cflags = [
+    "-Wno-error=attributes",
+    "-Wno-error=pointer-sign",
+    "-Wno-unused-parameter",
+    "-fno-strict-aliasing",
+  ]
+  install_enable = true
+  subsystem_name = "thirdparty"
+  part_name = "e2fsprogs"
+  install_images = [
+    "system",
+    "updater",
+  ]
+}
+
+###################################################
+###Build libext2_e2p
+config("libext2_e2p-defaults") {
+  cflags = [
+    "-Wall",
+    "-Werror",
+  ]
+}
+
+ohos_shared_library("libext2_e2p") {
+  sources = [
+    "e2fsprogs/lib/e2p/encoding.c",
+    "e2fsprogs/lib/e2p/errcode.c",
+    "e2fsprogs/lib/e2p/feature.c",
+    "e2fsprogs/lib/e2p/fgetflags.c",
+    "e2fsprogs/lib/e2p/fgetproject.c",
+    "e2fsprogs/lib/e2p/fgetversion.c",
+    "e2fsprogs/lib/e2p/fsetflags.c",
+    "e2fsprogs/lib/e2p/fsetproject.c",
+    "e2fsprogs/lib/e2p/fsetversion.c",
+    "e2fsprogs/lib/e2p/getflags.c",
+    "e2fsprogs/lib/e2p/getversion.c",
+    "e2fsprogs/lib/e2p/hashstr.c",
+    "e2fsprogs/lib/e2p/iod.c",
+    "e2fsprogs/lib/e2p/ljs.c",
+    "e2fsprogs/lib/e2p/ls.c",
+    "e2fsprogs/lib/e2p/mntopts.c",
+    "e2fsprogs/lib/e2p/ostype.c",
+    "e2fsprogs/lib/e2p/parse_num.c",
+    "e2fsprogs/lib/e2p/pe.c",
+    "e2fsprogs/lib/e2p/percent.c",
+    "e2fsprogs/lib/e2p/pf.c",
+    "e2fsprogs/lib/e2p/ps.c",
+    "e2fsprogs/lib/e2p/setflags.c",
+    "e2fsprogs/lib/e2p/setversion.c",
+    "e2fsprogs/lib/e2p/uuid.c",
+  ]
+  include_dirs = [ "//third_party/e2fsprogs/e2fsprogs/lib/e2p" ]
+
+  configs = [
+    ":libext2_e2p-defaults",
+    ":libext2-headers",
+  ]
+  cflags = [
+    "-Wno-error=attributes",
+    "-Wno-unused-parameter",
+  ]
+  install_enable = true
+  subsystem_name = "thirdparty"
+  part_name = "e2fsprogs"
+  install_images = [
+    "system",
+    "updater",
+  ]
+}
+
+###################################################
+###Build libext2_com_err
+config("libext2_com_err-defaults") {
+  cflags = [
+    "-Wno-int-conversion",
+    "-Wno-implicit-function-declaration",
+  ]
+  defines = [ "secure_getenv=getenv" ]
+}
+
+ohos_shared_library("libext2_com_err") {
+  sources = [
+    "e2fsprogs/lib/et/com_err.c",
+    "e2fsprogs/lib/et/com_right.c",
+    "e2fsprogs/lib/et/error_message.c",
+    "e2fsprogs/lib/et/et_name.c",
+    "e2fsprogs/lib/et/init_et.c",
+  ]
+
+  include_dirs = [ "//third_party/e2fsprogs/e2fsprogs/lib/et" ]
+  configs = [
+    ":libext2_com_err-defaults",
+    ":libext2-headers",
+  ]
+  install_enable = true
+  subsystem_name = "thirdparty"
+  part_name = "e2fsprogs"
+  install_images = [
+    "system",
+    "updater",
+  ]
+}
+
+###################################################
+###Build libext2_com_err
+config("libext2fs-defaults") {
+  cflags = [
+    "-Wno-sign-compare",
+    "-Wno-pointer-sign",
+    "-Wno-implicit-function-declaration",
+    "-Wno-int-conversion",
+  ]
+  defines = [ "secure_getenv=getenv" ]
+}
+
+ohos_shared_library("libext2fs") {
+  sources = [
+    "e2fsprogs/lib/ext2fs/alloc.c",
+    "e2fsprogs/lib/ext2fs/alloc_sb.c",
+    "e2fsprogs/lib/ext2fs/alloc_stats.c",
+    "e2fsprogs/lib/ext2fs/alloc_tables.c",
+    "e2fsprogs/lib/ext2fs/atexit.c",
+    "e2fsprogs/lib/ext2fs/badblocks.c",
+    "e2fsprogs/lib/ext2fs/bb_inode.c",
+    "e2fsprogs/lib/ext2fs/bitmaps.c",
+    "e2fsprogs/lib/ext2fs/bitops.c",
+    "e2fsprogs/lib/ext2fs/blkmap64_ba.c",
+    "e2fsprogs/lib/ext2fs/blkmap64_rb.c",
+    "e2fsprogs/lib/ext2fs/blknum.c",
+    "e2fsprogs/lib/ext2fs/block.c",
+    "e2fsprogs/lib/ext2fs/bmap.c",
+    "e2fsprogs/lib/ext2fs/check_desc.c",
+    "e2fsprogs/lib/ext2fs/closefs.c",
+    "e2fsprogs/lib/ext2fs/crc16.c",
+    "e2fsprogs/lib/ext2fs/crc32c.c",
+    "e2fsprogs/lib/ext2fs/csum.c",
+    "e2fsprogs/lib/ext2fs/dblist.c",
+    "e2fsprogs/lib/ext2fs/dblist_dir.c",
+    "e2fsprogs/lib/ext2fs/digest_encode.c",
+    "e2fsprogs/lib/ext2fs/dir_iterate.c",
+    "e2fsprogs/lib/ext2fs/dirblock.c",
+    "e2fsprogs/lib/ext2fs/dirhash.c",
+    "e2fsprogs/lib/ext2fs/dupfs.c",
+    "e2fsprogs/lib/ext2fs/expanddir.c",
+    "e2fsprogs/lib/ext2fs/ext2_err.c",
+    "e2fsprogs/lib/ext2fs/ext_attr.c",
+    "e2fsprogs/lib/ext2fs/extent.c",
+    "e2fsprogs/lib/ext2fs/fallocate.c",
+    "e2fsprogs/lib/ext2fs/fileio.c",
+    "e2fsprogs/lib/ext2fs/finddev.c",
+    "e2fsprogs/lib/ext2fs/flushb.c",
+    "e2fsprogs/lib/ext2fs/freefs.c",
+    "e2fsprogs/lib/ext2fs/gen_bitmap.c",
+    "e2fsprogs/lib/ext2fs/gen_bitmap64.c",
+    "e2fsprogs/lib/ext2fs/get_num_dirs.c",
+    "e2fsprogs/lib/ext2fs/get_pathname.c",
+    "e2fsprogs/lib/ext2fs/getsectsize.c",
+    "e2fsprogs/lib/ext2fs/getsize.c",
+    "e2fsprogs/lib/ext2fs/hashmap.c",
+    "e2fsprogs/lib/ext2fs/i_block.c",
+    "e2fsprogs/lib/ext2fs/icount.c",
+    "e2fsprogs/lib/ext2fs/imager.c",
+    "e2fsprogs/lib/ext2fs/ind_block.c",
+    "e2fsprogs/lib/ext2fs/initialize.c",
+    "e2fsprogs/lib/ext2fs/inline.c",
+    "e2fsprogs/lib/ext2fs/inline_data.c",
+    "e2fsprogs/lib/ext2fs/inode.c",
+    "e2fsprogs/lib/ext2fs/io_manager.c",
+    "e2fsprogs/lib/ext2fs/ismounted.c",
+    "e2fsprogs/lib/ext2fs/link.c",
+    "e2fsprogs/lib/ext2fs/llseek.c",
+    "e2fsprogs/lib/ext2fs/lookup.c",
+    "e2fsprogs/lib/ext2fs/mkdir.c",
+    "e2fsprogs/lib/ext2fs/mkjournal.c",
+    "e2fsprogs/lib/ext2fs/mmp.c",
+    "e2fsprogs/lib/ext2fs/namei.c",
+    "e2fsprogs/lib/ext2fs/native.c",
+    "e2fsprogs/lib/ext2fs/newdir.c",
+    "e2fsprogs/lib/ext2fs/nls_utf8.c",
+    "e2fsprogs/lib/ext2fs/openfs.c",
+    "e2fsprogs/lib/ext2fs/progress.c",
+    "e2fsprogs/lib/ext2fs/punch.c",
+    "e2fsprogs/lib/ext2fs/qcow2.c",
+    "e2fsprogs/lib/ext2fs/rbtree.c",
+    "e2fsprogs/lib/ext2fs/read_bb.c",
+    "e2fsprogs/lib/ext2fs/read_bb_file.c",
+    "e2fsprogs/lib/ext2fs/res_gdt.c",
+    "e2fsprogs/lib/ext2fs/rw_bitmaps.c",
+    "e2fsprogs/lib/ext2fs/sha256.c",
+    "e2fsprogs/lib/ext2fs/sha512.c",
+    "e2fsprogs/lib/ext2fs/sparse_io.c",
+    "e2fsprogs/lib/ext2fs/swapfs.c",
+    "e2fsprogs/lib/ext2fs/symlink.c",
+    "e2fsprogs/lib/ext2fs/test_io.c",
+    "e2fsprogs/lib/ext2fs/undo_io.c",
+    "e2fsprogs/lib/ext2fs/unix_io.c",
+    "e2fsprogs/lib/ext2fs/unlink.c",
+    "e2fsprogs/lib/ext2fs/valid_blk.c",
+    "e2fsprogs/lib/ext2fs/version.c",
+  ]
+  configs = [ ":libext2fs-defaults" ]
+
+  deps = [ ":libext2_com_err" ]
+
+  cflags = [ "-Wno-unused-parameter" ]
+  include_dirs = [
+    "//third_party/e2fsprogs/e2fsprogs/lib/ext2fs",
+    "//third_party/e2fsprogs/e2fsprogs/lib",
+  ]
+  install_enable = true
+  subsystem_name = "thirdparty"
+  part_name = "e2fsprogs"
+  install_images = [
+    "system",
+    "updater",
+  ]
+}
+
+###################################################
+###Build libext2_ss
+config("libext2_ss-headers") {
+  include_dirs = [ "//third_party/e2fsprogs/e2fsprogs/lib" ]
+  defines = [ "secure_getenv=getenv" ]
+}
+
+ohos_static_library("libext2_ss") {
+  sources = [
+    "e2fsprogs/lib/ss/data.c",
+    "e2fsprogs/lib/ss/error.c",
+    "e2fsprogs/lib/ss/execute_cmd.c",
+    "e2fsprogs/lib/ss/get_readline.c",
+    "e2fsprogs/lib/ss/help.c",
+    "e2fsprogs/lib/ss/invocation.c",
+    "e2fsprogs/lib/ss/list_rqs.c",
+    "e2fsprogs/lib/ss/listen.c",
+    "e2fsprogs/lib/ss/pager.c",
+    "e2fsprogs/lib/ss/parse.c",
+    "e2fsprogs/lib/ss/prompt.c",
+    "e2fsprogs/lib/ss/request_tbl.c",
+    "e2fsprogs/lib/ss/requests.c",
+    "e2fsprogs/lib/ss/ss_err.c",
+    "e2fsprogs/lib/ss/std_rqs.c",
+  ]
+
+  include_dirs = [ "//third_party/e2fsprogs/e2fsprogs/lib/ss" ]
+  configs = [ ":libext2_ss-headers" ]
+
+  deps = [ ":libext2_com_err" ]
+}
+
+###################################################
+###Build libext2_quota
+config("libext2_support-defaults") {
+  cflags = [
+    "-Wall",
+    "-Werror",
+  ]
+}
+
+ohos_shared_library("libext2_quota") {
+  sources = [
+    "e2fsprogs/lib/support/dict.c",
+    "e2fsprogs/lib/support/mkquota.c",
+    "e2fsprogs/lib/support/parse_qtype.c",
+    "e2fsprogs/lib/support/plausible.c",
+    "e2fsprogs/lib/support/prof_err.c",
+    "e2fsprogs/lib/support/profile.c",
+    "e2fsprogs/lib/support/profile_helpers.c",
+    "e2fsprogs/lib/support/quotaio.c",
+    "e2fsprogs/lib/support/quotaio_tree.c",
+    "e2fsprogs/lib/support/quotaio_v2.c",
+  ]
+  include_dirs = [ "//third_party/e2fsprogs/e2fsprogs/lib/support" ]
+  configs = [
+    ":libext2_support-defaults",
+    ":libext2-headers",
+  ]
+  deps = [
+    ":libext2_blkid",
+    ":libext2_com_err",
+    ":libext2fs",
+  ]
+  install_enable = true
+  subsystem_name = "thirdparty"
+  part_name = "e2fsprogs"
+  install_images = [
+    "system",
+    "updater",
+  ]
+}
+
+###################################################
+###Build libext2_profile
+ohos_static_library("libext2_profile") {
+  sources = [
+    "e2fsprogs/lib/support/prof_err.c",
+    "e2fsprogs/lib/support/profile.c",
+  ]
+  include_dirs = [ "//third_party/e2fsprogs/e2fsprogs/lib/support" ]
+  configs = [
+    ":libext2-headers",
+    ":libext2_support-defaults",
+  ]
+
+  deps = [ ":libext2_com_err" ]
+}
+
+###################################################
+###Build libext2_support
+ohos_static_library("libext2_support") {
+  sources = [ "e2fsprogs/lib/support/cstring.c" ]
+  include_dirs = [ "//third_party/e2fsprogs/e2fsprogs/lib/support" ]
+  configs = [
+    ":libext2_support-defaults",
+    ":libext2-headers",
+  ]
+}
+
+###################################################
+###Build libext2_uuid
+config("libext2_uuid-defaults") {
+  cflags = [
+    "-Wall",
+    "-Werror",
+  ]
+}
+
+ohos_shared_library("libext2_uuid") {
+  sources = [
+    "e2fsprogs/lib/uuid/clear.c",
+    "e2fsprogs/lib/uuid/compare.c",
+    "e2fsprogs/lib/uuid/copy.c",
+    "e2fsprogs/lib/uuid/gen_uuid.c",
+    "e2fsprogs/lib/uuid/isnull.c",
+    "e2fsprogs/lib/uuid/pack.c",
+    "e2fsprogs/lib/uuid/parse.c",
+    "e2fsprogs/lib/uuid/unpack.c",
+    "e2fsprogs/lib/uuid/unparse.c",
+    "e2fsprogs/lib/uuid/uuid_time.c",
+  ]
+  include_dirs = [ "//third_party/e2fsprogs/e2fsprogs/lib/uuid" ]
+  cflags = [
+    "-Wno-unused-function",
+    "-Wno-unused-parameter",
+  ]
+  public_configs = [ ":e2fsdroid_libext2_uuid" ]
+  configs = [
+    ":libext2_uuid-defaults",
+    ":libext2-headers",
+  ]
+  install_enable = true
+  innerapi_tags = [ "platformsdk" ]
+  subsystem_name = "thirdparty"
+  part_name = "e2fsprogs"
+  install_images = [
+    "system",
+    "updater",
+  ]
+}
+
+###################################################
+###Build libext2_misc
+config("libext2_misc-defaults") {
+  cflags = [ "-Wno-pointer-sign" ]
+}
+
+ohos_shared_library("libext2_misc") {
+  configs = [ ":libext2_misc-defaults" ]
+  sources = [ "e2fsprogs/misc/create_inode.c" ]
+  include_dirs = [
+    "//third_party/e2fsprogs/e2fsprogs/misc",
+    "//third_party/e2fsprogs/e2fsprogs/lib",
+  ]
+  cflags = [ "-Wno-error=format-extra-args" ]
+
+  deps = [
+    ":libext2_com_err",
+    ":libext2fs",
+  ]
+  install_enable = true
+  subsystem_name = "thirdparty"
+  part_name = "e2fsprogs"
+  install_images = [
+    "system",
+    "updater",
+  ]
+}
+
+###################################################
+###Build mke2fs
+ohos_executable("mke2fs") {
+  configs = [ ":libext2_misc-defaults" ]
+  sources = [
+    "e2fsprogs/misc/default_profile.c",
+    "e2fsprogs/misc/mk_hugefiles.c",
+    "e2fsprogs/misc/mke2fs.c",
+    "e2fsprogs/misc/util.c",
+  ]
+
+  include_dirs = [
+    "//third_party/e2fsprogs/e2fsprogs/misc",
+    "//third_party/e2fsprogs/e2fsprogs/e2fsck",
+    "//third_party/e2fsprogs/e2fsprogs/lib",
+    "//third_party/e2fsprogs/e2fsprogs/lib/ext2fs",
+  ]
+  cflags = [
+    "-Wno-error=format",
+    "-Wno-error=type-limits",
+    "-Wno-format-extra-args",
+  ]
+
+  deps = [
+    ":libext2_blkid",
+    ":libext2_com_err",
+    ":libext2_e2p",
+    ":libext2_misc",
+    ":libext2_quota",
+    ":libext2_uuid",
+    ":libext2fs",
+  ]
+
+  install_enable = true
+  subsystem_name = "thirdparty"
+  part_name = "e2fsprogs"
+  install_images = [
+    "system",
+    "updater",
+  ]
+}
+
+###################################################
+###Build blkid
+ohos_executable("blkid") {
+  configs = [ ":libext2_misc-defaults" ]
+  sources = [ "e2fsprogs/misc/blkid.c" ]
+
+  include_dirs = [
+    "//third_party/e2fsprogs/e2fsprogs/misc",
+    "//third_party/e2fsprogs/e2fsprogs/lib",
+    "//third_party/e2fsprogs/e2fsprogs/lib/blkid",
+  ]
+  cflags = [
+    "-Wno-error=format",
+    "-Wno-error=type-limits",
+    "-Wno-format-extra-args",
+  ]
+
+  deps = [
+    ":libext2_blkid",
+    ":libext2fs",
+  ]
+
+  install_enable = true
+  subsystem_name = "filemanagement"
+  part_name = "storage_service"
+  install_images = [
+    "system",
+    "updater",
+  ]
+  external_deps = [ "c_utils:utils" ]
+}
+
+###################################################
+###Build resize2fs
+config("resize2fs-defaults") {
+  cflags = [ "-Wno-pointer-sign" ]
+}
+
+ohos_executable("resize2fs") {
+  configs = [ ":resize2fs-defaults" ]
+  sources = [
+    "e2fsprogs/resize/extent.c",
+    "e2fsprogs/resize/main.c",
+    "e2fsprogs/resize/online.c",
+    "e2fsprogs/resize/resize2fs.c",
+    "e2fsprogs/resize/resource_track.c",
+    "e2fsprogs/resize/sim_progress.c",
+  ]
+
+  include_dirs = [
+    "//third_party/e2fsprogs/e2fsprogs/resize",
+    "//third_party/e2fsprogs/e2fsprogs/e2fsck",
+    "//third_party/e2fsprogs/e2fsprogs/lib",
+    "//third_party/e2fsprogs/e2fsprogs/lib/ext2fs",
+  ]
+  cflags = [
+    "-Wno-error=format",
+    "-Wno-error=type-limits",
+    "-Wno-format-extra-args",
+  ]
+
+  deps = [
+    ":libext2_com_err",
+    ":libext2_e2p",
+    ":libext2fs",
+  ]
+
+  if (is_ohos) {
+    ldflags = [ "-stdlib=libc++_static" ]
+  }
+  install_enable = true
+  subsystem_name = "thirdparty"
+  part_name = "e2fsprogs"
+  install_images = [
+    "system",
+    "updater",
+  ]
+}

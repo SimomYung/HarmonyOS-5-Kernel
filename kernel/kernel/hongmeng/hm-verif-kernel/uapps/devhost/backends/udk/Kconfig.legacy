@@ -1,0 +1,55 @@
+comment "UDK Backend Settings"
+
+config DEVHOST_BACKEND_UDK
+	string
+	default "libdh-udk.so.0"
+
+menu "UDK Features Configuration"
+
+config UDK_IRQ_EXT
+	bool "enable udk irq extention"
+	default n
+
+config UDK_MAILBOX
+	bool "enable udk mailbox"
+	default n
+
+config UDK_GPIO
+	bool "enable udk gpio"
+	default n
+
+config UDK_FIRMWARE
+	bool "enable udk firmware"
+	default n
+
+config UDK_CLOCK
+	bool "enable udk clock"
+	default n
+
+config UDK_PCI
+	bool "enable udk pci"
+	default n
+
+config UDK_MDIO
+	bool "enable udk mdio"
+	default n
+
+config UDK_PHY
+	bool "enable phy layer"
+	default n
+
+config UDK_NETPHY
+	bool "enable udk netphy"
+	select UDK_MDIO
+	depends on UDK_PHY
+	default n
+
+config UDK_UART
+	bool "enable udk uart"
+	default n
+
+config UDK_UEFI
+	bool "enable udk uefi"
+	default n
+
+endmenu

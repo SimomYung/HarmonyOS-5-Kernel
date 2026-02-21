@@ -1,0 +1,20 @@
+# Copyright (c) Huawei Technologies Co., Ltd. 2022-2022. All rights reserved.
+# Author: Huawei OS Kernel Lab
+# Create: Tue Feb 08 16:24:29 2022
+
+subdir-y: watchdog
+subdir-y: kvic_timer
+subdir-CONFIG_DEBUG_BUILD: test
+subdir-CONFIG_MODULE_TIMER: timer
+subdir-CONFIG_MODULE_MISC: misc
+subdir-CONFIG_MODULE_ATFD_SMC: atfd
+subdir-CONFIG_MODULE_FAULT_INJECT: fault_inject
+subdir-CONFIG_AUDIT: audit
+subdir-CONFIG_VIRQ: virq
+subdir-CONFIG_EINJ: einj
+
+subdir-y: include
+cflags-.-y: -D__MODULE__
+
+include-.-y: include
+include-.-y: include/mapi/

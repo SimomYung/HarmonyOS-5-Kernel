@@ -1,0 +1,32 @@
+# Copyright (c) Huawei Technologies Co., Ltd. 2022-2022. All rights reserved.
+# Description: HMbuild for libtsan
+# Author: Huawei OS Kernel Lab
+# Create: Fri Nov 25 16:24:29 2022
+
+src-y: tsan_algo.c tsan_report.c
+
+cflags-.-y: -ffunction-sections
+cflags-.-y: -fdata-sections
+cflags-.-y: -fno-sanitize=thread
+cflags-.-y: -rdynamic
+cflags-.-y: -fno-omit-frame-pointer
+cflags-.-y: -funwind-tables
+
+cflags-tsan_algo.c-y: -Wno-missing-prototypes -Wno-missing-declarations -Wno-builtin-declaration-mismatch
+
+include-y: ./
+inclib: HMUlibs::HMUlibs_sysif_sysmgr_include
+
+# libtsan.a
+lib-static-y: tsan
+install-tsan-y: LIBDIR
+
+# libtsan.so
+lib-dynamic-y: tsan_shared
+output-tsan_shared: tsan
+
+include-tsan_shared: ../../include
+linklib-tsan_shared: -nodefaultlibs
+install-tsan_shared-y: LIBDIR
+
+# vim:ts=4:sw=4:expandtab

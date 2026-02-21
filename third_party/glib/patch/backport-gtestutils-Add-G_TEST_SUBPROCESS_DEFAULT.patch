@@ -1,0 +1,1307 @@
+From de8672fe0b9f55047fbaee6f425e330cdfc8189f Mon Sep 17 00:00:00 2001
+From: Simon McVittie <smcv@collabora.com>
+Date: Thu, 31 Mar 2022 14:30:43 +0100
+Subject: [PATCH] gtestutils: Add G_TEST_SUBPROCESS_DEFAULT,
+ G_TEST_TRAP_DEFAULT
+
+This makes calls to test subprocesses with default behaviour more
+self-documenting.
+
+Signed-off-by: Simon McVittie <smcv@collabora.com>
+
+Conflict:NA
+Reference:https://gitlab.gnome.org/GNOME/glib/-/commit/de8672fe0b9f55047fbaee6f425e330cdfc8189f
+
+---
+ gio/tests/gapplication.c              |   2 +-
+ gio/tests/gdbus-address-get-session.c |   6 +-
+ gio/tests/gdbus-non-socket.c          |   2 +-
+ gio/tests/gdbus-peer.c                |  10 +--
+ gio/tests/glistmodel.c                |   2 +-
+ gio/tests/gschema-compile.c           |   2 +-
+ gio/tests/gsettings.c                 |  55 +++++++++-----
+ gio/tests/task.c                      |   8 +-
+ gio/tests/tls-bindings.c              |   4 +-
+ gio/tests/win32-appinfo.c             |   6 +-
+ glib/gtestutils.c                     |   3 +-
+ glib/gtestutils.h                     |   3 +
+ glib/tests/array-test.c               |   4 +-
+ glib/tests/convert.c                  |  24 ++++--
+ glib/tests/dataset.c                  |   2 +-
+ glib/tests/error.c                    |   2 +-
+ glib/tests/gvariant.c                 |   2 +-
+ glib/tests/hash.c                     |   3 +-
+ glib/tests/list.c                     |   2 +-
+ glib/tests/logging.c                  |  37 ++++++----
+ glib/tests/mem-overflow.c             |   9 ++-
+ glib/tests/refcount.c                 |   4 +-
+ glib/tests/scannerapi.c               |   2 +-
+ glib/tests/slice.c                    |   4 +-
+ glib/tests/test-printf.c              |  10 ++-
+ glib/tests/testing.c                  | 102 ++++++++++++++++----------
+ glib/tests/thread-pool.c              |   2 +-
+ glib/tests/utils.c                    |   9 ++-
+ glib/tests/win32.c                    |   9 ++-
+ gobject/tests/param.c                 |   5 +-
+ gobject/tests/properties.c            |   4 +-
+ gobject/tests/signals.c               |   4 +-
+ gobject/tests/testing.c               |   3 +-
+ 33 files changed, 213 insertions(+), 133 deletions(-)
+
+diff --git a/gio/tests/gapplication.c b/gio/tests/gapplication.c
+index 6f1a27e..b017e43 100644
+--- a/gio/tests/gapplication.c
++++ b/gio/tests/gapplication.c
+@@ -827,7 +827,7 @@ test_help (void)
+       return;
+     }
+ 
+-  g_test_trap_subprocess (NULL, 0, 0);
++  g_test_trap_subprocess (NULL, 0, G_TEST_SUBPROCESS_DEFAULT);
+   g_test_trap_assert_passed ();
+   g_test_trap_assert_stdout ("*Application options*");
+ }
+diff --git a/gio/tests/gdbus-address-get-session.c b/gio/tests/gdbus-address-get-session.c
+index 72de2c7..4758c8c 100644
+--- a/gio/tests/gdbus-address-get-session.c
++++ b/gio/tests/gdbus-address-get-session.c
+@@ -142,7 +142,7 @@ test_x11_autolaunch (void)
+       return;
+     }
+ 
+-  g_test_trap_subprocess (NULL, 0, 0);
++  g_test_trap_subprocess (NULL, 0, G_TEST_SUBPROCESS_DEFAULT);
+   g_test_trap_assert_stderr_unmatched ("?*");
+   g_test_trap_assert_stdout ("hello:this=address-is-from-the,mock=dbus-launch\n");
+   g_test_trap_assert_passed ();
+@@ -165,7 +165,7 @@ test_xdg_runtime (void)
+       return;
+     }
+ 
+-  g_test_trap_subprocess (NULL, 0, 0);
++  g_test_trap_subprocess (NULL, 0, G_TEST_SUBPROCESS_DEFAULT);
+   g_test_trap_assert_stderr_unmatched ("?*");
+   g_test_trap_assert_stdout ("unix:path=/tmp/gdbus%2Cunix%2Ctest.*/bus\n");
+   g_test_trap_assert_passed ();
+@@ -201,7 +201,7 @@ test_win32_autolaunch (void)
+       return;
+     }
+ 
+-  g_test_trap_subprocess (NULL, 0, 0);
++  g_test_trap_subprocess (NULL, 0, G_TEST_SUBPROCESS_DEFAULT);
+   /* stderr is not checked: coverage prints warnings there */
+   g_test_trap_assert_stdout ("nonce-tcp:host=localhost,port=*,noncefile=*\\gdbus-nonce-file-*\n");
+   g_test_trap_assert_passed ();
+diff --git a/gio/tests/gdbus-non-socket.c b/gio/tests/gdbus-non-socket.c
+index 7ddb55b..c246aea 100644
+--- a/gio/tests/gdbus-non-socket.c
++++ b/gio/tests/gdbus-non-socket.c
+@@ -220,7 +220,7 @@ test_non_socket (void)
+ 
+   /* This is #ifdef G_OS_UNIX anyway, so just use g_test_trap_fork() */
+   G_GNUC_BEGIN_IGNORE_DEPRECATIONS;
+-  if (!g_test_trap_fork (0, 0))
++  if (!g_test_trap_fork (0, G_TEST_TRAP_DEFAULT))
+     {
+       /* parent */
+       g_object_unref (streams[0]);
+diff --git a/gio/tests/gdbus-peer.c b/gio/tests/gdbus-peer.c
+index 2f2caf7..dff47d4 100644
+--- a/gio/tests/gdbus-peer.c
++++ b/gio/tests/gdbus-peer.c
+@@ -1164,7 +1164,7 @@ test_peer_invalid_server (void)
+     }
+   else
+     {
+-      g_test_trap_subprocess (NULL, 0, 0);
++      g_test_trap_subprocess (NULL, 0, G_TEST_SUBPROCESS_DEFAULT);
+       g_test_trap_assert_failed ();
+       g_test_trap_assert_stderr ("*CRITICAL*G_DBUS_SERVER_FLAGS_ALL*");
+     }
+@@ -1211,7 +1211,7 @@ test_peer_invalid_conn_stream_sync (void)
+     }
+   else
+     {
+-      g_test_trap_subprocess (NULL, 0, 0);
++      g_test_trap_subprocess (NULL, 0, G_TEST_SUBPROCESS_DEFAULT);
+       g_test_trap_assert_failed ();
+       g_test_trap_assert_stderr ("*CRITICAL*G_DBUS_CONNECTION_FLAGS_ALL*");
+     }
+@@ -1257,7 +1257,7 @@ test_peer_invalid_conn_stream_async (void)
+     }
+   else
+     {
+-      g_test_trap_subprocess (NULL, 0, 0);
++      g_test_trap_subprocess (NULL, 0, G_TEST_SUBPROCESS_DEFAULT);
+       g_test_trap_assert_failed ();
+       g_test_trap_assert_stderr ("*CRITICAL*G_DBUS_CONNECTION_FLAGS_ALL*");
+     }
+@@ -1286,7 +1286,7 @@ test_peer_invalid_conn_addr_sync (void)
+     }
+   else
+     {
+-      g_test_trap_subprocess (NULL, 0, 0);
++      g_test_trap_subprocess (NULL, 0, G_TEST_SUBPROCESS_DEFAULT);
+       g_test_trap_assert_failed ();
+       g_test_trap_assert_stderr ("*CRITICAL*G_DBUS_CONNECTION_FLAGS_ALL*");
+     }
+@@ -1309,7 +1309,7 @@ test_peer_invalid_conn_addr_async (void)
+     }
+   else
+     {
+-      g_test_trap_subprocess (NULL, 0, 0);
++      g_test_trap_subprocess (NULL, 0, G_TEST_SUBPROCESS_DEFAULT);
+       g_test_trap_assert_failed ();
+       g_test_trap_assert_stderr ("*CRITICAL*G_DBUS_CONNECTION_FLAGS_ALL*");
+     }
+diff --git a/gio/tests/glistmodel.c b/gio/tests/glistmodel.c
+index e50969e..62986d7 100644
+--- a/gio/tests/glistmodel.c
++++ b/gio/tests/glistmodel.c
+@@ -62,7 +62,7 @@ test_store_non_gobjects (void)
+       return;
+     }
+ 
+-  g_test_trap_subprocess (NULL, 0, 0);
++  g_test_trap_subprocess (NULL, 0, G_TEST_SUBPROCESS_DEFAULT);
+   g_test_trap_assert_failed ();
+   g_test_trap_assert_stderr ("*WARNING*value * of type 'GType' is invalid or "
+                              "out of range for property 'item-type'*");
+diff --git a/gio/tests/gschema-compile.c b/gio/tests/gschema-compile.c
+index 8dc4985..6a51e42 100644
+--- a/gio/tests/gschema-compile.c
++++ b/gio/tests/gschema-compile.c
+@@ -38,7 +38,7 @@ test_schema (gpointer data)
+   gchar *child_name;
+ 
+   child_name = g_strdup_printf ("/gschema/%s%s/subprocess/do_compile", test->name, test->opt ? "/opt" : "");
+-  g_test_trap_subprocess (child_name, 0, 0);
++  g_test_trap_subprocess (child_name, 0, G_TEST_SUBPROCESS_DEFAULT);
+   g_free (child_name);
+ 
+   if (test->err)
+diff --git a/gio/tests/gsettings.c b/gio/tests/gsettings.c
+index 35d958e..1956ac5 100644
+--- a/gio/tests/gsettings.c
++++ b/gio/tests/gsettings.c
+@@ -147,7 +147,7 @@ test_unknown_key (void)
+       g_object_unref (settings);
+       return;
+     }
+-  g_test_trap_subprocess (NULL, 0, 0);
++  g_test_trap_subprocess (NULL, 0, G_TEST_SUBPROCESS_DEFAULT);
+   g_test_trap_assert_failed ();
+   g_test_trap_assert_stderr ("*does not contain*");
+ }
+@@ -170,7 +170,7 @@ test_no_schema (void)
+       g_assert_null (settings);
+       return;
+     }
+-  g_test_trap_subprocess (NULL, 0, 0);
++  g_test_trap_subprocess (NULL, 0, G_TEST_SUBPROCESS_DEFAULT);
+   g_test_trap_assert_failed ();
+   g_test_trap_assert_stderr ("*Settings schema 'no.such.schema' is not installed*");
+ }
+@@ -220,7 +220,7 @@ test_wrong_path (void)
+       settings = g_settings_new_with_path ("org.gtk.test", "/wrong-path/");
+       return;
+     }
+-  g_test_trap_subprocess (NULL, 0, 0);
++  g_test_trap_subprocess (NULL, 0, G_TEST_SUBPROCESS_DEFAULT);
+   g_test_trap_assert_failed ();
+   g_test_trap_assert_stderr ("*but path * specified by schema*");
+ }
+@@ -238,7 +238,7 @@ test_no_path (void)
+       settings = g_settings_new ("org.gtk.test.no-path");
+       return;
+     }
+-  g_test_trap_subprocess (NULL, 0, 0);
++  g_test_trap_subprocess (NULL, 0, G_TEST_SUBPROCESS_DEFAULT);
+   g_test_trap_assert_failed ();
+   g_test_trap_assert_stderr ("*attempting to create schema * without a path**");
+ }
+@@ -1507,7 +1507,7 @@ test_typesafe_binding (void)
+       g_object_unref (settings);
+       return;
+     }
+-  g_test_trap_subprocess (NULL, 0, 0);
++  g_test_trap_subprocess (NULL, 0, G_TEST_SUBPROCESS_DEFAULT);
+   g_test_trap_assert_failed ();
+   g_test_trap_assert_stderr ("*not compatible*");
+ }
+@@ -1665,12 +1665,14 @@ test_no_read_binding (void)
+ {
+   if (g_test_undefined ())
+     {
+-      g_test_trap_subprocess ("/gsettings/no-read-binding/subprocess/fail", 0, 0);
++      g_test_trap_subprocess ("/gsettings/no-read-binding/subprocess/fail", 0,
++                              G_TEST_SUBPROCESS_DEFAULT);
+       g_test_trap_assert_failed ();
+       g_test_trap_assert_stderr ("*property*is not readable*");
+     }
+ 
+-  g_test_trap_subprocess ("/gsettings/no-read-binding/subprocess/pass", 0, 0);
++  g_test_trap_subprocess ("/gsettings/no-read-binding/subprocess/pass", 0,
++                          G_TEST_SUBPROCESS_DEFAULT);
+   g_test_trap_assert_passed ();
+ }
+ 
+@@ -1708,12 +1710,14 @@ test_no_write_binding (void)
+ {
+   if (g_test_undefined ())
+     {
+-      g_test_trap_subprocess ("/gsettings/no-write-binding/subprocess/fail", 0, 0);
++      g_test_trap_subprocess ("/gsettings/no-write-binding/subprocess/fail", 0,
++                              G_TEST_SUBPROCESS_DEFAULT);
+       g_test_trap_assert_failed ();
+       g_test_trap_assert_stderr ("*property*is not writable*");
+     }
+ 
+-  g_test_trap_subprocess ("/gsettings/no-write-binding/subprocess/pass", 0, 0);
++  g_test_trap_subprocess ("/gsettings/no-write-binding/subprocess/pass", 0,
++                          G_TEST_SUBPROCESS_DEFAULT);
+   g_test_trap_assert_passed ();
+ }
+ 
+@@ -2141,19 +2145,23 @@ test_enums (void)
+ 
+   if (g_test_undefined () && !backend_set)
+     {
+-      g_test_trap_subprocess ("/gsettings/enums/subprocess/non-enum-key", 0, 0);
++      g_test_trap_subprocess ("/gsettings/enums/subprocess/non-enum-key", 0,
++                              G_TEST_SUBPROCESS_DEFAULT);
+       g_test_trap_assert_failed ();
+       g_test_trap_assert_stderr ("*not associated with an enum*");
+ 
+-      g_test_trap_subprocess ("/gsettings/enums/subprocess/non-enum-value", 0, 0);
++      g_test_trap_subprocess ("/gsettings/enums/subprocess/non-enum-value", 0,
++                              G_TEST_SUBPROCESS_DEFAULT);
+       g_test_trap_assert_failed ();
+       g_test_trap_assert_stderr ("*invalid enum value 42*");
+ 
+-      g_test_trap_subprocess ("/gsettings/enums/subprocess/range", 0, 0);
++      g_test_trap_subprocess ("/gsettings/enums/subprocess/range", 0,
++                              G_TEST_SUBPROCESS_DEFAULT);
+       g_test_trap_assert_failed ();
+       g_test_trap_assert_stderr ("*g_settings_set_value*valid range*");
+ 
+-      g_test_trap_subprocess ("/gsettings/enums/subprocess/non-flags", 0, 0);
++      g_test_trap_subprocess ("/gsettings/enums/subprocess/non-flags", 0,
++                              G_TEST_SUBPROCESS_DEFAULT);
+       g_test_trap_assert_failed ();
+       g_test_trap_assert_stderr ("*not associated with a flags*");
+     }
+@@ -2239,19 +2247,23 @@ test_flags (void)
+ 
+   if (g_test_undefined () && !backend_set)
+     {
+-      g_test_trap_subprocess ("/gsettings/flags/subprocess/non-flags-key", 0, 0);
++      g_test_trap_subprocess ("/gsettings/flags/subprocess/non-flags-key", 0,
++                              G_TEST_SUBPROCESS_DEFAULT);
+       g_test_trap_assert_failed ();
+       g_test_trap_assert_stderr ("*not associated with a flags*");
+ 
+-      g_test_trap_subprocess ("/gsettings/flags/subprocess/non-flags-value", 0, 0);
++      g_test_trap_subprocess ("/gsettings/flags/subprocess/non-flags-value", 0,
++                              G_TEST_SUBPROCESS_DEFAULT);
+       g_test_trap_assert_failed ();
+       g_test_trap_assert_stderr ("*invalid flags value 0x00000042*");
+ 
+-      g_test_trap_subprocess ("/gsettings/flags/subprocess/range", 0, 0);
++      g_test_trap_subprocess ("/gsettings/flags/subprocess/range", 0,
++                              G_TEST_SUBPROCESS_DEFAULT);
+       g_test_trap_assert_failed ();
+       g_test_trap_assert_stderr ("*g_settings_set_value*valid range*");
+ 
+-      g_test_trap_subprocess ("/gsettings/flags/subprocess/non-enum", 0, 0);
++      g_test_trap_subprocess ("/gsettings/flags/subprocess/non-enum", 0,
++                              G_TEST_SUBPROCESS_DEFAULT);
+       g_test_trap_assert_failed ();
+       g_test_trap_assert_stderr ("*not associated with an enum*");
+     }
+@@ -2328,11 +2340,13 @@ test_range (void)
+ 
+   if (g_test_undefined () && !backend_set)
+     {
+-      g_test_trap_subprocess ("/gsettings/range/subprocess/high", 0, 0);
++      g_test_trap_subprocess ("/gsettings/range/subprocess/high", 0,
++                              G_TEST_SUBPROCESS_DEFAULT);
+       g_test_trap_assert_failed ();
+       g_test_trap_assert_stderr ("*g_settings_set_value*valid range*");
+ 
+-      g_test_trap_subprocess ("/gsettings/range/subprocess/low", 0, 0);
++      g_test_trap_subprocess ("/gsettings/range/subprocess/low", 0,
++                              G_TEST_SUBPROCESS_DEFAULT);
+       g_test_trap_assert_failed ();
+       g_test_trap_assert_stderr ("*g_settings_set_value*valid range*");
+     }
+@@ -2881,7 +2895,8 @@ test_per_desktop (void)
+ 
+   if (!g_test_subprocess ())
+     {
+-      g_test_trap_subprocess ("/gsettings/per-desktop/subprocess", 0, 0);
++      g_test_trap_subprocess ("/gsettings/per-desktop/subprocess", 0,
++                              G_TEST_SUBPROCESS_DEFAULT);
+       g_test_trap_assert_passed ();
+     }
+ 
+diff --git a/gio/tests/task.c b/gio/tests/task.c
+index 7ce8438..d9e9148 100644
+--- a/gio/tests/task.c
++++ b/gio/tests/task.c
+@@ -2303,7 +2303,7 @@ test_return_in_idle_error_first (void)
+       return;
+     }
+ 
+-  g_test_trap_subprocess (NULL, 0, 0);
++  g_test_trap_subprocess (NULL, 0, G_TEST_SUBPROCESS_DEFAULT);
+   g_test_trap_assert_failed ();
+   g_test_trap_assert_stderr ("*CRITICAL*assertion '!task->ever_returned' failed*");
+ }
+@@ -2319,7 +2319,7 @@ test_return_in_idle_value_first (void)
+       return;
+     }
+ 
+-  g_test_trap_subprocess (NULL, 0, 0);
++  g_test_trap_subprocess (NULL, 0, G_TEST_SUBPROCESS_DEFAULT);
+   g_test_trap_assert_failed ();
+   g_test_trap_assert_stderr ("*CRITICAL*assertion '!task->ever_returned' failed*");
+ }
+@@ -2335,7 +2335,7 @@ test_return_error_first (void)
+       return;
+     }
+ 
+-  g_test_trap_subprocess (NULL, 0, 0);
++  g_test_trap_subprocess (NULL, 0, G_TEST_SUBPROCESS_DEFAULT);
+   g_test_trap_assert_failed ();
+   g_test_trap_assert_stderr ("*CRITICAL*assertion '!task->ever_returned' failed*");
+ }
+@@ -2351,7 +2351,7 @@ test_return_value_first (void)
+       return;
+     }
+ 
+-  g_test_trap_subprocess (NULL, 0, 0);
++  g_test_trap_subprocess (NULL, 0, G_TEST_SUBPROCESS_DEFAULT);
+   g_test_trap_assert_failed ();
+   g_test_trap_assert_stderr ("*CRITICAL*assertion '!task->ever_returned' failed*");
+ }
+diff --git a/gio/tests/tls-bindings.c b/gio/tests/tls-bindings.c
+index 681b658..81b3189 100644
+--- a/gio/tests/tls-bindings.c
++++ b/gio/tests/tls-bindings.c
+@@ -40,7 +40,7 @@ get_tls_channel_binding (void)
+             G_TLS_CHANNEL_BINDING_TLS_UNIQUE, NULL, (GError **)&not_null));
+ 
+   g_object_unref (tls);
+-  g_test_trap_subprocess (NULL, 0, 0);
++  g_test_trap_subprocess (NULL, 0, G_TEST_SUBPROCESS_DEFAULT);
+   g_test_trap_assert_failed ();
+   g_test_trap_assert_stderr ("*GLib-GIO-CRITICAL*");
+ }
+@@ -75,7 +75,7 @@ get_dtls_channel_binding (void)
+             G_TLS_CHANNEL_BINDING_TLS_UNIQUE, NULL, (GError **)&not_null));
+ 
+   g_object_unref (dtls);
+-  g_test_trap_subprocess (NULL, 0, 0);
++  g_test_trap_subprocess (NULL, 0, G_TEST_SUBPROCESS_DEFAULT);
+   g_test_trap_assert_failed ();
+   g_test_trap_assert_stderr ("*GLib-GIO-CRITICAL*");
+ }
+diff --git a/gio/tests/win32-appinfo.c b/gio/tests/win32-appinfo.c
+index fa8aa2a..8402a20 100644
+--- a/gio/tests/win32-appinfo.c
++++ b/gio/tests/win32-appinfo.c
+@@ -442,10 +442,12 @@ do_fail_on_broken_utf16_2 (void)
+ static void
+ test_fail_on_broken_utf16 (void)
+ {
+-  g_test_trap_subprocess ("/appinfo/subprocess/win32-assert-broken-utf16_1", 0, 0);
++  g_test_trap_subprocess ("/appinfo/subprocess/win32-assert-broken-utf16_1", 0,
++                          G_TEST_SUBPROCESS_DEFAULT);
+   g_test_trap_assert_failed ();
+   g_test_trap_assert_stderr ("*GLib-GIO:ERROR:*giowin32-private.c:*:_g_win32_extract_executable: assertion failed: (folded)*");
+-  g_test_trap_subprocess ("/appinfo/subprocess/win32-assert-broken-utf16_2", 0, 0);
++  g_test_trap_subprocess ("/appinfo/subprocess/win32-assert-broken-utf16_2", 0,
++                          G_TEST_SUBPROCESS_DEFAULT);
+   g_test_trap_assert_failed ();
+   g_test_trap_assert_stderr ("*GLib-GIO:ERROR:*giowin32-private.c:*:_g_win32_extract_executable: assertion failed: (folded)*");
+ }
+diff --git a/glib/gtestutils.c b/glib/gtestutils.c
+index dca4bad..c9c65e6 100644
+--- a/glib/gtestutils.c
++++ b/glib/gtestutils.c
+@@ -355,6 +355,7 @@
+ 
+ /**
+  * GTestSubprocessFlags:
++ * @G_TEST_SUBPROCESS_DEFAULT: Default behaviour. Since: 2.74
+  * @G_TEST_SUBPROCESS_INHERIT_STDIN: If this flag is given, the child
+  *     process will inherit the parent's stdin. Otherwise, the child's
+  *     stdin is redirected to `/dev/null`.
+@@ -3780,7 +3781,7 @@ G_GNUC_END_IGNORE_DEPRECATIONS
+  *       }
+  *
+  *     // Reruns this same test in a subprocess
+- *     g_test_trap_subprocess (NULL, 0, 0);
++ *     g_test_trap_subprocess (NULL, 0, G_TEST_SUBPROCESS_DEFAULT);
+  *     g_test_trap_assert_failed ();
+  *     g_test_trap_assert_stderr ("*ERROR*too large*");
+  *   }
+diff --git a/glib/gtestutils.h b/glib/gtestutils.h
+index 7dee482..794da05 100644
+--- a/glib/gtestutils.h
++++ b/glib/gtestutils.h
+@@ -423,6 +423,7 @@ void    g_test_queue_destroy            (GDestroyNotify destroy_func,
+ 
+ /**
+  * GTestTrapFlags:
++ * @G_TEST_TRAP_DEFAULT: Default behaviour. Since: 2.74
+  * @G_TEST_TRAP_SILENCE_STDOUT: Redirect stdout of the test child to
+  *     `/dev/null` so it cannot be observed on the console during test
+  *     runs. The actual output is still captured though to allow later
+@@ -443,6 +444,7 @@ void    g_test_queue_destroy            (GDestroyNotify destroy_func,
+  * #GTestSubprocessFlags.
+  */
+ typedef enum {
++  G_TEST_TRAP_DEFAULT GLIB_AVAILABLE_ENUMERATOR_IN_2_74 = 0,
+   G_TEST_TRAP_SILENCE_STDOUT    = 1 << 7,
+   G_TEST_TRAP_SILENCE_STDERR    = 1 << 8,
+   G_TEST_TRAP_INHERIT_STDIN     = 1 << 9
+@@ -457,6 +459,7 @@ gboolean g_test_trap_fork               (guint64              usec_timeout,
+ G_GNUC_END_IGNORE_DEPRECATIONS
+ 
+ typedef enum {
++  G_TEST_SUBPROCESS_DEFAULT GLIB_AVAILABLE_ENUMERATOR_IN_2_74 = 0,
+   G_TEST_SUBPROCESS_INHERIT_STDIN  = 1 << 0,
+   G_TEST_SUBPROCESS_INHERIT_STDOUT = 1 << 1,
+   G_TEST_SUBPROCESS_INHERIT_STDERR = 1 << 2
+diff --git a/glib/tests/array-test.c b/glib/tests/array-test.c
+index 284ac08..f2736dd 100644
+--- a/glib/tests/array-test.c
++++ b/glib/tests/array-test.c
+@@ -859,7 +859,7 @@ array_overflow_append_vals (void)
+     }
+   else
+     {
+-      g_test_trap_subprocess (NULL, 0, 0);
++      g_test_trap_subprocess (NULL, 0, G_TEST_SUBPROCESS_DEFAULT);
+       g_test_trap_assert_failed ();
+       g_test_trap_assert_stderr ("*adding 4294967295 to array would overflow*");
+     }
+@@ -878,7 +878,7 @@ array_overflow_set_size (void)
+     }
+   else
+     {
+-      g_test_trap_subprocess (NULL, 0, 0);
++      g_test_trap_subprocess (NULL, 0, G_TEST_SUBPROCESS_DEFAULT);
+       g_test_trap_assert_failed ();
+       g_test_trap_assert_stderr ("*adding 4294967295 to array would overflow*");
+     }
+diff --git a/glib/tests/convert.c b/glib/tests/convert.c
+index de6c8a7..81b8bbe 100644
+--- a/glib/tests/convert.c
++++ b/glib/tests/convert.c
+@@ -707,9 +707,11 @@ test_convert_embedded_nul (void)
+ static void
+ test_locale_to_utf8_embedded_nul (void)
+ {
+-  g_test_trap_subprocess ("/conversion/locale-to-utf8/embedded-nul/subprocess/utf8", 0, 0);
++  g_test_trap_subprocess ("/conversion/locale-to-utf8/embedded-nul/subprocess/utf8",
++                          0, G_TEST_SUBPROCESS_DEFAULT);
+   g_test_trap_assert_passed ();
+-  g_test_trap_subprocess ("/conversion/locale-to-utf8/embedded-nul/subprocess/iconv", 0, 0);
++  g_test_trap_subprocess ("/conversion/locale-to-utf8/embedded-nul/subprocess/iconv",
++                          0, G_TEST_SUBPROCESS_DEFAULT);
+   g_test_trap_assert_passed ();
+ }
+ 
+@@ -758,9 +760,11 @@ test_locale_to_utf8_embedded_nul_iconv (void)
+ static void
+ test_locale_from_utf8_embedded_nul (void)
+ {
+-  g_test_trap_subprocess ("/conversion/locale-from-utf8/embedded-nul/subprocess/utf8", 0, 0);
++  g_test_trap_subprocess ("/conversion/locale-from-utf8/embedded-nul/subprocess/utf8",
++                          0, G_TEST_SUBPROCESS_DEFAULT);
+   g_test_trap_assert_passed ();
+-  g_test_trap_subprocess ("/conversion/locale-from-utf8/embedded-nul/subprocess/iconv", 0, 0);
++  g_test_trap_subprocess ("/conversion/locale-from-utf8/embedded-nul/subprocess/iconv",
++                          0, G_TEST_SUBPROCESS_DEFAULT);
+   g_test_trap_assert_passed ();
+ }
+ 
+@@ -811,9 +815,11 @@ test_locale_from_utf8_embedded_nul_iconv (void)
+ static void
+ test_filename_to_utf8_embedded_nul (void)
+ {
+-  g_test_trap_subprocess ("/conversion/filename-to-utf8/embedded-nul/subprocess/utf8", 0, 0);
++  g_test_trap_subprocess ("/conversion/filename-to-utf8/embedded-nul/subprocess/utf8",
++                          0, G_TEST_SUBPROCESS_DEFAULT);
+   g_test_trap_assert_passed ();
+-  g_test_trap_subprocess ("/conversion/filename-to-utf8/embedded-nul/subprocess/iconv", 0, 0);
++  g_test_trap_subprocess ("/conversion/filename-to-utf8/embedded-nul/subprocess/iconv",
++                          0, G_TEST_SUBPROCESS_DEFAULT);
+   g_test_trap_assert_passed ();
+ }
+ 
+@@ -868,9 +874,11 @@ test_filename_to_utf8_embedded_nul_iconv (void)
+ static void
+ test_filename_from_utf8_embedded_nul (void)
+ {
+-  g_test_trap_subprocess ("/conversion/filename-from-utf8/embedded-nul/subprocess/utf8", 0, 0);
++  g_test_trap_subprocess ("/conversion/filename-from-utf8/embedded-nul/subprocess/utf8",
++                          0, G_TEST_SUBPROCESS_DEFAULT);
+   g_test_trap_assert_passed ();
+-  g_test_trap_subprocess ("/conversion/filename-from-utf8/embedded-nul/subprocess/iconv", 0, 0);
++  g_test_trap_subprocess ("/conversion/filename-from-utf8/embedded-nul/subprocess/iconv",
++                          0, G_TEST_SUBPROCESS_DEFAULT);
+   g_test_trap_assert_passed ();
+ }
+ 
+diff --git a/glib/tests/dataset.c b/glib/tests/dataset.c
+index b02b3e4..3b96b42 100644
+--- a/glib/tests/dataset.c
++++ b/glib/tests/dataset.c
+@@ -202,7 +202,7 @@ test_datalist_clear (void)
+       return;
+     }
+ 
+-  g_test_trap_subprocess (NULL, 500000, 0);
++  g_test_trap_subprocess (NULL, 500000, G_TEST_SUBPROCESS_DEFAULT);
+   g_test_trap_assert_passed ();
+ }
+ 
+diff --git a/glib/tests/error.c b/glib/tests/error.c
+index 51a0c35..7ea04ea 100644
+--- a/glib/tests/error.c
++++ b/glib/tests/error.c
+@@ -336,7 +336,7 @@ test_extended_duplicate (void)
+   if (!g_test_subprocess ())
+     {
+       /* Spawn a subprocess and expect it to fail. */
+-      g_test_trap_subprocess (NULL, 0, 0);
++      g_test_trap_subprocess (NULL, 0, G_TEST_SUBPROCESS_DEFAULT);
+       g_test_trap_assert_failed ();
+       g_test_trap_assert_stderr ("*CRITICAL*Attempted to register an extended error domain for TestError more than once*");
+     }
+diff --git a/glib/tests/gvariant.c b/glib/tests/gvariant.c
+index 0110f26..89dc914 100644
+--- a/glib/tests/gvariant.c
++++ b/glib/tests/gvariant.c
+@@ -2934,7 +2934,7 @@ static void
+ do_failed_test (const char *test,
+                 const gchar *pattern)
+ {
+-  g_test_trap_subprocess (test, 1000000, 0);
++  g_test_trap_subprocess (test, 1000000, G_TEST_SUBPROCESS_DEFAULT);
+   g_test_trap_assert_failed ();
+   g_test_trap_assert_stderr (pattern);
+ }
+diff --git a/glib/tests/hash.c b/glib/tests/hash.c
+index 114b6a2..6d718a7 100644
+--- a/glib/tests/hash.c
++++ b/glib/tests/hash.c
+@@ -873,7 +873,8 @@ test_recursive_remove_all_subprocess (void)
+ static void
+ test_recursive_remove_all (void)
+ {
+-  g_test_trap_subprocess ("/hash/recursive-remove-all/subprocess", 1000000, 0);
++  g_test_trap_subprocess ("/hash/recursive-remove-all/subprocess", 1000000,
++                          G_TEST_SUBPROCESS_DEFAULT);
+   g_test_trap_assert_passed ();
+ }
+ 
+diff --git a/glib/tests/list.c b/glib/tests/list.c
+index 4efd8b6..20d01db 100644
+--- a/glib/tests/list.c
++++ b/glib/tests/list.c
+@@ -552,7 +552,7 @@ test_double_free (void)
+       return;
+     }
+ 
+-  g_test_trap_subprocess (NULL, 0, 0);
++  g_test_trap_subprocess (NULL, 0, G_TEST_SUBPROCESS_DEFAULT);
+   g_test_trap_assert_failed ();
+   g_test_trap_assert_stderr ("*corrupted double-linked list detected*");
+ }
+diff --git a/glib/tests/logging.c b/glib/tests/logging.c
+index e9c4e39..a65ba7c 100644
+--- a/glib/tests/logging.c
++++ b/glib/tests/logging.c
+@@ -200,48 +200,59 @@ test_default_handler_0x400 (void)
+ static void
+ test_default_handler (void)
+ {
+-  g_test_trap_subprocess ("/logging/default-handler/subprocess/error", 0, 0);
++  g_test_trap_subprocess ("/logging/default-handler/subprocess/error", 0,
++                          G_TEST_SUBPROCESS_DEFAULT);
+   g_test_trap_assert_failed ();
+   g_test_trap_assert_stderr ("*ERROR*message1*");
+ 
+-  g_test_trap_subprocess ("/logging/default-handler/subprocess/critical", 0, 0);
++  g_test_trap_subprocess ("/logging/default-handler/subprocess/critical", 0,
++                          G_TEST_SUBPROCESS_DEFAULT);
+   g_test_trap_assert_failed ();
+   g_test_trap_assert_stderr ("*CRITICAL*message2*");
+ 
+-  g_test_trap_subprocess ("/logging/default-handler/subprocess/warning", 0, 0);
++  g_test_trap_subprocess ("/logging/default-handler/subprocess/warning", 0,
++                          G_TEST_SUBPROCESS_DEFAULT);
+   g_test_trap_assert_failed ();
+   g_test_trap_assert_stderr ("*WARNING*message3*");
+ 
+-  g_test_trap_subprocess ("/logging/default-handler/subprocess/message", 0, 0);
++  g_test_trap_subprocess ("/logging/default-handler/subprocess/message", 0,
++                          G_TEST_SUBPROCESS_DEFAULT);
+   g_test_trap_assert_passed ();
+   g_test_trap_assert_stderr ("*Message*message4*");
+ 
+-  g_test_trap_subprocess ("/logging/default-handler/subprocess/info", 0, 0);
++  g_test_trap_subprocess ("/logging/default-handler/subprocess/info", 0,
++                          G_TEST_SUBPROCESS_DEFAULT);
+   g_test_trap_assert_passed ();
+   g_test_trap_assert_stdout_unmatched ("*INFO*message5*");
+ 
+-  g_test_trap_subprocess ("/logging/default-handler/subprocess/bar-info", 0, 0);
++  g_test_trap_subprocess ("/logging/default-handler/subprocess/bar-info", 0,
++                          G_TEST_SUBPROCESS_DEFAULT);
+   g_test_trap_assert_passed ();
+   g_test_trap_assert_stdout ("*INFO*message5*");
+ 
+-  g_test_trap_subprocess ("/logging/default-handler/subprocess/baz-debug", 0, 0);
++  g_test_trap_subprocess ("/logging/default-handler/subprocess/baz-debug", 0,
++                          G_TEST_SUBPROCESS_DEFAULT);
+   g_test_trap_assert_passed ();
+   g_test_trap_assert_stdout ("*DEBUG*message6*");
+ 
+-  g_test_trap_subprocess ("/logging/default-handler/subprocess/debug", 0, 0);
++  g_test_trap_subprocess ("/logging/default-handler/subprocess/debug", 0,
++                          G_TEST_SUBPROCESS_DEFAULT);
+   g_test_trap_assert_passed ();
+   g_test_trap_assert_stdout ("*DEBUG*6*6*6*");
+ 
+-  g_test_trap_subprocess ("/logging/default-handler/subprocess/debug-stderr", 0, 0);
++  g_test_trap_subprocess ("/logging/default-handler/subprocess/debug-stderr", 0,
++                          G_TEST_SUBPROCESS_DEFAULT);
+   g_test_trap_assert_passed ();
+   g_test_trap_assert_stdout_unmatched ("DEBUG");
+   g_test_trap_assert_stderr ("*DEBUG*6*6*6*");
+ 
+-  g_test_trap_subprocess ("/logging/default-handler/subprocess/0x400", 0, 0);
++  g_test_trap_subprocess ("/logging/default-handler/subprocess/0x400", 0,
++                          G_TEST_SUBPROCESS_DEFAULT);
+   g_test_trap_assert_passed ();
+   g_test_trap_assert_stdout ("*LOG-0x400*message7*");
+ 
+-  g_test_trap_subprocess ("/logging/default-handler/subprocess/would-drop", 0, 0);
++  g_test_trap_subprocess ("/logging/default-handler/subprocess/would-drop", 0,
++                          G_TEST_SUBPROCESS_DEFAULT);
+   g_test_trap_assert_passed ();
+ }
+ 
+@@ -254,7 +265,7 @@ test_fatal_log_mask (void)
+       g_log ("bu", G_LOG_LEVEL_INFO, "fatal");
+       return;
+     }
+-  g_test_trap_subprocess (NULL, 0, 0);
++  g_test_trap_subprocess (NULL, 0, G_TEST_SUBPROCESS_DEFAULT);
+   g_test_trap_assert_failed ();
+   /* G_LOG_LEVEL_INFO isn't printed by default */
+   g_test_trap_assert_stdout_unmatched ("*fatal*");
+@@ -361,7 +372,7 @@ test_gibberish (void)
+       g_warning ("bla bla \236\237\190");
+       return;
+     }
+-  g_test_trap_subprocess (NULL, 0, 0);
++  g_test_trap_subprocess (NULL, 0, G_TEST_SUBPROCESS_DEFAULT);
+   g_test_trap_assert_failed ();
+   g_test_trap_assert_stderr ("*bla bla \\x9e\\x9f\\u000190*");
+ }
+diff --git a/glib/tests/mem-overflow.c b/glib/tests/mem-overflow.c
+index fd92685..66a0056 100644
+--- a/glib/tests/mem-overflow.c
++++ b/glib/tests/mem-overflow.c
+@@ -139,7 +139,8 @@ mem_overflow (void)
+ #define CHECK_SUBPROCESS_FAIL(name) do { \
+       if (g_test_undefined ()) \
+         { \
+-          g_test_trap_subprocess ("/mem/overflow/subprocess/" #name, 0, 0); \
++          g_test_trap_subprocess ("/mem/overflow/subprocess/" #name, 0, \
++                                  G_TEST_SUBPROCESS_DEFAULT); \
+           g_test_trap_assert_failed(); \
+         } \
+     } while (0)
+@@ -147,7 +148,8 @@ mem_overflow (void)
+ #define CHECK_SUBPROCESS_PASS(name) do { \
+       if (g_test_undefined ()) \
+         { \
+-          g_test_trap_subprocess ("/mem/overflow/subprocess/" #name, 0, 0); \
++          g_test_trap_subprocess ("/mem/overflow/subprocess/" #name, 0, \
++                                  G_TEST_SUBPROCESS_DEFAULT); \
+           g_test_trap_assert_passed(); \
+         } \
+     } while (0)
+@@ -208,7 +210,8 @@ empty_alloc (void)
+ 
+   g_assert_cmpint (sizeof (Empty), ==, 0);
+ 
+-  g_test_trap_subprocess ("/mem/empty-alloc/subprocess", 0, 0);
++  g_test_trap_subprocess ("/mem/empty-alloc/subprocess", 0,
++                          G_TEST_SUBPROCESS_DEFAULT);
+   g_test_trap_assert_passed ();
+ }
+ #endif
+diff --git a/glib/tests/refcount.c b/glib/tests/refcount.c
+index e19a2d7..2c527cf 100644
+--- a/glib/tests/refcount.c
++++ b/glib/tests/refcount.c
+@@ -98,7 +98,7 @@ test_grefcount_saturation (void)
+       exit (0);
+     }
+ 
+-  g_test_trap_subprocess (NULL, 0, 0);
++  g_test_trap_subprocess (NULL, 0, G_TEST_SUBPROCESS_DEFAULT);
+ 
+ #if defined (G_DISABLE_CHECKS) && defined (__GNUC__)
+   /* With checks disabled we don't get any warning */
+@@ -191,7 +191,7 @@ test_gatomicrefcount_saturation (void)
+       exit (0);
+     }
+ 
+-  g_test_trap_subprocess (NULL, 0, 0);
++  g_test_trap_subprocess (NULL, 0, G_TEST_SUBPROCESS_DEFAULT);
+ 
+ #if defined (G_DISABLE_CHECKS) && defined (__GNUC__)
+   /* With checks disabled we don't get any warning */
+diff --git a/glib/tests/scannerapi.c b/glib/tests/scannerapi.c
+index 6813184..21b01bf 100644
+--- a/glib/tests/scannerapi.c
++++ b/glib/tests/scannerapi.c
+@@ -68,7 +68,7 @@ test_scanner_error (ScannerFixture *fix,
+       exit (0);
+     }
+ 
+-  g_test_trap_subprocess (NULL, 0, 0);
++  g_test_trap_subprocess (NULL, 0, G_TEST_SUBPROCESS_DEFAULT);
+   g_test_trap_assert_passed ();
+   g_test_trap_assert_stderr ("*scanner-error-message-test*");
+ }
+diff --git a/glib/tests/slice.c b/glib/tests/slice.c
+index a566280..7cf53b4 100644
+--- a/glib/tests/slice.c
++++ b/glib/tests/slice.c
+@@ -25,7 +25,7 @@ test_slice_nodebug (void)
+       g_slice_debug_tree_statistics ();
+       return;
+     }
+-  g_test_trap_subprocess (NULL, 1000000, 0);
++  g_test_trap_subprocess (NULL, 1000000, G_TEST_SUBPROCESS_DEFAULT);
+   g_test_trap_assert_passed ();
+   g_test_trap_assert_stderr ("*GSlice: MemChecker: root=NULL*");
+ 
+@@ -53,7 +53,7 @@ test_slice_debug (void)
+       g_slice_debug_tree_statistics ();
+       return;
+     }
+-  g_test_trap_subprocess (NULL, 1000000, 0);
++  g_test_trap_subprocess (NULL, 1000000, G_TEST_SUBPROCESS_DEFAULT);
+   g_test_trap_assert_passed ();
+   g_test_trap_assert_stderr ("*GSlice: MemChecker: * trunks, * branches, * old branches*");
+ 
+diff --git a/glib/tests/test-printf.c b/glib/tests/test-printf.c
+index 6eadf1e..9aca97f 100644
+--- a/glib/tests/test-printf.c
++++ b/glib/tests/test-printf.c
+@@ -639,7 +639,7 @@ test_positional_params2 (void)
+       g_assert_cmpint (res, ==, 7);
+       return;
+     }
+-  g_test_trap_subprocess (NULL, 0, 0);
++  g_test_trap_subprocess (NULL, 0, G_TEST_SUBPROCESS_DEFAULT);
+   g_test_trap_assert_passed ();
+   g_test_trap_assert_stdout ("a b\n   ab\nabcabc\n");
+ }
+@@ -674,7 +674,7 @@ test_percent2 (void)
+       g_assert_cmpint (res, ==, 1);
+       return;
+     }
+-  g_test_trap_subprocess (NULL, 0, 0);
++  g_test_trap_subprocess (NULL, 0, G_TEST_SUBPROCESS_DEFAULT);
+   g_test_trap_assert_passed ();
+   g_test_trap_assert_stdout ("*%*");
+ }
+@@ -858,13 +858,15 @@ _Pragma ("GCC diagnostic pop")
+ static void
+ test_64bit2 (void)
+ {
+-  g_test_trap_subprocess ("/printf/test-64bit/subprocess/base", 0, 0);
++  g_test_trap_subprocess ("/printf/test-64bit/subprocess/base", 0,
++                          G_TEST_SUBPROCESS_DEFAULT);
+   g_test_trap_assert_passed ();
+   g_test_trap_assert_stdout ("123456\n-123456\n123456\n"
+                              "361100\n0361100\n1e240\n"
+                              "0x1e240\n1E240\n");
+ #ifdef G_OS_WIN32
+-  g_test_trap_subprocess ("/printf/test-64bit/subprocess/win32", 0, 0);
++  g_test_trap_subprocess ("/printf/test-64bit/subprocess/win32", 0,
++                          G_TEST_SUBPROCESS_DEFAULT);
+   g_test_trap_assert_passed ();
+   g_test_trap_assert_stdout ("123456\n-123456\n123456\n"
+                              "361100\n0361100\n1e240\n"
+diff --git a/glib/tests/testing.c b/glib/tests/testing.c
+index accd5db..60fdb4c 100644
+--- a/glib/tests/testing.c
++++ b/glib/tests/testing.c
+@@ -208,56 +208,69 @@ test_assertions (void)
+   g_variant_unref (v2);
+   g_variant_unref (v1);
+ 
+-  g_test_trap_subprocess ("/misc/assertions/subprocess/bad_cmpvariant_types", 0, 0);
++  g_test_trap_subprocess ("/misc/assertions/subprocess/bad_cmpvariant_types", 0,
++                          G_TEST_SUBPROCESS_DEFAULT);
+   g_test_trap_assert_failed ();
+   g_test_trap_assert_stderr ("*assertion failed*");
+ 
+-  g_test_trap_subprocess ("/misc/assertions/subprocess/bad_cmpvariant_values", 0, 0);
++  g_test_trap_subprocess ("/misc/assertions/subprocess/bad_cmpvariant_values", 0,
++                          G_TEST_SUBPROCESS_DEFAULT);
+   g_test_trap_assert_failed ();
+   g_test_trap_assert_stderr ("*assertion failed*");
+ 
+-  g_test_trap_subprocess ("/misc/assertions/subprocess/bad_cmpstr", 0, 0);
++  g_test_trap_subprocess ("/misc/assertions/subprocess/bad_cmpstr", 0,
++                          G_TEST_SUBPROCESS_DEFAULT);
+   g_test_trap_assert_failed ();
+   g_test_trap_assert_stderr ("*assertion failed*");
+ 
+-  g_test_trap_subprocess ("/misc/assertions/subprocess/bad_cmpstrv_null1", 0, 0);
++  g_test_trap_subprocess ("/misc/assertions/subprocess/bad_cmpstrv_null1", 0,
++                          G_TEST_SUBPROCESS_DEFAULT);
+   g_test_trap_assert_failed ();
+   g_test_trap_assert_stderr ("*assertion failed*");
+ 
+-  g_test_trap_subprocess ("/misc/assertions/subprocess/bad_cmpstrv_null2", 0, 0);
++  g_test_trap_subprocess ("/misc/assertions/subprocess/bad_cmpstrv_null2", 0,
++                          G_TEST_SUBPROCESS_DEFAULT);
+   g_test_trap_assert_failed ();
+   g_test_trap_assert_stderr ("*assertion failed*");
+ 
+-  g_test_trap_subprocess ("/misc/assertions/subprocess/bad_cmpstrv_length", 0, 0);
++  g_test_trap_subprocess ("/misc/assertions/subprocess/bad_cmpstrv_length", 0,
++                          G_TEST_SUBPROCESS_DEFAULT);
+   g_test_trap_assert_failed ();
+   g_test_trap_assert_stderr ("*assertion failed*");
+ 
+-  g_test_trap_subprocess ("/misc/assertions/subprocess/bad_cmpstrv_values", 0, 0);
++  g_test_trap_subprocess ("/misc/assertions/subprocess/bad_cmpstrv_values", 0,
++                          G_TEST_SUBPROCESS_DEFAULT);
+   g_test_trap_assert_failed ();
+   g_test_trap_assert_stderr ("*assertion failed*");
+ 
+-  g_test_trap_subprocess ("/misc/assertions/subprocess/bad_cmpint", 0, 0);
++  g_test_trap_subprocess ("/misc/assertions/subprocess/bad_cmpint", 0,
++                          G_TEST_SUBPROCESS_DEFAULT);
+   g_test_trap_assert_failed ();
+   g_test_trap_assert_stderr ("*assertion failed*");
+ 
+-  g_test_trap_subprocess ("/misc/assertions/subprocess/bad_cmpmem_len", 0, 0);
++  g_test_trap_subprocess ("/misc/assertions/subprocess/bad_cmpmem_len", 0,
++                          G_TEST_SUBPROCESS_DEFAULT);
+   g_test_trap_assert_failed ();
+   g_test_trap_assert_stderr ("*assertion failed*len*");
+ 
+-  g_test_trap_subprocess ("/misc/assertions/subprocess/bad_cmpmem_data", 0, 0);
++  g_test_trap_subprocess ("/misc/assertions/subprocess/bad_cmpmem_data", 0,
++                          G_TEST_SUBPROCESS_DEFAULT);
+   g_test_trap_assert_failed ();
+   g_test_trap_assert_stderr ("*assertion failed*");
+   g_test_trap_assert_stderr_unmatched ("*assertion failed*len*");
+ 
+-  g_test_trap_subprocess ("/misc/assertions/subprocess/bad_cmpmem_null", 0, 0);
++  g_test_trap_subprocess ("/misc/assertions/subprocess/bad_cmpmem_null", 0,
++                          G_TEST_SUBPROCESS_DEFAULT);
+   g_test_trap_assert_failed ();
+   g_test_trap_assert_stderr ("*assertion failed*NULL*");
+ 
+-  g_test_trap_subprocess ("/misc/assertions/subprocess/bad_cmpfloat_epsilon", 0, 0);
++  g_test_trap_subprocess ("/misc/assertions/subprocess/bad_cmpfloat_epsilon", 0,
++                          G_TEST_SUBPROCESS_DEFAULT);
+   g_test_trap_assert_failed ();
+   g_test_trap_assert_stderr ("*assertion failed*");
+ 
+-  g_test_trap_subprocess ("/misc/assertions/subprocess/bad_no_errno", 0, 0);
++  g_test_trap_subprocess ("/misc/assertions/subprocess/bad_no_errno", 0,
++                          G_TEST_SUBPROCESS_DEFAULT);
+   g_test_trap_assert_failed ();
+   g_test_trap_assert_stderr ("*assertion failed*");
+ }
+@@ -312,7 +325,7 @@ static void
+ test_fork_timeout (void)
+ {
+   /* allow child to run for only a fraction of a second */
+-  if (g_test_trap_fork (0.11 * 1000000, 0))
++  if (g_test_trap_fork (0.11 * 1000000, G_TEST_TRAP_DEFAULT))
+     {
+       /* loop and sleep forever */
+       while (TRUE)
+@@ -334,7 +347,7 @@ test_subprocess_fail (void)
+       return;
+     }
+ 
+-  g_test_trap_subprocess (NULL, 0, 0);
++  g_test_trap_subprocess (NULL, 0, G_TEST_SUBPROCESS_DEFAULT);
+   g_test_trap_assert_failed ();
+   g_test_trap_assert_stderr ("*ERROR*test_subprocess_fail*should not be reached*");
+ }
+@@ -344,11 +357,12 @@ test_subprocess_no_such_test (void)
+ {
+   if (g_test_subprocess ())
+     {
+-      g_test_trap_subprocess ("/trap_subprocess/this-test-does-not-exist", 0, 0);
++      g_test_trap_subprocess ("/trap_subprocess/this-test-does-not-exist", 0,
++                              G_TEST_SUBPROCESS_DEFAULT);
+       g_assert_not_reached ();
+       return;
+     }
+-  g_test_trap_subprocess (NULL, 0, 0);
++  g_test_trap_subprocess (NULL, 0, G_TEST_SUBPROCESS_DEFAULT);
+   g_test_trap_assert_failed ();
+   g_test_trap_assert_stderr ("*test does not exist*");
+   g_test_trap_assert_stderr_unmatched ("*should not be reached*");
+@@ -363,7 +377,7 @@ test_subprocess_patterns (void)
+       g_printerr ("some stderr text: semagic43\n");
+       exit (0);
+     }
+-  g_test_trap_subprocess (NULL, 0,  0);
++  g_test_trap_subprocess (NULL, 0, G_TEST_SUBPROCESS_DEFAULT);
+   g_test_trap_assert_passed ();
+   g_test_trap_assert_stdout ("*somagic17*");
+   g_test_trap_assert_stderr ("*semagic43*");
+@@ -380,7 +394,7 @@ test_subprocess_timeout (void)
+       return;
+     }
+   /* allow child to run for only a fraction of a second */
+-  g_test_trap_subprocess (NULL, 0.11 * 1000000, 0);
++  g_test_trap_subprocess (NULL, 0.11 * 1000000, G_TEST_SUBPROCESS_DEFAULT);
+   g_test_trap_assert_failed ();
+   g_assert_true (g_test_trap_reached_timeout ());
+ }
+@@ -508,16 +522,19 @@ test_fatal_log_handler_critical_fail (void)
+ static void
+ test_fatal_log_handler (void)
+ {
+-  g_test_trap_subprocess ("/misc/fatal-log-handler/subprocess/critical-pass", 0, 0);
++  g_test_trap_subprocess ("/misc/fatal-log-handler/subprocess/critical-pass", 0,
++                          G_TEST_SUBPROCESS_DEFAULT);
+   g_test_trap_assert_passed ();
+   g_test_trap_assert_stderr ("*CRITICAL*g_str_has_prefix*");
+   g_test_trap_assert_stderr ("*CRITICAL*Test passing*");
+ 
+-  g_test_trap_subprocess ("/misc/fatal-log-handler/subprocess/error-fail", 0, 0);
++  g_test_trap_subprocess ("/misc/fatal-log-handler/subprocess/error-fail", 0,
++                          G_TEST_SUBPROCESS_DEFAULT);
+   g_test_trap_assert_failed ();
+   g_test_trap_assert_stderr ("*ERROR*Test failing*");
+ 
+-  g_test_trap_subprocess ("/misc/fatal-log-handler/subprocess/critical-fail", 0, 0);
++  g_test_trap_subprocess ("/misc/fatal-log-handler/subprocess/critical-fail", 0,
++                          G_TEST_SUBPROCESS_DEFAULT);
+   g_test_trap_assert_failed ();
+   g_test_trap_assert_stderr ("*CRITICAL*g_str_has_prefix*");
+   g_test_trap_assert_stderr_unmatched ("*CRITICAL*Test passing*");
+@@ -612,34 +629,41 @@ test_expected_messages_unexpected_extra_warning (void)
+ static void
+ test_expected_messages (void)
+ {
+-  g_test_trap_subprocess ("/misc/expected-messages/subprocess/warning", 0, 0);
++  g_test_trap_subprocess ("/misc/expected-messages/subprocess/warning", 0,
++                          G_TEST_SUBPROCESS_DEFAULT);
+   g_test_trap_assert_failed ();
+   g_test_trap_assert_stderr ("*This is a * warning*");
+   g_test_trap_assert_stderr_unmatched ("*should not be reached*");
+ 
+-  g_test_trap_subprocess ("/misc/expected-messages/subprocess/expect-warning", 0, 0);
++  g_test_trap_subprocess ("/misc/expected-messages/subprocess/expect-warning", 0,
++                          G_TEST_SUBPROCESS_DEFAULT);
+   g_test_trap_assert_failed ();
+   g_test_trap_assert_stderr_unmatched ("*This is a * warning*");
+   g_test_trap_assert_stderr ("*should not be reached*");
+ 
+-  g_test_trap_subprocess ("/misc/expected-messages/subprocess/wrong-warning", 0, 0);
++  g_test_trap_subprocess ("/misc/expected-messages/subprocess/wrong-warning", 0,
++                          G_TEST_SUBPROCESS_DEFAULT);
+   g_test_trap_assert_failed ();
+   g_test_trap_assert_stderr_unmatched ("*should not be reached*");
+   g_test_trap_assert_stderr ("*GLib-CRITICAL*Did not see expected message testing-CRITICAL*should not be *WARNING*This is a * warning*");
+ 
+-  g_test_trap_subprocess ("/misc/expected-messages/subprocess/expected", 0, 0);
++  g_test_trap_subprocess ("/misc/expected-messages/subprocess/expected", 0,
++                          G_TEST_SUBPROCESS_DEFAULT);
+   g_test_trap_assert_passed ();
+   g_test_trap_assert_stderr ("");
+ 
+-  g_test_trap_subprocess ("/misc/expected-messages/subprocess/null-domain", 0, 0);
++  g_test_trap_subprocess ("/misc/expected-messages/subprocess/null-domain", 0,
++                          G_TEST_SUBPROCESS_DEFAULT);
+   g_test_trap_assert_passed ();
+   g_test_trap_assert_stderr ("");
+ 
+-  g_test_trap_subprocess ("/misc/expected-messages/subprocess/extra-warning", 0, 0);
++  g_test_trap_subprocess ("/misc/expected-messages/subprocess/extra-warning", 0,
++                          G_TEST_SUBPROCESS_DEFAULT);
+   g_test_trap_assert_passed ();
+   g_test_trap_assert_stderr ("");
+ 
+-  g_test_trap_subprocess ("/misc/expected-messages/subprocess/unexpected-extra-warning", 0, 0);
++  g_test_trap_subprocess ("/misc/expected-messages/subprocess/unexpected-extra-warning", 0,
++                          G_TEST_SUBPROCESS_DEFAULT);
+   g_test_trap_assert_failed ();
+   g_test_trap_assert_stderr ("*GLib:ERROR*Did not see expected message testing-CRITICAL*nope*");
+ }
+@@ -718,7 +742,8 @@ test_dash_p_child_sub_child (void)
+ static void
+ test_dash_p (void)
+ {
+-  g_test_trap_subprocess ("/misc/dash-p/subprocess/hidden", 0, 0);
++  g_test_trap_subprocess ("/misc/dash-p/subprocess/hidden", 0,
++                          G_TEST_SUBPROCESS_DEFAULT);
+   g_test_trap_assert_passed ();
+   g_test_trap_assert_stdout ("*Test /misc/dash-p/subprocess/hidden ran*");
+   g_test_trap_assert_stdout_unmatched ("*Test /misc/dash-p/subprocess/hidden/sub ran*");
+@@ -726,7 +751,8 @@ test_dash_p (void)
+   g_test_trap_assert_stdout_unmatched ("*Test /misc/dash-p/subprocess/hidden/sub/subprocess ran*");
+   g_test_trap_assert_stdout_unmatched ("*Test /misc/dash-p/child*");
+ 
+-  g_test_trap_subprocess ("/misc/dash-p/subprocess/hidden/sub", 0, 0);
++  g_test_trap_subprocess ("/misc/dash-p/subprocess/hidden/sub", 0,
++                          G_TEST_SUBPROCESS_DEFAULT);
+   g_test_trap_assert_passed ();
+   g_test_trap_assert_stdout ("*Test /misc/dash-p/subprocess/hidden/sub ran*");
+   g_test_trap_assert_stdout_unmatched ("*Test /misc/dash-p/subprocess/hidden ran*");
+@@ -734,7 +760,8 @@ test_dash_p (void)
+   g_test_trap_assert_stdout_unmatched ("*Test /misc/dash-p/subprocess/hidden/subprocess ran*");
+   g_test_trap_assert_stdout_unmatched ("*Test /misc/dash-p/child*");
+ 
+-  g_test_trap_subprocess ("/misc/dash-p/child", 0, 0);
++  g_test_trap_subprocess ("/misc/dash-p/child", 0,
++                          G_TEST_SUBPROCESS_DEFAULT);
+   g_test_trap_assert_passed ();
+   g_test_trap_assert_stdout ("*Test /misc/dash-p/child ran*");
+   g_test_trap_assert_stdout ("*Test /misc/dash-p/child/sub ran*");
+@@ -742,7 +769,8 @@ test_dash_p (void)
+   g_test_trap_assert_stdout_unmatched ("*Test /misc/dash-p/child/subprocess ran*");
+   g_test_trap_assert_stdout_unmatched ("*Test /misc/dash-p/subprocess/hidden*");
+ 
+-  g_test_trap_subprocess ("/misc/dash-p/child/sub", 0, 0);
++  g_test_trap_subprocess ("/misc/dash-p/child/sub", 0,
++                          G_TEST_SUBPROCESS_DEFAULT);
+   g_test_trap_assert_passed ();
+   g_test_trap_assert_stdout ("*Test /misc/dash-p/child/sub ran*");
+   g_test_trap_assert_stdout_unmatched ("*Test /misc/dash-p/child ran*");
+@@ -761,7 +789,7 @@ test_nonfatal (void)
+       g_print ("The End\n");
+       return;
+     }
+-  g_test_trap_subprocess (NULL, 0, 0);
++  g_test_trap_subprocess (NULL, 0, G_TEST_SUBPROCESS_DEFAULT);
+   g_test_trap_assert_failed ();
+   g_test_trap_assert_stderr ("*assertion failed*4 == 5*");
+   g_test_trap_assert_stdout ("*The End*");
+@@ -800,7 +828,7 @@ test_fail (void)
+       subprocess_fail ();
+       return;
+     }
+-  g_test_trap_subprocess (NULL, 0, 0);
++  g_test_trap_subprocess (NULL, 0, G_TEST_SUBPROCESS_DEFAULT);
+   g_test_trap_assert_failed ();
+ }
+ 
+@@ -822,7 +850,7 @@ test_incomplete (void)
+       subprocess_incomplete ();
+       return;
+     }
+-  g_test_trap_subprocess (NULL, 0, 0);
++  g_test_trap_subprocess (NULL, 0, G_TEST_SUBPROCESS_DEFAULT);
+   /* An incomplete test represents functionality that is known not to be
+    * implemented yet (an expected failure), so it does not cause test
+    * failure; but it does count as the test having been skipped, which
+@@ -839,7 +867,7 @@ test_subprocess_timed_out (void)
+       g_usleep (1000000);
+       return;
+     }
+-  g_test_trap_subprocess (NULL, 50000, 0);
++  g_test_trap_subprocess (NULL, 50000, G_TEST_SUBPROCESS_DEFAULT);
+   g_assert_true (g_test_trap_reached_timeout ());
+ }
+ 
+diff --git a/glib/tests/thread-pool.c b/glib/tests/thread-pool.c
+index 5c70815..23ee27e 100644
+--- a/glib/tests/thread-pool.c
++++ b/glib/tests/thread-pool.c
+@@ -108,7 +108,7 @@ test_create_first_pool (gconstpointer shared_first)
+ 
+   if (!g_test_subprocess ())
+     {
+-      g_test_trap_subprocess (NULL, 0, 0);
++      g_test_trap_subprocess (NULL, 0, G_TEST_SUBPROCESS_DEFAULT);
+       g_test_trap_assert_passed ();
+       return;
+     }
+diff --git a/glib/tests/utils.c b/glib/tests/utils.c
+index 11fed55..dcdc5a6 100644
+--- a/glib/tests/utils.c
++++ b/glib/tests/utils.c
+@@ -523,7 +523,7 @@ test_debug (void)
+       g_assert_cmpint (res, ==, 0);
+       return;
+     }
+-  g_test_trap_subprocess (NULL, 0, 0);
++  g_test_trap_subprocess (NULL, 0, G_TEST_SUBPROCESS_DEFAULT);
+   g_test_trap_assert_passed ();
+   g_test_trap_assert_stderr ("*Supported debug values: key1 key2 key3 all help*");
+ }
+@@ -553,7 +553,7 @@ test_codeset2 (void)
+       g_assert_cmpstr (c, ==, "UTF-8");
+       return;
+     }
+-  g_test_trap_subprocess (NULL, 0, 0);
++  g_test_trap_subprocess (NULL, 0, G_TEST_SUBPROCESS_DEFAULT);
+   g_test_trap_assert_passed ();
+ }
+ 
+@@ -957,7 +957,8 @@ test_aligned_mem (void)
+       if (g_test_undefined ()) \
+         { \
+           g_test_message (msg); \
+-          g_test_trap_subprocess ("/utils/aligned-mem/subprocess/" #name, 0, 0); \
++          g_test_trap_subprocess ("/utils/aligned-mem/subprocess/" #name, 0, \
++                                  G_TEST_SUBPROCESS_DEFAULT); \
+           g_test_trap_assert_failed (); \
+         } \
+     } while (0)
+@@ -1025,7 +1026,7 @@ test_atexit (void)
+       g_atexit (atexit_func);
+       return;
+     }
+-  g_test_trap_subprocess (NULL, 0, 0);
++  g_test_trap_subprocess (NULL, 0, G_TEST_SUBPROCESS_DEFAULT);
+   g_test_trap_assert_passed ();
+   g_test_trap_assert_stdout ("*atexit called*");
+ }
+diff --git a/glib/tests/win32.c b/glib/tests/win32.c
+index 1219973..3181657 100644
+--- a/glib/tests/win32.c
++++ b/glib/tests/win32.c
+@@ -99,7 +99,8 @@ test_veh_crash_access_violation (void)
+ {
+   g_unsetenv ("G_DEBUGGER");
+   /* Run a test that crashes */
+-  g_test_trap_subprocess ("/win32/subprocess/access_violation", 0, 0);
++  g_test_trap_subprocess ("/win32/subprocess/access_violation", 0,
++                          G_TEST_SUBPROCESS_DEFAULT);
+   g_test_trap_assert_failed ();
+ }
+ 
+@@ -108,7 +109,8 @@ test_veh_crash_illegal_instruction (void)
+ {
+   g_unsetenv ("G_DEBUGGER");
+   /* Run a test that crashes */
+-  g_test_trap_subprocess ("/win32/subprocess/illegal_instruction", 0, 0);
++  g_test_trap_subprocess ("/win32/subprocess/illegal_instruction", 0,
++                          G_TEST_SUBPROCESS_DEFAULT);
+   g_test_trap_assert_failed ();
+ }
+ 
+@@ -125,7 +127,8 @@ test_veh_debug (void)
+   g_setenv ("G_DEBUGGER_OLD_CONSOLE", "1", TRUE);
+   g_free (command);
+   /* Run a test that crashes and runs a debugger */
+-  g_test_trap_subprocess ("/win32/subprocess/debuggee", 0, 0);
++  g_test_trap_subprocess ("/win32/subprocess/debuggee", 0,
++                          G_TEST_SUBPROCESS_DEFAULT);
+   g_test_trap_assert_failed ();
+   g_test_trap_assert_stderr ("Debugger invoked, attaching to*");
+ }
+diff --git a/gobject/tests/param.c b/gobject/tests/param.c
+index 692f07d..69401ba 100644
+--- a/gobject/tests/param.c
++++ b/gobject/tests/param.c
+@@ -470,7 +470,7 @@ test_param_invalid_name (gconstpointer test_data)
+       return;
+     }
+ 
+-  g_test_trap_subprocess (NULL, 0, 0);
++  g_test_trap_subprocess (NULL, 0, G_TEST_SUBPROCESS_DEFAULT);
+   g_test_trap_assert_failed ();
+   g_test_trap_assert_stderr ("*CRITICAL*g_param_spec_is_valid_name (name)*");
+ }
+@@ -1115,7 +1115,8 @@ test_param_implement (void)
+             test_path = g_strdup_printf ("/param/implement/subprocess/%d-%d-%d-%d",
+                                          change_this_flag, change_this_type,
+                                          use_this_flag, use_this_type);
+-            g_test_trap_subprocess (test_path, G_TIME_SPAN_SECOND, 0);
++            g_test_trap_subprocess (test_path, G_TIME_SPAN_SECOND,
++                                    G_TEST_SUBPROCESS_DEFAULT);
+             g_free (test_path);
+ 
+             /* We want to ensure that any flags mismatch problems are reported first. */
+diff --git a/gobject/tests/properties.c b/gobject/tests/properties.c
+index 3695ee1..1760030 100644
+--- a/gobject/tests/properties.c
++++ b/gobject/tests/properties.c
+@@ -457,7 +457,7 @@ properties_testv_with_invalid_property_type (void)
+ 
+       g_object_unref (test_obj);
+     }
+-  g_test_trap_subprocess (NULL, 0, 0);
++  g_test_trap_subprocess (NULL, 0, G_TEST_SUBPROCESS_DEFAULT);
+   g_test_trap_assert_failed ();
+   g_test_trap_assert_stderr ("*WARNING*foo*gint*gchararray*");
+ }
+@@ -495,7 +495,7 @@ properties_testv_with_invalid_property_names (void)
+       g_object_unref (test_obj);
+     }
+ 
+-  g_test_trap_subprocess (NULL, 0, 0);
++  g_test_trap_subprocess (NULL, 0, G_TEST_SUBPROCESS_DEFAULT);
+   g_test_trap_assert_failed ();
+   g_test_trap_assert_stderr ("*CRITICAL*g_object_new_is_valid_property*boo*");
+ }
+diff --git a/gobject/tests/signals.c b/gobject/tests/signals.c
+index ea9a778..8ae3c33 100644
+--- a/gobject/tests/signals.c
++++ b/gobject/tests/signals.c
+@@ -1638,7 +1638,7 @@ test_lookup_invalid (void)
+       return;
+     }
+ 
+-  g_test_trap_subprocess (NULL, 0, 0);
++  g_test_trap_subprocess (NULL, 0, G_TEST_SUBPROCESS_DEFAULT);
+   g_test_trap_assert_failed ();
+   g_test_trap_assert_stderr ("*WARNING*unable to look up invalid signal name*");
+ }
+@@ -1755,7 +1755,7 @@ test_signals_invalid_name (gconstpointer test_data)
+       return;
+     }
+ 
+-  g_test_trap_subprocess (NULL, 0, 0);
++  g_test_trap_subprocess (NULL, 0, G_TEST_SUBPROCESS_DEFAULT);
+   g_test_trap_assert_failed ();
+   g_test_trap_assert_stderr ("*CRITICAL*g_signal_is_valid_name (signal_name)*");
+ }
+diff --git a/gobject/tests/testing.c b/gobject/tests/testing.c
+index 5c7e663..929ed07 100644
+--- a/gobject/tests/testing.c
++++ b/gobject/tests/testing.c
+@@ -52,7 +52,8 @@ test_assert_finalize_object (void)
+ 
+   g_assert_finalize_object (obj);
+ 
+-  g_test_trap_subprocess ("/assert/finalize_object/subprocess/bad", 0, 0);
++  g_test_trap_subprocess ("/assert/finalize_object/subprocess/bad", 0,
++                          G_TEST_SUBPROCESS_DEFAULT);
+   g_test_trap_assert_failed ();
+   g_test_trap_assert_stderr ("*g_assert_finalize_object:*'weak_pointer' should be NULL*");
+ }
+-- 
+2.33.0
+

@@ -1,0 +1,46 @@
+{
+    "name": "@ohos/strongswan",
+    "description": "strongswan for ipsec vpn",
+    "version": "4.0",
+    "license": "Apache License 2.0",
+    "publishAs": "code-segment",
+    "segment": {
+        "destPath": "vendor/open_source/strongswan/"
+    },
+    "dirs": {},
+    "scripts": {},
+    "readmePath": {
+        "en": "README"
+    },
+    "component": {
+        "name": "strongswan",
+        "subsystem": "open_source",
+        "syscap": [],
+        "features": [],
+        "adapted_system_type": [
+            "standard"
+        ],
+        "rom": "",
+        "ram": "",
+        "deps": {
+            "components": [
+                "ipc",
+                "samgr",
+                "c_utils",
+                "certificate_manager",
+                "huks",
+                "openssl",
+                "hilog",
+                "access_token",
+                "netmanager_ext"
+            ]
+        },
+        "build": {
+            "sub_component": [
+                "//vendor/open_source/strongswan:build_strongswan"
+            ],
+            "inner_kits": [],
+            "test": []
+        }
+    }
+}

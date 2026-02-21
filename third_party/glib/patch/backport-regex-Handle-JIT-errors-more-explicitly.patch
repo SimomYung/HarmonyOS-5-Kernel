@@ -1,0 +1,35 @@
+From 5e76cde5ffeac79b939cf84202024859cda5e753 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Marco=20Trevisan=20=28Trevi=C3=B1o=29?= <mail@3v1n0.net>
+Date: Wed, 7 Sep 2022 14:18:14 +0200
+Subject: [PATCH] regex: Handle JIT errors more explicitly
+
+---
+ glib/gregex.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
+
+diff --git a/glib/gregex.c b/glib/gregex.c
+index 7d403ad53d..fe7473e628 100644
+--- a/glib/gregex.c
++++ b/glib/gregex.c
+@@ -471,6 +471,7 @@ match_error (gint errcode)
+       /* not used by pcre2_match() */
+       break;
+     case PCRE2_ERROR_MATCHLIMIT:
++    case PCRE2_ERROR_JIT_STACKLIMIT:
+       return _("backtracking limit reached");
+     case PCRE2_ERROR_CALLOUT:
+       /* callouts are not implemented */
+@@ -912,8 +913,8 @@ enable_jit_with_match_options (GRegex   *regex,
+       break;
+     default:
+       g_debug ("JIT compilation was requested with G_REGEX_OPTIMIZE, "
+-               "but request for JIT support had unexpectedly failed. "
+-               "Falling back to interpretive code.");
++               "but request for JIT support had unexpectedly failed (error %d). "
++               "Falling back to interpretive code.", retval);
+       regex->jit_status = JIT_STATUS_DISABLED;
+       break;
+     }
+-- 
+GitLab
+

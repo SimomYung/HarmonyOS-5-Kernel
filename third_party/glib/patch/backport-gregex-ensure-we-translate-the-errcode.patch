@@ -1,0 +1,85 @@
+From c05d09044fb71bdea599c81bf0ae896a5503e76a Mon Sep 17 00:00:00 2001
+From: Marco Trevisan <mail@3v1n0.net>
+Date: Fri, 15 Jul 2022 01:27:33 +0200
+Subject: [PATCH] gregex: Ensure we translate the errcode without asserting on
+ G_REGEX_ERROR_COMPILE
+
+Since commit 8d5a44dc in order to ensure that we were setting the errcode in
+translate_compile_error(), we did an assert checking whether it was a
+valid value, but we assumed that 0 was not a valid error, while it is as
+it's the generic G_REGEX_ERROR_COMPILE.
+
+So, set errcode and errmsg to invalid values before translating and
+ensure we've change them.
+
+Fixes: #2694
+
+Conflict:NA
+Reference:https://gitlab.gnome.org/GNOME/glib/-/commit/c05d09044fb71bdea599c81bf0ae896a5503e76a
+
+---
+ glib/gregex.c      |  8 ++++++--
+ glib/tests/regex.c | 13 +++++++++++++
+ 2 files changed, 19 insertions(+), 2 deletions(-)
+
+diff --git a/glib/gregex.c b/glib/gregex.c
+index 5fc7b16bc8..2a54929bf4 100644
+--- a/glib/gregex.c
++++ b/glib/gregex.c
+@@ -476,8 +476,12 @@ translate_compile_error (gint *errcode, const gchar **errmsg)
+    * Note that there can be more PCRE errors with the same GRegexError
+    * and that some PCRE errors are useless for us.
+    */
++  gint original_errcode = *errcode;
+ 
+-  switch (*errcode)
++  *errcode = -1;
++  *errmsg = NULL;
++
++  switch (original_errcode)
+     {
+     case PCRE2_ERROR_END_BACKSLASH:
+       *errcode = G_REGEX_ERROR_STRAY_BACKSLASH;
+@@ -725,7 +729,7 @@ translate_compile_error (gint *errcode, const gchar **errmsg)
+       break;
+     }
+ 
+-  g_assert (*errcode != 0);
++  g_assert (*errcode != -1);
+   g_assert (*errmsg != NULL);
+ }
+ 
+diff --git a/glib/tests/regex.c b/glib/tests/regex.c
+index 3355f64e54..9a1977b248 100644
+--- a/glib/tests/regex.c
++++ b/glib/tests/regex.c
+@@ -2187,6 +2187,18 @@ pcre2_ge (guint64 major, guint64 minor)
+     return (pcre2_major > major) || (pcre2_major == major && pcre2_minor >= minor);
+ }
+ 
++static void
++test_compile_errors (void)
++{
++  GRegex *regex;
++  GError *error = NULL;
++
++  regex = g_regex_new ("\\o{999}", G_REGEX_DEFAULT, G_REGEX_MATCH_DEFAULT, &error);
++  g_assert_null (regex);
++  g_assert_error (error, G_REGEX_ERROR, G_REGEX_ERROR_COMPILE);
++  g_clear_error (&error);
++}
++
+ int
+ main (int argc, char *argv[])
+ {
+@@ -2204,6 +2216,7 @@ main (int argc, char *argv[])
+   g_test_add_func ("/regex/multiline", test_multiline);
+   g_test_add_func ("/regex/explicit-crlf", test_explicit_crlf);
+   g_test_add_func ("/regex/max-lookbehind", test_max_lookbehind);
++  g_test_add_func ("/regex/compile-errors", test_compile_errors);
+ 
+   /* TEST_NEW(pattern, compile_opts, match_opts) */
+ G_GNUC_BEGIN_IGNORE_DEPRECATIONS
+-- 
+GitLab
+

@@ -1,0 +1,5 @@
+config HECA_V2_LTS
+	bool "HECA_V2_LTS"
+	default n
+	help
+	  Hisilicon Efficiency Control Algorithm version 2 lts

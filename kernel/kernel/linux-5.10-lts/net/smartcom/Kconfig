@@ -1,0 +1,12 @@
+menuconfig HUAWEI_SMARTCOM
+    bool "Huawei smartcom feature support"
+    default n
+    help
+    Say yes here to support smartcom feature
+
+if HUAWEI_SMARTCOM
+source "net/smartcom/schedule_driver/Kconfig"
+source "net/smartcom/nstack/Kconfig"
+source "net/smartcom/mpflow/Kconfig"
+source "net/smartcom/nat_trav/Kconfig"
+endif # if HUAWEI_SMARTCOM

@@ -1,0 +1,135 @@
+# Copyright (c) 2024 Huawei Device Co., Ltd.
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+import("//build/ohos.gni")
+
+ppp_gen_dir = "${target_gen_dir}/ppp"
+action("ppp_install_action") {
+  script = "//vendor/open_source/ppp/install.py"
+  outputs = [
+    "$ppp_gen_dir/pppd/auth.c",
+    "$ppp_gen_dir/pppd/ccp.c",
+    "$ppp_gen_dir/pppd/chap-md5.c",
+    "$ppp_gen_dir/pppd/chap.c",
+    "$ppp_gen_dir/pppd/chap_ms.c",
+    "$ppp_gen_dir/pppd/crypto_ms.c",
+    "$ppp_gen_dir/pppd/demand.c",
+    "$ppp_gen_dir/pppd/eap.c",
+    "$ppp_gen_dir/pppd/ecp.c",
+    "$ppp_gen_dir/pppd/eui64.c",
+    "$ppp_gen_dir/pppd/fsm.c",
+    "$ppp_gen_dir/pppd/ipcp.c",
+    "$ppp_gen_dir/pppd/ipc_request.cpp",
+    "$ppp_gen_dir/pppd/ipv6cp.c",
+    "$ppp_gen_dir/pppd/lcp.c",
+    "$ppp_gen_dir/pppd/magic.c",
+    "$ppp_gen_dir/pppd/main.c",
+    "$ppp_gen_dir/pppd/mppe.c",
+    "$ppp_gen_dir/pppd/options.c",
+    "$ppp_gen_dir/pppd/session.c",
+    "$ppp_gen_dir/pppd/tty.c",
+    "$ppp_gen_dir/pppd/upap.c",
+    "$ppp_gen_dir/pppd/utils.c",
+    "$ppp_gen_dir/pppd/crypto.c",
+    "$ppp_gen_dir/pppd/ppp-des.c",
+    "$ppp_gen_dir/pppd/ppp-md4.c",
+    "$ppp_gen_dir/pppd/ppp-md5.c",
+    "$ppp_gen_dir/pppd/ppp-sha1.c",
+  ]
+
+  if (host_os == "linux") {
+    outputs += [ "$ppp_gen_dir/pppd/sys-linux.c" ]
+  }
+
+  args = [
+    "--gen-dir",
+    rebase_path("${target_gen_dir}", root_build_dir),
+    "--source-file",
+    rebase_path("//vendor/open_source/ppp"),
+  ]
+}
+
+ohos_prebuilt_executable("ip-up") {
+  source = "ip-up"
+  install_enable = true
+  part_name = "pppd"
+  subsystem_name = "open_source"
+}
+
+ohos_prebuilt_executable("ip-down") {
+  source = "ip-down"
+  install_enable = true
+  part_name = "pppd"
+  subsystem_name = "open_source"
+}
+
+ohos_executable("pppd") {
+  sources = get_target_outputs(":ppp_install_action")
+  defines = [
+    "SUPPORT_SYSVPN",
+    "HAVE_CONFIG_H",
+    "OPENSSL_NO_ENGINE",
+    "PPP_WITH_IPV6CP",
+    "SYSCONFDIR = \"${target_out_dir}/etc\"",
+    "LOCALSTATEDIR = \"${target_out_dir}/var\"",
+    "PPPD_RUNTIME_DIR = \"/data/service/el1/public/vpn\"",
+    "PPPD_LOGFILE_DIR = \"/data/log/pppd\"",
+    "PACKAGE_NAME = \"ppp\"",
+    "PPPD_VERSION = \"2.5.0\"",
+    "PACKAGE_VERSION = \"2.5.0\"",
+    "VERSION = \"2.5.0\"",
+    "PACKAGE_BUGREPORT = \"https://github.com/ppp-project/ppp\"",
+  ]
+
+  include_dirs = [ "$ppp_gen_dir" ]
+  cflags = [
+    "-Wall",
+    "-Wextra",
+    "-Wno-error=unused-variable",
+    "-Wno-error=switch",
+    "-Wno-error=array-parameter",
+    "-Wno-error=sign-compare",
+    "-Wno-error=unused-function",
+    "-Wno-error=unused-label",
+    "-Wno-error=deprecated-non-prototype",
+    "-Wno-error=implicit-function-declaration",
+    "-Wno-pointer-sign",
+    "-Wno-array-parameter",
+    "-UPPP_WITH_EAPTLS",
+    "-UPPP_WITH_PLUGINS",
+    "-UPPP_WITH_PEAP",
+    "-Wno-unused-variable",
+    "-Wno-switch",
+    "-Wno-switch-enum",
+  ]
+
+  deps = [ ":ppp_install_action" ]
+  external_deps = [
+    "c_utils:utils",
+    "ipc:ipc_single",
+    "netmanager_ext:net_vpn_manager_if",
+  ]
+  ldflags = []
+  install_enable = true
+  part_name = "pppd"
+  subsystem_name = "open_source"
+}
+
+group("build_pppd") {
+  deps = [
+    ":ip-down",
+    ":ip-up",
+    ":ppp_install_action",
+    ":pppd",
+  ]
+}

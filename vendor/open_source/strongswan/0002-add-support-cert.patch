@@ -1,0 +1,4068 @@
+From 49fda81d9852c64eb061dde2dd8863be950a2a10 Mon Sep 17 00:00:00 2001
+From: w30063796 <w30063796@notesmail.huawei.com/>
+Date: Thu, 26 Sep 2024 19:22:04 +0800
+Subject: [PATCH] TicketNo:AR20240314850539 Description:add support cert
+ Team:OTHERS Feature or Bugfix:Feature Binary Source:No PrivateCode(Yes/No):No
+
+Change-Id: I2e4de09506825f339a5b4a7fa7ce63dfb8a18b3d
+---
+ src/ipsec/_ipsec.in                                |  42 ++
+ .../certmanager/include/cert_manager_api.h         |  48 +++
+ .../include/cert_manager_interface_code.h          |  59 +++
+ src/libcharon/certmanager/include/cm_ipc_client.h  |  43 ++
+ .../include/cm_ipc_client_serialization.h          |  39 ++
+ src/libcharon/certmanager/include/cm_load_sa.h     |  36 ++
+ src/libcharon/certmanager/include/cm_log.h         |  59 +++
+ src/libcharon/certmanager/include/cm_mem.h         |  52 +++
+ src/libcharon/certmanager/include/cm_param.h       |  44 ++
+ src/libcharon/certmanager/include/cm_request.h     |  32 ++
+ src/libcharon/certmanager/include/cm_type.h        | 402 ++++++++++++++++++
+ src/libcharon/certmanager/include/cm_type_inner.h  |  22 +
+ src/libcharon/certmanager/include/cm_x509.h        |  78 ++++
+ src/libcharon/certmanager/src/cert_manager_api.c   | 236 +++++++++++
+ src/libcharon/certmanager/src/cm_ipc_client.c      | 469 +++++++++++++++++++++
+ .../certmanager/src/cm_ipc_client_serialization.c  |  95 +++++
+ src/libcharon/certmanager/src/cm_load_sa.cpp       |  24 ++
+ src/libcharon/certmanager/src/cm_log.c             |  62 +++
+ src/libcharon/certmanager/src/cm_mem.c             |  42 ++
+ src/libcharon/certmanager/src/cm_param.c           | 191 +++++++++
+ src/libcharon/certmanager/src/cm_request.cpp       | 157 +++++++
+ src/libcharon/certmanager/src/cm_x509.c            | 438 +++++++++++++++++++
+ src/libcharon/keystore/keystore.c                  | 287 +++++++++++++
+ src/libcharon/keystore/keystore.h                  |  35 ++
+ src/libcharon/plugins/stroke/stroke_control.c      |  10 +-
+ src/libcharon/plugins/stroke/stroke_cred.c         |  15 +-
+ .../ikev1/authenticators/pubkey_v1_authenticator.c |   5 +
+ src/libcharon/sa/ikev1/phase1.c                    |   4 +
+ .../sa/ikev2/authenticators/pubkey_authenticator.c |   5 +
+ src/libstrongswan/netmanager/include/ipc_request.h |  38 ++
+ .../netmanager/include/net_manager_api.h           |  31 ++
+ .../netmanager/include/net_manager_log.h           |  60 +++
+ src/libstrongswan/netmanager/src/ipc_request.cpp   |  43 ++
+ src/libstrongswan/netmanager/src/net_manager_api.c |  44 ++
+ src/libstrongswan/netmanager/src/net_manager_log.c |  53 +++
+ src/libstrongswan/utils/ipc_load_sa.cpp            |  21 -
+ src/libstrongswan/utils/ipc_load_sa.h              |  36 --
+ src/libstrongswan/utils/ipc_request.h              |  31 --
+ src/libstrongswan/utils/sysvpn_utils.c             |  48 ---
+ src/libstrongswan/utils/sysvpn_utils.h             |  36 --
+ src/starter/starter.c                              |   6 +-
+ src/swanctl/commands/load_conns.c                  |   6 +-
+ src/swanctl/commands/load_creds.c                  |  78 +++-
+ 43 files changed, 3378 insertions(+), 184 deletions(-)
+ create mode 100644 src/libcharon/certmanager/include/cert_manager_api.h
+ create mode 100644 src/libcharon/certmanager/include/cert_manager_interface_code.h
+ create mode 100644 src/libcharon/certmanager/include/cm_ipc_client.h
+ create mode 100644 src/libcharon/certmanager/include/cm_ipc_client_serialization.h
+ create mode 100644 src/libcharon/certmanager/include/cm_load_sa.h
+ create mode 100644 src/libcharon/certmanager/include/cm_log.h
+ create mode 100644 src/libcharon/certmanager/include/cm_mem.h
+ create mode 100644 src/libcharon/certmanager/include/cm_param.h
+ create mode 100644 src/libcharon/certmanager/include/cm_request.h
+ create mode 100644 src/libcharon/certmanager/include/cm_type.h
+ create mode 100644 src/libcharon/certmanager/include/cm_type_inner.h
+ create mode 100644 src/libcharon/certmanager/include/cm_x509.h
+ create mode 100644 src/libcharon/certmanager/src/cert_manager_api.c
+ create mode 100644 src/libcharon/certmanager/src/cm_ipc_client.c
+ create mode 100644 src/libcharon/certmanager/src/cm_ipc_client_serialization.c
+ create mode 100644 src/libcharon/certmanager/src/cm_load_sa.cpp
+ create mode 100644 src/libcharon/certmanager/src/cm_log.c
+ create mode 100644 src/libcharon/certmanager/src/cm_mem.c
+ create mode 100644 src/libcharon/certmanager/src/cm_param.c
+ create mode 100644 src/libcharon/certmanager/src/cm_request.cpp
+ create mode 100644 src/libcharon/certmanager/src/cm_x509.c
+ create mode 100644 src/libcharon/keystore/keystore.c
+ create mode 100644 src/libcharon/keystore/keystore.h
+ create mode 100644 src/libstrongswan/netmanager/include/ipc_request.h
+ create mode 100644 src/libstrongswan/netmanager/include/net_manager_api.h
+ create mode 100644 src/libstrongswan/netmanager/include/net_manager_log.h
+ create mode 100644 src/libstrongswan/netmanager/src/ipc_request.cpp
+ create mode 100644 src/libstrongswan/netmanager/src/net_manager_api.c
+ create mode 100644 src/libstrongswan/netmanager/src/net_manager_log.c
+ delete mode 100644 src/libstrongswan/utils/ipc_load_sa.cpp
+ delete mode 100644 src/libstrongswan/utils/ipc_load_sa.h
+ delete mode 100644 src/libstrongswan/utils/ipc_request.h
+ delete mode 100755 src/libstrongswan/utils/sysvpn_utils.c
+ delete mode 100755 src/libstrongswan/utils/sysvpn_utils.h
+
+diff --git a/src/ipsec/_ipsec.in b/src/ipsec/_ipsec.in
+index febf136..05c2d03 100644
+--- a/src/ipsec/_ipsec.in
++++ b/src/ipsec/_ipsec.in
+@@ -37,6 +37,7 @@ IPSEC_SCRIPT="ipsec"
+ IPSEC_STARTER_PID="${IPSEC_PIDDIR}/starter.${DAEMON_NAME}.pid"
+ IPSEC_CHARON_PID="${IPSEC_PIDDIR}/${DAEMON_NAME}.pid"
+ XL2TPD_PID="${IPSEC_PIDDIR}/xl2tpd.pid"
++OPENVPN_PID="${IPSEC_PIDDIR}/openvpn.pid"
+ 
+ IPSEC_STROKE="${IPSEC_DIR}/stroke"
+ IPSEC_STARTER="${IPSEC_DIR}/starter"
+@@ -365,6 +366,47 @@ xl2tpd)
+ 	exec $IPSEC_SBINDIR/xl2tpd "$@"
+ 	exit 0
+ 	;;
++restartopenvpn)
++	$IPSEC_SBINDIR/$IPSEC_SCRIPT stopopenvpn
++	sleep 2
++	shift
++	exec $IPSEC_SBINDIR/$IPSEC_SCRIPT start_openvpn "$@"
++	;;
++start_openvpn)
++	shift
++	exec $IPSEC_SBINDIR/openvpn --daemon --writepid $OPENVPN_PID "$@"
++	exit 0
++	;;
++stopopenvpn)
++	if [ -e $OPENVPN_PID ]
++	then
++		echo "Stopping openvpn ..." >&2
++		spid=`cat $OPENVPN_PID`
++		if [ -n "$spid" ]
++		then
++			kill $spid 2>/dev/null
++			loop=110
++			while [ $loop -gt 0 ] ; do
++				kill -0 $spid 2>/dev/null || break
++				sleep 0.1 2>/dev/null
++				if [ $? -ne 0 ]
++				then
++					sleep 1
++					loop=$(($loop - 9))
++				fi
++				loop=$(($loop - 1))
++			done
++			if [ $loop -le 0 ]
++			then
++				kill -KILL $spid 2>/dev/null
++				rm -f $OPENVPN_PID
++			fi
++		fi
++	else
++		echo "Stopping openvpn failed: openvpn is not running" >&2
++	fi
++	exit 0
++	;;
+ --*)
+ 	echo "$0: unknown option \`$1' (perhaps command name was omitted?)" >&2
+ 	exit 2
+diff --git a/src/libcharon/certmanager/include/cert_manager_api.h b/src/libcharon/certmanager/include/cert_manager_api.h
+new file mode 100644
+index 0000000..a542f93
+--- /dev/null
++++ b/src/libcharon/certmanager/include/cert_manager_api.h
+@@ -0,0 +1,48 @@
++/*
++ * Copyright (c) 2024 Huawei Device Co., Ltd.
++ * Licensed under the Apache License, Version 2.0 (the "License");
++ * you may not use this file except in compliance with the License.
++ * You may obtain a copy of the License at
++ *
++ * http://www.apache.org/licenses/LICENSE-2.0
++ *
++ * Unless required by applicable law or agreed to in writing, software
++ * distributed under the License is distributed on an "AS IS" BASIS,
++ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
++ * See the License for the specific language governing permissions and
++ * limitations under the License.
++ */
++
++#ifndef CERT_MANGAGER_API_H
++#define CERT_MANGAGER_API_H
++
++#include <utils/chunk.h>
++#include <utils/debug.h>
++
++#include "cm_type.h"
++#include "net_manager_api.h"
++
++#ifdef __cplusplus
++extern "C" {
++#endif
++
++CM_API_EXPORT int32_t CmGetUserCertInfo(const struct CmBlob *certUri, uint32_t store, struct CertInfo *certificateInfo);
++
++CM_API_EXPORT int32_t CmGetAppCert(const struct CmBlob *keyUri, const uint32_t store, struct Credential *certificate);
++
++CM_API_EXPORT int32_t CmInit(const struct CmBlob *authUri, const struct CmSignatureSpec *spec, struct CmBlob *handle);
++
++CM_API_EXPORT int32_t CmUpdate(const struct CmBlob *handle, const struct CmBlob *inData);
++
++CM_API_EXPORT int32_t CmFinish(const struct CmBlob *handle, const struct CmBlob *inData, struct CmBlob *outData);
++
++CM_API_EXPORT int32_t CmAbort(const struct CmBlob *handle);
++
++CM_API_EXPORT int32_t cm_sign(const uint8_t *uri_buf, uint32_t size, chunk_t msg, chunk_t *authData,
++    struct CmSignatureSpec *signSpec);
++CM_API_EXPORT chunk_t load_vpn_cert(enum IpsecVpnCertType type);
++#ifdef __cplusplus
++}
++#endif
++
++#endif /* CERT_MANGAGER_API_H */
+diff --git a/src/libcharon/certmanager/include/cert_manager_interface_code.h b/src/libcharon/certmanager/include/cert_manager_interface_code.h
+new file mode 100644
+index 0000000..afbea73
+--- /dev/null
++++ b/src/libcharon/certmanager/include/cert_manager_interface_code.h
+@@ -0,0 +1,59 @@
++/*
++ * Copyright (c) 2024 Huawei Device Co., Ltd.
++ * Licensed under the Apache License, Version 2.0 (the "License");
++ * you may not use this file except in compliance with the License.
++ * You may obtain a copy of the License at
++ *
++ * http://www.apache.org/licenses/LICENSE-2.0
++ *
++ * Unless required by applicable law or agreed to in writing, software
++ * distributed under the License is distributed on an "AS IS" BASIS,
++ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
++ * See the License for the specific language governing permissions and
++ * limitations under the License.
++ */
++
++#ifndef CERT_MANAGER_INTERFACE_CODE_H
++#define CERT_MANAGER_INTERFACE_CODE_H
++
++#ifdef __cplusplus
++extern "C" {
++#endif
++
++/* SAID: 3512 */
++enum CertManagerInterfaceCode {
++    CM_MSG_BASE = 0,
++
++    CM_MSG_GEN_KEY = CM_MSG_BASE,
++    CM_MSG_GET_CERTIFICATE_LIST,
++    CM_MSG_GET_CERTIFICATE_INFO,
++    CM_MSG_SET_CERTIFICATE_STATUS,
++    CM_MSG_INSTALL_APP_CERTIFICATE,
++    CM_MSG_UNINSTALL_APP_CERTIFICATE,
++    CM_MSG_UNINSTALL_ALL_APP_CERTIFICATE,
++    CM_MSG_GET_APP_CERTIFICATE_LIST,
++    CM_MSG_GET_CALLING_APP_CERTIFICATE_LIST,
++    CM_MSG_GET_APP_CERTIFICATE,
++    CM_MSG_GRANT_APP_CERT,
++    CM_MSG_GET_AUTHED_LIST,
++    CM_MSG_CHECK_IS_AUTHED_APP,
++    CM_MSG_REMOVE_GRANT_APP,
++    CM_MSG_INIT,
++    CM_MSG_UPDATE,
++    CM_MSG_FINISH,
++    CM_MSG_ABORT,
++    CM_MSG_GET_USER_CERTIFICATE_LIST,
++    CM_MSG_GET_USER_CERTIFICATE_INFO,
++    CM_MSG_SET_USER_CERTIFICATE_STATUS,
++    CM_MSG_INSTALL_USER_CERTIFICATE,
++    CM_MSG_UNINSTALL_USER_CERTIFICATE,
++    CM_MSG_UNINSTALL_ALL_USER_CERTIFICATE,
++
++    /* new cmd type must be added before CM_MSG_MAX */
++    CM_MSG_MAX,
++};
++
++#ifdef __cplusplus
++}
++#endif
++#endif // CERT_MANAGER_INTERFACE_CODE_H
+diff --git a/src/libcharon/certmanager/include/cm_ipc_client.h b/src/libcharon/certmanager/include/cm_ipc_client.h
+new file mode 100644
+index 0000000..fdb3f4e
+--- /dev/null
++++ b/src/libcharon/certmanager/include/cm_ipc_client.h
+@@ -0,0 +1,43 @@
++/*
++ * Copyright (c) 2024 Huawei Device Co., Ltd.
++ * Licensed under the Apache License, Version 2.0 (the "License");
++ * you may not use this file except in compliance with the License.
++ * You may obtain a copy of the License at
++ *
++ * http://www.apache.org/licenses/LICENSE-2.0
++ *
++ * Unless required by applicable law or agreed to in writing, software
++ * distributed under the License is distributed on an "AS IS" BASIS,
++ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
++ * See the License for the specific language governing permissions and
++ * limitations under the License.
++ */
++
++#ifndef CM_CLIENT_IPC_H
++#define CM_CLIENT_IPC_H
++
++#include "cm_request.h"
++#include "cm_type_inner.h"
++
++#ifdef __cplusplus
++extern "C" {
++#endif
++
++
++int32_t CmClientGetUserCertInfo(const struct CmBlob *certUri, const uint32_t store, struct CertInfo *certificateInfo);
++
++int32_t CmClientGetAppCert(const struct CmBlob *keyUri, const uint32_t store, struct Credential *certificate);
++
++int32_t CmClientInit(const struct CmBlob *authUri, const struct CmSignatureSpec *spec, struct CmBlob *handle);
++
++int32_t CmClientUpdate(const struct CmBlob *handle, const struct CmBlob *inData);
++
++int32_t CmClientFinish(const struct CmBlob *handle, const struct CmBlob *inData, struct CmBlob *outData);
++
++int32_t CmClientAbort(const struct CmBlob *handle);
++
++#ifdef __cplusplus
++}
++#endif
++
++#endif /* CM_CLIENT_IPC_H */
+diff --git a/src/libcharon/certmanager/include/cm_ipc_client_serialization.h b/src/libcharon/certmanager/include/cm_ipc_client_serialization.h
+new file mode 100644
+index 0000000..d666961
+--- /dev/null
++++ b/src/libcharon/certmanager/include/cm_ipc_client_serialization.h
+@@ -0,0 +1,39 @@
++/*
++ * Copyright (c) 2024 Huawei Device Co., Ltd.
++ * Licensed under the Apache License, Version 2.0 (the "License");
++ * you may not use this file except in compliance with the License.
++ * You may obtain a copy of the License at
++ *
++ * http://www.apache.org/licenses/LICENSE-2.0
++ *
++ * Unless required by applicable law or agreed to in writing, software
++ * distributed under the License is distributed on an "AS IS" BASIS,
++ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
++ * See the License for the specific language governing permissions and
++ * limitations under the License.
++ */
++
++#ifndef CM_IPC_CLIENT_SERIALIZATION_H
++#define CM_IPC_CLIENT_SERIALIZATION_H
++
++#include "cm_type_inner.h"
++
++#define MAX_IPC_BUF_SIZE 0x10000 /* Maximun IPC message buffer size. */
++#define MAX_IPC_RSV_SIZE 0x400   /* Reserve IPC message buffer size */
++#define MAX_PROCESS_SIZE (MAX_IPC_BUF_SIZE - MAX_IPC_RSV_SIZE)
++
++#ifdef __cplusplus
++extern "C" {
++#endif
++
++int32_t GetUint32FromBuffer(uint32_t *value, const struct CmBlob *srcBlob, uint32_t *srcOffset);
++
++int32_t CmGetBlobFromBuffer(struct CmBlob *blob, const struct CmBlob *srcBlob, uint32_t *srcOffset);
++
++int32_t CmParamsToParamSet(struct CmParam *params, uint32_t cnt, struct CmParamSet **outParamSet);
++
++#ifdef __cplusplus
++}
++#endif
++
++#endif /* CM_IPC_CLIENT_SERIALIZATION_H */
+\ No newline at end of file
+diff --git a/src/libcharon/certmanager/include/cm_load_sa.h b/src/libcharon/certmanager/include/cm_load_sa.h
+new file mode 100644
+index 0000000..ac6e9f9
+--- /dev/null
++++ b/src/libcharon/certmanager/include/cm_load_sa.h
+@@ -0,0 +1,36 @@
++/*
++ * Copyright (c) 2024 Huawei Device Co., Ltd.
++ * Licensed under the Apache License, Version 2.0 (the "License");
++ * you may not use this file except in compliance with the License.
++ * You may obtain a copy of the License at
++ *
++ * http://www.apache.org/licenses/LICENSE-2.0
++ *
++ * Unless required by applicable law or agreed to in writing, software
++ * distributed under the License is distributed on an "AS IS" BASIS,
++ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
++ * See the License for the specific language governing permissions and
++ * limitations under the License.
++ */
++
++#ifndef CM_LOAD_SA_H
++#define CM_LOAD_SA_H
++
++#include <future>
++#include <string>
++#include "iremote_object.h"
++#include "system_ability_load_callback_stub.h"
++
++class OnDemandLoadCertManagerCallback : public OHOS::SystemAbilityLoadCallbackStub {
++public:
++    OnDemandLoadCertManagerCallback(std::string servers);
++    void OnLoadSystemAbilitySuccess(int32_t systemAbilityId, const OHOS::sptr<IRemoteObject> &remoteObject) override;
++    void OnLoadSystemAbilityFail(int32_t systemAbilityId) override;
++    OHOS::sptr<IRemoteObject> Promise(void);
++
++private:
++    std::string servers;
++    std::promise<OHOS::sptr<IRemoteObject>> promise_;
++};
++
++#endif /* CM_LOAD_SA_H */
+\ No newline at end of file
+diff --git a/src/libcharon/certmanager/include/cm_log.h b/src/libcharon/certmanager/include/cm_log.h
+new file mode 100644
+index 0000000..75b9993
+--- /dev/null
++++ b/src/libcharon/certmanager/include/cm_log.h
+@@ -0,0 +1,59 @@
++/*
++ * Copyright (c) 2024 Huawei Device Co., Ltd.
++ * Licensed under the Apache License, Version 2.0 (the "License");
++ * you may not use this file except in compliance with the License.
++ * You may obtain a copy of the License at
++ *
++ * http://www.apache.org/licenses/LICENSE-2.0
++ *
++ * Unless required by applicable law or agreed to in writing, software
++ * distributed under the License is distributed on an "AS IS" BASIS,
++ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
++ * See the License for the specific language governing permissions and
++ * limitations under the License.
++ */
++
++#ifndef CM_LOG_H
++#define CM_LOG_H
++
++#include "cm_type.h"
++
++#ifdef __cplusplus
++extern "C" {
++#endif
++
++#define _CM_LOG_ENABLE_
++
++#ifdef _CM_LOG_ENABLE_
++#undef LOG_TAG
++#define LOG_TAG "CertManager-VPN"
++#undef LOG_DOMAIN
++#define LOG_DOMAIN 0xD002F09 /* CertManager's domain id */
++#endif
++
++enum CmLogLevel {
++    CM_LOG_LEVEL_I,
++    CM_LOG_LEVEL_E,
++    CM_LOG_LEVEL_W,
++    CM_LOG_LEVEL_D,
++};
++
++#ifdef _CM_LOG_ENABLE_
++void CmLog(uint32_t logLevel, const char *funcName, uint32_t lineNo, const char *format, ...);
++
++#define CM_LOG_I(...) CmLog(CM_LOG_LEVEL_I, __func__, __LINE__, __VA_ARGS__)
++#define CM_LOG_W(...) CmLog(CM_LOG_LEVEL_W, __func__, __LINE__, __VA_ARGS__)
++#define CM_LOG_E(...) CmLog(CM_LOG_LEVEL_E, __func__, __LINE__, __VA_ARGS__)
++#define CM_LOG_D(...) CmLog(CM_LOG_LEVEL_D, __func__, __LINE__, __VA_ARGS__)
++#else
++#define CM_LOG_I(...)
++#define CM_LOG_W(...)
++#define CM_LOG_E(...)
++#define CM_LOG_D(...)
++#endif
++
++#ifdef __cplusplus
++}
++#endif
++
++#endif // CM_LOG_H
+diff --git a/src/libcharon/certmanager/include/cm_mem.h b/src/libcharon/certmanager/include/cm_mem.h
+new file mode 100644
+index 0000000..758d898
+--- /dev/null
++++ b/src/libcharon/certmanager/include/cm_mem.h
+@@ -0,0 +1,52 @@
++/*
++ * Copyright (c) 2024 Huawei Device Co., Ltd.
++ * Licensed under the Apache License, Version 2.0 (the "License");
++ * you may not use this file except in compliance with the License.
++ * You may obtain a copy of the License at
++ *
++ * http://www.apache.org/licenses/LICENSE-2.0
++ *
++ * Unless required by applicable law or agreed to in writing, software
++ * distributed under the License is distributed on an "AS IS" BASIS,
++ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
++ * See the License for the specific language governing permissions and
++ * limitations under the License.
++ */
++
++#ifndef CM_MEM_H
++#define CM_MEM_H
++
++#include <stdint.h>
++#include <stdlib.h>
++
++#ifdef __cplusplus
++extern "C" {
++#endif
++
++void *CmMalloc(size_t size);
++void CmFree(void *ptr);
++
++#define SELF_FREE_PTR(PTR, FREE_FUNC) \
++    {                                 \
++        if ((PTR) != NULL) {          \
++            FREE_FUNC(PTR);           \
++            (PTR) = NULL;             \
++        }                             \
++    }
++
++#define CM_FREE_PTR(p) SELF_FREE_PTR(p, CmFree)
++
++#define CM_FREE_BLOB(blob)         \
++    do {                           \
++        if ((blob).data != NULL) { \
++            CmFree((blob).data);   \
++            (blob).data = NULL;    \
++        }                          \
++        (blob).size = 0;           \
++    } while (0)
++
++#ifdef __cplusplus
++}
++#endif
++
++#endif /* CM_MEM_H */
+\ No newline at end of file
+diff --git a/src/libcharon/certmanager/include/cm_param.h b/src/libcharon/certmanager/include/cm_param.h
+new file mode 100644
+index 0000000..041ca8a
+--- /dev/null
++++ b/src/libcharon/certmanager/include/cm_param.h
+@@ -0,0 +1,44 @@
++/*
++ * Copyright (c) 2024 Huawei Device Co., Ltd.
++ * Licensed under the Apache License, Version 2.0 (the "License");
++ * you may not use this file except in compliance with the License.
++ * You may obtain a copy of the License at
++ *
++ * http://www.apache.org/licenses/LICENSE-2.0
++ *
++ * Unless required by applicable law or agreed to in writing, software
++ * distributed under the License is distributed on an "AS IS" BASIS,
++ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
++ * See the License for the specific language governing permissions and
++ * limitations under the License.
++ */
++
++#ifndef CM_PARAM_H
++#define CM_PARAM_H
++
++#include "cm_type.h"
++
++#define CM_PARAM_SET_MAX_SIZE (4 * 1024 * 1024)
++#define CM_DEFAULT_PARAM_SET_SIZE 512
++#define CM_DEFAULT_PARAM_CNT \
++    ((uint32_t)((CM_DEFAULT_PARAM_SET_SIZE - sizeof(struct CmParamSet)) / sizeof(struct CmParam)))
++#define CM_TAG_TYPE_MASK (0xF << 28)
++
++#ifdef __cplusplus
++extern "C" {
++#endif
++
++enum CmTagType GetTagType(enum CmTag tag);
++
++int32_t CmInitParamSet(struct CmParamSet **paramSet);
++
++int32_t CmBuildParamSet(struct CmParamSet **paramSet);
++
++void CmFreeParamSet(struct CmParamSet **paramSet);
++
++int32_t CmAddParams(struct CmParamSet *paramSet, const struct CmParam *params, uint32_t paramCnt);
++
++#ifdef __cplusplus
++}
++#endif
++#endif
+\ No newline at end of file
+diff --git a/src/libcharon/certmanager/include/cm_request.h b/src/libcharon/certmanager/include/cm_request.h
+new file mode 100644
+index 0000000..d46b231
+--- /dev/null
++++ b/src/libcharon/certmanager/include/cm_request.h
+@@ -0,0 +1,32 @@
++/*
++ * Copyright (c) 2024 Huawei Device Co., Ltd.
++ * Licensed under the Apache License, Version 2.0 (the "License");
++ * you may not use this file except in compliance with the License.
++ * You may obtain a copy of the License at
++ *
++ * http://www.apache.org/licenses/LICENSE-2.0
++ *
++ * Unless required by applicable law or agreed to in writing, software
++ * distributed under the License is distributed on an "AS IS" BASIS,
++ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
++ * See the License for the specific language governing permissions and
++ * limitations under the License.
++ */
++
++#ifndef CM_REQUEST_H
++#define CM_REQUEST_H
++
++#include "cert_manager_interface_code.h"
++#include "cm_type_inner.h"
++
++#ifdef __cplusplus
++extern "C" {
++#endif
++
++int32_t SendRequest(enum CertManagerInterfaceCode type, const struct CmBlob *inBlob, struct CmBlob *outBlob);
++
++#ifdef __cplusplus
++}
++#endif
++
++#endif /* CM_REQUEST_H */
+\ No newline at end of file
+diff --git a/src/libcharon/certmanager/include/cm_type.h b/src/libcharon/certmanager/include/cm_type.h
+new file mode 100644
+index 0000000..2f1556c
+--- /dev/null
++++ b/src/libcharon/certmanager/include/cm_type.h
+@@ -0,0 +1,402 @@
++/*
++ * Copyright (c) 2024 Huawei Device Co., Ltd.
++ * Licensed under the Apache License, Version 2.0 (the "License");
++ * you may not use this file except in compliance with the License.
++ * You may obtain a copy of the License at
++ *
++ * http://www.apache.org/licenses/LICENSE-2.0
++ *
++ * Unless required by applicable law or agreed to in writing, software
++ * distributed under the License is distributed on an "AS IS" BASIS,
++ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
++ * See the License for the specific language governing permissions and
++ * limitations under the License.
++ */
++
++#ifndef CM_TYPE_H
++#define CM_TYPE_H
++
++#include <stdbool.h>
++#include <stdint.h>
++#include <stdlib.h>
++
++#ifdef __cplusplus
++extern "C" {
++#endif
++#ifndef CM_API_PUBLIC
++#if defined(WIN32) || defined(_WIN32) || defined(__CYGWIN__) || defined(__ICCARM__)
++/* __ICCARM__ for iar */
++#define CM_API_EXPORT
++#else
++#define CM_API_EXPORT __attribute__((visibility("default")))
++#endif
++#else
++#define CM_API_EXPORT __attribute__((visibility("default")))
++#endif
++
++#define MAX_LEN_CERTIFICATE 8196
++
++#define MAX_LEN_CERTIFICATE_CHAIN (3 * MAX_LEN_CERTIFICATE)
++
++#define MAX_SUFFIX_LEN 16
++#define MAX_COUNT_CERTIFICATE 256
++#define MAX_LEN_URI 256
++#define MAX_AUTH_LEN_URI 256
++#define MAX_LEN_CERT_ALIAS 129    /* include 1 byte: the terminator('\0') */
++#define MAX_LEN_SUBJECT_NAME 1025 /* include 1 byte: the terminator('\0') */
++#define MAX_LEN_PACKGE_NAME 64
++#define MAX_LEN_MAC_KEY 64
++#define MAX_UINT32_LEN 16
++#define MAX_LEN_CERT_TYPE 8
++#define MAX_LEN_PRI_CRED_ALIAS 33 /* include 1 byte: the terminator('\0') */
++
++#define MAX_LEN_ISSUER_NAME 256
++#define MAX_LEN_SERIAL 64
++#define MAX_LEN_NOT_BEFORE 32
++#define MAX_LEN_NOT_AFTER 32
++#define MAX_LEN_FINGER_PRINT_SHA256 128
++#define MAX_LEN_APP_CERT 20480
++#define MAX_LEN_APP_CERT_PASSWD 33 /* 32 psd bytes + 1 bit '\0' */
++#define DEFAULT_SIGNATURE_LEN 1024
++
++#define CERT_MAX_PATH_LEN 256
++#define CM_ARRAY_SIZE(arr) ((sizeof(arr)) / (sizeof((arr)[0])))
++#define INIT_INVALID_VALUE 0xFFFFFFFF
++
++#define CERT_STATUS_ENABLED ((uint32_t)0)
++#define CERT_STATUS_DISABLED ((uint32_t)1)
++
++/*
++ * Align to 4-tuple
++ * Before calling this function, ensure that the size does not overflow after 3 is added.
++ */
++#define ALIGN_SIZE(size) ((((uint32_t)(size) + 3) >> 2) << 2)
++
++#define CM_BITS_PER_BYTE 8
++#define CM_KEY_BYTES(keySize) (((keySize) + CM_BITS_PER_BYTE - 1) / CM_BITS_PER_BYTE)
++#define MAX_OUT_BLOB_SIZE (5 * 1024 * 1024)
++
++#define CM_CREDENTIAL_STORE 0
++#define CM_SYSTEM_TRUSTED_STORE 1
++#define CM_USER_TRUSTED_STORE 2
++#define CM_PRI_CREDENTIAL_STORE 3
++#define CM_SYS_CREDENTIAL_STORE 4
++#define CM_STORE_CHECK(a) \
++    (((a) != CM_CREDENTIAL_STORE) && ((a) != CM_PRI_CREDENTIAL_STORE) && ((a) != CM_SYS_CREDENTIAL_STORE))
++
++enum CmKeyDigest {
++    CM_DIGEST_NONE = 0,
++    CM_DIGEST_MD5 = 1,
++    CM_DIGEST_SHA1 = 10,
++    CM_DIGEST_SHA224 = 11,
++    CM_DIGEST_SHA256 = 12,
++    CM_DIGEST_SHA384 = 13,
++    CM_DIGEST_SHA512 = 14,
++};
++
++enum CmKeyPurpose {
++    CM_KEY_PURPOSE_ENCRYPT = 1, /* Usable with RSA, EC, AES, and SM4 keys. */
++    CM_KEY_PURPOSE_DECRYPT = 2, /* Usable with RSA, EC, AES, and SM4 keys. */
++    CM_KEY_PURPOSE_SIGN = 4,    /* Usable with RSA, EC keys. */
++    CM_KEY_PURPOSE_VERIFY = 8,  /* Usable with RSA, EC keys. */
++    CM_KEY_PURPOSE_DERIVE = 16, /* Usable with EC keys. */
++    CM_KEY_PURPOSE_WRAP = 32,   /* Usable with wrap key. */
++    CM_KEY_PURPOSE_UNWRAP = 64, /* Usable with unwrap key. */
++    CM_KEY_PURPOSE_MAC = 128,   /* Usable with mac. */
++    CM_KEY_PURPOSE_AGREE = 256, /* Usable with agree. */
++};
++
++enum CmKeyPadding {
++    CM_PADDING_NONE = 0,
++    CM_PADDING_OAEP = 1,
++    CM_PADDING_PSS = 2,
++    CM_PADDING_PKCS1_V1_5 = 3,
++    CM_PADDING_PKCS5 = 4,
++    CM_PADDING_PKCS7 = 5,
++};
++
++enum CmErrorCode {
++    CM_SUCCESS = 0,
++    CM_FAILURE = -1,
++
++    CMR_ERROR_NOT_PERMITTED = -2,
++    CMR_ERROR_NOT_SUPPORTED = -3,
++    CMR_ERROR_STORAGE = -4,
++    CMR_ERROR_NOT_FOUND = -5,
++    CMR_ERROR_NULL_POINTER = -6,
++    CMR_ERROR_INVALID_ARGUMENT = -7,
++    CMR_ERROR_MAKE_DIR_FAIL = -8,
++    CMR_ERROR_INVALID_OPERATION = -9,
++    CMR_ERROR_OPEN_FILE_FAIL = -10,
++    CMR_ERROR_READ_FILE_ERROR = -11,
++    CMR_ERROR_WRITE_FILE_FAIL = -12,
++    CMR_ERROR_REMOVE_FILE_FAIL = -13,
++    CMR_ERROR_CLOSE_FILE_FAIL = -14,
++    CMR_ERROR_MALLOC_FAIL = -15,
++    CMR_ERROR_NOT_EXIST = -16,
++    CMR_ERROR_ALREADY_EXISTS = -17,
++    CMR_ERROR_INSUFFICIENT_DATA = -18,
++    CMR_ERROR_BUFFER_TOO_SMALL = -19,
++    CMR_ERROR_INVALID_CERT_FORMAT = -20,
++    CMR_ERROR_PARAM_NOT_EXIST = -21,
++    CMR_ERROR_SESSION_REACHED_LIMIT = -22,
++    CMR_ERROR_PERMISSION_DENIED = -23,
++    CMR_ERROR_AUTH_CHECK_FAILED = -24,
++    CMR_ERROR_KEY_OPERATION_FAILED = -25,
++    CMR_ERROR_NOT_SYSTEMP_APP = -26,
++    CMR_ERROR_MAX_CERT_COUNT_REACHED = -27,
++    CMR_ERROR_ALIAS_LENGTH_REACHED_LIMIT = -28,
++    CMR_ERROR_GET_ADVSECMODE_PARAM_FAIL = -29,
++    CMR_ERROR_DEVICE_ENTER_ADVSECMODE = -30,
++    CMR_ERROR_CREATE_RDB_TABLE_FAIL = -31,
++    CMR_ERROR_INSERT_RDB_DATA_FAIL = -32,
++    CMR_ERROR_UPDATE_RDB_DATA_FAIL = -33,
++    CMR_ERROR_DELETE_RDB_DATA_FAIL = -34,
++    CMR_ERROR_QUERY_RDB_DATA_FAIL = -35,
++    CMR_ERROR_PASSWORD_IS_ERR = -36,
++};
++
++enum CMDialogErrorCode {
++    CMR_DIALOG_OK = 0,
++    CMR_DIALOG_ERROR = -1,
++    CMR_DIALOG_ERROR_INVALID_ARGUMENT = -2,
++    CMR_DIALOG_ERROR_INTERNAL = -3,
++    CMR_DIALOG_ERROR_PERMISSION_DENIED = 1011,
++};
++
++enum CMErrorCode { /* temp use */
++    CMR_OK = 0,
++    CMR_ERROR = -1,
++};
++
++enum CmTagType {
++    CM_TAG_TYPE_INVALID = 0 << 28,
++    CM_TAG_TYPE_INT = 1 << 28,
++    CM_TAG_TYPE_UINT = 2 << 28,
++    CM_TAG_TYPE_ULONG = 3 << 28,
++    CM_TAG_TYPE_BOOL = 4 << 28,
++    CM_TAG_TYPE_BYTES = 5 << 28,
++};
++
++enum CmTag {
++    /* Inner-use TAGS used for ipc serialization */
++    CM_TAG_PARAM0_BUFFER = CM_TAG_TYPE_BYTES | 30001,
++    CM_TAG_PARAM1_BUFFER = CM_TAG_TYPE_BYTES | 30002,
++    CM_TAG_PARAM2_BUFFER = CM_TAG_TYPE_BYTES | 30003,
++    CM_TAG_PARAM3_BUFFER = CM_TAG_TYPE_BYTES | 30004,
++    CM_TAG_PARAM4_BUFFER = CM_TAG_TYPE_BYTES | 30005,
++    CM_TAG_PARAM0_UINT32 = CM_TAG_TYPE_UINT | 30006,
++    CM_TAG_PARAM1_UINT32 = CM_TAG_TYPE_UINT | 30007,
++    CM_TAG_PARAM2_UINT32 = CM_TAG_TYPE_UINT | 30008,
++    CM_TAG_PARAM3_UINT32 = CM_TAG_TYPE_UINT | 30009,
++    CM_TAG_PARAM4_UINT32 = CM_TAG_TYPE_UINT | 30010,
++    CM_TAG_PARAM0_BOOL = CM_TAG_TYPE_BOOL | 30011,
++    CM_TAG_PARAM1_BOOL = CM_TAG_TYPE_BOOL | 30012,
++    CM_TAG_PARAM2_BOOL = CM_TAG_TYPE_BOOL | 30013,
++    CM_TAG_PARAM3_BOOL = CM_TAG_TYPE_BOOL | 30014,
++    CM_TAG_PARAM4_BOOL = CM_TAG_TYPE_BOOL | 30015,
++    CM_TAG_PARAM0_NULL = CM_TAG_TYPE_BYTES | 30016,
++    CM_TAG_PARAM1_NULL = CM_TAG_TYPE_BYTES | 30017,
++    CM_TAG_PARAM2_NULL = CM_TAG_TYPE_BYTES | 30018,
++    CM_TAG_PARAM3_NULL = CM_TAG_TYPE_BYTES | 30019,
++    CM_TAG_PARAM4_NULL = CM_TAG_TYPE_BYTES | 30020,
++};
++
++#define CM_PARAM_BUFFER_NULL_INTERVAL ((CM_TAG_PARAM0_NULL) - (CM_TAG_PARAM0_BUFFER))
++
++enum CmSendType {
++    CM_SEND_TYPE_ASYNC = 0,
++    CM_SEND_TYPE_SYNC,
++};
++
++struct CmMutableBlob {
++    uint32_t size;
++    uint8_t *data;
++};
++
++struct CmContext {
++    uint32_t userId;
++    uint32_t uid;
++    char packageName[MAX_LEN_PACKGE_NAME];
++};
++
++struct CmBlob {
++    uint32_t size;
++    uint8_t *data;
++};
++
++struct CertBlob {
++    struct CmBlob uri[MAX_COUNT_CERTIFICATE];
++    struct CmBlob certAlias[MAX_COUNT_CERTIFICATE];
++    struct CmBlob subjectName[MAX_COUNT_CERTIFICATE];
++};
++
++struct CmAppCertInfo {
++    struct CmBlob appCert;
++    struct CmBlob appCertPwd;
++};
++
++struct CertListAbtInfo {
++    uint32_t uriSize;
++    char uri[MAX_LEN_URI];
++    uint32_t aliasSize;
++    char certAlias[MAX_LEN_CERT_ALIAS];
++    uint32_t status;
++    uint32_t subjectNameSize;
++    char subjectName[MAX_LEN_SUBJECT_NAME];
++};
++
++struct CertAbstract {
++    char uri[MAX_LEN_URI];
++    char certAlias[MAX_LEN_CERT_ALIAS];
++    bool status;
++    char subjectName[MAX_LEN_SUBJECT_NAME];
++};
++
++struct CertList {
++    uint32_t certsCount;
++    struct CertAbstract *certAbstract;
++};
++
++struct CertAbtInfo {
++    uint32_t aliasSize;
++    char certAlias[MAX_LEN_CERT_ALIAS];
++    uint32_t status;
++    uint32_t certsize;
++    uint8_t certData[MAX_LEN_CERTIFICATE];
++};
++
++struct CertInfo {
++    char uri[MAX_LEN_URI];
++    char certAlias[MAX_LEN_CERT_ALIAS];
++    bool status;
++    char issuerName[MAX_LEN_ISSUER_NAME];
++    char subjectName[MAX_LEN_SUBJECT_NAME];
++    char serial[MAX_LEN_SERIAL];
++    char notBefore[MAX_LEN_NOT_BEFORE];
++    char notAfter[MAX_LEN_NOT_AFTER];
++    char fingerprintSha256[MAX_LEN_FINGER_PRINT_SHA256];
++    struct CmBlob certInfo;
++};
++
++struct CertFile {
++    const struct CmBlob *fileName;
++    const struct CmBlob *path;
++};
++
++struct CertFileInfo {
++    struct CmBlob fileName;
++    struct CmBlob path;
++};
++
++struct CMApp {
++    uint32_t userId;
++    uint32_t uid;
++    const char *packageName;
++    struct CmBlob *appId; // for attestation
++};
++
++struct Credential {
++    uint32_t isExist;
++    char type[MAX_LEN_SUBJECT_NAME];
++    char alias[MAX_LEN_CERT_ALIAS];
++    char keyUri[MAX_LEN_URI];
++    uint32_t certNum;
++    uint32_t keyNum;
++    struct CmBlob credData;
++};
++
++struct CredentialAbstract {
++    char type[MAX_LEN_SUBJECT_NAME];
++    char alias[MAX_LEN_CERT_ALIAS];
++    char keyUri[MAX_LEN_URI];
++};
++
++struct CredentialList {
++    uint32_t credentialCount;
++    struct CredentialAbstract *credentialAbstract;
++};
++
++struct AppCert {
++    uint32_t certCount;
++    uint32_t keyCount;
++    uint32_t certSize;
++    uint8_t appCertdata[MAX_LEN_CERTIFICATE_CHAIN];
++};
++
++struct CmParam {
++    uint32_t tag;
++    union {
++        bool boolParam;
++        int32_t int32Param;
++        uint32_t uint32Param;
++        uint64_t uint64Param;
++        struct CmBlob blob;
++    };
++};
++
++struct CmParamOut {
++    uint32_t tag;
++    union {
++        bool *boolParam;
++        int32_t *int32Param;
++        uint32_t *uint32Param;
++        uint64_t *uint64Param;
++        struct CmBlob *blob;
++    };
++};
++
++struct CmParamSet {
++    uint32_t paramSetSize;
++    uint32_t paramsCnt;
++    struct CmParam params[];
++};
++
++struct CmAppUidList {
++    uint32_t appUidCount;
++    uint32_t *appUid;
++};
++
++struct CmSignatureSpec {
++    uint32_t purpose;
++    uint32_t padding;
++    uint32_t digest;
++};
++
++struct CmAppCertParam {
++    struct CmBlob *appCert;
++    struct CmBlob *appCertPwd;
++    struct CmBlob *certAlias;
++    uint32_t store;
++    uint32_t userId;
++};
++
++struct CertName {
++    struct CmBlob *displayName;
++    struct CmBlob *objectName;
++    struct CmBlob *subjectName;
++};
++
++static inline bool CmIsAdditionOverflow(uint32_t a, uint32_t b)
++{
++    return (UINT32_MAX - a) < b;
++}
++
++static inline bool CmIsInvalidLength(uint32_t length)
++{
++    return (length == 0) || (length > MAX_OUT_BLOB_SIZE);
++}
++
++static inline int32_t CmCheckBlob(const struct CmBlob *blob)
++{
++    if ((blob == NULL) || (blob->data == NULL) || (blob->size == 0)) {
++        return CMR_ERROR_INVALID_ARGUMENT;
++    }
++    return CM_SUCCESS;
++}
++
++#ifdef __cplusplus
++}
++#endif
++
++#endif // CM_TYPE_H
+diff --git a/src/libcharon/certmanager/include/cm_type_inner.h b/src/libcharon/certmanager/include/cm_type_inner.h
+new file mode 100644
+index 0000000..bfd1831
+--- /dev/null
++++ b/src/libcharon/certmanager/include/cm_type_inner.h
+@@ -0,0 +1,22 @@
++/*
++ * Copyright (c) 2024 Huawei Device Co., Ltd.
++ * Licensed under the Apache License, Version 2.0 (the "License");
++ * you may not use this file except in compliance with the License.
++ * You may obtain a copy of the License at
++ *
++ * http://www.apache.org/licenses/LICENSE-2.0
++ *
++ * Unless required by applicable law or agreed to in writing, software
++ * distributed under the License is distributed on an "AS IS" BASIS,
++ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
++ * See the License for the specific language governing permissions and
++ * limitations under the License.
++ */
++
++#ifndef CM_TYPE_INNER_H
++#define CM_TYPE_INNER_H
++
++#include "cm_type.h"
++#include "securec.h"
++
++#endif /* CM_TYPE_INNER_H */
+diff --git a/src/libcharon/certmanager/include/cm_x509.h b/src/libcharon/certmanager/include/cm_x509.h
+new file mode 100644
+index 0000000..08d8d4b
+--- /dev/null
++++ b/src/libcharon/certmanager/include/cm_x509.h
+@@ -0,0 +1,78 @@
++/*
++ * Copyright (c) 2024 Huawei Device Co., Ltd.
++ * Licensed under the Apache License, Version 2.0 (the "License");
++ * you may not use this file except in compliance with the License.
++ * You may obtain a copy of the License at
++ *
++ * http://www.apache.org/licenses/LICENSE-2.0
++ *
++ * Unless required by applicable law or agreed to in writing, software
++ * distributed under the License is distributed on an "AS IS" BASIS,
++ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
++ * See the License for the specific language governing permissions and
++ * limitations under the License.
++ */
++
++#ifndef CERT_MANAGER_X509_H
++#define CERT_MANAGER_X509_H
++
++#include <stdint.h>
++#include <stdlib.h>
++#include <openssl/x509.h>
++#include "cm_type.h"
++#ifdef __cplusplus
++extern "C" {
++#endif
++
++#define SN_MAX_SIZE 64
++#define TIME_FORMAT_MAX_SIZE 16
++#define NAME_MAX_SIZE 256
++#define FINGERPRINT_MAX_SIZE 128
++#define NAME_DELIMITER_SIZE 2
++#define NAME_ANS1TIME_LEN 12
++
++#define CM_SUBJECT_NAME_NULL "CN=,OU=,O="
++#define CM_COMMON_NAME "CN"
++#define CM_SURNAME "SN"
++#define CM_COUNTRY_NAME "C"
++#define CM_LOCALITY_NAME "L"
++#define CM_STATE_OR_PROVINCE_NAME "ST"
++#define CM_STREET_ADDRESS "street"
++#define CM_ORGANIZATION_NAME "O"
++#define CM_ORGANIZATION_UNIT_NAME "OU"
++
++#define ASN1_TAG_TYPE_SEQ 0x30
++enum CmCertFormat { CM_CERT_FORMAT_PEM, CM_CERT_FORMAT_DER };
++
++struct DataTime {
++    uint32_t year;
++    uint32_t month;
++    uint32_t day;
++    uint32_t hour;
++    uint32_t min;
++    uint32_t second;
++};
++
++X509 *InitCertContext(const uint8_t *certBuf, uint32_t size);
++
++int32_t GetX509SerialNumber(X509 *x509cert, char *outBuf, uint32_t outBufMaxSize);
++
++int32_t GetX509SubjectName(const X509 *x509cert, const char *subjectObjName, char *outBuf, uint32_t outBufMaxSize);
++
++int32_t GetX509SubjectNameLongFormat(const X509 *x509cert, char *outBuf, uint32_t outBufMaxSize);
++
++int32_t GetSubjectNameAndAlias(X509 *x509cert, const struct CmBlob *certAlias, struct CmBlob *subjectName,
++    struct CmBlob *displaytName);
++
++int32_t GetX509IssueNameLongFormat(const X509 *x509cert, char *outBuf, uint32_t outBufMaxSize);
++
++int32_t GetX509NotBefore(const X509 *x509cert, char *outBuf, uint32_t outBufMaxSize);
++int32_t GetX509NotAfter(const X509 *x509cert, char *outBuf, uint32_t outBufMaxSize);
++
++int32_t GetX509Fingerprint(const X509 *x509cert, char *outBuf, uint32_t outBufMaxSize);
++
++void FreeCertContext(X509 *x509cert);
++#ifdef __cplusplus
++}
++#endif
++#endif // CERT_MANAGER_X509_H
+\ No newline at end of file
+diff --git a/src/libcharon/certmanager/src/cert_manager_api.c b/src/libcharon/certmanager/src/cert_manager_api.c
+new file mode 100644
+index 0000000..582c34e
+--- /dev/null
++++ b/src/libcharon/certmanager/src/cert_manager_api.c
+@@ -0,0 +1,236 @@
++/*
++ * Copyright (c) 2024 Huawei Device Co., Ltd.
++ * Licensed under the Apache License, Version 2.0 (the "License");
++ * you may not use this file except in compliance with the License.
++ * You may obtain a copy of the License at
++ *
++ * http://www.apache.org/licenses/LICENSE-2.0
++ *
++ * Unless required by applicable law or agreed to in writing, software
++ * distributed under the License is distributed on an "AS IS" BASIS,
++ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
++ * See the License for the specific language governing permissions and
++ * limitations under the License.
++ */
++
++#include "cert_manager_api.h"
++
++#include "cm_ipc_client.h"
++#include "cm_log.h"
++#include "cm_mem.h"
++#include "cm_type.h"
++#include "net_manager_api.h"
++
++CM_API_EXPORT int32_t CmGetUserCertInfo(const struct CmBlob *certUri, uint32_t store, struct CertInfo *certificateInfo)
++{
++    CM_LOG_D("enter get cert info");
++    if ((certUri == NULL) || (certificateInfo == NULL)) {
++        return CMR_ERROR_NULL_POINTER;
++    }
++
++    int32_t ret = CmClientGetUserCertInfo(certUri, store, certificateInfo);
++    CM_LOG_D("leave get cert info, result = %d", ret);
++    return ret;
++}
++
++CM_API_EXPORT int32_t CmGetAppCert(const struct CmBlob *keyUri, const uint32_t store, struct Credential *certificate)
++{
++    CM_LOG_D("enter get app certificate");
++    if (keyUri == NULL || certificate == NULL ||
++        (store != CM_CREDENTIAL_STORE && store != CM_PRI_CREDENTIAL_STORE && store != CM_SYS_CREDENTIAL_STORE)) {
++        return CMR_ERROR_INVALID_ARGUMENT;
++    }
++
++    int32_t ret = CmClientGetAppCert(keyUri, store, certificate);
++    CM_LOG_D("leave get app certificate, result = %d", ret);
++    return ret;
++}
++
++CM_API_EXPORT int32_t CmInit(const struct CmBlob *authUri, const struct CmSignatureSpec *spec, struct CmBlob *handle)
++{
++    CM_LOG_D("enter cert manager init");
++    if ((authUri == NULL) || (spec == NULL) || (handle == NULL)) {
++        CM_LOG_E("invalid input arguments");
++        return CMR_ERROR_INVALID_ARGUMENT;
++    }
++
++    int32_t ret = CmClientInit(authUri, spec, handle);
++    CM_LOG_D("leave cert manager init, result = %d", ret);
++    return ret;
++}
++
++CM_API_EXPORT int32_t CmUpdate(const struct CmBlob *handle, const struct CmBlob *inData)
++{
++    CM_LOG_D("enter cert manager update");
++    if ((handle == NULL) || (inData == NULL)) {
++        CM_LOG_E("invalid input arguments");
++        return CMR_ERROR_INVALID_ARGUMENT;
++    }
++
++    int32_t ret = CmClientUpdate(handle, inData);
++    CM_LOG_D("leave cert manager update, result = %d", ret);
++    return ret;
++}
++
++CM_API_EXPORT int32_t CmFinish(const struct CmBlob *handle, const struct CmBlob *inData, struct CmBlob *outData)
++{
++    CM_LOG_D("enter cert manager finish");
++    if ((handle == NULL) || (inData == NULL) || (outData == NULL)) {
++        CM_LOG_E("invalid input arguments");
++        return CMR_ERROR_INVALID_ARGUMENT;
++    }
++
++    int32_t ret = CmClientFinish(handle, inData, outData);
++    CM_LOG_D("leave cert manager finish, result = %d", ret);
++    return ret;
++}
++
++CM_API_EXPORT int32_t CmAbort(const struct CmBlob *handle)
++{
++    CM_LOG_D("enter cert manager abort");
++    if (handle == NULL) {
++        CM_LOG_E("invalid input arguments");
++        return CMR_ERROR_INVALID_ARGUMENT;
++    }
++
++    int32_t ret = CmClientAbort(handle);
++    CM_LOG_D("leave cert manager abort, result = %d", ret);
++    return ret;
++}
++
++static void log_cert(struct CertInfo *certInfo)
++{
++    if (certInfo) {
++        DBG2(DBG_CFG, "CertInfo:");
++        DBG2(DBG_CFG, "\t uri: %s", certInfo->uri);
++        DBG2(DBG_CFG, "\t certAlias: %s", certInfo->certAlias);
++        DBG2(DBG_CFG, "\t status: %d", certInfo->status);
++        DBG2(DBG_CFG, "\t issuerName: %s", certInfo->issuerName);
++        DBG2(DBG_CFG, "\t subjectName: %s", certInfo->subjectName);
++        DBG2(DBG_CFG, "\t serial: %s", certInfo->serial);
++        DBG2(DBG_CFG, "\t notBefore: %s", certInfo->notBefore);
++        DBG2(DBG_CFG, "\t notAfter: %s", certInfo->notAfter);
++        DBG2(DBG_CFG, "\t fingerprintSha256: %s", certInfo->fingerprintSha256);
++        DBG2(DBG_CFG, "\t certInfo.size: %d", certInfo->certInfo.size);
++        DBG2(DBG_CFG, "\t certInfo.data: %s", certInfo->certInfo.data);
++    }
++}
++
++static void log_credential(struct Credential *certInfo)
++{
++    if (certInfo) {
++        DBG2(DBG_CFG, "Certificate:");
++        DBG2(DBG_CFG, "\t type: %s", certInfo->type);
++        DBG2(DBG_CFG, "\t alias: %s", certInfo->alias);
++        DBG2(DBG_CFG, "\t keyUri: %s", certInfo->keyUri);
++        DBG2(DBG_CFG, "\t isExist: %d", certInfo->isExist);
++        DBG2(DBG_CFG, "\t certNum: %d", certInfo->certNum);
++        DBG2(DBG_CFG, "\t keyNum: %d", certInfo->keyNum);
++        DBG2(DBG_CFG, "\t credData.size: %d", certInfo->credData.size);
++        DBG2(DBG_CFG, "\t credData.data: %s", certInfo->credData.data);
++    }
++}
++
++static chunk_t load_ca_cert(const uint8_t *uri_buf, uint32_t size)
++{
++    if (!uri_buf) {
++        return chunk_empty;
++    }
++
++    struct CmBlob uri = { size, (uint8_t *)uri_buf };
++    struct CertInfo caCert;
++    unsigned int len = sizeof(struct CertInfo);
++    (void)memset_s(&caCert, len, 0, len);
++    caCert.certInfo.data = (uint8_t *)malloc(MAX_LEN_CERTIFICATE);
++    if (caCert.certInfo.data == NULL) {
++        return chunk_empty;
++    }
++    caCert.certInfo.size = MAX_LEN_CERTIFICATE;
++    int32_t ret = CmGetUserCertInfo(&uri, CM_USER_TRUSTED_STORE, &caCert);
++    if (ret != CM_SUCCESS) {
++        return chunk_empty;
++    }
++    log_cert(&caCert);
++    return chunk_create(caCert.certInfo.data, caCert.certInfo.size);
++}
++
++static chunk_t load_user_cert(const uint8_t *uri_buf, uint32_t size)
++{
++    if (!uri_buf) {
++        return chunk_empty;
++    }
++
++    struct CmBlob uri = { size, (uint8_t *)uri_buf };
++    struct Credential userCert;
++    unsigned int len = sizeof(struct Credential);
++    (void)memset_s(&userCert, len, 0, len);
++    userCert.credData.data = (uint8_t *)malloc(MAX_LEN_CERTIFICATE_CHAIN);
++    if (userCert.credData.data == NULL) {
++        return chunk_empty;
++    }
++    userCert.credData.size = MAX_LEN_CERTIFICATE_CHAIN;
++    int32_t ret = CmGetAppCert(&uri, CM_SYS_CREDENTIAL_STORE, &userCert);
++    if (ret != CM_SUCCESS) {
++        return chunk_empty;
++    }
++    log_credential(&userCert);
++    return chunk_create(userCert.credData.data, userCert.credData.size);
++}
++
++CM_API_EXPORT chunk_t load_vpn_cert(enum IpsecVpnCertType type)
++{
++    uint8_t uri_buf[MAX_LEN_URI];
++    memset_s(uri_buf, MAX_LEN_URI, 0, MAX_LEN_URI);
++    uint32_t size = LoadVpnCertUri(type, uri_buf, MAX_LEN_URI);
++    if (size < 1) {
++        return chunk_empty;
++    }
++    if (type == CA_CERT) {
++        return load_ca_cert(uri_buf, MAX_LEN_URI);
++    }
++    if (type == USER_CERT) {
++        return load_user_cert(uri_buf, MAX_LEN_URI);
++    }
++    return chunk_empty;
++}
++
++CM_API_EXPORT int32_t cm_sign(const uint8_t *uri_buf, uint32_t size, chunk_t msg, chunk_t *authData,
++    struct CmSignatureSpec *signSpec)
++{
++    if (!uri_buf || !authData || !signSpec) {
++        DBG2(DBG_CFG, "cm_sign invalid params");
++        return CM_FAILURE;
++    }
++
++    DBG2(DBG_CFG, "cm_sign start");
++    struct CmBlob authUri = { size, (uint8_t *)uri_buf };
++    uint64_t signHandleValue = 0;
++    struct CmBlob signHandle = { sizeof(uint64_t), (uint8_t *)&signHandleValue };
++    struct CmBlob message = { msg.len, msg.ptr };
++    uint8_t signData[DEFAULT_SIGNATURE_LEN];
++    (void)memset_s(signData, DEFAULT_SIGNATURE_LEN, 0, DEFAULT_SIGNATURE_LEN);
++    struct CmBlob signature = { DEFAULT_SIGNATURE_LEN, (uint8_t *)signData };
++
++    int32_t ret = CmInit(&authUri, signSpec, &signHandle);
++    if (ret != CM_SUCCESS) {
++        DBG2(DBG_CFG, " cm_sign, CmInit failed, ret = %d ", ret);
++        return CM_FAILURE;
++    }
++
++    ret = CmUpdate(&signHandle, &message);
++    if (ret != CM_SUCCESS) {
++        DBG2(DBG_CFG, " cm_sign, CmUpdate failed, ret = %d ", ret);
++        return CM_FAILURE;
++    }
++
++    struct CmBlob inData = { 0, NULL };
++    ret = CmFinish(&signHandle, &inData, &signature);
++    if (ret != CM_SUCCESS) {
++        DBG2(DBG_CFG, " cm_sign, CmFinish failed, ret = %d ", ret);
++        return CM_FAILURE;
++    }
++    *authData = chunk_alloc(signature.size);
++    authData->len = signature.size;
++    memcpy_s(authData->ptr, authData->len, signature.data, signature.size);
++    return CM_SUCCESS;
++}
+diff --git a/src/libcharon/certmanager/src/cm_ipc_client.c b/src/libcharon/certmanager/src/cm_ipc_client.c
+new file mode 100644
+index 0000000..3d84392
+--- /dev/null
++++ b/src/libcharon/certmanager/src/cm_ipc_client.c
+@@ -0,0 +1,469 @@
++/*
++ * Copyright (c) 2024 Huawei Device Co., Ltd.
++ * Licensed under the Apache License, Version 2.0 (the "License");
++ * you may not use this file except in compliance with the License.
++ * You may obtain a copy of the License at
++ *
++ * http://www.apache.org/licenses/LICENSE-2.0
++ *
++ * Unless required by applicable law or agreed to in writing, software
++ * distributed under the License is distributed on an "AS IS" BASIS,
++ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
++ * See the License for the specific language governing permissions and
++ * limitations under the License.
++ */
++
++#include "cm_ipc_client.h"
++
++#include "cm_ipc_client_serialization.h"
++#include "cm_log.h"
++#include "cm_mem.h"
++#include "cm_param.h"
++#include "cm_request.h"
++#include "cm_x509.h"
++
++static int32_t GetInfoFromX509Cert(X509 *x509cert, struct CertInfo *cInfo)
++{
++    int32_t subjectNameLen = GetX509SubjectNameLongFormat(x509cert, cInfo->subjectName, MAX_LEN_SUBJECT_NAME);
++    if (subjectNameLen <= 0) {
++        CM_LOG_E("get cert subjectName failed");
++        return CM_FAILURE;
++    }
++
++    int32_t issuerNameLen = GetX509IssueNameLongFormat(x509cert, cInfo->issuerName, MAX_LEN_ISSUER_NAME);
++    if (issuerNameLen <= 0) {
++        CM_LOG_E("get cert issuerName failed");
++        return CM_FAILURE;
++    }
++
++    int32_t serialLen = GetX509SerialNumber(x509cert, cInfo->serial, MAX_LEN_SERIAL);
++    if (serialLen <= 0) {
++        CM_LOG_E("get cert serial failed");
++        return CM_FAILURE;
++    }
++
++    int32_t notBeforeLen = GetX509NotBefore(x509cert, cInfo->notBefore, MAX_LEN_NOT_BEFORE);
++    if (notBeforeLen <= 0) {
++        CM_LOG_E("get cert notBefore failed");
++        return CM_FAILURE;
++    }
++
++    int32_t notAfterLen = GetX509NotAfter(x509cert, cInfo->notAfter, MAX_LEN_NOT_AFTER);
++    if (notAfterLen <= 0) {
++        CM_LOG_E("get cert notAfter failed");
++        return CM_FAILURE;
++    }
++
++    int32_t fingerprintLen = GetX509Fingerprint(x509cert, cInfo->fingerprintSha256, MAX_LEN_FINGER_PRINT_SHA256);
++    if (fingerprintLen <= 0) {
++        CM_LOG_E("get cert fingerprintSha256 failed");
++        return CM_FAILURE;
++    }
++    return CM_SUCCESS;
++}
++
++static int32_t GetAppCertInitBlob(struct CmBlob *outBlob)
++{
++    uint32_t buffSize = sizeof(uint32_t) + sizeof(uint32_t) + MAX_LEN_SUBJECT_NAME + sizeof(uint32_t) +
++        MAX_LEN_CERT_ALIAS + sizeof(uint32_t) + MAX_LEN_URI + sizeof(uint32_t) + sizeof(uint32_t) + sizeof(uint32_t) +
++        MAX_LEN_CERTIFICATE_CHAIN;
++
++    outBlob->data = (uint8_t *)CmMalloc(buffSize);
++    if (outBlob->data == NULL) {
++        return CMR_ERROR_MALLOC_FAIL;
++    }
++    outBlob->size = buffSize;
++
++    return CM_SUCCESS;
++}
++
++static int32_t CmGetAppCertFromBuffer(struct Credential *certificateInfo, const struct CmBlob *outData,
++    uint32_t *offset)
++{
++    struct CmBlob blob;
++    int32_t ret = CmGetBlobFromBuffer(&blob, outData, offset);
++    if (ret != CM_SUCCESS) {
++        CM_LOG_E("Get type blob failed");
++        return ret;
++    }
++    if (memcpy_s(certificateInfo->type, MAX_LEN_SUBJECT_NAME, blob.data, blob.size) != EOK) {
++        CM_LOG_E("copy type failed");
++        return CMR_ERROR_INVALID_OPERATION;
++    }
++
++    ret = CmGetBlobFromBuffer(&blob, outData, offset);
++    if (ret != CM_SUCCESS) {
++        CM_LOG_E("Get keyUri blob failed");
++        return ret;
++    }
++    if (memcpy_s(certificateInfo->keyUri, MAX_LEN_URI, blob.data, blob.size) != EOK) {
++        CM_LOG_E("copy keyUri failed");
++        return CMR_ERROR_INVALID_OPERATION;
++    }
++
++    ret = CmGetBlobFromBuffer(&blob, outData, offset);
++    if (ret != CM_SUCCESS) {
++        CM_LOG_E("Get alias blob failed");
++        return ret;
++    }
++    if (memcpy_s(certificateInfo->alias, MAX_LEN_CERT_ALIAS, blob.data, blob.size) != EOK) {
++        CM_LOG_E("copy alias failed");
++        return CMR_ERROR_INVALID_OPERATION;
++    }
++
++    return ret;
++}
++
++static int32_t CmAppCertInfoUnpackFromService(const struct CmBlob *outData, struct Credential *certificateInfo)
++{
++    uint32_t offset = 0;
++    struct CmBlob blob = { 0, NULL };
++
++    if ((outData == NULL) || (certificateInfo == NULL) || (outData->data == NULL) ||
++        (certificateInfo->credData.data == NULL)) {
++        return CMR_ERROR_NULL_POINTER;
++    }
++
++    int32_t ret = GetUint32FromBuffer(&certificateInfo->isExist, outData, &offset);
++    if (ret != CM_SUCCESS || certificateInfo->isExist == 0) {
++        CM_LOG_E("Get certificateInfo->isExist failed ret:%d, is exist:%u", ret, certificateInfo->isExist);
++        return ret;
++    }
++
++    ret = CmGetAppCertFromBuffer(certificateInfo, outData, &offset);
++    if (ret != CM_SUCCESS) {
++        CM_LOG_E("Get AppCert failed");
++        return ret;
++    }
++
++    ret = GetUint32FromBuffer(&certificateInfo->certNum, outData, &offset);
++    if (ret != CM_SUCCESS) {
++        CM_LOG_E("Get certificateInfo->certNum failed");
++        return ret;
++    }
++
++    ret = GetUint32FromBuffer(&certificateInfo->keyNum, outData, &offset);
++    if (ret != CM_SUCCESS) {
++        CM_LOG_E("Get certificateInfo->keyNum failed");
++        return ret;
++    }
++
++    ret = CmGetBlobFromBuffer(&blob, outData, &offset);
++    if (ret != CM_SUCCESS) {
++        CM_LOG_E("Get certificateInfo->credData failed");
++        return ret;
++    }
++
++    if ((blob.size > certificateInfo->credData.size) ||
++        memcpy_s(certificateInfo->credData.data, certificateInfo->credData.size, blob.data, blob.size) != EOK) {
++        CM_LOG_E("copy credData failed");
++        return CMR_ERROR_INVALID_OPERATION;
++    }
++    certificateInfo->credData.size = blob.size;
++
++    return CM_SUCCESS;
++}
++
++static int32_t CmSendParcelInit(struct CmParam *params, uint32_t paramCount, struct CmBlob *parcelBlob,
++    struct CmParamSet **sendParamSet)
++{
++    int32_t ret = CM_SUCCESS;
++
++    ret = CmParamsToParamSet(params, paramCount, sendParamSet);
++    if (ret != CM_SUCCESS) {
++        CM_LOG_E("CmParamSetPack fail");
++        return ret;
++    }
++
++    parcelBlob->size = (*sendParamSet)->paramSetSize;
++    parcelBlob->data = (uint8_t *)*sendParamSet;
++    return ret;
++}
++
++
++static int32_t GetCertInfoInitOutData(struct CmBlob *outInfoBlob)
++{
++    /* buff struct: certDataBlob + status + aliasBlob */
++    uint32_t buffSize =
++        sizeof(uint32_t) + MAX_LEN_CERTIFICATE + sizeof(uint32_t) + MAX_LEN_CERT_ALIAS + sizeof(uint32_t);
++
++    outInfoBlob->data = (uint8_t *)CmMalloc(buffSize);
++    if (outInfoBlob->data == NULL) {
++        return CMR_ERROR_MALLOC_FAIL;
++    }
++    outInfoBlob->size = buffSize;
++
++    return CM_SUCCESS;
++}
++
++static int32_t GetInfoFromCertData(struct CertInfo *cInfo)
++{
++    X509 *cert = InitCertContext(cInfo->certInfo.data, cInfo->certInfo.size);
++    if (cert == NULL) {
++        CM_LOG_E("Parse X509 cert fail");
++        return CMR_ERROR_INVALID_CERT_FORMAT;
++    }
++
++    int32_t ret = GetInfoFromX509Cert(cert, cInfo);
++    if (ret != CM_SUCCESS) {
++        CM_LOG_E("failed get cert info from x509 cert");
++        FreeCertContext(cert);
++        return ret;
++    }
++
++    FreeCertContext(cert);
++    return CM_SUCCESS;
++}
++
++static int32_t CmCertificateInfoUnpackFromService(const struct CmBlob *outData, const struct CmBlob *certUri,
++    struct CertInfo *cInfo)
++{
++    if (CmCheckBlob(&(cInfo->certInfo))) {
++        return CMR_ERROR_INVALID_ARGUMENT;
++    }
++
++    struct CmBlob bufBlob = { 0, NULL };
++    uint32_t offset = 0;
++    int32_t ret = CmGetBlobFromBuffer(&bufBlob, outData, &offset);
++    if (ret != CM_SUCCESS) {
++        CM_LOG_E("get cert data faild");
++        return ret;
++    }
++    if (memcpy_s(cInfo->certInfo.data, cInfo->certInfo.size, bufBlob.data, bufBlob.size) != EOK) {
++        CM_LOG_E("copy cert data failed");
++        return CMR_ERROR_INVALID_OPERATION;
++    }
++    cInfo->certInfo.size = bufBlob.size;
++
++    ret = GetInfoFromCertData(cInfo);
++    if (ret != CM_SUCCESS) {
++        return ret;
++    }
++
++    uint32_t status = 0;
++    ret = GetUint32FromBuffer(&(status), outData, &offset);
++    if (ret != CM_SUCCESS) {
++        CM_LOG_E("copy status failed");
++        return ret;
++    }
++    cInfo->status = (status >= 1) ? false : true;
++
++    ret = CmGetBlobFromBuffer(&bufBlob, outData, &offset);
++    if (ret != CM_SUCCESS) {
++        return ret;
++    }
++
++    (void)memset_s(cInfo->certAlias, MAX_LEN_CERT_ALIAS, 0, MAX_LEN_CERT_ALIAS);
++    if (memcpy_s(cInfo->certAlias, MAX_LEN_CERT_ALIAS, bufBlob.data, bufBlob.size) != EOK) {
++        CM_LOG_E("copy alias failed");
++        return CMR_ERROR_INVALID_OPERATION;
++    }
++
++    (void)memset_s(cInfo->uri, MAX_LEN_URI, 0, MAX_LEN_URI); /* uri */
++    if (memcpy_s(cInfo->uri, MAX_LEN_URI, certUri->data, certUri->size) != EOK) {
++        CM_LOG_E("copy uri failed");
++        return CMR_ERROR_INVALID_OPERATION;
++    }
++    return CM_SUCCESS;
++}
++
++
++static int32_t GetUserCertInfo(enum CertManagerInterfaceCode type, const struct CmBlob *certUri, const uint32_t store,
++    struct CertInfo *userCertInfo)
++{
++    int32_t ret = CM_SUCCESS;
++    struct CmBlob outBlob = { 0, NULL };
++    struct CmBlob parcelBlob = { 0, NULL };
++    struct CmParamSet *sendParamSet = NULL;
++    struct CmParam params[] = {
++        { .tag = CM_TAG_PARAM0_BUFFER, .blob = *certUri },
++        { .tag = CM_TAG_PARAM0_UINT32, .uint32Param = store },
++    };
++
++    do {
++        ret = CmSendParcelInit(params, CM_ARRAY_SIZE(params), &parcelBlob, &sendParamSet);
++        if (ret != CM_SUCCESS) {
++            CM_LOG_E("get cert info sendParcel failed");
++            break;
++        }
++
++        ret = GetCertInfoInitOutData(&outBlob);
++        if (ret != CM_SUCCESS) {
++            CM_LOG_E("malloc getcertinfo outdata failed");
++            break;
++        }
++
++        ret = SendRequest(type, &parcelBlob, &outBlob);
++        if (ret != CM_SUCCESS) {
++            CM_LOG_E("GetCertInfo request failed, ret: %d", ret);
++            break;
++        }
++
++        ret = CmCertificateInfoUnpackFromService(&outBlob, certUri, userCertInfo);
++        if (ret != CM_SUCCESS) {
++            CM_LOG_E("getcertinfo unpack from service failed");
++            break;
++        }
++    } while (0);
++    CmFreeParamSet(&sendParamSet);
++    CM_FREE_BLOB(outBlob);
++    return ret;
++}
++
++
++int32_t CmClientGetUserCertInfo(const struct CmBlob *certUri, const uint32_t store, struct CertInfo *certificateInfo)
++{
++    return GetUserCertInfo(CM_MSG_GET_USER_CERTIFICATE_INFO, certUri, store, certificateInfo);
++}
++
++
++static int32_t GetAppCert(enum CertManagerInterfaceCode type, const struct CmBlob *certUri, const uint32_t store,
++    struct Credential *certificate)
++{
++    int32_t ret;
++    struct CmBlob outBlob = { 0, NULL };
++    struct CmParamSet *sendParamSet = NULL;
++
++    struct CmParam params[] = {
++        { .tag = CM_TAG_PARAM0_BUFFER,
++          .blob = *certUri },
++        { .tag = CM_TAG_PARAM0_UINT32,
++          .uint32Param = store },
++    };
++    do {
++        ret = CmParamsToParamSet(params, CM_ARRAY_SIZE(params), &sendParamSet);
++        if (ret != CM_SUCCESS) {
++            CM_LOG_E("GetAppCert CmParamSetPack fail");
++            break;
++        }
++
++        struct CmBlob parcelBlob = {
++            .size = sendParamSet->paramSetSize,
++            .data = (uint8_t *)sendParamSet
++        };
++
++        ret = GetAppCertInitBlob(&outBlob);
++        if (ret != CM_SUCCESS) {
++            CM_LOG_E("GetAppCertInitBlob fail");
++            break;
++        }
++
++        ret = SendRequest(type, &parcelBlob, &outBlob);
++        if (ret != CM_SUCCESS) {
++            CM_LOG_E("GetAppCert request fail");
++            break;
++        }
++
++        ret = CmAppCertInfoUnpackFromService(&outBlob, certificate);
++        if (ret != CM_SUCCESS) {
++            CM_LOG_E("CmAppCertInfoUnpackFromService fail");
++        }
++    } while (0);
++
++    CmFreeParamSet(&sendParamSet);
++    CM_FREE_BLOB(outBlob);
++    return ret;
++}
++
++int32_t CmClientGetAppCert(const struct CmBlob *keyUri, const uint32_t store, struct Credential *certificate)
++{
++    return GetAppCert(CM_MSG_GET_APP_CERTIFICATE, keyUri, store, certificate);
++}
++
++static int32_t ClientSerializationAndSend(enum CertManagerInterfaceCode message, struct CmParam *params,
++    uint32_t paramCount, struct CmBlob *outBlob)
++{
++    struct CmParamSet *sendParamSet = NULL;
++    int32_t ret = CmParamsToParamSet(params, paramCount, &sendParamSet);
++    if (ret != CM_SUCCESS) {
++        CM_LOG_E("pack params failed, ret = %d", ret);
++        return ret;
++    }
++
++    struct CmBlob parcelBlob = { sendParamSet->paramSetSize, (uint8_t *)sendParamSet };
++    ret = SendRequest(message, &parcelBlob, outBlob);
++    if (ret != CM_SUCCESS) {
++        CM_LOG_E("send request failed, ret = %d", ret);
++    }
++    CmFreeParamSet(&sendParamSet);
++
++    return ret;
++}
++
++int32_t CmClientInit(const struct CmBlob *authUri, const struct CmSignatureSpec *spec, struct CmBlob *handle)
++{
++    if (CmCheckBlob(authUri) != CM_SUCCESS || CmCheckBlob(handle) != CM_SUCCESS) {
++        CM_LOG_E("invalid handle or inData");
++        return CMR_ERROR_INVALID_ARGUMENT;
++    }
++
++    struct CmBlob signSpec = { sizeof(struct CmSignatureSpec), (uint8_t *)spec };
++    struct CmParam params[] = {
++        { .tag = CM_TAG_PARAM0_BUFFER, .blob = *authUri },
++        { .tag = CM_TAG_PARAM1_BUFFER, .blob = signSpec },
++    };
++
++    int32_t ret = ClientSerializationAndSend(CM_MSG_INIT, params, CM_ARRAY_SIZE(params), handle);
++    if (ret != CM_SUCCESS) {
++        CM_LOG_E("update serialization and send failed, ret = %d", ret);
++    }
++    return ret;
++}
++
++int32_t CmClientUpdate(const struct CmBlob *handle, const struct CmBlob *inData)
++{
++    if (CmCheckBlob(handle) != CM_SUCCESS || CmCheckBlob(inData) != CM_SUCCESS) {
++        CM_LOG_E("invalid handle or inData");
++        return CMR_ERROR_INVALID_ARGUMENT;
++    }
++
++    struct CmParam params[] = {
++        { .tag = CM_TAG_PARAM0_BUFFER, .blob = *handle },
++        { .tag = CM_TAG_PARAM1_BUFFER, .blob = *inData },
++    };
++
++    struct CmBlob outBlob = { 0, NULL };
++    int32_t ret = ClientSerializationAndSend(CM_MSG_UPDATE, params, CM_ARRAY_SIZE(params), &outBlob);
++    if (ret != CM_SUCCESS) {
++        CM_LOG_E("update serialization and send failed, ret = %d", ret);
++    }
++    return ret;
++}
++
++int32_t CmClientFinish(const struct CmBlob *handle, const struct CmBlob *inData, struct CmBlob *outData)
++{
++    if (CmCheckBlob(handle) != CM_SUCCESS) { // finish: inData and outData can be {0, NULL}
++        CM_LOG_E("invalid handle");
++        return CMR_ERROR_INVALID_ARGUMENT;
++    }
++
++    struct CmParam params[] = {
++        { .tag = CM_TAG_PARAM0_BUFFER, .blob = *handle },
++        { .tag = CM_TAG_PARAM1_BUFFER, .blob = *inData },
++    };
++
++    int32_t ret = ClientSerializationAndSend(CM_MSG_FINISH, params, CM_ARRAY_SIZE(params), outData);
++    if (ret != CM_SUCCESS) {
++        CM_LOG_E("finish serialization and send failed, ret = %d", ret);
++    }
++    return ret;
++}
++
++int32_t CmClientAbort(const struct CmBlob *handle)
++{
++    if (CmCheckBlob(handle) != CM_SUCCESS) {
++        CM_LOG_E("invalid handle");
++        return CMR_ERROR_INVALID_ARGUMENT;
++    }
++
++    struct CmParam params[] = {
++        { .tag = CM_TAG_PARAM0_BUFFER, .blob = *handle },
++    };
++
++    struct CmBlob outBlob = { 0, NULL };
++    int32_t ret = ClientSerializationAndSend(CM_MSG_ABORT, params, CM_ARRAY_SIZE(params), &outBlob);
++    if (ret != CM_SUCCESS) {
++        CM_LOG_E("abort serialization and send failed, ret = %d", ret);
++    }
++    return ret;
++}
+diff --git a/src/libcharon/certmanager/src/cm_ipc_client_serialization.c b/src/libcharon/certmanager/src/cm_ipc_client_serialization.c
+new file mode 100644
+index 0000000..7406dec
+--- /dev/null
++++ b/src/libcharon/certmanager/src/cm_ipc_client_serialization.c
+@@ -0,0 +1,95 @@
++/*
++ * Copyright (c) 2024 Huawei Device Co., Ltd.
++ * Licensed under the Apache License, Version 2.0 (the "License");
++ * you may not use this file except in compliance with the License.
++ * You may obtain a copy of the License at
++ *
++ * http://www.apache.org/licenses/LICENSE-2.0
++ *
++ * Unless required by applicable law or agreed to in writing, software
++ * distributed under the License is distributed on an "AS IS" BASIS,
++ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
++ * See the License for the specific language governing permissions and
++ * limitations under the License.
++ */
++
++#include "cm_ipc_client_serialization.h"
++
++#include "cm_log.h"
++#include "cm_mem.h"
++#include "cm_param.h"
++
++int32_t GetUint32FromBuffer(uint32_t *value, const struct CmBlob *srcBlob, uint32_t *srcOffset)
++{
++    if ((*srcOffset > srcBlob->size) || (srcBlob->size - *srcOffset < sizeof(uint32_t))) {
++        return CMR_ERROR_BUFFER_TOO_SMALL;
++    }
++
++    if (memcpy_s(value, sizeof(uint32_t), srcBlob->data + *srcOffset, sizeof(uint32_t)) != EOK) {
++        return CMR_ERROR_INVALID_OPERATION;
++    }
++
++    *srcOffset += sizeof(uint32_t);
++    return CM_SUCCESS;
++}
++
++int32_t CmGetBlobFromBuffer(struct CmBlob *blob, const struct CmBlob *srcBlob, uint32_t *srcOffset)
++{
++    if ((*srcOffset > srcBlob->size) || ((srcBlob->size - *srcOffset) < sizeof(uint32_t))) {
++        return CMR_ERROR_BUFFER_TOO_SMALL;
++    }
++
++    uint32_t size = *((uint32_t *)(srcBlob->data + *srcOffset));
++    if (ALIGN_SIZE(size) > srcBlob->size - *srcOffset - sizeof(uint32_t)) {
++        return CMR_ERROR_BUFFER_TOO_SMALL;
++    }
++
++    blob->size = size;
++    *srcOffset += sizeof(blob->size);
++    blob->data = (uint8_t *)(srcBlob->data + *srcOffset);
++    *srcOffset += ALIGN_SIZE(blob->size);
++    return CM_SUCCESS;
++}
++
++int32_t CmParamsToParamSet(struct CmParam *params, uint32_t cnt, struct CmParamSet **outParamSet)
++{
++    struct CmParamSet *newParamSet = NULL;
++
++    int32_t ret = CmInitParamSet(&newParamSet);
++    if (ret != CM_SUCCESS) {
++        CM_LOG_E("init param set failed");
++        return ret;
++    }
++
++    do {
++        uint8_t tmpData = 0;
++        struct CmBlob tmpBlob = { sizeof(tmpData), &tmpData };
++        for (uint32_t i = 0; i < cnt; ++i) {
++            if ((GetTagType(params[i].tag) == CM_TAG_TYPE_BYTES) &&
++                (params[i].blob.size == 0 || params[i].blob.data == NULL)) {
++                params[i].tag += CM_PARAM_BUFFER_NULL_INTERVAL;
++                params[i].blob = tmpBlob;
++            }
++        }
++
++        ret = CmAddParams(newParamSet, params, cnt);
++        if (ret != CM_SUCCESS) {
++            CM_LOG_E("add in params failed");
++            break;
++        }
++
++        ret = CmBuildParamSet(&newParamSet);
++        if (ret != CM_SUCCESS) {
++            CM_LOG_E("build paramset failed!");
++            break;
++        }
++    } while (0);
++    if (ret != CM_SUCCESS) {
++        CmFreeParamSet(&newParamSet);
++        return ret;
++    }
++
++    *outParamSet = newParamSet;
++
++    return ret;
++}
+diff --git a/src/libcharon/certmanager/src/cm_load_sa.cpp b/src/libcharon/certmanager/src/cm_load_sa.cpp
+new file mode 100644
+index 0000000..2e81513
+--- /dev/null
++++ b/src/libcharon/certmanager/src/cm_load_sa.cpp
+@@ -0,0 +1,24 @@
++/*
++ * Copyright (c) 2024 Huawei Device Co., Ltd.
++ * Licensed under the Apache License, Version 2.0 (the "License");
++ * you may not use this file except in compliance with the License.
++ * You may obtain a copy of the License at
++ *
++ * http://www.apache.org/licenses/LICENSE-2.0
++ *
++ * Unless required by applicable law or agreed to in writing, software
++ * distributed under the License is distributed on an "AS IS" BASIS,
++ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
++ * See the License for the specific language governing permissions and
++ * limitations under the License.
++ */
++#include "cm_load_sa.h"
++
++#include "cm_log.h"
++
++using namespace std;
++
++OnDemandLoadCertManagerCallback::OnDemandLoadCertManagerCallback(string servers) : servers(servers)
++{
++    CM_LOG_E("Servers %s on demand Callback constructor success", servers.c_str());
++}
+diff --git a/src/libcharon/certmanager/src/cm_log.c b/src/libcharon/certmanager/src/cm_log.c
+new file mode 100644
+index 0000000..64c5bd1
+--- /dev/null
++++ b/src/libcharon/certmanager/src/cm_log.c
+@@ -0,0 +1,62 @@
++/*
++ * Copyright (c) 2024 Huawei Device Co., Ltd.
++ * Licensed under the Apache License, Version 2.0 (the "License");
++ * you may not use this file except in compliance with the License.
++ * You may obtain a copy of the License at
++ *
++ * http://www.apache.org/licenses/LICENSE-2.0
++ *
++ * Unless required by applicable law or agreed to in writing, software
++ * distributed under the License is distributed on an "AS IS" BASIS,
++ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
++ * See the License for the specific language governing permissions and
++ * limitations under the License.
++ */
++
++#include "cm_log.h"
++
++#include "cm_mem.h"
++#include "hilog/log.h"
++#include "securec.h"
++
++#define MAX_LOG_BUFF_LEN 512
++
++void CmLog(uint32_t logLevel, const char *funcName, uint32_t lineNo, const char *format, ...)
++{
++    char *buf = (char *)CmMalloc(MAX_LOG_BUFF_LEN);
++    if (buf == NULL) {
++        HILOG_ERROR(LOG_CORE, "certificate manager log malloc fail");
++        return;
++    }
++    (void)memset_s(buf, MAX_LOG_BUFF_LEN, 0, MAX_LOG_BUFF_LEN);
++
++    va_list ap;
++    va_start(ap, format);
++    int32_t ret = vsnprintf_s(buf, MAX_LOG_BUFF_LEN, MAX_LOG_BUFF_LEN - 1, format, ap);
++    va_end(ap);
++    if (ret < 0) {
++        HILOG_ERROR(LOG_CORE, "certificate manager log concatenate error.");
++        CM_FREE_PTR(buf);
++        return;
++    }
++
++    switch (logLevel) {
++        case CM_LOG_LEVEL_I:
++            HILOG_INFO(LOG_CORE, "%{public}s[%{public}u]: %{public}s\n", funcName, lineNo, buf);
++            break;
++        case CM_LOG_LEVEL_E:
++            HILOG_ERROR(LOG_CORE, "%{public}s[%{public}u]: %{public}s\n", funcName, lineNo, buf);
++            break;
++        case CM_LOG_LEVEL_W:
++            HILOG_WARN(LOG_CORE, "%{public}s[%{public}u]: %{public}s\n", funcName, lineNo, buf);
++            break;
++        case CM_LOG_LEVEL_D:
++            HILOG_DEBUG(LOG_CORE, "%{public}s[%{public}u]: %{public}s\n", funcName, lineNo, buf);
++            break;
++        default:
++            CM_FREE_PTR(buf);
++            return;
++    }
++
++    CM_FREE_PTR(buf);
++}
+diff --git a/src/libcharon/certmanager/src/cm_mem.c b/src/libcharon/certmanager/src/cm_mem.c
+new file mode 100644
+index 0000000..cd82e3a
+--- /dev/null
++++ b/src/libcharon/certmanager/src/cm_mem.c
+@@ -0,0 +1,42 @@
++/*
++ * Copyright (c) 2022 Huawei Device Co., Ltd.
++ * Licensed under the Apache License, Version 2.0 (the "License");
++ * you may not use this file except in compliance with the License.
++ * You may obtain a copy of the License at
++ *
++ * http://www.apache.org/licenses/LICENSE-2.0
++ *
++ * Unless required by applicable law or agreed to in writing, software
++ * distributed under the License is distributed on an "AS IS" BASIS,
++ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
++ * See the License for the specific language governing permissions and
++ * limitations under the License.
++ */
++
++#include "cm_mem.h"
++
++#include <string.h>
++
++#ifdef CM_SUPPORT_PRODUCT_GT_WATCH
++#include "ohos_mem_pool.h"
++
++void *CmMalloc(size_t size)
++{
++    return OhosMalloc(MEM_TYPE_HICHAIN, size);
++}
++
++void CmFree(void *ptr)
++{
++    OhosFree(ptr);
++}
++#else
++void *CmMalloc(size_t size)
++{
++    return malloc(size);
++}
++
++void CmFree(void *ptr)
++{
++    free(ptr);
++}
++#endif
+\ No newline at end of file
+diff --git a/src/libcharon/certmanager/src/cm_param.c b/src/libcharon/certmanager/src/cm_param.c
+new file mode 100644
+index 0000000..e3c9ea4
+--- /dev/null
++++ b/src/libcharon/certmanager/src/cm_param.c
+@@ -0,0 +1,191 @@
++/*
++ * Copyright (c) 2024 Huawei Device Co., Ltd.
++ * Licensed under the Apache License, Version 2.0 (the "License");
++ * you may not use this file except in compliance with the License.
++ * You may obtain a copy of the License at
++ *
++ * http://www.apache.org/licenses/LICENSE-2.0
++ *
++ * Unless required by applicable law or agreed to in writing, software
++ * distributed under the License is distributed on an "AS IS" BASIS,
++ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
++ * See the License for the specific language governing permissions and
++ * limitations under the License.
++ */
++
++#include "cm_param.h"
++
++#include <stdlib.h>
++#include <stdio.h>
++#include <string.h>
++
++#include "cm_log.h"
++#include "cm_mem.h"
++#include "cm_type_inner.h"
++
++enum CmTagType GetTagType(enum CmTag tag)
++{
++    return (enum CmTagType)((uint32_t)tag & CM_TAG_TYPE_MASK);
++}
++
++int32_t CmInitParamSet(struct CmParamSet **paramSet)
++{
++    if (paramSet == NULL) {
++        CM_LOG_E("invalid init params!");
++        return CMR_ERROR_INVALID_ARGUMENT;
++    }
++
++    *paramSet = (struct CmParamSet *)CmMalloc(CM_DEFAULT_PARAM_SET_SIZE);
++    if (*paramSet == NULL) {
++        CM_LOG_E("malloc init param set failed!");
++        return CMR_ERROR_MALLOC_FAIL;
++    }
++    (*paramSet)->paramsCnt = 0;
++    (*paramSet)->paramSetSize = sizeof(struct CmParamSet);
++    return CM_SUCCESS;
++}
++
++static int32_t CmCheckParamSet(const struct CmParamSet *paramSet, uint32_t size)
++{
++    if (paramSet == NULL) {
++        return CMR_ERROR_NULL_POINTER;
++    }
++
++    if ((size < sizeof(struct CmParamSet)) || (size > CM_PARAM_SET_MAX_SIZE) || (paramSet->paramSetSize != size) ||
++        (paramSet->paramsCnt > ((size - sizeof(struct CmParamSet)) / sizeof(struct CmParam)))) {
++        CM_LOG_E("invalid param set!");
++        return CMR_ERROR_INVALID_ARGUMENT;
++    }
++    return CM_SUCCESS;
++}
++
++static int32_t CmFreshParamSet(struct CmParamSet *paramSet, bool isCopy)
++{
++    if (paramSet == NULL) {
++        CM_LOG_E("invalid NULL paramSet");
++        return CMR_ERROR_NULL_POINTER;
++    }
++    int32_t ret = CmCheckParamSet(paramSet, paramSet->paramSetSize);
++    if (ret != CM_SUCCESS) {
++        CM_LOG_E("invalid fresh paramSet");
++        return ret;
++    }
++
++    uint32_t size = paramSet->paramSetSize;
++    uint32_t offset = sizeof(struct CmParamSet) + sizeof(struct CmParam) * paramSet->paramsCnt;
++
++    for (uint32_t i = 0; i < paramSet->paramsCnt; i++) {
++        if (offset > size) {
++            CM_LOG_E("invalid param set offset!");
++            return CMR_ERROR_INVALID_ARGUMENT;
++        }
++        if (GetTagType(paramSet->params[i].tag) == CM_TAG_TYPE_BYTES) {
++            if (CmIsAdditionOverflow(offset, paramSet->params[i].blob.size)) {
++                CM_LOG_E("blob size overflow!");
++                return CMR_ERROR_INVALID_ARGUMENT;
++            }
++
++            if (isCopy && (memcpy_s((uint8_t *)paramSet + offset, size - offset, paramSet->params[i].blob.data,
++                paramSet->params[i].blob.size) != EOK)) {
++                CM_LOG_E("copy param blob failed!");
++                return CMR_ERROR_INVALID_OPERATION;
++            }
++            paramSet->params[i].blob.data = (uint8_t *)paramSet + offset;
++            offset += paramSet->params[i].blob.size;
++        }
++    }
++
++    if (paramSet->paramSetSize != offset) {
++        CM_LOG_E("invalid param set size!");
++        return CMR_ERROR_INVALID_ARGUMENT;
++    }
++    return CM_SUCCESS;
++}
++
++static int32_t BuildParamSet(struct CmParamSet **paramSet)
++{
++    struct CmParamSet *freshParamSet = *paramSet;
++    uint32_t size = freshParamSet->paramSetSize;
++    uint32_t offset = sizeof(struct CmParamSet) + sizeof(struct CmParam) * freshParamSet->paramsCnt;
++
++    if (size > CM_DEFAULT_PARAM_SET_SIZE) {
++        freshParamSet = (struct CmParamSet *)CmMalloc(size);
++        if (freshParamSet == NULL) {
++            CM_LOG_E("malloc params failed!");
++            return CMR_ERROR_MALLOC_FAIL;
++        }
++        if (memcpy_s(freshParamSet, size, *paramSet, offset) != EOK) {
++            CM_FREE_PTR(freshParamSet);
++            CM_LOG_E("copy params failed!");
++            return CMR_ERROR_INVALID_OPERATION;
++        }
++        CM_FREE_PTR(*paramSet);
++        *paramSet = freshParamSet;
++    }
++
++    return CmFreshParamSet(freshParamSet, true);
++}
++
++int32_t CmBuildParamSet(struct CmParamSet **paramSet)
++{
++    if ((paramSet == NULL) || (*paramSet == NULL)) {
++        return CMR_ERROR_NULL_POINTER;
++    }
++
++    int ret = CmCheckParamSet(*paramSet, (*paramSet)->paramSetSize);
++    if (ret != CM_SUCCESS) {
++        CM_LOG_E("invalid build params!");
++        return ret;
++    }
++
++    return BuildParamSet(paramSet);
++}
++
++void CmFreeParamSet(struct CmParamSet **paramSet)
++{
++    if (paramSet == NULL) {
++        CM_LOG_E("invalid free paramset!");
++        return;
++    }
++    CM_FREE_PTR(*paramSet);
++}
++
++static int32_t CheckBeforeAddParams(const struct CmParamSet *paramSet, const struct CmParam *params, uint32_t paramCnt)
++{
++    if ((params == NULL) || (paramSet == NULL) || (paramSet->paramSetSize > CM_PARAM_SET_MAX_SIZE) ||
++        (paramCnt > CM_DEFAULT_PARAM_CNT) || ((paramSet->paramsCnt + paramCnt) > CM_DEFAULT_PARAM_CNT)) {
++        CM_LOG_E("invalid params or paramset!");
++        return CMR_ERROR_INVALID_ARGUMENT;
++    }
++
++    for (uint32_t i = 0; i < paramCnt; i++) {
++        if ((GetTagType(params[i].tag) == CM_TAG_TYPE_BYTES) && (params[i].blob.data == NULL)) {
++            CM_LOG_E("invalid blob param!");
++            return CMR_ERROR_INVALID_ARGUMENT;
++        }
++    }
++    return CM_SUCCESS;
++}
++
++int32_t CmAddParams(struct CmParamSet *paramSet, const struct CmParam *params, uint32_t paramCnt)
++{
++    int32_t ret = CheckBeforeAddParams(paramSet, params, paramCnt);
++    if (ret != CM_SUCCESS) {
++        return ret;
++    }
++
++    for (uint32_t i = 0; i < paramCnt; i++) {
++        paramSet->paramSetSize += sizeof(struct CmParam);
++        if (GetTagType(params[i].tag) == CM_TAG_TYPE_BYTES) {
++            if (CmIsAdditionOverflow(paramSet->paramSetSize, params[i].blob.size)) {
++                CM_LOG_E("params size overflow!");
++                paramSet->paramSetSize -= sizeof(struct CmParam);
++                return CMR_ERROR_INVALID_ARGUMENT;
++            }
++            paramSet->paramSetSize += params[i].blob.size;
++        }
++        (void)memcpy_s(&paramSet->params[paramSet->paramsCnt++], sizeof(struct CmParam), &params[i],
++            sizeof(struct CmParam));
++    }
++    return CM_SUCCESS;
++}
+diff --git a/src/libcharon/certmanager/src/cm_request.cpp b/src/libcharon/certmanager/src/cm_request.cpp
+new file mode 100644
+index 0000000..c09c70c
+--- /dev/null
++++ b/src/libcharon/certmanager/src/cm_request.cpp
+@@ -0,0 +1,157 @@
++/*
++ * Copyright (c) 2024 Huawei Device Co., Ltd.
++ * Licensed under the Apache License, Version 2.0 (the "License");
++ * you may not use this file except in compliance with the License.
++ * You may obtain a copy of the License at
++ *
++ * http://www.apache.org/licenses/LICENSE-2.0
++ *
++ * Unless required by applicable law or agreed to in writing, software
++ * distributed under the License is distributed on an "AS IS" BASIS,
++ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
++ * See the License for the specific language governing permissions and
++ * limitations under the License.
++ */
++
++#include "cm_request.h"
++
++#include <chrono>
++#include <string>
++#include <thread>
++
++
++#include "cm_load_sa.h"
++#include "cm_log.h"
++#include "iservice_registry.h"
++#include "securec.h"
++
++using namespace std;
++using namespace OHOS;
++
++namespace {
++constexpr int SA_ID_KEYSTORE_SERVICE = 3512;
++constexpr uint32_t MAX_SA_BOOT_DELAY_TIME = 30;
++const std::u16string SA_KEYSTORE_SERVICE_DESCRIPTOR = u"ohos.security.cm.service";
++}
++
++static sptr<IRemoteObject> CmLoadSystemAbility(void)
++{
++    auto saManager = SystemAbilityManagerClient::GetInstance().GetSystemAbilityManager();
++    if (saManager == nullptr) {
++        CM_LOG_E("GetCmProxy registry is null");
++        return {};
++    }
++
++    auto object = saManager->CheckSystemAbility(SA_ID_KEYSTORE_SERVICE);
++    if (object != nullptr) {
++        return object;
++    }
++
++    string servers = "CertManager";
++    sptr<OnDemandLoadCertManagerCallback> loadCallBack = new (std::nothrow) OnDemandLoadCertManagerCallback(servers);
++    if (loadCallBack == nullptr) {
++        CM_LOG_E("new OnDemandLoadCertManagerCallback failed");
++        return {};
++    }
++
++    int32_t ret = saManager->LoadSystemAbility(SA_ID_KEYSTORE_SERVICE, loadCallBack);
++    if (ret != ERR_OK) {
++        CM_LOG_E("systemAbilityId:%d load failed,result code:%d", SA_ID_KEYSTORE_SERVICE, ret);
++        return {};
++    }
++
++    return loadCallBack->Promise();
++}
++
++static int32_t CmReadRequestReply(MessageParcel &reply, struct CmBlob *outBlob)
++{
++    int32_t ret = reply.ReadInt32();
++    if (ret != CM_SUCCESS) {
++        CM_LOG_D("CmReadRequestReply start");
++        return ret;
++    }
++
++    size_t outLen = reply.ReadUint32();
++    if (outLen == 0) {
++        if (outBlob != nullptr) {
++            outBlob->size = 0;
++        }
++        return ret;
++    }
++    if (CmCheckBlob(outBlob) != CM_SUCCESS) {
++        return CMR_ERROR_INVALID_ARGUMENT;
++    }
++
++    const uint8_t *outData = reply.ReadBuffer(outLen);
++    if (outData == nullptr) {
++        return CMR_ERROR_NULL_POINTER;
++    }
++    if (outBlob->size < outLen) {
++        CM_LOG_E("outBlob size[%u] smaller than outLen[%u]", outBlob->size, outLen);
++        return CMR_ERROR_BUFFER_TOO_SMALL;
++    }
++    if (memcpy_s(outBlob->data, outBlob->size, outData, outLen) != EOK) {
++        return CMR_ERROR_INVALID_OPERATION;
++    }
++    outBlob->size = outLen;
++    return CM_SUCCESS;
++}
++
++int32_t SendRequest(enum CertManagerInterfaceCode type, const struct CmBlob *inBlob, struct CmBlob *outBlob)
++{
++    uint32_t i = 0;
++    sptr<IRemoteObject> cmProxy = CmLoadSystemAbility();
++    while ((cmProxy == nullptr) && i < MAX_SA_BOOT_DELAY_TIME) {
++        CM_LOG_E("cmProxy is nullptr, i = %u", i);
++        std::this_thread::sleep_for(std::chrono::milliseconds(100)); /* 100 is time */
++        i++;
++    }
++
++    cmProxy = CmLoadSystemAbility();
++    if (cmProxy == nullptr) {
++        CM_LOG_E("Certtificate manager Proxy is null.");
++        return CMR_ERROR_NULL_POINTER;
++    }
++
++    MessageParcel data;
++    MessageParcel reply;
++    MessageOption option = MessageOption::TF_SYNC;
++
++    data.WriteInterfaceToken(SA_KEYSTORE_SERVICE_DESCRIPTOR);
++    if (outBlob == nullptr) {
++        data.WriteUint32(0);
++    } else {
++        data.WriteUint32(outBlob->size);
++    }
++    data.WriteUint32(inBlob->size);
++    data.WriteBuffer(inBlob->data, static_cast<size_t>(inBlob->size));
++
++    int error = cmProxy->SendRequest(static_cast<uint32_t>(type), data, reply, option);
++    if (error == 29189) {
++        error = SendRequest(type, inBlob, outBlob);
++    }
++    if (error != 0) {
++        CM_LOG_E("SendRequest error:%d", error);
++        return error;
++    }
++    return CmReadRequestReply(reply, outBlob);
++}
++
++void OnDemandLoadCertManagerCallback::OnLoadSystemAbilitySuccess(int32_t systemAbilityId,
++    const sptr<IRemoteObject> &remoteObject)
++{
++    CM_LOG_D("OnLoadSystemAbility Success systemAbilityId: %d, IRemoteObject result:%s", systemAbilityId,
++        ((remoteObject != nullptr) ? "succeed" : "failed"));
++    promise_.set_value(remoteObject);
++}
++
++void OnDemandLoadCertManagerCallback::OnLoadSystemAbilityFail(int32_t systemAbilityId)
++{
++    CM_LOG_E("OnLoadSystemAbility Fail systemAbilityId: %d", systemAbilityId);
++    promise_.set_value(nullptr);
++}
++
++sptr<IRemoteObject> OnDemandLoadCertManagerCallback::Promise(void)
++{
++    return promise_.get_future().get();
++}
+diff --git a/src/libcharon/certmanager/src/cm_x509.c b/src/libcharon/certmanager/src/cm_x509.c
+new file mode 100644
+index 0000000..eb88bb8
+--- /dev/null
++++ b/src/libcharon/certmanager/src/cm_x509.c
+@@ -0,0 +1,438 @@
++/*
++ * Copyright (c) 2024 Huawei Device Co., Ltd.
++ * Licensed under the Apache License, Version 2.0 (the "License");
++ * you may not use this file except in compliance with the License.
++ * You may obtain a copy of the License at
++ *
++ * http://www.apache.org/licenses/LICENSE-2.0
++ *
++ * Unless required by applicable law or agreed to in writing, software
++ * distributed under the License is distributed on an "AS IS" BASIS,
++ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
++ * See the License for the specific language governing permissions and
++ * limitations under the License.
++ */
++
++#include "cm_x509.h"
++
++#include <openssl/asn1.h>
++#include <openssl/bio.h>
++#include <openssl/err.h>
++#include <openssl/evp.h>
++#include <openssl/pem.h>
++#include <string.h>
++#include <time.h>
++
++#include "cm_log.h"
++#include "securec.h"
++
++typedef X509_NAME *(FUNC)(const X509 *);
++typedef ASN1_TIME *(TIME_FUNC)(const X509 *);
++#define CONVERT(p) (((p)[0] - '0') * 10 + (p)[1] - '0')
++#define BASE_YEAR 1900
++
++X509 *InitCertContext(const uint8_t *certBuf, uint32_t size)
++{
++    X509 *x509 = NULL;
++    if (certBuf == NULL || size > MAX_LEN_CERTIFICATE || size == 0) {
++        return NULL;
++    }
++    BIO *bio = BIO_new_mem_buf(certBuf, (int)size);
++    if (!bio) {
++        return NULL;
++    }
++    if (certBuf[0] == '-') {
++        // PEM format
++        x509 = PEM_read_bio_X509(bio, NULL, NULL, NULL);
++    } else if (certBuf[0] == ASN1_TAG_TYPE_SEQ) {
++        // Der format
++        x509 = d2i_X509_bio(bio, NULL);
++    } else {
++        CM_LOG_E("invalid certificate format.");
++    }
++    BIO_free(bio);
++    return x509;
++}
++
++int32_t GetX509SerialNumber(X509 *x509cert, char *outBuf, uint32_t outBufMaxSize)
++{
++    if (outBuf == NULL || x509cert == NULL) {
++        return CMR_ERROR_INVALID_ARGUMENT;
++    }
++    ASN1_INTEGER *serial = X509_get_serialNumber(x509cert);
++    if (serial == NULL) {
++        return CMR_ERROR_INVALID_CERT_FORMAT;
++    }
++    BIGNUM *bn = ASN1_INTEGER_to_BN(serial, NULL);
++    if (bn == NULL) {
++        return CMR_ERROR_INVALID_CERT_FORMAT;
++    }
++
++    char *hex = BN_bn2hex(bn);
++    if (hex == NULL) {
++        BN_free(bn);
++        return CMR_ERROR_INVALID_CERT_FORMAT;
++    }
++
++    uint32_t len = (uint32_t)strlen(hex);
++    if (len >= outBufMaxSize) {
++        OPENSSL_free(hex);
++        BN_free(bn);
++        return CMR_ERROR_BUFFER_TOO_SMALL;
++    }
++    if (strncpy_s(outBuf, outBufMaxSize, hex, len) != EOK) {
++        OPENSSL_free(hex);
++        BN_free(bn);
++        return CMR_ERROR_INVALID_OPERATION;
++    }
++
++    OPENSSL_free(hex);
++    BN_free(bn);
++    return (int32_t)len;
++}
++static int32_t ToStringName(FUNC func, const X509 *x509cert, const char *objname, char *outBuf, uint32_t outBufMaxSize)
++{
++    int32_t length = 0;
++    if (func == NULL || x509cert == NULL || outBuf == NULL || outBufMaxSize == 0) {
++        return CMR_ERROR_INVALID_ARGUMENT;
++    }
++
++    X509_NAME *name = func(x509cert);
++    if (name == NULL) {
++        return CMR_ERROR_INVALID_CERT_FORMAT;
++    }
++
++    for (int i = 0; i < X509_NAME_entry_count(name); ++i) {
++        X509_NAME_ENTRY *entry = X509_NAME_get_entry(name, i);
++        const char *strname = OBJ_nid2sn(OBJ_obj2nid(X509_NAME_ENTRY_get_object(entry)));
++
++        if (strname == NULL) {
++            continue;
++        }
++
++        if (strcmp(objname, strname) == 0) {
++            char *data = NULL;
++            length = ASN1_STRING_to_UTF8((unsigned char **)&data, X509_NAME_ENTRY_get_data(entry));
++            if (length < 0) {
++                return CMR_ERROR_INVALID_CERT_FORMAT;
++            } else if ((uint32_t)length >= outBufMaxSize) {
++                OPENSSL_free(data);
++                return CMR_ERROR_BUFFER_TOO_SMALL;
++            }
++            if (strncpy_s(outBuf, outBufMaxSize, data, length) != EOK) {
++                OPENSSL_free(data);
++                return CMR_ERROR_INVALID_OPERATION;
++            }
++            OPENSSL_free(data);
++            break;
++        }
++    }
++    return length;
++}
++
++static int32_t GetX509IssueName(const X509 *x509cert, const char *issuerObjName, char *outBuf, uint32_t outBufMaxSize)
++{
++    return ToStringName(X509_get_issuer_name, x509cert, issuerObjName, outBuf, outBufMaxSize);
++}
++
++static int32_t GetX509FirstSubjectName(const X509 *x509cert, struct CmBlob *displaytName)
++{
++    char *outBuf = (char *)displaytName->data;
++    const char *subjectNameList[] = {CM_COMMON_NAME, CM_ORGANIZATION_UNIT_NAME, CM_ORGANIZATION_NAME};
++    uint32_t sizeList = sizeof(subjectNameList) / sizeof(subjectNameList[0]);
++    for (uint32_t j = 0; j < sizeList; ++j) {
++        int32_t length = 0;
++        char subjectName[NAME_MAX_SIZE] = { 0 };
++        length = GetX509SubjectName(x509cert, subjectNameList[j], subjectName, NAME_MAX_SIZE);
++        if (length < 0) {
++            return CMR_ERROR_INVALID_CERT_FORMAT;
++        } else if ((uint32_t)length >= displaytName->size) {
++            return CMR_ERROR_BUFFER_TOO_SMALL;
++        }
++        if (strlen(subjectName) > 0) {
++            if (strncpy_s(outBuf, displaytName->size, subjectName, strlen(subjectName)) != EOK) {
++                return CMR_ERROR_INVALID_OPERATION;
++            }
++            outBuf[length] = '\0';
++            displaytName->size = (uint32_t)(length + 1);
++            break;
++        }
++    }
++    return CM_SUCCESS;
++}
++
++static int32_t GetX509FirstSubjectProp(const X509 *x509cert, struct CmBlob *displaytName)
++{
++    int32_t length = 0;
++    char *outBuf = (char *)displaytName->data;
++    X509_NAME *name = X509_get_subject_name(x509cert);
++    if (name == NULL) {
++        CM_LOG_E("X509_get_subject_name get name faild");
++        return CMR_ERROR_INVALID_CERT_FORMAT;
++    }
++    X509_NAME_ENTRY *entry = X509_NAME_get_entry(name, 0);
++    char *data = NULL;
++    length = ASN1_STRING_to_UTF8((unsigned char **)&data, X509_NAME_ENTRY_get_data(entry));
++    if (length < 0) {
++        return CMR_ERROR_INVALID_CERT_FORMAT;
++    } else if ((uint32_t)length >= displaytName->size) {
++        OPENSSL_free(data);
++        return CMR_ERROR_BUFFER_TOO_SMALL;
++    }
++    if (strncpy_s(outBuf, displaytName->size, data, length) != EOK) {
++        OPENSSL_free(data);
++        return CMR_ERROR_INVALID_OPERATION;
++    }
++    outBuf[length] = '\0';
++    displaytName->size = (uint32_t)(length + 1);
++    OPENSSL_free(data);
++    return CM_SUCCESS;
++}
++
++static int32_t GetDisplayName(X509 *x509cert, const struct CmBlob *certAlias, const char *subjectName,
++    struct CmBlob *displaytName)
++{
++    int32_t ret = CM_SUCCESS;
++    if (strcmp("", (char *)certAlias->data) == 0) {
++        if (strcmp(CM_SUBJECT_NAME_NULL, subjectName) == 0) {
++            ret = GetX509FirstSubjectProp(x509cert, displaytName);
++            if (ret != CM_SUCCESS) {
++                CM_LOG_E("GetX509FirstSubjectProp failed");
++                return ret;
++            }
++        } else {
++            ret = GetX509FirstSubjectName(x509cert, displaytName);
++            if (ret != CM_SUCCESS) {
++                CM_LOG_E("GetX509FirstSubjectName failed");
++                return ret;
++            }
++        }
++    } else {
++        if (memcpy_s(displaytName->data, displaytName->size, certAlias->data, certAlias->size) != EOK) {
++            CM_LOG_E("copy displayname failed");
++            return CMR_ERROR_INVALID_OPERATION;
++        }
++        displaytName->size = certAlias->size;
++    }
++    return ret;
++}
++
++int32_t GetSubjectNameAndAlias(X509 *x509cert, const struct CmBlob *certAlias, struct CmBlob *subjectName,
++    struct CmBlob *displaytName)
++{
++    if ((x509cert == NULL) || (CmCheckBlob(certAlias) != CM_SUCCESS) || (subjectName == NULL) ||
++        (displaytName == NULL)) {
++        CM_LOG_E("input param is invalid");
++        return CMR_ERROR_INVALID_ARGUMENT;
++    }
++
++    int32_t subjectLen = GetX509SubjectNameLongFormat(x509cert, (char *)subjectName->data, MAX_LEN_SUBJECT_NAME);
++    if (subjectLen <= 0) {
++        CM_LOG_E("get cert subjectName failed");
++        return CMR_ERROR_INVALID_CERT_FORMAT;
++    }
++    subjectName->size = (uint32_t)subjectLen + 1;
++
++    int32_t ret = GetDisplayName(x509cert, certAlias, (char *)subjectName->data, displaytName);
++    if (ret != CM_SUCCESS) {
++        CM_LOG_E("GetDisplayName failed");
++        return ret;
++    }
++    return CM_SUCCESS;
++}
++
++int32_t GetX509SubjectName(const X509 *x509cert, const char *subjectObjName, char *outBuf, uint32_t outBufMaxSize)
++{
++    return ToStringName(X509_get_subject_name, x509cert, subjectObjName, outBuf, outBufMaxSize);
++}
++
++int32_t GetX509SubjectNameLongFormat(const X509 *x509cert, char *outBuf, uint32_t outBufMaxSize)
++{
++    if (outBuf == NULL || outBufMaxSize == 0) {
++        return CMR_ERROR_INVALID_ARGUMENT;
++    }
++    uint32_t offset = 0;
++    const char *subjectNameList[] = {CM_COMMON_NAME, CM_ORGANIZATION_UNIT_NAME, CM_ORGANIZATION_NAME};
++    uint32_t sizeList = sizeof(subjectNameList) / sizeof(subjectNameList[0]);
++    for (uint32_t j = 0; j < sizeList; ++j) {
++        char subjectName[NAME_MAX_SIZE] = {0};
++        int32_t length = GetX509SubjectName(x509cert, subjectNameList[j], subjectName, NAME_MAX_SIZE);
++        if (length < 0) {
++            return length;
++        }
++        if (snprintf_s(outBuf + offset, outBufMaxSize - offset, outBufMaxSize - offset - 1, "%s=%s%c",
++            subjectNameList[j], subjectName, (char)(((j + 1) == sizeList) ? '\0' : ',')) < 0) {
++            return CMR_ERROR_INVALID_OPERATION;
++        }
++        offset += strlen(subjectNameList[j]) + strlen(subjectName) + NAME_DELIMITER_SIZE;
++    }
++    return (int32_t)strlen(outBuf);
++}
++
++int32_t GetX509IssueNameLongFormat(const X509 *x509cert, char *outBuf, uint32_t outBufMaxSize)
++{
++    if (outBuf == NULL || outBufMaxSize == 0) {
++        return CMR_ERROR_INVALID_ARGUMENT;
++    }
++    uint32_t offset = 0;
++
++    const char *issueNameList[] = {CM_COMMON_NAME, CM_ORGANIZATION_UNIT_NAME, CM_ORGANIZATION_NAME};
++    uint32_t sizeList = sizeof(issueNameList) / sizeof(issueNameList[0]);
++    for (uint32_t j = 0; j < sizeList; ++j) {
++        char issueName[NAME_MAX_SIZE] = {0};
++        int32_t length = GetX509IssueName(x509cert, issueNameList[j], issueName, NAME_MAX_SIZE);
++        if (length < 0) {
++            return length;
++        }
++        if (snprintf_s(outBuf + offset, outBufMaxSize - offset, outBufMaxSize - offset - 1, "%s=%s%c", issueNameList[j],
++            issueName, (char)(((j + 1) == sizeList) ? '\0' : ',')) < 0) {
++            return CMR_ERROR_INVALID_OPERATION;
++        }
++        offset += strlen(issueNameList[j]) + strlen(issueName) + NAME_DELIMITER_SIZE;
++    }
++    return (int32_t)strlen(outBuf);
++}
++
++static struct tm *GetLocalTime(ASN1_TIME *asn1Time)
++{
++    time_t curLocalTimeSec = time(NULL);
++    if (curLocalTimeSec < 0) {
++        CM_LOG_E("Failed to get current local time");
++        return NULL;
++    }
++
++    struct tm *gmTime = gmtime(&curLocalTimeSec);
++    if (gmTime == NULL) {
++        CM_LOG_E("Failed to convert current local time to utc time");
++        return NULL;
++    }
++
++    time_t curUtcTimeSec = mktime(gmTime);
++    if (curUtcTimeSec < 0) {
++        CM_LOG_E("Failed to get current utc time");
++        return NULL;
++    }
++
++    struct tm utcTime;
++    int ret = ASN1_TIME_to_tm(asn1Time, &utcTime);
++    if (ret == 0) {
++        CM_LOG_E("invalid asn1 time format");
++        return NULL;
++    }
++
++    time_t utcTimeSec = mktime(&utcTime);
++    if (utcTimeSec < 0) {
++        CM_LOG_E("Failed to get utc time");
++        return NULL;
++    }
++    time_t localTimeSec = utcTimeSec + curLocalTimeSec - curUtcTimeSec;
++    return localtime(&localTimeSec);
++}
++
++static int32_t GetX509Time(TIME_FUNC fuc, const X509 *x509cert, struct DataTime *pDataTime)
++{
++    if (x509cert == NULL || fuc == NULL || pDataTime == NULL) {
++        return CMR_ERROR_INVALID_ARGUMENT;
++    }
++    ASN1_TIME *asn1Time = fuc(x509cert);
++    if (asn1Time == NULL) {
++        CM_LOG_E("Failed to get asn1 time from x509Cert");
++        return CMR_ERROR_INVALID_CERT_FORMAT;
++    }
++
++    if (asn1Time->length < NAME_ANS1TIME_LEN) {
++        return CMR_ERROR_INVALID_CERT_FORMAT;
++    }
++
++    struct tm *localTime = GetLocalTime(asn1Time);
++    if (localTime == NULL) {
++        CM_LOG_E("Failed to get local time by utc time");
++        return CMR_ERROR_INVALID_OPERATION;
++    }
++
++    pDataTime->year = (uint32_t)(localTime->tm_year + BASE_YEAR);
++    pDataTime->month = (uint32_t)(localTime->tm_mon + 1);
++    pDataTime->day = (uint32_t)localTime->tm_mday;
++    pDataTime->hour = (uint32_t)localTime->tm_hour;
++    pDataTime->min = (uint32_t)localTime->tm_min;
++    pDataTime->second = (uint32_t)localTime->tm_sec;
++    return CM_SUCCESS;
++}
++
++static int32_t GetX509TimeFormat(TIME_FUNC fuc, const X509 *x509cert, char *outBuf, uint32_t outBufMaxSize)
++{
++    if (x509cert == NULL || outBuf == NULL || outBufMaxSize == 0) {
++        return CMR_ERROR_INVALID_ARGUMENT;
++    }
++
++    struct DataTime dataTime;
++    int32_t ret = GetX509Time(fuc, x509cert, &dataTime);
++    if (ret != CM_SUCCESS) {
++        return ret;
++    }
++
++    char buf[TIME_FORMAT_MAX_SIZE] = {0};
++    if (snprintf_s(buf, TIME_FORMAT_MAX_SIZE, TIME_FORMAT_MAX_SIZE - 1, "%d-%d-%d", (int)dataTime.year,
++        (int)dataTime.month, (int)dataTime.day) < 0) {
++        return CMR_ERROR_INVALID_OPERATION;
++    }
++
++    uint32_t length = (uint32_t)strlen(buf);
++    if (length >= outBufMaxSize) {
++        CM_LOG_E("GetX509TimeFormat buffer too small");
++        return CMR_ERROR_BUFFER_TOO_SMALL;
++    }
++    if (strncpy_s(outBuf, outBufMaxSize, buf, length) != EOK) {
++        return CMR_ERROR_INVALID_OPERATION;
++    }
++    return (int32_t)length;
++}
++int32_t GetX509NotBefore(const X509 *x509cert, char *outBuf, uint32_t outBufMaxSize)
++{
++    return GetX509TimeFormat(X509_getm_notBefore, x509cert, outBuf, outBufMaxSize);
++}
++
++int32_t GetX509NotAfter(const X509 *x509cert, char *outBuf, uint32_t outBufMaxSize)
++{
++    return GetX509TimeFormat(X509_getm_notAfter, x509cert, outBuf, outBufMaxSize);
++}
++
++int32_t GetX509Fingerprint(const X509 *x509cert, char *outBuf, uint32_t outBufMaxSize)
++{
++    uint32_t size = 0;
++    uint8_t md[EVP_MAX_MD_SIZE] = {0};
++    if (x509cert == NULL) {
++        return CMR_ERROR_INVALID_ARGUMENT;
++    }
++
++    int32_t res = X509_digest(x509cert, EVP_sha256(), md, &size);
++    if (res < 0) {
++        return CMR_ERROR_INVALID_CERT_FORMAT;
++    }
++    char buf[FINGERPRINT_MAX_SIZE] = {0};
++    for (uint32_t i = 0; i < size; ++i) {
++        if (snprintf_s(buf + 3 * i, FINGERPRINT_MAX_SIZE - 3 * i, /* 3 is  array index */
++            FINGERPRINT_MAX_SIZE - 3 * i - 1,                     /* 3 is  array index */
++            "%02X%c", md[i], (char)(((i + 1) == size) ? '\0' : ':')) < 0) {
++            return CMR_ERROR_INVALID_OPERATION;
++        }
++    }
++    uint32_t length = (uint32_t)strlen(buf);
++    if (length >= outBufMaxSize) {
++        CM_LOG_E("GetX509Fingerprint buffer too small");
++        return CMR_ERROR_BUFFER_TOO_SMALL;
++    }
++
++    if (strncpy_s(outBuf, outBufMaxSize, buf, length) != EOK) {
++        return CMR_ERROR_INVALID_OPERATION;
++    }
++    return (int32_t)length;
++}
++
++void FreeCertContext(X509 *x509cert)
++{
++    if (!x509cert) {
++        return;
++    }
++    X509_free(x509cert);
++}
+diff --git a/src/libcharon/keystore/keystore.c b/src/libcharon/keystore/keystore.c
+new file mode 100644
+index 0000000..0982ea0
+--- /dev/null
++++ b/src/libcharon/keystore/keystore.c
+@@ -0,0 +1,287 @@
++/*
++ * Copyright (c) 2024 Huawei Device Co., Ltd.
++ * Licensed under the Apache License, Version 2.0 (the "License");
++ * you may not use this file except in compliance with the License.
++ * You may obtain a copy of the License at
++ *
++ * http://www.apache.org/licenses/LICENSE-2.0
++ *
++ * Unless required by applicable law or agreed to in writing, software
++ * distributed under the License is distributed on an "AS IS" BASIS,
++ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
++ * See the License for the specific language governing permissions and
++ * limitations under the License.
++ */
++#include "keystore.h"
++
++#include <asn1/asn1.h>
++#include <asn1/oid.h>
++#include <credentials/builder.h>
++#include <credentials/certificates/x509.h>
++#include <credentials/keys/public_key.h>
++#include <credentials/sets/mem_cred.h>
++#include <encoding/payloads/auth_payload.h>
++#include <encoding/payloads/hash_payload.h>
++
++#include <plugins/stroke/stroke_ca.h>
++#include <sa/ikev2/keymat_v2.h>
++#include <sa/ikev1/keymat_v1.h>
++#include <securec.h>
++#include <string.h>
++
++#include <cert_manager_api.h>
++
++// copy from openssl to avoid asn1 duplicate defined
++#define RSA_PKCS1_PADDING_SIZE 11
++// RSA_size(rsa)
++#define RSA_SIZE 256
++
++int keystore_load_ca_cert(stroke_ca_t *ca, mem_cred_t *creds)
++{
++	DBG1(DBG_CFG, "loading ca certificate from keystore");
++	chunk_t ca_blob = load_vpn_cert(CA_CERT);
++
++	if (!ca_blob.ptr)
++	{
++		DBG1(DBG_CFG, "loading ca certificate from keystore error");
++		return -1;
++	}
++
++	certificate_t *cert = NULL;
++	cert = lib->creds->create(lib->creds, CRED_CERTIFICATE, CERT_X509, BUILD_BLOB_PEM, ca_blob, BUILD_X509_FLAG,
++							  X509_CA, BUILD_END);
++	if (!cert)
++	{
++		cert = lib->creds->create(lib->creds, CRED_CERTIFICATE, CERT_X509, BUILD_BLOB_ASN1_DER, ca_blob,
++								  BUILD_X509_FLAG, X509_CA, BUILD_END);
++	}
++	chunk_free(&ca_blob);
++	if (cert)
++	{
++		x509_t *x509 = (x509_t *)cert;
++
++		if (!(x509->get_flags(x509) & X509_CA))
++		{
++			DBG1(DBG_CFG,
++				 "  ca certificate \"%Y\" lacks ca basic constraint, "
++				 "discarded",
++				 cert->get_subject(cert));
++			cert->destroy(cert);
++			return -1;
++		}
++		DBG1(DBG_CFG, "  loaded ca certificate \"%Y\" from keystore", cert->get_subject(cert));
++
++		cert = ca->get_cert_ref(ca, cert);
++		creds->add_cert(creds, TRUE, cert);
++		return 0;
++	}
++	else
++	{
++		DBG1(DBG_CFG, "  loading ca certificate from keystore failed");
++		return -1;
++	}
++}
++
++certificate_t *keystore_load_user_cert()
++{
++	DBG1(DBG_CFG, "loading user certificate from keystore");
++	chunk_t user_blob = load_vpn_cert(USER_CERT);
++	if (!user_blob.ptr)
++	{
++		DBG1(DBG_CFG, "loading user certificate from keystore error");
++		return NULL;
++	}
++
++	certificate_t *cert = NULL;
++	cert = lib->creds->create(lib->creds, CRED_CERTIFICATE, CERT_X509, BUILD_BLOB_PEM, user_blob, BUILD_END);
++	if (!cert)
++	{
++		cert = lib->creds->create(lib->creds, CRED_CERTIFICATE, CERT_X509, BUILD_BLOB_ASN1_DER, user_blob, BUILD_END);
++	}
++	if (cert)
++	{
++		DBG1(DBG_CFG, "  loaded user certificate \"%Y\" from keystore", cert->get_subject(cert));
++	}
++	else
++	{
++		DBG1(DBG_CFG, "  loaded user certificate from keystore failed. ");
++	}
++	chunk_free(&user_blob);
++	return cert;
++}
++
++static bool keystore_signature_params_build(signature_scheme_t scheme, chunk_t *asn1)
++{
++	int oid;
++
++	oid = signature_scheme_to_oid(scheme);
++	DBG1(DBG_CFG, "keystore_signature_params_build oid = %d", oid);
++	if (oid == OID_UNKNOWN)
++	{
++		return FALSE;
++	}
++	DBG1(DBG_CFG, "keystore_signature_params_build asn1_algorithmIdentifier start");
++	*asn1 = asn1_algorithmIdentifier(oid);
++	return TRUE;
++}
++
++static bool keystore_build_signature_auth_data(chunk_t *auth_data, signature_scheme_t scheme)
++{
++	chunk_t data;
++	uint8_t len;
++	if (!keystore_signature_params_build(scheme, &data))
++	{
++		chunk_free(auth_data);
++		return FALSE;
++	}
++	len = data.len;
++	*auth_data = chunk_cat("cmm", chunk_from_thing(len), data, *auth_data);
++	return TRUE;
++}
++
++static void keystore_add_auth_to_message(message_t *message, auth_method_t method, chunk_t data, bool notify)
++{
++	auth_payload_t *auth_payload;
++
++	if (notify)
++	{
++		message->add_notify(message, FALSE, NO_PPK_AUTH, data);
++	}
++	else
++	{
++		auth_payload = auth_payload_create();
++		auth_payload->set_auth_method(auth_payload, method);
++		auth_payload->set_data(auth_payload, data);
++		message->add_payload(message, (payload_t *)auth_payload);
++	}
++	chunk_free(&data);
++}
++
++// IKEv2 message sign
++status_t keystore_ikev2_sign(ike_sa_t *ike_sa, chunk_t ike_sa_init, char *reserved, chunk_t ppk, chunk_t nonce,
++							 message_t *message, identification_t *id)
++{
++	DBG1(DBG_IKE, " keystore_ikev2_sign start...");
++	if (!ike_sa || !reserved)
++	{
++		return FAILED;
++	}
++
++	chunk_t octets = chunk_empty;
++	keymat_v2_t *keymat = (keymat_v2_t *)ike_sa->get_keymat(ike_sa);
++	keymat->get_auth_octets(keymat, FALSE, ike_sa_init, nonce, ppk, id, reserved, &octets, NULL);
++	chunk_t auth_data;
++
++	uint8_t uri_buf[MAX_LEN_URI];
++	memset_s(uri_buf, MAX_LEN_URI, 0, MAX_LEN_URI);
++	uint32_t uri_size = LoadVpnCertUri(USER_CERT, uri_buf, MAX_LEN_URI);
++	if (uri_size < 1)
++	{
++		DBG1(DBG_IKE, "keystore_ikev2_sign cm_sign failed: user cert not found");
++		return NOT_FOUND;
++	}
++
++	struct CmSignatureSpec signSpec = {CM_KEY_PURPOSE_SIGN, CM_PADDING_PKCS1_V1_5, CM_DIGEST_SHA256};
++	int32_t result = cm_sign(uri_buf, MAX_LEN_URI, octets, &auth_data, &signSpec);
++	if (result != 0)
++	{
++		DBG1(DBG_IKE, "keystore_ikev2_sign cm_sign failed");
++		return NOT_FOUND;
++	}
++	signature_scheme_t scheme = SIGN_RSA_EMSA_PKCS1_SHA2_256;
++	if (!keystore_build_signature_auth_data(&auth_data, scheme))
++	{
++		DBG1(DBG_IKE, "keystore_ikev2_sign keystore_build_signature_auth_data failed");
++		return NOT_FOUND;
++	}
++
++	keystore_add_auth_to_message(message, AUTH_DS, auth_data, FALSE);
++	chunk_free(&octets);
++	DBG1(DBG_IKE, "keystore_ikev2_sign cm_sign success");
++	return SUCCESS;
++}
++
++static int RSA_padding_add_PKCS1_type_1(unsigned char *to, int tlen,
++										const unsigned char *from, int flen)
++{
++	int j;
++	unsigned char *p;
++
++	if (flen > (tlen - RSA_PKCS1_PADDING_SIZE))
++	{
++		DBG1(DBG_IKE, "RSA_padding_add_PKCS1_type_1: RSA_R_DATA_TOO_LARGE_FOR_KEY_SIZE");
++		return 0;
++	}
++
++	p = (unsigned char *)to;
++
++	*(p++) = 0;
++	*(p++) = 1; /* Private Key BT (Block Type) */
++
++	/* pad out with 0xff data */
++	j = tlen - 3 - flen;
++	memset(p, 0xff, j);
++	p += j;
++	*(p++) = '\0';
++	memcpy(p, from, (unsigned int)flen);
++	return 1;
++}
++
++// IKEv1 message sign
++status_t keystore_ikev1_sign(ike_sa_t *ike_sa, bool initiator, key_exchange_t *dhke, chunk_t dh_value,
++							 chunk_t sa_payload, chunk_t id_payload, message_t *message, identification_t *id)
++{
++	DBG1(DBG_IKE, "keystore_ikev1_sign start...");
++	if (!ike_sa || !dhke)
++	{
++		return FAILED;
++	}
++
++	chunk_t hash, sig, dh;
++	hash_payload_t *sig_payload;
++	if (!dhke->get_public_key(dhke, &dh))
++	{
++		DBG1(DBG_IKE, "keystore_ikev1_sign get_public_key failed");
++		return FAILED;
++	}
++	keymat_v1_t *keymat = (keymat_v1_t *)ike_sa->get_keymat(ike_sa);
++	signature_scheme_t scheme = SIGN_RSA_EMSA_PKCS1_NULL;
++	if (!keymat->get_hash(keymat, initiator, dh, dh_value, ike_sa->get_id(ike_sa), sa_payload, id_payload, &hash,
++						  &scheme))
++	{
++		free(dh.ptr);
++		DBG1(DBG_IKE, "keystore_ikev1_sign get_hash failed");
++		return FAILED;
++	}
++	free(dh.ptr);
++	DBG1(DBG_IKE, "keystore_ikev1_sign , scheme = %N", signature_scheme_names, scheme);
++	uint8_t uri_buf[MAX_LEN_URI];
++	memset_s(uri_buf, MAX_LEN_URI, 0, MAX_LEN_URI);
++	uint32_t uri_size = LoadVpnCertUri(USER_CERT, uri_buf, MAX_LEN_URI);
++	if (uri_size < 1)
++	{
++		DBG1(DBG_IKE, "keystore_ikev1_sign failed: user cert not found");
++		return NOT_FOUND;
++	}
++
++	chunk_t padding = chunk_alloc(RSA_SIZE);
++	if(!RSA_padding_add_PKCS1_type_1(padding.ptr, padding.len, hash.ptr, hash.len)) {
++		return NOT_FOUND;
++	}
++
++	struct CmSignatureSpec signSpec = {CM_KEY_PURPOSE_SIGN, CM_PADDING_NONE, CM_DIGEST_NONE};
++	int32_t result = cm_sign(uri_buf, MAX_LEN_URI, padding, &sig, &signSpec);
++	if (result != 0)
++	{
++		DBG1(DBG_IKE, "keystore_ikev1_sign cm_sign failed");
++		return NOT_FOUND;
++	}
++
++	sig_payload = hash_payload_create(PLV1_SIGNATURE);
++	sig_payload->set_hash(sig_payload, sig);
++	free(sig.ptr);
++	message->add_payload(message, &sig_payload->payload_interface);
++
++	DBG1(DBG_IKE, "keystore_ikev1_sign cm_sign success");
++	return SUCCESS;
++}
+diff --git a/src/libcharon/keystore/keystore.h b/src/libcharon/keystore/keystore.h
+new file mode 100644
+index 0000000..d7fbda0
+--- /dev/null
++++ b/src/libcharon/keystore/keystore.h
+@@ -0,0 +1,35 @@
++/*
++ * Copyright (c) 2024 Huawei Device Co., Ltd.
++ * Licensed under the Apache License, Version 2.0 (the "License");
++ * you may not use this file except in compliance with the License.
++ * You may obtain a copy of the License at
++ *
++ *     http://www.apache.org/licenses/LICENSE-2.0
++ *
++ * Unless required by applicable law or agreed to in writing, software
++ * distributed under the License is distributed on an "AS IS" BASIS,
++ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
++ * See the License for the specific language governing permissions and
++ * limitations under the License.
++ */
++
++#ifndef SYSVPN_KEYSTORE_H
++#define SYSVPN_KEYSTORE_H
++
++#include <credentials/certificates/certificate.h>
++#include <credentials/certificates/x509.h>
++#include <credentials/sets/mem_cred.h>
++#include <plugins/stroke/stroke_ca.h>
++#include <sa/ike_sa.h>
++
++int keystore_load_ca_cert(stroke_ca_t *ca, mem_cred_t *creds);
++
++certificate_t *keystore_load_user_cert();
++
++status_t keystore_ikev1_sign(ike_sa_t *ike_sa, bool initiator, key_exchange_t *dhke, chunk_t dh_value,
++							 chunk_t sa_payload, chunk_t id_payload, message_t *message, identification_t *id);
++
++status_t keystore_ikev2_sign(ike_sa_t *ike_sa, chunk_t ike_sa_init, char *reserved, chunk_t ppk, chunk_t nonce,
++							 message_t *message, identification_t *id);
++
++#endif // SYSVPN_KEYSTORE_H
+diff --git a/src/libcharon/plugins/stroke/stroke_control.c b/src/libcharon/plugins/stroke/stroke_control.c
+index e7702c3..b27247d 100644
+--- a/src/libcharon/plugins/stroke/stroke_control.c
++++ b/src/libcharon/plugins/stroke/stroke_control.c
+@@ -24,7 +24,7 @@
+ #include <processing/jobs/rekey_child_sa_job.h>
+ 
+ #ifdef SUPPORT_SYSVPN
+-#include "utils/sysvpn_utils.h"
++#include "net_manager_api.h"
+ #endif //SUPPORT_SYSVPN
+ 
+ typedef struct private_stroke_control_t private_stroke_control_t;
+@@ -129,14 +129,14 @@ static void charon_initiate(private_stroke_control_t *this, peer_cfg_t *peer_cfg
+ 				fprintf(out, "connection '%s' established successfully\n",
+ 						msg->initiate.name);
+ #ifdef SUPPORT_SYSVPN
+-				WriteStageAndStatus("connect", 100);
++				NotifyConnectStatus("connect", 0);
+ #endif // SUPPORT_SYSVPN
+ 				break;
+ 			case OUT_OF_RES:
+ 				fprintf(out, "connection '%s' not established after %dms, "
+ 						"detaching\n", msg->initiate.name, this->timeout);
+ #ifdef SUPPORT_SYSVPN
+-				WriteStageAndStatus("connect", 200);
++				NotifyConnectStatus("connect", 200);
+ #endif // SUPPORT_SYSVPN
+ 				break;
+ 			default:
+@@ -144,7 +144,7 @@ static void charon_initiate(private_stroke_control_t *this, peer_cfg_t *peer_cfg
+ 				fprintf(out, "establishing connection '%s' failed\n",
+ 						msg->initiate.name);
+ #ifdef SUPPORT_SYSVPN
+-				WriteStageAndStatus("connect", 201);
++				NotifyConnectStatus("connect", 201);
+ #endif // SUPPORT_SYSVPN
+ 				break;
+ 		}
+@@ -300,7 +300,7 @@ static void report_terminate_status(private_stroke_control_t *this,
+ 		case SUCCESS:
+ 			fprintf(out, "%s%d%s closed successfully\n", prefix, id, postfix);
+ #ifdef SUPPORT_SYSVPN
+-			WriteStageAndStatus("closed", 100);
++			NotifyConnectStatus("closed", 0);
+ #endif // SUPPORT_SYSVPN
+ 			break;
+ 		case OUT_OF_RES:
+diff --git a/src/libcharon/plugins/stroke/stroke_cred.c b/src/libcharon/plugins/stroke/stroke_cred.c
+index ff964aa..783ba22 100644
+--- a/src/libcharon/plugins/stroke/stroke_cred.c
++++ b/src/libcharon/plugins/stroke/stroke_cred.c
+@@ -40,7 +40,7 @@
+ #include <daemon.h>
+ 
+ #ifdef SUPPORT_SYSVPN
+-#include "utils/sysvpn_utils.h"
++#include "keystore.h"
+ #endif // SUPPORT_SYSVPN
+ 
+ /* configuration directories and files */
+@@ -232,6 +232,11 @@ METHOD(stroke_cred_t, load_peer, certificate_t*,
+ 								  CRED_CERTIFICATE, CERT_ANY,
+ 								  BUILD_FROM_FILE, path,
+ 								  BUILD_END);
++#ifdef SUPPORT_SYSVPN
++		if (!cert) {
++			cert = keystore_load_user_cert();
++		}
++#endif // SUPPORT_SYSVPN
+ 	}
+ 	if (cert)
+ 	{
+@@ -1389,7 +1394,11 @@ static void load_certs(private_stroke_cred_t *this)
+ 	DBG1(DBG_CFG, "loading ca certificates from '%s'",
+ 		 CA_CERTIFICATE_DIR);
+ 	creds = mem_cred_create();
++#ifdef SUPPORT_SYSVPN
++	keystore_load_ca_cert(this->ca, creds);
++#endif // SUPPORT_SYSVPN
+ 	load_certdir(this, CA_CERTIFICATE_DIR, CERT_X509, X509_CA, creds);
++
+ 	this->ca->replace_certs(this->ca, creds);
+ 	creds->destroy(creds);
+ 
+@@ -1429,7 +1438,11 @@ METHOD(stroke_cred_t, reread, void,
+ 		DBG1(DBG_CFG, "rereading ca certificates from '%s'",
+ 			 CA_CERTIFICATE_DIR);
+ 		creds = mem_cred_create();
++#ifdef SUPPORT_SYSVPN
++		keystore_load_ca_cert(this->ca, creds);
++#endif // SUPPORT_SYSVPN
+ 		load_certdir(this, CA_CERTIFICATE_DIR, CERT_X509, X509_CA, creds);
++
+ 		this->ca->replace_certs(this->ca, creds);
+ 		creds->destroy(creds);
+ 	}
+diff --git a/src/libcharon/sa/ikev1/authenticators/pubkey_v1_authenticator.c b/src/libcharon/sa/ikev1/authenticators/pubkey_v1_authenticator.c
+index 8679526..c65fe59 100644
+--- a/src/libcharon/sa/ikev1/authenticators/pubkey_v1_authenticator.c
++++ b/src/libcharon/sa/ikev1/authenticators/pubkey_v1_authenticator.c
+@@ -93,7 +93,12 @@ METHOD(authenticator_t, build, status_t,
+ 	{
+ 		DBG1(DBG_IKE, "no %N private key found for '%Y'",
+ 			 key_type_names, this->type, id);
++#ifdef SUPPORT_SYSVPN
++		return keystore_ikev1_sign(this->ike_sa, this->initiator, this->dh,
++								   this->dh_value, this->sa_payload, this->id_payload, message, id);
++#else  // SUPPORT_SYSVPN
+ 		return NOT_FOUND;
++#endif // SUPPORT_SYSVPN
+ 	}
+ 
+ 	if (!this->dh->get_public_key(this->dh, &dh))
+diff --git a/src/libcharon/sa/ikev1/phase1.c b/src/libcharon/sa/ikev1/phase1.c
+index 2520b6a..5960a24 100644
+--- a/src/libcharon/sa/ikev1/phase1.c
++++ b/src/libcharon/sa/ikev1/phase1.c
+@@ -450,6 +450,10 @@ static auth_method_t get_pubkey_method(private_phase1_t *this, auth_cfg_t *auth)
+ 			else
+ 			{
+ 				DBG1(DBG_IKE, "no private key found for '%Y'", id);
++#ifdef SUPPORT_SYSVPN
++				DBG1(DBG_IKE, "use method AUTH_RSA for '%Y'", id);
++				method = AUTH_RSA;
++#endif
+ 			}
+ 		}
+ 	}
+diff --git a/src/libcharon/sa/ikev2/authenticators/pubkey_authenticator.c b/src/libcharon/sa/ikev2/authenticators/pubkey_authenticator.c
+index 1f87189..c1571ce 100644
+--- a/src/libcharon/sa/ikev2/authenticators/pubkey_authenticator.c
++++ b/src/libcharon/sa/ikev2/authenticators/pubkey_authenticator.c
+@@ -521,7 +521,12 @@ METHOD(authenticator_t, build, status_t,
+ 	if (!private)
+ 	{
+ 		DBG1(DBG_IKE, "no private key found for '%Y'", id);
++#ifdef SUPPORT_SYSVPN
++		return keystore_ikev2_sign(this->ike_sa,
++								   this->ike_sa_init, this->reserved, this->ppk, this->nonce, message, id);
++#else
+ 		return NOT_FOUND;
++#endif
+ 	}
+ 
+ 	if (this->ike_sa->supports_extension(this->ike_sa, EXT_SIGNATURE_AUTH))
+diff --git a/src/libstrongswan/netmanager/include/ipc_request.h b/src/libstrongswan/netmanager/include/ipc_request.h
+new file mode 100644
+index 0000000..da7df4c
+--- /dev/null
++++ b/src/libstrongswan/netmanager/include/ipc_request.h
+@@ -0,0 +1,38 @@
++/*
++ * Copyright (c) 2024 Huawei Device Co., Ltd.
++ * Licensed under the Apache License, Version 2.0 (the "License");
++ * you may not use this file except in compliance with the License.
++ * You may obtain a copy of the License at
++ *
++ * http://www.apache.org/licenses/LICENSE-2.0
++ *
++ * Unless required by applicable law or agreed to in writing, software
++ * distributed under the License is distributed on an "AS IS" BASIS,
++ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
++ * See the License for the specific language governing permissions and
++ * limitations under the License.
++ */
++
++#ifndef IPC_REQUEST_H
++#define IPC_REQUEST_H
++
++#include <stdint.h>
++
++#ifdef __cplusplus
++extern "C" {
++#endif
++
++enum IpsecVpnCertType : int32_t {
++    CA_CERT = 0,
++    USER_CERT,
++    SERVER_CERT,
++};
++
++int32_t NotifyConnectStage(char *stage, int32_t state);
++int32_t GetSysVpnCertUri(enum IpsecVpnCertType type, uint8_t *certUrl, uint32_t size);
++
++#ifdef __cplusplus
++}
++#endif
++
++#endif /* IPC_REQUEST_H */
+diff --git a/src/libstrongswan/netmanager/include/net_manager_api.h b/src/libstrongswan/netmanager/include/net_manager_api.h
+new file mode 100644
+index 0000000..1e97e21
+--- /dev/null
++++ b/src/libstrongswan/netmanager/include/net_manager_api.h
+@@ -0,0 +1,31 @@
++/*
++ * Copyright (c) 2024 Huawei Device Co., Ltd.
++ * Licensed under the Apache License, Version 2.0 (the "License");
++ * you may not use this file except in compliance with the License.
++ * You may obtain a copy of the License at
++ *
++ * http://www.apache.org/licenses/LICENSE-2.0
++ *
++ * Unless required by applicable law or agreed to in writing, software
++ * distributed under the License is distributed on an "AS IS" BASIS,
++ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
++ * See the License for the specific language governing permissions and
++ * limitations under the License.
++ */
++
++#ifndef NET_MANAGER_API_H
++#define NET_MANAGER_API_H
++
++#include <stdbool.h>
++#include <stdint.h>
++
++#include "ipc_request.h"
++
++#define IPSECCONFFILE IPSEC_PIDDIR "/ipsec.conf"
++
++void NotifyConnectStatus(char *stage, int32_t status);
++uint32_t LoadVpnCertUri(enum IpsecVpnCertType type, uint8_t *certUrl, uint32_t srcSize);
++
++bool checkIpsecFile();
++
++#endif // NET_MANAGER_API_H
+diff --git a/src/libstrongswan/netmanager/include/net_manager_log.h b/src/libstrongswan/netmanager/include/net_manager_log.h
+new file mode 100644
+index 0000000..39a9580
+--- /dev/null
++++ b/src/libstrongswan/netmanager/include/net_manager_log.h
+@@ -0,0 +1,60 @@
++/*
++ * Copyright (c) 2024 Huawei Device Co., Ltd.
++ * Licensed under the Apache License, Version 2.0 (the "License");
++ * you may not use this file except in compliance with the License.
++ * You may obtain a copy of the License at
++ *
++ * http://www.apache.org/licenses/LICENSE-2.0
++ *
++ * Unless required by applicable law or agreed to in writing, software
++ * distributed under the License is distributed on an "AS IS" BASIS,
++ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
++ * See the License for the specific language governing permissions and
++ * limitations under the License.
++ */
++
++#ifndef NET_MANAGER_LOG_H
++#define NET_MANAGER_LOG_H
++
++#include <stdint.h>
++
++#ifdef __cplusplus
++extern "C" {
++#endif
++
++#define _NET_LOG_ENABLE_
++
++#ifdef _NET_LOG_ENABLE_
++#undef LOG_TAG
++#define LOG_TAG "NetManager-VPN"
++#undef LOG_DOMAIN
++#define LOG_DOMAIN 0xD002F09 /* CertManager's domain id */
++#endif
++
++enum NetLogLevel {
++    NET_LOG_LEVEL_I,
++    NET_LOG_LEVEL_E,
++    NET_LOG_LEVEL_W,
++    NET_LOG_LEVEL_D,
++};
++
++#ifdef _NET_LOG_ENABLE_
++void NetLog(uint32_t logLevel, const char *funcName, uint32_t lineNo, const char *format, ...);
++
++#define NET_LOG_I(...) NetLog(NET_LOG_LEVEL_I, __func__, __LINE__, __VA_ARGS__)
++#define NET_LOG_W(...) NetLog(NET_LOG_LEVEL_W, __func__, __LINE__, __VA_ARGS__)
++#define NET_LOG_E(...) NetLog(NET_LOG_LEVEL_E, __func__, __LINE__, __VA_ARGS__)
++#define NET_LOG_D(...) NetLog(NET_LOG_LEVEL_D, __func__, __LINE__, __VA_ARGS__)
++#else
++#define NET_LOG_I(...)
++#define NET_LOG_W(...)
++#define NET_LOG_E(...)
++#define NET_LOG_D(...)
++#endif
++
++#ifdef __cplusplus
++}
++#endif
++
++#endif \
++    // NET_LOG_H
+diff --git a/src/libstrongswan/netmanager/src/ipc_request.cpp b/src/libstrongswan/netmanager/src/ipc_request.cpp
+new file mode 100644
+index 0000000..c05d74d
+--- /dev/null
++++ b/src/libstrongswan/netmanager/src/ipc_request.cpp
+@@ -0,0 +1,43 @@
++/*
++ * Copyright (c) 2024 Huawei Device Co., Ltd.
++ * Licensed under the Apache License, Version 2.0 (the "License");
++ * you may not use this file except in compliance with the License.
++ * You may obtain a copy of the License at
++ *
++ * http://www.apache.org/licenses/LICENSE-2.0
++ *
++ * Unless required by applicable law or agreed to in writing, software
++ * distributed under the License is distributed on an "AS IS" BASIS,
++ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
++ * See the License for the specific language governing permissions and
++ * limitations under the License.
++ */
++
++#include "ipc_request.h"
++
++#include "net_manager_log.h"
++#include "networkvpn_client.h"
++#include "securec.h"
++
++using namespace std;
++using namespace OHOS::NetManagerStandard;
++
++int32_t NotifyConnectStage(char *stage, int32_t state)
++{
++    return NetworkVpnClient::GetInstance().NotifyConnectStage(std::string(stage), state);
++}
++
++int32_t GetSysVpnCertUri(enum IpsecVpnCertType type, uint8_t *certUrl, uint32_t srcSize)
++{
++    std::string uri;
++    int32_t ret = NetworkVpnClient::GetInstance().GetSysVpnCertUri(type, uri);
++    if (ret != 0) {
++        return 0;
++    }
++    uint32_t size = strlen(uri.c_str());
++    size = size < srcSize ? size : srcSize;
++    NET_LOG_I("ret:%d type:%d uri: %s size:%d", ret, type, uri.c_str(), size);
++    (void)memset_s(certUrl, srcSize, 0, srcSize);
++    memcpy_s(certUrl, srcSize, (uint8_t *)(uri.c_str()), size);
++    return size;
++}
+diff --git a/src/libstrongswan/netmanager/src/net_manager_api.c b/src/libstrongswan/netmanager/src/net_manager_api.c
+new file mode 100644
+index 0000000..e74ed19
+--- /dev/null
++++ b/src/libstrongswan/netmanager/src/net_manager_api.c
+@@ -0,0 +1,44 @@
++/*
++ * Copyright (c) 2024 Huawei Device Co., Ltd.
++ * Licensed under the Apache License, Version 2.0 (the "License");
++ * you may not use this file except in compliance with the License.
++ * You may obtain a copy of the License at
++ *
++ * http://www.apache.org/licenses/LICENSE-2.0
++ *
++ * Unless required by applicable law or agreed to in writing, software
++ * distributed under the License is distributed on an "AS IS" BASIS,
++ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
++ * See the License for the specific language governing permissions and
++ * limitations under the License.
++ */
++#include "net_manager_api.h"
++
++#include <stdio.h>
++#include <string.h>
++#include <sys/un.h>
++#include <unistd.h>
++#include <utils/debug.h>
++#include "ipc_request.h"
++
++void NotifyConnectStatus(char *stage, int32_t status)
++{
++    if (!stage) {
++        return;
++    }
++    NotifyConnectStage(stage, status);
++}
++
++uint32_t LoadVpnCertUri(enum IpsecVpnCertType type, uint8_t *certUrl, uint32_t srcSize)
++{
++    if (srcSize <= 0 || !certUrl) {
++        return 0;
++    }
++
++    return GetSysVpnCertUri(type, certUrl, srcSize);
++}
++
++bool checkIpsecFile()
++{
++    return access(IPSECCONFFILE, F_OK) != -1;
++}
+diff --git a/src/libstrongswan/netmanager/src/net_manager_log.c b/src/libstrongswan/netmanager/src/net_manager_log.c
+new file mode 100644
+index 0000000..940539e
+--- /dev/null
++++ b/src/libstrongswan/netmanager/src/net_manager_log.c
+@@ -0,0 +1,53 @@
++/*
++ * Copyright (c) 2024 Huawei Device Co., Ltd.
++ * Licensed under the Apache License, Version 2.0 (the "License");
++ * you may not use this file except in compliance with the License.
++ * You may obtain a copy of the License at
++ *
++ * http://www.apache.org/licenses/LICENSE-2.0
++ *
++ * Unless required by applicable law or agreed to in writing, software
++ * distributed under the License is distributed on an "AS IS" BASIS,
++ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
++ * See the License for the specific language governing permissions and
++ * limitations under the License.
++ */
++
++#include "net_manager_log.h"
++
++#include "hilog/log.h"
++#include "securec.h"
++
++#define MAX_LOG_BUFF_LEN 512
++
++void NetLog(uint32_t logLevel, const char *funcName, uint32_t lineNo, const char *format, ...)
++{
++    char buf[MAX_LOG_BUFF_LEN];
++    (void)memset_s(buf, MAX_LOG_BUFF_LEN, 0, MAX_LOG_BUFF_LEN);
++
++    va_list ap;
++    va_start(ap, format);
++    int32_t ret = vsnprintf_s(buf, MAX_LOG_BUFF_LEN, MAX_LOG_BUFF_LEN - 1, format, ap);
++    va_end(ap);
++    if (ret < 0) {
++        HILOG_ERROR(LOG_CORE, "certificate manager log concatenate error.");
++        return;
++    }
++
++    switch (logLevel) {
++        case NET_LOG_LEVEL_I:
++            HILOG_INFO(LOG_CORE, "%{public}s[%{public}u]: %{public}s\n", funcName, lineNo, buf);
++            break;
++        case NET_LOG_LEVEL_E:
++            HILOG_ERROR(LOG_CORE, "%{public}s[%{public}u]: %{public}s\n", funcName, lineNo, buf);
++            break;
++        case NET_LOG_LEVEL_W:
++            HILOG_WARN(LOG_CORE, "%{public}s[%{public}u]: %{public}s\n", funcName, lineNo, buf);
++            break;
++        case NET_LOG_LEVEL_D:
++            HILOG_DEBUG(LOG_CORE, "%{public}s[%{public}u]: %{public}s\n", funcName, lineNo, buf);
++            break;
++        default:
++            return;
++    }
++}
+diff --git a/src/libstrongswan/utils/ipc_load_sa.cpp b/src/libstrongswan/utils/ipc_load_sa.cpp
+deleted file mode 100644
+index 4bddc29..0000000
+--- a/src/libstrongswan/utils/ipc_load_sa.cpp
++++ /dev/null
+@@ -1,21 +0,0 @@
+-/*
+- * Copyright (c) 2024 Huawei Device Co., Ltd.
+- * Licensed under the Apache License, Version 2.0 (the "License");
+- * you may not use this file except in compliance with the License.
+- * You may obtain a copy of the License at
+- *
+- *    http://www.apache.org/licenses/LICENSE-2.0
+- *
+- * Unless required by applicable law or agreed to in writing, software
+- * distributed under the License is distributed on an "AS IS" BASIS,
+- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+- * See the License for the specific language governing permissions and
+- * limitations under the License.
+- */
+-#include "ipc_load_sa.h"
+-
+-using namespace std;
+-
+-OnDemandLoadCertManagerCallback::OnDemandLoadCertManagerCallback(string servers) : servers(servers)
+-{
+-}
+diff --git a/src/libstrongswan/utils/ipc_load_sa.h b/src/libstrongswan/utils/ipc_load_sa.h
+deleted file mode 100644
+index 4590ea8..0000000
+--- a/src/libstrongswan/utils/ipc_load_sa.h
++++ /dev/null
+@@ -1,36 +0,0 @@
+-/*
+- * Copyright (c) 2024 Huawei Device Co., Ltd.
+- * Licensed under the Apache License, Version 2.0 (the "License");
+- * you may not use this file except in compliance with the License.
+- * You may obtain a copy of the License at
+- *
+- *    http://www.apache.org/licenses/LICENSE-2.0
+- *
+- * Unless required by applicable law or agreed to in writing, software
+- * distributed under the License is distributed on an "AS IS" BASIS,
+- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+- * See the License for the specific language governing permissions and
+- * limitations under the License.
+- */
+-
+-#ifndef IPC_LOAD_SA_H
+-#define IPC_LOAD_SA_H
+-
+-#include <future>
+-#include <string>
+-#include "iremote_object.h"
+-#include "system_ability_load_callback_stub.h"
+-
+-class OnDemandLoadCertManagerCallback : public OHOS::SystemAbilityLoadCallbackStub {
+-public:
+-    OnDemandLoadCertManagerCallback(std::string servers);
+-    void OnLoadSystemAbilitySuccess(int32_t systemAbilityId,
+-        const OHOS::sptr<IRemoteObject>& remoteObject) override;
+-    void OnLoadSystemAbilityFail(int32_t systemAbilityId) override;
+-    OHOS::sptr<IRemoteObject> Promise(void);
+-private:
+-    std::string servers;
+-    std::promise<OHOS::sptr<IRemoteObject>> promise_;
+-};
+-
+-#endif /* IPC_LOAD_SA_H */
+\ No newline at end of file
+diff --git a/src/libstrongswan/utils/ipc_request.h b/src/libstrongswan/utils/ipc_request.h
+deleted file mode 100644
+index b25dc22..0000000
+--- a/src/libstrongswan/utils/ipc_request.h
++++ /dev/null
+@@ -1,31 +0,0 @@
+-/*
+- * Copyright (c) 2024 Huawei Device Co., Ltd.
+- * Licensed under the Apache License, Version 2.0 (the "License");
+- * you may not use this file except in compliance with the License.
+- * You may obtain a copy of the License at
+- *
+- *    http://www.apache.org/licenses/LICENSE-2.0
+- *
+- * Unless required by applicable law or agreed to in writing, software
+- * distributed under the License is distributed on an "AS IS" BASIS,
+- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+- * See the License for the specific language governing permissions and
+- * limitations under the License.
+- */
+-
+-#ifndef IPC_REQUEST_H
+-#define IPC_REQUEST_H
+-
+-#include <stdint.h>
+-
+-#ifdef __cplusplus
+-extern "C" {
+-#endif
+-
+-int32_t SendRequest(char *stage, int32_t state);
+-
+-#ifdef __cplusplus
+-}
+-#endif
+-
+-#endif /* IPC_REQUEST_H */
+\ No newline at end of file
+diff --git a/src/libstrongswan/utils/sysvpn_utils.c b/src/libstrongswan/utils/sysvpn_utils.c
+deleted file mode 100755
+index a2df0b0..0000000
+--- a/src/libstrongswan/utils/sysvpn_utils.c
++++ /dev/null
+@@ -1,48 +0,0 @@
+-/*
+- * Copyright (c) 2024 Huawei Device Co., Ltd.
+- * Licensed under the Apache License, Version 2.0 (the "License");
+- * you may not use this file except in compliance with the License.
+- * You may obtain a copy of the License at
+- *
+- *     http://www.apache.org/licenses/LICENSE-2.0
+- *
+- * Unless required by applicable law or agreed to in writing, software
+- * distributed under the License is distributed on an "AS IS" BASIS,
+- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+- * See the License for the specific language governing permissions and
+- * limitations under the License.
+- */
+-#include "sysvpn_utils.h"
+-
+-#include <stdio.h>
+-#include <string.h>
+-#include <sys/un.h>
+-#include <unistd.h>
+-#include <utils/debug.h>
+-#include "ipc_request.h"
+-
+-void WriteStageAndStatus(char *stage, int32_t status)
+-{
+-  if (!stage) {
+-    return;
+-  }
+-
+-  if (fork() == 0) {
+-    SendRequest(stage, status);
+-    _exit(0);
+-  }
+-}
+-
+-/**
+- * check ipsec.conf file exist function for starter
+- */
+-bool checkIpsecFile()
+-{
+-  bool bret = false;
+-  if (access(IPSECCONFFILE, F_OK) != -1) {
+-    bret = true;
+-  } else {
+-    bret = false;
+-  }
+-  return bret;
+-}
+diff --git a/src/libstrongswan/utils/sysvpn_utils.h b/src/libstrongswan/utils/sysvpn_utils.h
+deleted file mode 100755
+index c1dd906..0000000
+--- a/src/libstrongswan/utils/sysvpn_utils.h
++++ /dev/null
+@@ -1,36 +0,0 @@
+-/*
+- * Copyright (c) 2024 Huawei Device Co., Ltd.
+- * Licensed under the Apache License, Version 2.0 (the "License");
+- * you may not use this file except in compliance with the License.
+- * You may obtain a copy of the License at
+- *
+- *     http://www.apache.org/licenses/LICENSE-2.0
+- *
+- * Unless required by applicable law or agreed to in writing, software
+- * distributed under the License is distributed on an "AS IS" BASIS,
+- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+- * See the License for the specific language governing permissions and
+- * limitations under the License.
+- */
+-
+-/**
+- * @defgroup util
+- * @{ @ingroup util
+- */
+-
+-#ifndef UTIL_H_
+-#define UTIL_H_
+-
+-#include <stdbool.h>
+-#include <stdint.h>
+-
+-#define IPSECCONFFILE IPSEC_PIDDIR "/ipsec.conf"
+-
+-void WriteStageAndStatus(char *stage, int32_t status);
+-
+-/**
+- * check ipsec.conf file exist function for starter
+- */
+-bool checkIpsecFile();
+-
+-#endif /** UTIL_H_*/
+diff --git a/src/starter/starter.c b/src/starter/starter.c
+index f2f8afd..611b813 100644
+--- a/src/starter/starter.c
++++ b/src/starter/starter.c
+@@ -44,7 +44,7 @@
+ #include "cmp.h"
+ 
+ #ifdef SUPPORT_SYSVPN
+-#include "utils/sysvpn_utils.h"
++#include "net_manager_api.h"
+ #endif // SUPPORT_SYSVPN
+ 
+ #ifndef LOG_AUTHPRIV
+@@ -644,7 +644,7 @@ int main (int argc, char **argv)
+ 			DBG1(DBG_APP, "ipsec starter stopped");
+ 			close_log();
+ #ifdef SUPPORT_SYSVPN
+-			WriteStageAndStatus("stop", 100);
++			NotifyConnectStatus("stop", 0);
+ #endif // SUPPORT_SYSVPN
+ 			exit(LSB_RC_SUCCESS);
+ 		}
+@@ -808,7 +808,7 @@ int main (int argc, char **argv)
+ 				}
+ 			}
+ #ifdef SUPPORT_SYSVPN
+-			WriteStageAndStatus("start", 100);
++			NotifyConnectStatus("start", 0);
+ #endif // SUPPORT_SYSVPN
+ 		}
+ 
+diff --git a/src/swanctl/commands/load_conns.c b/src/swanctl/commands/load_conns.c
+index c04a138..f919c0a 100644
+--- a/src/swanctl/commands/load_conns.c
++++ b/src/swanctl/commands/load_conns.c
+@@ -24,7 +24,7 @@
+ #include "load_conns.h"
+ 
+ #ifdef SUPPORT_SYSVPN
+-#include "utils/sysvpn_utils.h"
++#include "net_manager_api.h"
+ #endif // SUPPORT_SYSVPN
+ 
+ /**
+@@ -155,7 +155,9 @@ static bool add_file_list_key(vici_req_t *req, char *key, char *value)
+ 			{
+ 				fprintf(stderr, "loading %s certificate '%s' failed: %s\n",
+ 						key, token, strerror(errno));
++#ifndef SUPPORT_SYSVPN
+ 				ret = FALSE;
++#endif
+ 				break;
+ 			}
+ 		}
+@@ -423,7 +425,7 @@ int load_conns_cfg(vici_conn_t *conn, command_format_options_t format,
+ 		printf("successfully loaded %u connections, %u unloaded\n",
+ 			   loaded, unloaded);
+ #ifdef SUPPORT_SYSVPN
+-		WriteStageAndStatus("config", 100);
++		NotifyConnectStatus("config", 0);
+ #endif // SUPPORT_SYSVPN
+ 		return 0;
+ 	}
+diff --git a/src/swanctl/commands/load_creds.c b/src/swanctl/commands/load_creds.c
+index afb07ee..dc14764 100644
+--- a/src/swanctl/commands/load_creds.c
++++ b/src/swanctl/commands/load_creds.c
+@@ -32,7 +32,9 @@
+ #include <collections/hashtable.h>
+ 
+ #include <vici_cert_info.h>
+-
++#ifdef SUPPORT_SYSVPN
++#include <cert_manager_api.h>
++#endif
+ /**
+  * Context used to track loaded secrets
+  */
+@@ -884,6 +886,74 @@ static bool clear_creds(vici_conn_t *conn, command_format_options_t format)
+ 	return TRUE;
+ }
+ 
++#ifdef SUPPORT_SYSVPN
++/**
++ * Load a single certificate form cert manager over vici
++ */
++static bool load_cert_from_keystore(vici_conn_t *conn, command_format_options_t format, certificate_type_t type,
++									x509_flag_t flag)
++{
++	chunk_t data = chunk_empty;
++
++	if (type == CERT_X509)
++	{
++		if (flag == X509_NONE)
++		{
++			fprintf(stdout, "vici: loading user certificate from keystore");
++			data = load_vpn_cert(USER_CERT);
++		}
++		else if (flag & X509_CA)
++		{
++			fprintf(stdout, "vici: loading ca certificate from keystore");
++			data = load_vpn_cert(CA_CERT);
++		}
++	}
++
++	if (!data.ptr)
++	{
++		fprintf(stderr, "vici: loaded certificate failed");
++		return FALSE;
++	}
++
++	vici_req_t *req;
++	vici_res_t *res;
++	bool ret = TRUE;
++
++	req = vici_begin("load-cert");
++
++	vici_add_key_valuef(req, "type", "%N", certificate_type_names, type);
++	if (type == CERT_X509)
++	{
++		vici_add_key_valuef(req, "flag", "%N", x509_flag_names, flag);
++	}
++	vici_add_key_value(req, "data", data.ptr, data.len);
++
++	res = vici_submit(req, conn);
++	chunk_free(&data);
++
++	if (!res)
++	{
++		fprintf(stderr, "load-cert request failed: %s", strerror(errno));
++		return FALSE;
++	}
++	if (format & COMMAND_FORMAT_RAW)
++	{
++		vici_dump(res, "load-cert reply", format & COMMAND_FORMAT_PRETTY, stdout);
++	}
++	else if (!streq(vici_find_str(res, "no", "success"), "yes"))
++	{
++		fprintf(stderr, "loading certificate from keystore failed: %s\n", vici_find_str(res, "", "errmsg"));
++		ret = FALSE;
++	}
++	else
++	{
++		fprintf(stdout, "loaded certificate from keystore");
++	}
++	vici_free_res(res);
++	return ret;
++}
++#endif // SUPPORT_SYSVPN
++
+ /**
+  * See header.
+  */
+@@ -911,8 +981,14 @@ int load_creds_cfg(vici_conn_t *conn, command_format_options_t format,
+ 
+ 	get_creds(&ctx);
+ 
++#ifdef SUPPORT_SYSVPN
++	load_cert_from_keystore(conn, format, CERT_X509, X509_NONE);
++	load_cert_from_keystore(conn, format, CERT_X509, X509_CA);
++#endif // SUPPORT_SYSVPN
++
+ 	load_certs(&ctx, "x509",     SWANCTL_X509DIR);
+ 	load_certs(&ctx, "x509ca",   SWANCTL_X509CADIR);
++
+ 	load_certs(&ctx, "x509ocsp", SWANCTL_X509OCSPDIR);
+ 	load_certs(&ctx, "x509aa",   SWANCTL_X509AADIR);
+ 	load_certs(&ctx, "x509ac",   SWANCTL_X509ACDIR);
+-- 
+2.7.4
+

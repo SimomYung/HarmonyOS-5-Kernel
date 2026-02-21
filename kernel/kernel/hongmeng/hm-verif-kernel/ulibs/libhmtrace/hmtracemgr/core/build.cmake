@@ -1,0 +1,5 @@
+add_hm_library(client.c)
+add_hm_library(server.c)
+add_hm_library(hmtracemgr.c)
+add_hm_library(hmtracemgr_core.c)
+add_hm_library(hmtracemgr_if.c)

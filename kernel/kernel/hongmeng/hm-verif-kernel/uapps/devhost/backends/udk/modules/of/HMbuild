@@ -1,0 +1,36 @@
+# Copyright (c) Huawei Technologies Co., Ltd. 2022. All rights reserved.
+# Description: HMbuild for udk
+# Author: Huawei OS Kernel Lab
+# Create: Wed Mar 02 11:51:30 2022
+
+lib-dynamic-y: of_udk
+
+findpkg: Libfdt
+
+include-of_udk-y: ../../include
+
+cflags-of_udk-y: -DUDK_MODULE
+
+src-of_udk-y: of_udk.c
+src-of_udk-y: of_fdt.c
+src-of_udk-y: of_dev.c
+src-of_udk-y: spec_dev.c
+
+linklib-of_udk-y: -Wl,--exclude-libs=ALL
+linklib-of_udk-y: -Wl,--gc-sections
+linklib-of_udk-y: Libfdt::Libfdt_static
+
+# of.proxy.udk
+lib-dynamic-y: of.proxy
+
+include-of.proxy-y: ../../include
+
+cflags-of.proxy-y: -DUDK_MODULE
+
+src-of.proxy-y: of_fdt.c
+src-of.proxy-y: of_dev.c
+src-of.proxy-y: of_proxy.c
+
+linklib-of.proxy-y: -Wl,--exclude-libs=ALL
+linklib-of.proxy-y: -Wl,--gc-sections
+linklib-of.proxy-y: Libfdt::Libfdt_static

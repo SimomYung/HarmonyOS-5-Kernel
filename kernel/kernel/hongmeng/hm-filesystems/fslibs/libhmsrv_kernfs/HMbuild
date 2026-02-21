@@ -1,0 +1,17 @@
+# Copyright (c) Huawei Technologies Co., Ltd. 2021-2021. All rights reserved.
+# Description: HMbuild
+# Author: Huawei OS Kernel Lab
+# Create: Wed Sep 01 17:03:03 2021
+
+lib-static-y: hmsrv_kernfs
+install-hmsrv_kernfs-y: LIBDIR
+
+lib-dynamic-y: hmsrv_kernfs_shared
+output-hmsrv_kernfs_shared: hmsrv_kernfs
+install-hmsrv_kernfs_shared-y: LIBDIR
+
+subdir-y: src
+
+# install header
+installinc: include/fs_procfs.h
+installinc: include/fs_sysfs.h

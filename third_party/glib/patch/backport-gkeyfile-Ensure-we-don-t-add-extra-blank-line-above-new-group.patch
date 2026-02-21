@@ -1,0 +1,59 @@
+From c49502582faedecc7020155d95b16c7a1d78d432 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Ga=C3=ABl=20Bonithon?= <gael@xfce.org>
+Date: Thu, 13 Jul 2023 10:06:21 +0200
+Subject: [PATCH] gkeyfile: Ensure we don't add extra blank line above new
+ group
+
+A forgotten edge case in 86b4b045: when the last value of the last group
+has been added via g_key_file_set_value() and it contains line breaks.
+The best we can do in this case is probably to do nothing.
+
+Closes: #3047
+Fixes: 86b4b0453ea3a814167d4a5f7a4031d467543716
+---
+ glib/gkeyfile.c      |  6 +++++-
+ glib/tests/keyfile.c | 10 ++++++++++
+ 2 files changed, 15 insertions(+), 1 deletion(-)
+
+diff --git a/glib/gkeyfile.c b/glib/gkeyfile.c
+index 145136706f..0e21ab4f14 100644
+--- a/glib/gkeyfile.c
++++ b/glib/gkeyfile.c
+@@ -3858,8 +3858,12 @@ g_key_file_add_group (GKeyFile    *key_file,
+     {
+       /* separate groups by a blank line if we don't keep comments or group is created */
+       GKeyFileGroup *next_group = key_file->groups->next->data;
++      GKeyFileKeyValuePair *pair;
++      if (next_group->key_value_pairs != NULL)
++        pair = next_group->key_value_pairs->data;
++
+       if (next_group->key_value_pairs == NULL ||
+-          ((GKeyFileKeyValuePair *) next_group->key_value_pairs->data)->key != NULL)
++          (pair->key != NULL && !g_strstr_len (pair->value, -1, "\n")))
+         {
+           GKeyFileKeyValuePair *pair = g_new (GKeyFileKeyValuePair, 1);
+           pair->key = NULL;
+diff --git a/glib/tests/keyfile.c b/glib/tests/keyfile.c
+index d3eed29841..80cdc93d8f 100644
+--- a/glib/tests/keyfile.c
++++ b/glib/tests/keyfile.c
+@@ -480,6 +480,16 @@ test_comments (void)
+                G_KEY_FILE_ERROR_GROUP_NOT_FOUND);
+   g_assert_null (comment);
+ 
++  g_test_bug ("https://gitlab.gnome.org/GNOME/glib/-/issues/3047");
++
++  /* check if we don't add a blank line above new group if last value of preceding
++   * group was added via g_key_file_set_value() and contains line breaks */
++  g_key_file_set_value (keyfile, "group4", "key1", "value1\n\n# group comment");
++  g_key_file_set_string (keyfile, "group5", "key1", "value1");
++  comment = g_key_file_get_comment (keyfile, "group5", NULL, &error);
++  check_no_error (&error);
++  g_assert_null (comment);
++
+   g_key_file_free (keyfile);
+ }
+ 
+-- 
+GitLab
+

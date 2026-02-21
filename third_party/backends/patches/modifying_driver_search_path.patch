@@ -1,0 +1,118 @@
+diff --git a/backend/dll.c b/backend/dll.c
+index bf34c4f6d..9b13d3a59 100644
+--- a/backend/dll.c
++++ b/backend/dll.c
+@@ -292,6 +292,46 @@ static const char *op_name[] = {
+ };
+ #endif /* __BEOS__ */
+ 
++#if defined(HAVE_SCAN_SERVICE)
++static int has_suffix(const char *filename, const char *suffix)
++{
++    size_t len_filename = strlen(filename);
++    size_t len_suffix = strlen(suffix);
++    return len_suffix <= len_filename && strcmp(filename + len_filename - len_suffix, suffix) == 0;
++}
++
++static void find_libname_by_drivername(char* libname, char* dir, char* drivername)
++{
++    DBG(1, "%s: begin", __func__);
++    if (libname == NULL || dir == NULL || drivername == NULL) {
++        DBG(2, "%s: input parameter is a nullptr.\n", __func__);
++        return;
++    }
++    char driver[PATH_MAX] = {0};
++    snprintf (driver, sizeof (driver), "libsane-%s.z.so", drivername);
++    DIR *backends_dir = opendir(dir);
++    if (backends_dir == NULL) {
++        DBG(2, "open dir %s error\n", backends_dir);
++        return;
++    }
++    struct dirent *entry;
++    char full_path[PATH_MAX] = {0};
++    while ((entry = readdir(backends_dir)) != NULL) {
++        if (strcmp(entry->d_name, ".") != 0 && strcmp(entry->d_name, "..") != 0) {
++            memset(full_path, 0, PATH_MAX);
++            snprintf(full_path, PATH_MAX, "%s/" "%s", dir, entry->d_name);
++            DBG(1, "full_path %s\n", full_path);
++            if (has_suffix(full_path, driver)) {
++                memset(libname, 0, PATH_MAX);
++                strncpy(libname, full_path, PATH_MAX);
++                break;
++            }
++        }
++    }
++    closedir(backends_dir);
++}
++#endif /* HAVE_SCAN_SERVICE */
++
+ static void *
+ op_unsupported (void)
+ {
+@@ -498,6 +538,8 @@ load (struct backend *be)
+       snprintf (libname, sizeof (libname), "%s/" PREFIX "%.2s%.5s" POSTFIX,
+ 		dir, be->name, strlen(be->name)>7 ? (be->name)+strlen(be->name)-5 :
+                                             (be->name)+2, V_MAJOR);
++#elif defined (HAVE_SCAN_SERVICE)
++    find_libname_by_drivername(libname, dir, be->name);
+ #else
+       snprintf (libname, sizeof (libname), "%s/" PREFIX "%s" POSTFIX,
+ 		dir, be->name, V_MAJOR);
+@@ -807,6 +849,30 @@ read_config (const char *conffile)
+   fclose (fp);
+ }
+ 
++#if defined(HAVE_SCAN_SERVICE)
++static void
++read_configs(const char *conffile)
++{
++  const char* dir = "/data/service/el1/public/print_service/sane/config";
++  DBG(1, "%s: config_dir : %s ", __func__, dir);
++  DIR *config_dir = opendir(dir);
++  if (config_dir == NULL) {
++    DBG(1, "sane_init/read_configs: opendir failed: %s\n", strerror (errno));
++    return;
++  }
++  struct dirent *entry;
++  while ((entry = readdir(config_dir)) != NULL) {
++      // ignore '.' and '..'
++      if (strcmp(entry->d_name, ".") != 0 && strcmp(entry->d_name, "..") != 0) {
++          DBG(2, "find dll_config file : %s\n", entry->d_name);
++          if (has_suffix(entry->d_name, conffile)) {
++              read_config(entry->d_name);
++          }
++      }
++  }
++}
++#endif
++
+ static void
+ read_dlld (void)
+ {
+@@ -931,8 +997,11 @@ sane_init (SANE_Int * version_code, SANE_Auth_Callback authorize)
+    * Read dll.d first, so that the extras backends will be tried last
+    */
+   read_dlld ();
++#ifdef HAVE_SCAN_SERVICE
++  read_configs(DLL_CONFIG_FILE);
++#else
+   read_config (DLL_CONFIG_FILE);
+-
++#endif
+   fp = sanei_config_open (DLL_ALIASES_FILE);
+   if (!fp)
+     return SANE_STATUS_GOOD;	/* don't insist on aliases file */
+diff --git a/include/sane/config.h b/include/sane/config.h
+index 20dfa104b..206a4147e 100644
+--- a/include/sane/config.h
++++ b/include/sane/config.h
+@@ -209,6 +209,9 @@
+ /* Define to 1 if you have libusb-1.0 */
+ #define HAVE_LIBUSB 1
+ 
++/* Define to 1 if you have scan_service */
++#define HAVE_SCAN_SERVICE 1
++
+ /* Define to 1 if you have libusb-0.1 */
+ /* #undef HAVE_LIBUSB_LEGACY */
+ 

@@ -1,0 +1,8 @@
+# Copyright (c) Huawei Technologies Co., Ltd. 2022. All rights reserved.
+# Description: HMbuild for udk
+# Author: Huawei OS Kernel Lab
+# Create: Wed Mar 02 11:51:30 2022
+
+subdir-y: of
+subdir-y: tty
+subdir-CONFIG_HMBUILD_PROFILE_DEBUG: udktest

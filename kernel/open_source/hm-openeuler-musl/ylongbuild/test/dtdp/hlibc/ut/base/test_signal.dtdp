@@ -1,0 +1,306 @@
+{
+    "root": {
+        "data": {
+            "id": "cihrnloxkg80",
+            "created": 1647075836854,
+            "text": "信号模块"
+        },
+        "children": [
+            {
+                "data": {
+                    "id": "cihrokmsiqo0",
+                    "created": 1647075912912,
+                    "text": "注册信号回调",
+                    "layout_mind_offset": {
+                        "x": -45,
+                        "y": -145
+                    },
+                    "usecase": 2
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "cihrq95g9200",
+                            "created": 1647076044648,
+                            "text": "SIGSYS信号注册",
+                            "usecase": 4,
+                            "author": "j00576234",
+                            "showId": "00001"
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "cijm07mxuxs0",
+                                    "created": 1647263018247,
+                                    "text": "返回失败",
+                                    "usecase": 5
+                                },
+                                "children": []
+                            }
+                        ]
+                    },
+                    {
+                        "data": {
+                            "id": "cihrrd7j44g0",
+                            "created": 1647076131845,
+                            "text": "其他信号注册",
+                            "usecase": 4,
+                            "author": "j00576234",
+                            "showId": "00002"
+                        },
+                        "children": []
+                    },
+                    {
+                        "data": {
+                            "id": "cihs4c7amhs0",
+                            "created": 1647077148388,
+                            "text": "信号值非法",
+                            "usecase": 4,
+                            "author": "j00576234",
+                            "showId": "00012"
+                        },
+                        "children": []
+                    }
+                ]
+            },
+            {
+                "data": {
+                    "id": "cihrruq28uw0",
+                    "created": 1647076169970,
+                    "text": "触发信号",
+                    "layout_mind_offset": {
+                        "x": -48,
+                        "y": -150
+                    },
+                    "usecase": 2
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "cihrsrijjww0",
+                            "created": 1647076241350,
+                            "text": "raise",
+                            "usecase": 4,
+                            "author": "j00576234",
+                            "showId": "00003"
+                        },
+                        "children": []
+                    },
+                    {
+                        "data": {
+                            "id": "cihrsugiwh40",
+                            "created": 1647076247758,
+                            "text": "kill",
+                            "usecase": 4,
+                            "author": "j00576234",
+                            "showId": "00004"
+                        },
+                        "children": []
+                    },
+                    {
+                        "data": {
+                            "id": "cihrsxafas80",
+                            "created": 1647076253919,
+                            "text": "pthread_kill",
+                            "usecase": 4,
+                            "author": "j00576234",
+                            "showId": "00005",
+                            "layout_right_offset": {
+                                "x": 3,
+                                "y": 0
+                            }
+                        },
+                        "children": []
+                    }
+                ]
+            },
+            {
+                "data": {
+                    "id": "cihrtbg5e080",
+                    "created": 1647076284741,
+                    "text": "等待信号 sigwait",
+                    "layout_mind_offset": {
+                        "x": -57,
+                        "y": -153
+                    },
+                    "usecase": 2
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "cihrtmiijk00",
+                            "created": 1647076308828,
+                            "text": "信号唤醒次数",
+                            "usecase": 4,
+                            "author": "j00576234",
+                            "showId": "00006",
+                            "layout_right_offset": {
+                                "x": 2,
+                                "y": -6
+                            }
+                        },
+                        "children": []
+                    }
+                ]
+            },
+            {
+                "data": {
+                    "id": "cihru1vg4fs0",
+                    "created": 1647076342262,
+                    "text": "信号配置",
+                    "layout_mind_offset": {
+                        "x": 679,
+                        "y": 191
+                    },
+                    "usecase": 2
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "cihruic98m80",
+                            "created": 1647076378107,
+                            "text": "阻塞信号",
+                            "usecase": 4,
+                            "author": "j00576234",
+                            "showId": "00007"
+                        },
+                        "children": []
+                    },
+                    {
+                        "data": {
+                            "id": "cihrumt79fk0",
+                            "created": 1647076387839,
+                            "text": "接受信号",
+                            "usecase": 4,
+                            "author": "j00576234",
+                            "showId": "00008"
+                        },
+                        "children": []
+                    }
+                ]
+            },
+            {
+                "data": {
+                    "id": "cihrwp2v4iw0",
+                    "created": 1647076549505,
+                    "text": "组合行为",
+                    "layout_mind_offset": {
+                        "x": 400,
+                        "y": 214
+                    }
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "cihrz6iudxc0",
+                            "created": 1647076744205,
+                            "text": "进程全部线程阻塞信号，线程进行sigwait ",
+                            "layout_right_offset": {
+                                "x": 550,
+                                "y": -11
+                            },
+                            "expandState": "expand",
+                            "usecase": 4,
+                            "author": "j00576234",
+                            "showId": "00009"
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "cihs0cpn9l40",
+                                    "created": 1647076836041,
+                                    "text": "阻塞线程唤醒，不执行信号回调函数",
+                                    "layout_right_offset": {
+                                        "x": 720,
+                                        "y": -3
+                                    },
+                                    "usecase": 5
+                                },
+                                "children": []
+                            }
+                        ]
+                    },
+                    {
+                        "data": {
+                            "id": "cihryo83puo0",
+                            "created": 1647076704373,
+                            "text": "进程部分线程阻塞信号，其中有线程进行sigwait",
+                            "layout_right_offset": {
+                                "x": 575,
+                                "y": 39
+                            },
+                            "usecase": 4,
+                            "author": "j00576234",
+                            "showId": "00010"
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "cihs0qpmv3k0",
+                                    "created": 1647076866515,
+                                    "text": "阻塞线程被唤醒，且信号回调函数执行",
+                                    "layout_right_offset": {
+                                        "x": 744,
+                                        "y": 0
+                                    },
+                                    "usecase": 5
+                                },
+                                "children": []
+                            }
+                        ]
+                    },
+                    {
+                        "data": {
+                            "id": "cihs2rv1o6g0",
+                            "created": 1647077025747,
+                            "text": "进程全部线程阻塞信号，信号先抵达进程，然后线程进行sigwait",
+                            "layout_right_offset": {
+                                "x": 662,
+                                "y": -77
+                            },
+                            "usecase": 4,
+                            "author": "j00576234",
+                            "showId": "00011"
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "cihs3em9c3c0",
+                                    "created": 1647077075282,
+                                    "text": "线程不阻塞直接返回，不执行信号回调函数",
+                                    "layout_right_offset": {
+                                        "x": 849,
+                                        "y": -5
+                                    },
+                                    "usecase": 5
+                                },
+                                "children": []
+                            }
+                        ]
+                    },
+                    {
+                        "data": {
+                            "id": "cijm2uuxf740",
+                            "created": 1647263225524,
+                            "text": "新创建线程继承父线程信号配置",
+                            "layout_right_offset": {
+                                "x": 492,
+                                "y": -19
+                            },
+                            "usecase": 4,
+                            "author": "j00576234",
+                            "showId": "00013"
+                        },
+                        "children": []
+                    }
+                ]
+            }
+        ]
+    },
+    "templatePath": null,
+    "singleTemplatePath": null,
+    "testcaseFilePath": "",
+    "template": "default",
+    "theme": "fresh-blue",
+    "version": "1.4.43"
+}

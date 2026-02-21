@@ -1,0 +1,68 @@
+config FILE_BASED_ENCRYPTO
+	bool "FEB3 support"
+	default n
+	help
+	  Say yes here to support the FBE3
+
+config FBE3_1
+	bool "FEB3_1 support with UFSC KM"
+	depends on FILE_BASED_ENCRYPTO
+	default n
+	help
+	  Say yes here to support the FBE3_1 ufsc KM
+
+config FBE4_UECE_FOR_HM_FSCRYPTO
+	bool "FEB4 for hm uece support"
+	depends on FILE_BASED_ENCRYPTO
+	default n
+	help
+	  Say yes here to support the FBE4 for hm uece
+
+config FBE_DE_DOUBLE_TO_SINGLE
+	bool "FEB for double to single de user id has changed"
+	depends on FILE_BASED_ENCRYPTO
+	default n
+	help
+	  Say yes here to support the FBE for hm
+
+config FILE_BASED_ENCRYPTO_FOR_HM_FSCRYPTO
+	bool "FEB3 for fs crypto support"
+	default n
+	help
+	  Say yes here to support the FBE3 for fs crypto
+
+config FILE_BASED_ENCRYPTO_DBG
+	bool "FEB3 debug support"
+	depends on FILE_BASED_ENCRYPTO
+	depends on DFX_DEBUG_FS
+	default n
+	help
+	  Say yes here to support the FBE3 debug
+
+config FBE_MSPC_ABSENT
+	bool "FEB3 not to use MSPC"
+	depends on FILE_BASED_ENCRYPTO
+	default n
+	help
+	  Say yes here FBE3 not to use MSPC
+
+config FBE_ARMPC
+	bool "FEB3 armpc"
+	depends on FILE_BASED_ENCRYPTO
+	default n
+	help
+	  Say yes here to support armpc product
+
+config FBE_FPGA
+	bool "FEB3 FPGA mode"
+	depends on FILE_BASED_ENCRYPTO
+	default n
+	help
+	  Say yes here to adapt the FBE3 in FPGA
+
+config FILE_BASED_ENCRYPTO_S4
+	bool "FEB S4 related func"
+	depends on HIBERNATION
+	default n
+	help
+	  Say yes here to support the FBE S4 for hm

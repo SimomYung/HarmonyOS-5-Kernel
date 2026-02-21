@@ -1,0 +1,15 @@
+/*
+ * Copyright (C) Huawei Technologies Co., Ltd. 2023. All rights reserved.
+ * Description: Header file for seharmony sysif api
+ * Author: Huawei OS Kernel Lab
+ * Create: Sat Oct 05 08:58:35 2023
+ */
+
+DEFINE_MANAGER(sec, 1,
+	DEFINE_SIMPLE_METHOD(sec, mgmt,
+		      ARG(2,
+			  unsigned int, module,
+			  unsigned int, command),
+		      RET_NO,
+		      SLOWDATA)
+)

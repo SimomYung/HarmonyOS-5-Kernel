@@ -1,0 +1,9 @@
+config AUDIO_COMMON_IMAGE
+        tristate "audio common image feature support"
+        help
+          Say y to enable audio common image feature for audio
+
+config HISI_VOICE_NVPARAM_SUPPORT_EXP
+        tristate "hisi voice nv param expand support"
+        help
+          Say y to enable audio common image feature for audio

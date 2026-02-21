@@ -1,0 +1,7 @@
+# Copyright (c) Huawei Technologies Co., Ltd. 2023-2023. All rights reserved.
+# Description: HMbuild for uev_trace
+# Author: Huawei OS Kernel Lab
+# Create: Wed Sep 06 16:12:40 2023
+
+src-y: tracepoint.c
+cflags-tracepoint.c-y: -Wno-unused-parameter

@@ -1,0 +1,8 @@
+menu "platform trace worker Options"
+config PLATFORM_TRACE_WORKER
+	bool "platform trace worker enable"
+	default n
+	help
+		platform trace worker enable.
+
+endmenu

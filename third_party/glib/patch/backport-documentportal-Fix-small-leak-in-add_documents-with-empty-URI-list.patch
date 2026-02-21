@@ -1,0 +1,34 @@
+From 27203e48c91ab8b55033dcf1773cb60c0aaed3fa Mon Sep 17 00:00:00 2001
+From: Sebastian Keller <skeller@gnome.org>
+Date: Tue, 30 Aug 2022 21:39:36 +0200
+Subject: [PATCH] documentportal: Fix small leak in add_documents with empty
+ URI list
+
+When called with an empty URI list (or only inaccessible files),
+g_document_portal_add_documents would not call g_variant_builder_end,
+leaking the memory allocated by the variant builder.
+
+Closes: https://gitlab.gnome.org/GNOME/glib/-/issues/2733
+
+Conflict:NA
+Reference:https://gitlab.gnome.org/GNOME/glib/-/commit/27203e48c91ab8b55033dcf1773cb60c0aaed3fa
+
+---
+ gio/gdocumentportal.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/gio/gdocumentportal.c b/gio/gdocumentportal.c
+index c08c36c581..382e2aab6e 100644
+--- a/gio/gdocumentportal.c
++++ b/gio/gdocumentportal.c
+@@ -203,6 +203,7 @@ g_document_portal_add_documents (GList       *uris,
+   else
+     {
+       ruris = g_list_copy_deep (uris, (GCopyFunc)g_strdup, NULL);
++      g_variant_builder_clear (&builder);
+     }
+ 
+ out:
+-- 
+GitLab
+

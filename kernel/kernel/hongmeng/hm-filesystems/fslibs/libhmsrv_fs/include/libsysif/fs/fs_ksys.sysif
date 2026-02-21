@@ -1,0 +1,180 @@
+/*
+ * Copyright (C) Huawei Technologies Co., Ltd. 2023. All rights reserved.
+ * Description: Implementation of fs ksys
+ * Author: Huawei OS Kernel Lab
+ * Create: Fri Aug 18 15:50:00 2023
+ */
+
+/*
+ * To support the mixed data model which means the client and the server
+ * may use different data model. See the comment for limitation of data type
+ * used in the sysif interfaces in <libsysif/base/api.h>.
+ */
+DEFINE_MANAGER(ksys, 64,
+	DEFINE_SIMPLE_METHOD(ksys, unlinkat,
+		      ARG(3, int, dfd, const char *, path, unsigned int, flag),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(ksys, renameat,
+		      ARG(4, int, old_dfd, const char *, old_path, int, new_dfd, const char *, new_path),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(ksys, mkdirat,
+		      ARG(3, int, dfd, const char *, path, mode_t, mode),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(ksys, faccessat2,
+		      ARG(4, int, dfd, const char *, path, int, mode, int, flags),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(ksys, fchown,
+		      ARG(3, long long, fd, uid_t, uid, gid_t, gid),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD_LONG(ksys, readlinkat,
+		      ARG(5, int, dfd, const char *, path, char *, buf, size_t, bufsize, bool, isfwd),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(ksys, openat,
+		      ARG(4, int, dfd, const char *, path, unsigned int, flags, unsigned int, mode),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD_LONG(ksys, read,
+		      ARG(4, long long, fd, void *, buf, size_t, nbyte, bool, isfwd),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD_LONG(ksys, readdir,
+		      ARG(4, int, fd, void *, buf, size_t, size, bool, isfwd),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD_LONG(ksys, readv,
+		      ARG(4, long long, fd, const void *, vec, int, vlen, bool, isfwd),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD_LONG(ksys, pread64,
+		      ARG(5, long long, fd, void *, buf, size_t, count, long long, offset, bool, isfwd),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD_LONG(ksys, pread64_arm,
+		      ARG(6, long long, fd, void *, buf, size_t, count, long, blob,
+			long, off_low_addr, long, off_high_addr),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD_LONG(ksys, preadv,
+		      ARG(5, long long, fd, const void *, vec, int, vlen, long long, offset, bool, isfwd),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD_LONG(ksys, preadv_arm,
+		      ARG(5, long long, fd, const void *, vec, int, vlen,
+			  unsigned long, off_low, unsigned long, off_high),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD_LONG(ksys, write,
+		      ARG(4, long long, fd, const void *, buf, size_t, nbyte, bool, isfwd),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD_LONG(ksys, writev,
+		      ARG(4, long long, fd, const void *, vec, int, vlen, bool, isfwd),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD_LONG(ksys, pwrite64,
+		      ARG(5, long long, fd, const void *, buf, size_t, count,
+			long long, offset, bool, isfwd),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD_LONG(ksys, pwrite64_arm,
+		      ARG(6, long long, fd, const void *, buf, size_t, count, long, blob,
+			  long, off_low_addr, long, off_high_addr),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD_LONG(ksys, pwritev,
+		      ARG(5, long long, fd, const void *, vec, int, vlen, long long, offset, bool, isfwd),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD_LONG(ksys, pwritev_arm,
+		      ARG(5, long long, fd, const void *, vec, int, vlen,
+			  unsigned long, off_low, unsigned long, off_high),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(ksys, close,
+		      ARG(1, int, fd),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(ksys, fsync,
+		      ARG(1, long long, fd),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(ksys, sync,
+		      ARG_NO,
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(ksys, symlink,
+		      ARG(2, const char *, oldname, const char *, newname),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(ksys, ioctl,
+		      ARG(4, long long, fd, unsigned int, cmd, unsigned long, arg, bool, isfwd),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(ksys, fstat,
+		      ARG(3, long long, fd, void *, st, bool, isfwd),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(ksys, fstat_nocheck,
+		      ARG(3, long long, fd, void *, st, bool, isfwd),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(ksys, fstatat,
+		      ARG(5, int, dfd, const char *, filename, void *, st, unsigned int, flag, bool, isfwd),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(ksys, statfs,
+		      ARG(3, const char *, path, void *, stfs, bool, isfwd),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD_LONG(ksys, lseek,
+		      ARG(3, long long, fd, long, offset, int, whence),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(ksys, _llseek,
+		      ARG(5, long long, fd, unsigned long, offset_high, unsigned long, offset_low,
+			  long long *, res, int, whence),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(ksys, mount,
+		      ARG(5, const char *, src, const char *, tgt, const char *, fstype,
+			  unsigned long, flag, const char *, opts),
+		      RET_NO,
+		      SLOWDATA_NO)
+	)

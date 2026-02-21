@@ -1,0 +1,35 @@
+From 710ccee65c010e4548ded487cdc191658f6a1f35 Mon Sep 17 00:00:00 2001
+From: Mamoru TASAKA <mtasaka@fedoraproject.org>
+Date: Tue, 26 Jul 2022 21:51:45 +0900
+Subject: [PATCH] gregex: use correct size for pcre2_pattern_info
+
+man pcre2_pattern_info says that the 3rd argument must
+point to uint32_t variable (except for some 2nd argument value),
+so correctly use it. Especially using wrong size can cause
+unexpected result on big endian.
+
+closes: #2699
+
+Conflict:NA
+Reference:https://gitlab.gnome.org/GNOME/glib/-/commit/710ccee65c010e4548ded487cdc191658f6a1f35
+
+---
+ glib/gregex.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/glib/gregex.c b/glib/gregex.c
+index dd61dc4813..08c43ef4b5 100644
+--- a/glib/gregex.c
++++ b/glib/gregex.c
+@@ -1701,7 +1701,7 @@ regex_compile (const gchar *pattern,
+   PCRE2_SIZE erroffset;
+   gint errcode;
+   GRegexCompileFlags nonpcre_compile_options;
+-  unsigned long int pcre_compile_options;
++  uint32_t pcre_compile_options;
+ 
+   nonpcre_compile_options = compile_options & G_REGEX_COMPILE_NONPCRE_MASK;
+ 
+-- 
+GitLab
+

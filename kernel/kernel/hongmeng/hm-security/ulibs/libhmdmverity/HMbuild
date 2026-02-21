@@ -1,0 +1,23 @@
+# Copyright (c) Huawei Technologies Co., Ltd. 2022-2022. All rights reserved.
+# Description: HMbuild for libhmdmverity
+# Author: Huawei OS Kernel Lab
+# Create: Wed Oct 12 10:54:23 2022
+
+findpkg: HMHitlsLib
+
+src-y: hmdmverity.c
+inclib: HMHitlsLib::BslLib_include
+
+# libhmdmverity.a
+lib-static-y: hmdmverity
+cflags-hmdmverity-CONFIG_PIE: -fPIE
+install-hmdmverity-y: LIBDIR
+
+# libhmdmverity.so
+lib-dynamic-y: hmdmverity_shared
+linklib-hmdmverity_shared-y: HMHitlsLib::CryptoLib_static
+linklib-hmdmverity_shared-y: HMHitlsLib::BslLib_static
+output-hmdmverity_shared: hmdmverity
+install-hmdmverity_shared-y: LIBDIR
+
+# vim:ts=4:sw=4:expandtab

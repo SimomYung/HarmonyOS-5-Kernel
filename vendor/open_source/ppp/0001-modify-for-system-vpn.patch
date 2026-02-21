@@ -1,0 +1,668 @@
+From 73c66e2e53bead5d56c26478f51c0e313dd5a2d8 Mon Sep 17 00:00:00 2001
+From: g00650597 <g00650597@notesmail.huawei.com/>
+Date: Wed, 4 Sep 2024 21:03:50 +0800
+Subject: [PATCH] modify for system vpn
+
+Change-Id: I2cb5842b204935b144e4f00f97a7c9beba56f6af
+Signed-off-by: g00650597 <g00650597@notesmail.huawei.com/>
+---
+ pppd/chap.c          |  21 ++++-
+ pppd/config.h        | 215 +++++++++++++++++++++++++++++++++++++++++++
+ pppd/crypto_ms.c     |   2 +
+ pppd/ipc_load_sa.cpp |  21 +++++
+ pppd/ipc_load_sa.h   |  36 ++++++++
+ pppd/ipc_request.cpp | 103 +++++++++++++++++++++
+ pppd/ipc_request.h   |  31 +++++++
+ pppd/main.c          |   8 +-
+ pppd/ppp-sha1.c      |   4 +
+ pppd/pppdconf.h      |  80 ++++++++++++++++
+ 10 files changed, 518 insertions(+), 3 deletions(-)
+ create mode 100755 pppd/config.h
+ create mode 100644 pppd/ipc_load_sa.cpp
+ create mode 100644 pppd/ipc_load_sa.h
+ create mode 100644 pppd/ipc_request.cpp
+ create mode 100644 pppd/ipc_request.h
+ create mode 100755 pppd/pppdconf.h
+
+diff --git a/pppd/chap.c b/pppd/chap.c
+index 2411b95..fa0574f 100644
+--- a/pppd/chap.c
++++ b/pppd/chap.c
+@@ -36,6 +36,12 @@
+ 
+ #include <stdlib.h>
+ #include <string.h>
++#ifdef SUPPORT_SYSVPN
++#include <sys/socket.h>
++#include <sys/un.h>
++#include <errno.h>
++#include "ipc_request.h"
++#endif // SUPPORT_SYSVPN
+ #include "pppd-private.h"
+ #include "options.h"
+ #include "session.h"
+@@ -63,6 +69,14 @@ int chap_rechallenge_time = 0;
+ int chap_client_timeout_time = 60;
+ int chapms_strip_domain = 0;
+ 
++#ifdef SUPPORT_SYSVPN
++void WriteStageAndStatus(char *stage, int32_t status)
++{
++  int32_t ret = SendRequest(stage, status);
++  info("SendRequest %d", ret);
++}
++#endif // SUPPORT_SYSVPN
++
+ /*
+  * Command-line options.
+  */
+@@ -556,9 +570,12 @@ chap_handle_status(struct chap_client_state *cs, int code, int id,
+ 		else
+ 			info("%s", msg);
+ 	}
+-	if (code == CHAP_SUCCESS)
++	if (code == CHAP_SUCCESS) {
+ 		auth_withpeer_success(0, PPP_CHAP, cs->digest->code);
+-	else {
++#ifdef SUPPORT_SYSVPN
++		WriteStageAndStatus("pppdstart", 100);
++#endif // SUPPORT_SYSVPN
++	} else {
+ 		cs->flags |= AUTH_FAILED;
+ 		error("CHAP authentication failed");
+ 		auth_withpeer_fail(0, PPP_CHAP);
+diff --git a/pppd/config.h b/pppd/config.h
+new file mode 100755
+index 0000000..a313089
+--- /dev/null
++++ b/pppd/config.h
+@@ -0,0 +1,215 @@
++/* pppd/config.h.  Generated from config.h.in by configure.  */
++/* pppd/config.h.in.  Generated from configure.ac by autoheader.  */
++
++/* Define to 1 if you have the <asm/types.h> header file. */
++#define HAVE_ASM_TYPES_H 1
++
++/* Define to 1 if you have the <crypt.h> header file. */
++#define HAVE_CRYPT_H 1
++
++/* Define to 1 if you have the <dlfcn.h> header file. */
++#define HAVE_DLFCN_H 1
++
++/* Define to 1 if you have the <inttypes.h> header file. */
++#define HAVE_INTTYPES_H 1
++
++/* Define to 1 if you have the <linux/if_ether.h> header file. */
++#define HAVE_LINUX_IF_ETHER_H 1
++
++/* Define to 1 if you have the <linux/if.h> header file. */
++#define HAVE_LINUX_IF_H 1
++
++/* Define to 1 if you have the <linux/if_packet.h> header file. */
++#define HAVE_LINUX_IF_PACKET_H 1
++
++/* System provides the logwtmp() function */
++/* #undef HAVE_LOGWTMP */
++
++/* Define to 1 if you have the <memory.h> header file. */
++#define HAVE_MEMORY_H 1
++
++/* Define to 1 if you have the `mmap' function. */
++#define HAVE_MMAP 1
++
++/* Define to 1 if you have the <netinet/if_ether.h> header file. */
++#define HAVE_NETINET_IF_ETHER_H 1
++
++/* Define to 1 if you have the <netpacket/packet.h> header file. */
++#define HAVE_NETPACKET_PACKET_H 1
++
++/* Define to 1 if you have the <net/bpf.h> header file. */
++/* #undef HAVE_NET_BPF_H */
++
++/* Define to 1 if you have the <net/if_arp.h> header file. */
++#define HAVE_NET_IF_ARP_H 1
++
++/* Define to 1 if you have the <net/if.h> header file. */
++#define HAVE_NET_IF_H 1
++
++/* Define to 1 if you have the <net/if_types.h> header file. */
++/* #undef HAVE_NET_IF_TYPES_H */
++
++/* Define to 1 if you have the <paths.h> header file. */
++#define HAVE_PATHS_H 1
++
++/* Define to 1 if you have the <shadow.h> header file. */
++#define HAVE_SHADOW_H 1
++
++/* Define to 1 if you have the <stdarg.h> header file. */
++#define HAVE_STDARG_H 1
++
++/* Define to 1 if stdbool.h conforms to C99. */
++#define HAVE_STDBOOL_H 1
++
++/* Define to 1 if you have the <stddef.h> header file. */
++#define HAVE_STDDEF_H 1
++
++/* Define to 1 if you have the <stdint.h> header file. */
++#define HAVE_STDINT_H 1
++
++/* Define to 1 if you have the <stdlib.h> header file. */
++#define HAVE_STDLIB_H 1
++
++/* Define to 1 if you have the `strerror' function. */
++#define HAVE_STRERROR 1
++
++/* Define to 1 if you have the <strings.h> header file. */
++#define HAVE_STRINGS_H 1
++
++/* Define to 1 if you have the <string.h> header file. */
++#define HAVE_STRING_H 1
++
++/* Define to 1 if you have the <sys/dlpi.h> header file. */
++/* #undef HAVE_SYS_DLPI_H */
++
++/* Define to 1 if you have the <sys/ioctl.h> header file. */
++#define HAVE_SYS_IOCTL_H 1
++
++/* Define to 1 if you have the <sys/socket.h> header file. */
++#define HAVE_SYS_SOCKET_H 1
++
++/* Define to 1 if you have the <sys/stat.h> header file. */
++#define HAVE_SYS_STAT_H 1
++
++/* Define to 1 if you have the <sys/time.h> header file. */
++#define HAVE_SYS_TIME_H 1
++
++/* Define to 1 if you have the <sys/types.h> header file. */
++#define HAVE_SYS_TYPES_H 1
++
++/* Define to 1 if you have the <sys/uio.h> header file. */
++#define HAVE_SYS_UIO_H 1
++
++/* Define to 1 if you have the <time.h> header file. */
++#define HAVE_TIME_H 1
++
++/* Define to 1 if you have the <unistd.h> header file. */
++#define HAVE_UNISTD_H 1
++
++/* Define to 1 if you have the <utmp.h> header file. */
++#define HAVE_UTMP_H 1
++
++/* Define to 1 if the system has the type `_Bool'. */
++#define HAVE__BOOL 1
++
++/* Define to the sub-directory where libtool stores uninstalled libraries. */
++#define LT_OBJDIR ".libs/"
++
++/* Use DES included with openssl */
++/* #undef OPENSSL_HAVE_DES */
++
++/* Use MD4 included with openssl */
++/* #undef OPENSSL_HAVE_MD4 */
++
++/* Use MD5 included with openssl */
++/* #undef OPENSSL_HAVE_MD5 */
++
++/* Use SHA included with openssl */
++/* #undef OPENSSL_HAVE_SHA */
++
++/* OpenSSL engine support */
++#define OPENSSL_NO_ENGINE 1
++
++/* Name of package */
++#define PACKAGE "ppp"
++
++/* Define to the address where bug reports for this package should be sent. */
++#define PACKAGE_BUGREPORT "https://github.com/ppp-project/ppp"
++
++/* Define to the full name of this package. */
++#define PACKAGE_NAME "ppp"
++
++/* Define to the full name and version of this package. */
++#define PACKAGE_STRING "ppp 2.5.0"
++
++/* Define to the one symbol short name of this package. */
++#define PACKAGE_TARNAME "ppp"
++
++/* Define to the home page for this package. */
++#define PACKAGE_URL ""
++
++/* Define to the version of this package. */
++#define PACKAGE_VERSION "2.5.0"
++
++/* Version of pppd */
++#define PPPD_VERSION "2.5.0"
++
++/* Have Callback Protocol support */
++/* #undef PPP_WITH_CBCP */
++
++/* Have Microsoft CHAP support */
++#define PPP_WITH_CHAPMS 1
++
++/* Have EAP-TLS authentication support */
++/* #undef PPP_WITH_EAPTLS */
++
++/* Have packet activity filter support */
++/* #undef PPP_WITH_FILTER */
++
++/* Have IPv6 Control Protocol */
++#define PPP_WITH_IPV6CP 1
++
++/* Have Microsoft MPPE support */
++#define PPP_WITH_MPPE 1
++
++/* Have Microsoft LAN Manager support */
++/* #undef PPP_WITH_MSLANMAN */
++
++/* Have multilink support */
++/* #undef PPP_WITH_MULTILINK */
++
++/* PPP is compiled with openssl support */
++/* #undef PPP_WITH_OPENSSL */
++
++/* Support for Pluggable Authentication Modules */
++/* #undef PPP_WITH_PAM */
++
++/* Have PEAP authentication support */
++/* #undef PPP_WITH_PEAP */
++
++/* Have support for loadable plugins */
++/* #undef PPP_WITH_PLUGINS */
++
++/* Support for libsrp authentication module */
++/* #undef PPP_WITH_SRP */
++
++/* Include TDB support */
++/* #undef PPP_WITH_TDB */
++
++/* The size of `unsigned int', as computed by sizeof. */
++#define SIZEOF_UNSIGNED_INT 4
++
++/* The size of `unsigned long', as computed by sizeof. */
++#define SIZEOF_UNSIGNED_LONG 4
++
++/* The size of `unsigned short', as computed by sizeof. */
++#define SIZEOF_UNSIGNED_SHORT 2
++
++/* Define to 1 if you have the ANSI C header files. */
++#define STDC_HEADERS 1
++
++/* Enable support for systemd notifications */
++/* #undef SYSTEMD */
++
++/* Version number of package */
++#define VERSION "2.5.0"
+diff --git a/pppd/crypto_ms.c b/pppd/crypto_ms.c
+index a9ddd5f..3537c94 100644
+--- a/pppd/crypto_ms.c
++++ b/pppd/crypto_ms.c
+@@ -122,7 +122,9 @@ MakeKey(const unsigned char *key, unsigned char *des_key)
+ 	DES_set_odd_parity((DES_cblock *)des_key);
+ }
+ 
++#ifndef SUPPORT_SYSVPN
+ #include <openssl/evp.h>
++#endif //SUPPORT_SYSVPN
+ 
+ int
+ DesEncrypt(const unsigned char *clear, const unsigned char *key, unsigned char *cipher)
+diff --git a/pppd/ipc_load_sa.cpp b/pppd/ipc_load_sa.cpp
+new file mode 100644
+index 0000000..4bddc29
+--- /dev/null
++++ b/pppd/ipc_load_sa.cpp
+@@ -0,0 +1,21 @@
++/*
++ * Copyright (c) 2024 Huawei Device Co., Ltd.
++ * Licensed under the Apache License, Version 2.0 (the "License");
++ * you may not use this file except in compliance with the License.
++ * You may obtain a copy of the License at
++ *
++ *    http://www.apache.org/licenses/LICENSE-2.0
++ *
++ * Unless required by applicable law or agreed to in writing, software
++ * distributed under the License is distributed on an "AS IS" BASIS,
++ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
++ * See the License for the specific language governing permissions and
++ * limitations under the License.
++ */
++#include "ipc_load_sa.h"
++
++using namespace std;
++
++OnDemandLoadCertManagerCallback::OnDemandLoadCertManagerCallback(string servers) : servers(servers)
++{
++}
+diff --git a/pppd/ipc_load_sa.h b/pppd/ipc_load_sa.h
+new file mode 100644
+index 0000000..4590ea8
+--- /dev/null
++++ b/pppd/ipc_load_sa.h
+@@ -0,0 +1,36 @@
++/*
++ * Copyright (c) 2024 Huawei Device Co., Ltd.
++ * Licensed under the Apache License, Version 2.0 (the "License");
++ * you may not use this file except in compliance with the License.
++ * You may obtain a copy of the License at
++ *
++ *    http://www.apache.org/licenses/LICENSE-2.0
++ *
++ * Unless required by applicable law or agreed to in writing, software
++ * distributed under the License is distributed on an "AS IS" BASIS,
++ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
++ * See the License for the specific language governing permissions and
++ * limitations under the License.
++ */
++
++#ifndef IPC_LOAD_SA_H
++#define IPC_LOAD_SA_H
++
++#include <future>
++#include <string>
++#include "iremote_object.h"
++#include "system_ability_load_callback_stub.h"
++
++class OnDemandLoadCertManagerCallback : public OHOS::SystemAbilityLoadCallbackStub {
++public:
++    OnDemandLoadCertManagerCallback(std::string servers);
++    void OnLoadSystemAbilitySuccess(int32_t systemAbilityId,
++        const OHOS::sptr<IRemoteObject>& remoteObject) override;
++    void OnLoadSystemAbilityFail(int32_t systemAbilityId) override;
++    OHOS::sptr<IRemoteObject> Promise(void);
++private:
++    std::string servers;
++    std::promise<OHOS::sptr<IRemoteObject>> promise_;
++};
++
++#endif /* IPC_LOAD_SA_H */
+\ No newline at end of file
+diff --git a/pppd/ipc_request.cpp b/pppd/ipc_request.cpp
+new file mode 100644
+index 0000000..4c97b57
+--- /dev/null
++++ b/pppd/ipc_request.cpp
+@@ -0,0 +1,103 @@
++/*
++ * Copyright (c) 2024 Huawei Device Co., Ltd.
++ * Licensed under the Apache License, Version 2.0 (the "License");
++ * you may not use this file except in compliance with the License.
++ * You may obtain a copy of the License at
++ *
++ *    http://www.apache.org/licenses/LICENSE-2.0
++ *
++ * Unless required by applicable law or agreed to in writing, software
++ * distributed under the License is distributed on an "AS IS" BASIS,
++ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
++ * See the License for the specific language governing permissions and
++ * limitations under the License.
++ */
++
++#include "ipc_request.h"
++
++#include <chrono>
++#include <string>
++#include <thread>
++
++#include "securec.h"
++#include "ipc_load_sa.h"
++#include "iservice_registry.h"
++#include "system_ability_definition.h"
++
++using namespace std;
++using namespace OHOS;
++
++namespace {
++    constexpr int SA_ID_VPN_SERVICE = COMM_VPN_MANAGER_SYS_ABILITY_ID;
++    constexpr int CMD_NOTIFY_CONNECT_STAGE = 14;
++    constexpr uint32_t MAX_SA_BOOT_DELAY_TIME = 30;
++    const std::u16string SA_VPN_SERVICE_DESCRIPTOR = u"OHOS.NetManagerStandard.INetworkVpnService";
++}
++
++static sptr<IRemoteObject> ProcessLoadSystemAbility(void)
++{
++    auto saManager = SystemAbilityManagerClient::GetInstance().GetSystemAbilityManager();
++    if (saManager == nullptr) {
++        return {};
++    }
++
++    auto object = saManager->CheckSystemAbility(SA_ID_VPN_SERVICE);
++    if (object != nullptr) {
++        return object;
++    }
++
++    string servers = "NetManager";
++    sptr<OnDemandLoadCertManagerCallback> loadCallBack = new (std::nothrow)OnDemandLoadCertManagerCallback(servers);
++    if (loadCallBack == nullptr) {
++        return {};
++    }
++
++    int32_t ret = saManager->LoadSystemAbility(SA_ID_VPN_SERVICE, loadCallBack);
++    if (ret != ERR_OK) {
++        return {};
++    }
++
++    return loadCallBack->Promise();
++}
++
++int32_t SendRequest(char *stage, int32_t state)
++{
++    uint32_t i = 0;
++    sptr<IRemoteObject> targetProxy = ProcessLoadSystemAbility();
++    while ((targetProxy == nullptr) && i < MAX_SA_BOOT_DELAY_TIME) {
++        std::this_thread::sleep_for(std::chrono::milliseconds(100)); /* 100 is time */
++        i++;
++    }
++
++    targetProxy = ProcessLoadSystemAbility();
++    if (targetProxy == nullptr) {
++        return -1;
++    }
++
++    MessageParcel data;
++    MessageParcel reply;
++    MessageOption option = MessageOption::TF_SYNC;
++
++    data.WriteInterfaceToken(SA_VPN_SERVICE_DESCRIPTOR);
++    data.WriteString(stage);
++    data.WriteInt32(state);
++
++    int error = targetProxy->SendRequest(static_cast<uint32_t>(CMD_NOTIFY_CONNECT_STAGE), data, reply, option);
++    return error;
++}
++
++void OnDemandLoadCertManagerCallback::OnLoadSystemAbilitySuccess(int32_t systemAbilityId,
++    const sptr<IRemoteObject> &remoteObject)
++{
++    promise_.set_value(remoteObject);
++}
++
++void OnDemandLoadCertManagerCallback::OnLoadSystemAbilityFail(int32_t systemAbilityId)
++{
++    promise_.set_value(nullptr);
++}
++
++sptr<IRemoteObject> OnDemandLoadCertManagerCallback::Promise(void)
++{
++    return promise_.get_future().get();
++}
+diff --git a/pppd/ipc_request.h b/pppd/ipc_request.h
+new file mode 100644
+index 0000000..b25dc22
+--- /dev/null
++++ b/pppd/ipc_request.h
+@@ -0,0 +1,31 @@
++/*
++ * Copyright (c) 2024 Huawei Device Co., Ltd.
++ * Licensed under the Apache License, Version 2.0 (the "License");
++ * you may not use this file except in compliance with the License.
++ * You may obtain a copy of the License at
++ *
++ *    http://www.apache.org/licenses/LICENSE-2.0
++ *
++ * Unless required by applicable law or agreed to in writing, software
++ * distributed under the License is distributed on an "AS IS" BASIS,
++ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
++ * See the License for the specific language governing permissions and
++ * limitations under the License.
++ */
++
++#ifndef IPC_REQUEST_H
++#define IPC_REQUEST_H
++
++#include <stdint.h>
++
++#ifdef __cplusplus
++extern "C" {
++#endif
++
++int32_t SendRequest(char *stage, int32_t state);
++
++#ifdef __cplusplus
++}
++#endif
++
++#endif /* IPC_REQUEST_H */
+\ No newline at end of file
+diff --git a/pppd/main.c b/pppd/main.c
+index 4455199..3a00115 100644
+--- a/pppd/main.c
++++ b/pppd/main.c
+@@ -390,7 +390,11 @@ main(int argc, char *argv[])
+     umask(umask(0777) | 022);
+ 
+     uid = getuid();
++#ifdef SUPPORT_SYSVPN
++    privileged = 1;
++#else
+     privileged = uid == 0;
++#endif // SUPPORT_SYSVPN
+     slprintf(numbuf, sizeof(numbuf), "%d", uid);
+     ppp_script_setenv("ORIG_UID", numbuf, 0);
+ 
+@@ -443,11 +447,13 @@ main(int argc, char *argv[])
+     /*
+      * Check that we are running as root.
+      */
++#ifndef SUPPORT_SYSVPN
+     if (geteuid() != 0) {
+ 	ppp_option_error("must be root to run %s, since it is not setuid-root",
+ 		     argv[0]);
+ 	exit(EXIT_NOT_ROOT);
+     }
++#endif // SUPPORT_SYSVPN
+ 
+     if (!ppp_check_kernel_support()) {
+ 	ppp_option_error("%s", no_ppp_msg);
+@@ -888,7 +894,7 @@ create_pidfile(int pid)
+ {
+     FILE *pidfile;
+ 
+-    slprintf(pidfilename, sizeof(pidfilename), "%s%s.pid",
++    slprintf(pidfilename, sizeof(pidfilename), "%s/%s.pid",
+ 	     PPP_PATH_VARRUN, ifname);
+     if ((pidfile = fopen(pidfilename, "w")) != NULL) {
+ 	fprintf(pidfile, "%d\n", pid);
+diff --git a/pppd/ppp-sha1.c b/pppd/ppp-sha1.c
+index ab4dcd5..1e56c7e 100644
+--- a/pppd/ppp-sha1.c
++++ b/pppd/ppp-sha1.c
+@@ -109,6 +109,10 @@ static void sha1_clean(PPP_MD_CTX *ctx)
+ #include <string.h>
+ #include <netinet/in.h>	/* htonl() */
+ 
++#ifdef SUPPORT_SYSVPN
++#define u_int32_t uint32_t
++#endif //SUPPORT_SYSVPN
++
+ typedef struct {
+     u_int32_t state[5];
+     u_int32_t count[2];
+diff --git a/pppd/pppdconf.h b/pppd/pppdconf.h
+new file mode 100755
+index 0000000..f5c5332
+--- /dev/null
++++ b/pppd/pppdconf.h
+@@ -0,0 +1,80 @@
++/* pppd/pppdconf.h.  Generated from pppdconf.h.in by configure.  */
++/* 
++ * Copyright (c) 2022 Eivind Næss. All rights reserved.
++ *
++ * Redistribution and use in source and binary forms, with or without
++ * modification, are permitted provided that the following conditions
++ * are met:
++ *
++ * 1. Redistributions of source code must retain the above copyright
++ *    notice, this list of conditions and the following disclaimer.
++ *
++ * 2. Redistributions in binary form must reproduce the above copyright
++ *    notice, this list of conditions and the following disclaimer in
++ *    the documentation and/or other materials provided with the
++ *    distribution.
++ *
++ * 3. The name(s) of the authors of this software must not be used to
++ *    endorse or promote products derived from this software without
++ *    prior written permission.
++ *
++ * THE AUTHORS OF THIS SOFTWARE DISCLAIM ALL WARRANTIES WITH REGARD TO
++ * THIS SOFTWARE, INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY
++ * AND FITNESS, IN NO EVENT SHALL THE AUTHORS BE LIABLE FOR ANY
++ * SPECIAL, INDIRECT OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
++ * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN
++ * AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING
++ * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
++ */
++
++/*
++ * This file is generated by configure and sets the features enabled
++ *   in pppd when configured.
++ */
++
++#ifndef PPP_PPPDCONF_H
++#define PPP_PPPDCONF_H
++
++/* Have Microsoft CHAP support */
++#define PPP_WITH_CHAPMS 1
++
++/* Have Microsoft LAN Manager support */
++/* #undef PPP_WITH_MSLANMAN */
++
++/* Have Microsoft MPPE support */
++#define PPP_WITH_MPPE 1
++
++/* Have multilink support */
++/* #undef PPP_WITH_MULTILINK */
++
++/* Have packet activity filter support */
++/* #undef PPP_WITH_FILTER */
++
++/* Have support for loadable plugins */
++/* #undef PPP_WITH_PLUGINS */
++
++/* Have Callback Protocol support */
++/* #undef PPP_WITH_CBCP */
++
++/* Include TDB support */
++/* #undef PPP_WITH_TDB */
++
++/* Have IPv6 Control Protocol */
++#define PPP_WITH_IPV6CP 1
++
++/* Support for Pluggable Authentication Modules */
++/* #undef PPP_WITH_PAM */
++
++/* Have EAP-SRP authentication support */
++/* #undef PPP_WITH_SRP */
++
++/* Have EAP-TLS authentication support */
++/* #undef PPP_WITH_EAPTLS */
++
++/* Have PEAP authentication support */
++/* #undef PPP_WITH_PEAP */
++
++/* The pppd version */
++#define PPPD_VERSION "2.5.0"
++
++#endif
+-- 
+2.34.1
+

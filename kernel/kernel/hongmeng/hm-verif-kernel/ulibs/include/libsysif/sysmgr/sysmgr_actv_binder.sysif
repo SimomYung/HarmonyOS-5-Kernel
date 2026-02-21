@@ -1,0 +1,53 @@
+/*
+ * Copyright (c) Huawei Technologies Co., Ltd. 2023-2023. All rights reserved.
+ * Description: Provide sysif for the actv binder
+ * Author: Huawei OS Kernel Lab
+ * Create: Tue Apr 11 10:23:08 2023
+ */
+
+/*
+ * To support the mixed data model which means the client and the server
+ * may use different data model. See the document for limitation of data type
+ * used in the sysif interfaces in <Documentation/sysif_compat.md>.
+ */
+DEFINE_MANAGER(actv_binder, 8,
+	DEFINE_SIMPLE_METHOD(actv_binder, init,
+			     ARG_NO,
+			     RET(1, rref_t, cnode_rref),
+			     SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(actv_binder, new_actvpool,
+			     ARG(1, unsigned long, binder_ctx),
+			     RET(1, cref_t, actv_pool_cref),
+			     SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(actv_binder, del_actvpool,
+			     ARG(1, cref_t, actv_pool_cref),
+			     RET_NO,
+			     SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(actv_binder, grant_actvpool,
+			     ARG(4,
+				 rref_t, src_cnode_rref,
+				 cref_t, actv_pool_cref,
+				 rref_t, dst_cnode_rref,
+				 unsigned long, granted_cred),
+			     RET(2,
+				 uref_t, actv_pool_uref,
+				 rref_t, actv_pool_rref),
+			     SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(actv_binder, revoke_actvpool,
+			     ARG(2,
+				 rref_t, cnode_rref,
+				 uref_t, actv_pool_uref),
+			     RET_NO,
+			     SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(actv_binder, reject_actvpool,
+			     ARG(2,
+				 rref_t, cnode_rref,
+				 rref_t, actv_pool_rref),
+			     RET_NO,
+			     SLOWDATA_NO)
+)

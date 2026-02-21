@@ -1,0 +1,39 @@
+# SPDX-License-Identifier: GPL-2.0-only
+#
+# This file provides makefile libs and fixups for liblinux, and included
+# by the global Makefile.build if CONFIG_LIBLINUX is enabled.
+#
+# filter build objects by whitelists
+#
+ifdef KBUILD_LIBLINUX_FILTER_OBJS
+LIBLINUX_FILTER_OBJS ?= gen_liblinux_objs.txt
+liblinux-y := $(shell cat $(srctree)/arch/liblinux/scripts/$(LIBLINUX_FILTER_OBJS))
+ifneq ($(__LIBLINUX_EXTRA_FILTER_OBJS), )
+liblinux-y += $(shell cat $(__LIBLINUX_EXTRA_FILTER_OBJS))
+endif
+extra-y := $(filter %built-in.a $(liblinux-y), $(extra-y))
+lib-y := $(filter %built-in.a $(liblinux-y), $(lib-y))
+real-obj-y := $(filter %built-in.a $(liblinux-y), $(real-obj-y))
+endif
+
+#
+# generate asm-offsets.s from liblinux instead of SRCARCH
+#
+arch/$(SRCARCH)/kernel/asm-offsets.s: arch/liblinux/kernel/asm-offsets.c FORCE
+	$(call if_changed_dep,cc_s_c)
+
+#
+# override cmd_XX rules
+#
+override-cmds = $(override-cmds-y)
+define do_override_cmd
+	$(if $(cmd_$(1)),$(eval cmd_$(1) = $(override-cmd_$(1))))	\
+	$(if $(quiet_cmd_$(1)),						\
+		$(eval quiet_cmd_$(1) = $(override-quiet_cmd_$(1))))
+endef
+$(foreach ov,$(override-cmds),$(call do_override_cmd,$(ov)))
+
+#
+# treate dependent libraries as modules to generate symver
+#
+$(objtree)/arch/liblinux/modules.order: $(DEPLIBS_vmlinux)

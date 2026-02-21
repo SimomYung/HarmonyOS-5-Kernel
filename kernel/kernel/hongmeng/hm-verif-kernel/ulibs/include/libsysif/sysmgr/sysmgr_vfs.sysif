@@ -1,0 +1,93 @@
+/*
+ * Copyright (C) Huawei Technologies Co., Ltd. 2023-2023. All rights reserved.
+ * Description: Sysmgr vfs function declaration
+ * Author: Huawei OS Kernel Lab
+ * Create: Wed Aug 9 11:30:00 2023
+ */
+
+DEFINE_MANAGER(vfs, 32,
+	DEFINE_LSYSCALL_METHOD_LONG(pread64_arm, SYS_pread64,
+		      ARG(6, long long, fd, void *, buf, size_t, count, long, blob,
+		          long, off_low_addr, long, off_high_addr),
+		      ARCH(__arm__))
+	DEFINE_LSYSCALL_METHOD_LONG(pread64, SYS_pread64,
+		      ARG(4, long long, fd, void *, buf, size_t, count, long long, offset),
+		      ARCH(__aarch64__))
+	DEFINE_LSYSCALL_METHOD_LONG(pwrite64_arm, SYS_pwrite64,
+		      ARG(6, long long, fd, const void *, buf, size_t, count, long, blob,
+		          long, off_low_addr, long, off_high_addr),
+		      ARCH(__arm__))
+	DEFINE_LSYSCALL_METHOD_LONG(pwrite64, SYS_pwrite64,
+		      ARG(4, long long, fd, const void *, buf, size_t, count, long long, offset),
+		      ARCH(__aarch64__))
+	DEFINE_LSYSCALL_METHOD_LONG(preadv, SYS_preadv,
+		      ARG(4, long long, fd, const void *, _vec, int, vlen, long long, offset),
+		      ARCH(__aarch64__))
+	DEFINE_LSYSCALL_METHOD_LONG(pwritev, SYS_pwritev,
+		      ARG(4, long long, fd, const void *, _vec, int, vlen, long long, offset),
+		      ARCH(__aarch64__))
+	DEFINE_LSYSCALL_METHOD_LONG(preadv_arm, SYS_preadv,
+		      ARG(5, long long, fd, const void *, _vec, int, vlen,
+		          unsigned long, off_low, unsigned long, off_high),
+		      ARCH(__arm__))
+	DEFINE_LSYSCALL_METHOD_LONG(pwritev_arm, SYS_pwritev,
+		      ARG(5, long long, fd, const void *, _vec, int, vlen,
+		          unsigned long, off_low, unsigned long, off_high),
+		      ARCH(__arm__))
+	DEFINE_LSYSCALL_METHOD_LONG(read, SYS_read,
+		      ARG(3, long long, fd, void *, buf, size_t, count))
+	DEFINE_LSYSCALL_METHOD_LONG(readv, SYS_readv,
+		      ARG(3, long long, fd, const void *, _vec, int, vlen))
+	DEFINE_LSYSCALL_METHOD_LONG(write, SYS_write,
+		      ARG(3, long long, fd, const void *, buf, size_t, count))
+	DEFINE_LSYSCALL_METHOD_LONG(writev, SYS_writev,
+		      ARG(3, long long, fd, const void *, _vec, int, vlen))
+	DEFINE_LSYSCALL_METHOD(ioctl, SYS_ioctl,
+		      ARG(3, long long, fd, unsigned int, cmd, unsigned long, arg))
+	DEFINE_LSYSCALL_METHOD(fcntl, SYS_fcntl,
+		      ARG(4, long long, file, int, cmd, unsigned long, val, int, fd))
+	DEFINE_LSYSCALL_METHOD(fcntl64, SYS_fcntl64,
+		      ARG(4, long long, file, int, cmd, unsigned long, val, int, fd),
+		      ARCH(__arm__))
+	DEFINE_LSYSCALL_METHOD(dup, SYS_dup,
+		      ARG(2, long long, file, int, newfd))
+	DEFINE_LSYSCALL_METHOD(dup2, SYS_dup2,
+		      ARG(3, long long, file, int, newfd, int, oldfd),
+		      ARCH(__arm__))
+	DEFINE_LSYSCALL_METHOD(dup3, SYS_dup3,
+		      ARG(4, long long, file, int, newfd, int, flags, int, oldfd))
+	DEFINE_LSYSCALL_METHOD_LONG(lseek, SYS_lseek,
+		      ARG(3, long long, fd, long, offset, int, whence))
+	DEFINE_LSYSCALL_METHOD(_llseek, SYS__llseek,
+		      ARG(5, long long, fd, unsigned long, offset_high, unsigned long, offset_low,
+		          long long *, res, int, whence),
+		      ARCH(__arm__))
+	DEFINE_LSYSCALL_METHOD(fstat, SYS_fstat,
+		      ARG(2, long long, fd, void *, st))
+	DEFINE_LSYSCALL_METHOD(fstat64, SYS_fstat64,
+		      ARG(2, long long, fd, void *, st),
+		      ARCH(__arm__))
+	DEFINE_LSYSCALL_METHOD(close, SYS_close,
+			     ARG(2, long long, fd_or_file, int, fd))
+	DEFINE_LSYSCALL_METHOD(fchown, SYS_fchown,
+		      ARG(3, long long, fd, uid_t, uid, gid_t, gid))
+	DEFINE_LSYSCALL_METHOD(fchown32, SYS_fchown32,
+		      ARG(3, long long, fd, uid_t, uid, gid_t, gid),
+		      ARCH(__arm__))
+	DEFINE_LSYSCALL_METHOD(statx, SYS_statx,
+			  ARG(5, int, fd, const char*, file_path,
+			  int, flags, unsigned int, mask, void *, st))
+	DEFINE_LSYSCALL_METHOD(newfstatat, SYS_newfstatat,
+			  ARG(4, int, dfd, const char*, path, void *, st, unsigned int, flag),
+			  ARCH(__aarch64__))
+	DEFINE_LSYSCALL_METHOD(newfstatat, SYS_fstatat64,
+			  ARG(4, int, dfd, const char*, path, void *, st, unsigned int, flag),
+			  ARCH(__arm__))
+	DEFINE_LSYSCALL_METHOD(faccessat, SYS_faccessat,
+			  ARG(3, int, dfd, const char*, path, int, mode))
+	DEFINE_LSYSCALL_METHOD(openat, SYS_openat,
+			  ARG(5, int, dfd, const char*, path,
+			  unsigned int, flags, unsigned int, mode, int, _fd))
+	DEFINE_LSYSCALL_METHOD(open_by_handle_at, SYS_open_by_handle_at,
+			  ARG(4, int, mountdirfd, void *, handle, int, flags, int, fd))
+)

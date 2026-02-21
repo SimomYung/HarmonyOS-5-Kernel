@@ -1,0 +1,5 @@
+system_service:bool:true
+sync_reclaimable:bool:true
+unkillable:bool:true
+livepatchable:bool:true
+res_controllable:bool:false

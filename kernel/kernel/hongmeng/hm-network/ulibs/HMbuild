@@ -1,0 +1,18 @@
+# Copyright (C) Huawei Technologies Co., Ltd. 2021. All rights reserved.
+# Description: HMbuild
+# Author: Huawei OS Kernel Lab
+# Create: Tue Nov 02 16:45:14 2021
+
+subdir-y: libsocket
+subdir-y: libevent
+subdir-y: libuxnet
+
+include-.-y: libevent/include
+include-.-y: libsocket/include
+
+cflags-.-CONFIG_NO_COMPAT: -D__sysif_server_hmnet_no_compat32_handlers__
+cflags-.-CONFIG_NO_ILP32: -D__sysif_server_hmnet_no_ilp32_handlers__
+cflags-.-CONFIG_DISABLE_FPU: -mgeneral-regs-only
+
+installfindmodule: FindHMNetLibs.cmake
+installfindmodule: FindHMNetLibs_sysk.cmake

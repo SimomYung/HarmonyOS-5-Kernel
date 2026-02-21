@@ -1,0 +1,8 @@
+#
+# taskmanager collector driver configuration
+#
+menuconfig TASK_MANAGER_COLLECTOR
+	bool "taskmanager collector driver"
+	default n
+	help
+	Say yes here to support for taskmanager collector.

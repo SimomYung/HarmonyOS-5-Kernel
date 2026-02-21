@@ -1,0 +1,35 @@
+/*
+ * Copyright (C) Huawei Technologies Co., Ltd. 2019-2020. All rights reserved.
+ * Description: Definition of nsmgr sysif api
+ * Author: Huawei OS Kernel Lab
+ * Create: Tue Jul 16 20:03:51 2019
+ */
+
+/*
+ * To support the mixed data model which means the client and the server
+ * may use different data model. See the document for limitation of data type
+ * used in the sysif interfaces in <Documentation/sysif_compat.md>.
+ */
+DEFINE_MANAGER(ns, 8,
+	DEFINE_LSYSCALL_METHOD(unshare, SYS_unshare,
+		ARG(1, int, flags))
+	DEFINE_LSYSCALL_METHOD(setns, SYS_setns,
+		ARG(2, int, fd, int, flags))
+	DEFINE_SIMPLE_METHOD(ns, get,
+		      ARG(2, unsigned int, nsid, int, flags),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(ns, put,
+		      ARG(2, unsigned int, nsid, int, flags),
+		      RET_NO,
+		      SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(ns, get_nsid_by_pid,
+		      ARG(2, int, pid, int, flags),
+		      RET(1, unsigned int, nsid),
+		      SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(ns, is_current_in_root_uts_ns,
+		      ARG_NO,
+		      RET(1, bool, is_root_uts_ns),
+		      SLOWDATA_NO)
+)

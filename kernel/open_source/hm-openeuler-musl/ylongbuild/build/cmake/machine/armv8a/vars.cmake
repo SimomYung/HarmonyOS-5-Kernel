@@ -1,0 +1,1 @@
+set(MACHINE_CFLAGS "-march=armv8-a+crc -ftree-vectorize")

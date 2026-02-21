@@ -1,0 +1,67 @@
+{
+    "template": "hook",
+    "server": "devhost",
+    "manager": "net",
+    "generation": {
+        "header": {
+            "embedded_code": {
+                "hook": ""
+            }
+        }
+    },
+    "hooks": {
+        "net_prepare": {
+            "scheme": "security check/inner constraint",
+            "arguments": [],
+            "ac": {
+                "buckle": {
+                    "alias": "sec_chk_ability_net_prepare",
+                    "permission": "ab_devhost_net_prepare"
+                }
+            }
+        },
+        "net_send": {
+            "scheme": "security check/inner constraint",
+            "arguments": [],
+            "ac": {
+                "buckle": {
+                    "alias": "sec_chk_ability_net_send",
+                    "permission": "ab_netd"
+                }
+            }
+        },
+        "net_ioctl": {
+            "scheme": "security check/inner constraint",
+            "credential": {
+                "transaction": true
+            },
+            "arguments": [],
+            "ac": {
+                "buckle": {
+                    "alias": "sec_chk_ability_netd",
+                    "permission": "ab_netd"
+                }
+            }
+        },
+        "net_stat": {
+            "scheme": "security check/inner constraint",
+            "arguments": [],
+            "ac": {
+                "buckle": {
+                    "alias": "sec_chk_ability_net_stat",
+                    "permission": "ab_netd"
+                }
+            }
+        },
+        "net_init": {
+            "scheme": "security check/inner constraint",
+            "arguments": [],
+            "ac": {
+                "buckle": {
+                    "alias": "sec_chk_ability_net_init",
+                    "permission": "ab_devhost_net_init"
+                }
+            }
+        }
+    }
+}

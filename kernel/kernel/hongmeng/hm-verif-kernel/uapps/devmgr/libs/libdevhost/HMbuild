@@ -1,0 +1,37 @@
+# Copyright (c) Huawei Technologies Co., Ltd. 2022-2022. All rights reserved.
+# Description: HMbuild
+# Author: Huawei OS Kernel Lab
+# Create: Fri May 06 15:26:35 2022
+
+lib-dynamic-y: dh_shared
+output-dh_shared: dh
+install-dh_shared-y: LIBDIR
+
+lib-static-y: dh
+install-dh-y: LIBDIR
+
+src-y: devhost.c
+src-y: actv.c
+src-y: device.c
+src-y: region.c
+src-y: kernfs.c
+src-y: procfs.c
+src-y: sysfs.c
+src-y: sysfs_alloc.c
+src-y: irq.c
+src-y: uobject.c
+src-y: compatible.c
+src-y: map.c
+src-y: devhost_server.c
+
+excludecflags-irq.c-y: -fsanitize-coverage=trace-pc
+excludecflags-irq.c-y: -fsanitize-coverage=trace-cmp
+
+subdir-y: mm
+subdir-y: vpipe
+subdir-y: fusion
+subdir-y: override
+
+linklib-dh_shared-y: -nostdlib
+linklib-dh_shared-y: -Wl,--hash-style=both
+linklib-dh_shared-CONFIG_HKIP: -Tlibdh.lds

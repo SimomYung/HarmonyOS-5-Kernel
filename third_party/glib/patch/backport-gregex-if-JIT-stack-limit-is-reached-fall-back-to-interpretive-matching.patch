@@ -1,0 +1,120 @@
+From 406f85a48f1ec41cda15ae617a979f7df749cb27 Mon Sep 17 00:00:00 2001
+From: Aleksei Rybalkin <aleksei@rybalkin.org>
+Date: Sun, 20 Aug 2023 16:33:53 +0200
+Subject: [PATCH 1/2] gregex: if JIT stack limit is reached, fall back to
+ interpretive matching
+ 
+Conflict:Move large_test_string to fix declaration-after-statement
+Reference:https://gitlab.gnome.org/GNOME/glib/-/commit/406f85a48f1ec41cda15ae617a979f7df749cb27
+ 
+---
+ glib/gregex.c      | 13 ++++++++++---
+ glib/tests/regex.c | 10 +++++++++-
+ 2 files changed, 19 insertions(+), 4 deletions(-)
+ 
+diff --git a/glib/gregex.c b/glib/gregex.c
+index 5ce034db41..1b3ee02f30 100644
+--- a/glib/gregex.c
++++ b/glib/gregex.c
+@@ -484,8 +484,6 @@ translate_match_error (gint errcode)
+       /* not used by pcre2_match() */
+       break;
+     case PCRE2_ERROR_MATCHLIMIT:
+-    case PCRE2_ERROR_JIT_STACKLIMIT:
+-      return _("backtracking limit reached");
+     case PCRE2_ERROR_CALLOUT:
+       /* callouts are not implemented */
+       break;
+@@ -1107,8 +1105,17 @@ g_match_info_next (GMatchInfo  *match_info,
+                                              opts,
+                                              match_info->match_data,
+                                              match_info->match_context);
++      /* if the JIT stack limit was reached, fall back to non-JIT matching in
++       * the next conditional statement */
++      if (match_info->matches == PCRE2_ERROR_JIT_STACKLIMIT)
++        {
++          g_info ("PCRE2 JIT stack limit reached, falling back to "
++                  "non-optimized matching.");
++          opts |= PCRE2_NO_JIT;
++          jit_status = JIT_STATUS_DISABLED;
++        }
+     }
+-  else
++  if (jit_status != JIT_STATUS_ENABLED)
+     {
+       match_info->matches = pcre2_match (match_info->regex->pcre_re,
+                                          (PCRE2_SPTR8) match_info->string,
+diff --git a/glib/tests/regex.c b/glib/tests/regex.c
+index 821fc59608..f18db483c2 100644
+--- a/glib/tests/regex.c
++++ b/glib/tests/regex.c
+@@ -51,8 +51,9 @@
+ /* A random value use to mark untouched integer variables. */
+ #define UNTOUCHED -559038737
+ 
+-/* A length of the test string in JIT stack test */
++/* Lengths of test strings in JIT stack tests */
+ #define TEST_STRING_LEN 20000
++#define LARGE_TEST_STRING_LEN 200000
+ 
+ static gint total;
+ 
+@@ -2485,6 +2486,7 @@ int
+ main (int argc, char *argv[])
+ {
+   char test_string[TEST_STRING_LEN];
++  char large_test_string[LARGE_TEST_STRING_LEN];
+   setlocale (LC_ALL, "");
+ 
+   g_test_init (&argc, &argv, NULL);
+@@ -2711,6 +2713,12 @@ G_GNUC_END_IGNORE_DEPRECATIONS
+   test_string[TEST_STRING_LEN - 1] = '\0';
+   TEST_MATCH_SIMPLE ("^(?:[ \t\n]|[^[:cntrl:]])*$", test_string, 0, 0, TRUE);
+ 
++  /* Test that gregex falls back to unoptimized matching when reaching the JIT
++   * compiler stack limit */
++  memset (large_test_string, '*', LARGE_TEST_STRING_LEN);
++  large_test_string[LARGE_TEST_STRING_LEN - 1] = '\0';
++  TEST_MATCH_SIMPLE ("^(?:[ \t\n]|[^[:cntrl:]])*$", large_test_string, 0, 0, TRUE);
++
+   /* TEST_MATCH(pattern, compile_opts, match_opts, string,
+    * 		string_len, start_position, match_opts2, expected) */
+   TEST_MATCH("a", 0, 0, "a", -1, 0, 0, TRUE);
+-- 
+GitLab
+ 
+ 
+From 986fa3fdad5155924b17dbde16811d017a6413da Mon Sep 17 00:00:00 2001
+From: Philip Withnall <philip@tecnocode.co.uk>
+Date: Mon, 21 Aug 2023 10:19:43 +0000
+Subject: [PATCH 2/2] Apply 2 suggestion(s) to 1 file(s)
+ 
+Conflict:NA
+Reference:https://gitlab.gnome.org/GNOME/glib/-/commit/986fa3fdad5155924b17dbde16811d017a6413da
+ 
+---
+ glib/gregex.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
+ 
+diff --git a/glib/gregex.c b/glib/gregex.c
+index 1b3ee02f30..b37a5e04c7 100644
+--- a/glib/gregex.c
++++ b/glib/gregex.c
+@@ -1109,12 +1109,13 @@ g_match_info_next (GMatchInfo  *match_info,
+        * the next conditional statement */
+       if (match_info->matches == PCRE2_ERROR_JIT_STACKLIMIT)
+         {
+-          g_info ("PCRE2 JIT stack limit reached, falling back to "
+-                  "non-optimized matching.");
++          g_debug ("PCRE2 JIT stack limit reached, falling back to "
++                   "non-optimized matching.");
+           opts |= PCRE2_NO_JIT;
+           jit_status = JIT_STATUS_DISABLED;
+         }
+     }
++
+   if (jit_status != JIT_STATUS_ENABLED)
+     {
+       match_info->matches = pcre2_match (match_info->regex->pcre_re,
+-- 
+GitLab

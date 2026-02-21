@@ -1,0 +1,27 @@
+{
+    "template": "hook",
+    "server": "net",
+    "manager": "net_admin",
+    "hooks": {
+        "net_admin": {
+            "generation": {
+                "performance_compatibility": true
+      	    },
+            "scheme": "security check/privilege",
+            "arguments": [],
+            "ac": {
+                "ability": {
+                    "alias": "sec_chk_ability_net_admin",
+                    "permission": "ab_net_admin"
+                },
+                "capability": {
+                    "alias": "sec_chk_posix_cap_net_admin",
+                    "enabled": true,
+                    "permission": [
+                        "NET_ADMIN"
+                    ]
+                }
+            }
+        }
+    }
+}

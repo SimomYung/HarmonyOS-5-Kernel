@@ -1,0 +1,8 @@
+# -*- Makefile -*-
+noinst_LTLIBRARIES += libmnote-huawei.la
+libmnote_huawei_la_SOURCES = \
+	huawei/exif-mnote-data-huawei.c huawei/exif-mnote-data-huawei.h \
+	huawei/mnote-huawei-data-type.c huawei/mnote-huawei-data-type.h		\
+	huawei/mnote-huawei-entry.c huawei/mnote-huawei-entry.h \
+	huawei/mnote-huawei-tag.c huawei/mnote-huawei-tag.h
+libmnote_huawei_la_LIBADD = $(LTLIBINTL)

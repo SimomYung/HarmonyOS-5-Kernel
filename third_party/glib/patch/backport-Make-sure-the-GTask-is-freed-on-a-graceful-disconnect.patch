@@ -1,0 +1,39 @@
+From cabc49407371800733ada202fab721c9091b6fe6 Mon Sep 17 00:00:00 2001
+From: Pavel Sobolev <paveloom@riseup.net>
+Date: Thu, 14 Sep 2023 15:42:24 +0300
+Subject: [PATCH] Make sure the `GTask` is freed on a graceful disconnect
+ 
+This fixes the memory leak in the case the connection has been
+successfully closed by the peer.
+ 
+ 
+Conflict:NA
+Reference:https://gitlab.gnome.org/GNOME/glib/-/commit/cabc49407371800733ada202fab721c9091b6fe6
+ 
+---
+ gio/gtcpconnection.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+ 
+diff --git a/gio/gtcpconnection.c b/gio/gtcpconnection.c
+index 422b3dea52..e0865d859b 100644
+--- a/gio/gtcpconnection.c
++++ b/gio/gtcpconnection.c
+@@ -206,6 +206,8 @@ async_close_finish (GTask    *task,
+     g_task_return_error (task, error);
+   else
+     g_task_return_boolean (task, TRUE);
++
++  g_object_unref (task);
+ }
+ 
+ 
+@@ -231,7 +233,6 @@ close_read_ready (GSocket        *socket,
+       else
+ 	{
+ 	  async_close_finish (task, error);
+-	  g_object_unref (task);
+ 	  return FALSE;
+ 	}
+     }
+-- 
+GitLab

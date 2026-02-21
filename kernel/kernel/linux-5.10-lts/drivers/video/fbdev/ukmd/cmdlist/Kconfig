@@ -1,0 +1,7 @@
+config UKMD_CMDLIST_ENABLE
+	bool "UKMD support cmdlist driver"
+	default n
+	depends on DMA_CMA
+	depends on UKMD_UKSM
+	help
+	  This feature driver supports UKMD config by cmdlist.

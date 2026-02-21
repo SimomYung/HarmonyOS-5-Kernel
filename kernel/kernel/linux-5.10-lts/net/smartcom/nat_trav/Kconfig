@@ -1,0 +1,3 @@
+menuconfig HUAWEI_NAT_TRAV
+    bool "Huawei smartcom nat traversal feature support"
+    default n

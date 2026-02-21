@@ -1,0 +1,31 @@
+/*
+ * Copyright (c) Huawei Technologies Co., Ltd. 2021-2021. All rights reserved.
+ * Description: Header of vsock interface for sysif
+ * Author: Huawei OS Kernel Lab
+ * Create: Tue Jul 6 11:18:01 2021
+ */
+
+#ifdef SYSIF_EXPORT_API
+
+enum vm_notify_cmd {
+	VM_NOTIFY_VM_TX = 1,
+	VM_NOTIFY_VQ_READY = 2,
+};
+
+#endif
+
+DEFINE_MANAGER(vsock, 4,
+	DEFINE_SIMPLE_METHOD(vsock, register_vm,
+			     ARG(2, unsigned int, cid, unsigned int, dev_group_id),
+			     RET_NO,
+			     SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(vsock, vm_notify,
+			     ARG(4, unsigned int, cid, unsigned short, cmd,
+			         void *, args, size_t, size),
+			     RET_NO,
+			     SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(vsock, unregister_vm,
+			     ARG(1, unsigned int, cid),
+			     RET_NO,
+			     SLOWDATA_NO)
+)

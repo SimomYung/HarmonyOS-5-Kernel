@@ -1,0 +1,35 @@
+{
+    "name": "@ohos/iproute2",
+    "description": "A command line tool for ip protocol.",
+    "version": "4.0",
+    "license": "GPL",
+    "publishAs": "code-segment",
+    "segment": {
+        "destPath": "vendor/open_source/iproute2"
+    },
+    "dirs": {},
+    "scripts": {},
+    "licensePath": "COPYING",
+    "component": {
+        "name": "iproute2",
+        "subsystem": "communication",
+        "syscap": [],
+        "features": [],
+        "adapted_system_type": [
+            "standard"
+        ],
+        "rom": "",
+        "ram": "",
+        "deps": {
+            "components": [],
+            "third_party": []
+        },
+        "build": {
+            "sub_component": [
+                "//vendor/open_source/iproute2:iproute2_target"
+            ],
+            "inner_kits": [],
+            "test": []
+        }
+    }
+}

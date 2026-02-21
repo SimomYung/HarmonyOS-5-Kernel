@@ -1,0 +1,41 @@
+From 491c2dea43a9c9f33c5feb9ccd9b91d04a24b6f7 Mon Sep 17 00:00:00 2001
+From: Haotian <lihaotian9@huawei.com>
+Date: Wed, 17 Mar 2021 17:34:14 +0800
+Subject: [PATCH] e2fsck: add env param E2FS_UNRELIABLE_IO to fix
+ unreliable io case
+
+Func write_primary_superblock() has two way to wirte disk. One is 1k block,
+the other is byte by byte as default. On unreliable IO case such as flaky
+network, the byte-by-byte method may lost some data of ext4-superblock.
+Then, the superblock may lose consistency and the sb checksum error will
+occur.
+
+We provide the env param E2FS_UNRELIABLE_IO for users to choose if it's
+necessary to take 1k block way on writing disk.
+
+Fix issue:https://gitee.com/src-openeuler/e2fsprogs/issues/I4RZVX?from=project-issue
+
+Signed-off-by: Haotian Li <lihaotian9@huawei.com>
+Signed-off-by: Zhiqiang Liu <liuzhiqiang26@huawei.com>
+---
+ lib/ext2fs/closefs.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/lib/ext2fs/closefs.c b/lib/ext2fs/closefs.c
+index 1d4d5b7..1893fb6 100644
+--- a/lib/ext2fs/closefs.c
++++ b/lib/ext2fs/closefs.c
+@@ -195,8 +195,9 @@ static errcode_t write_primary_superblock(ext2_filsys fs,
+ 	__u16		*old_super, *new_super;
+ 	int		check_idx, write_idx, size;
+ 	errcode_t	retval;
++	int is_unreliable_io = getenv("E2FS_UNRELIABLE_IO") ? 1 : 0;
+ 
+-	if (!fs->io->manager->write_byte || !fs->orig_super) {
++	if (!fs->io->manager->write_byte || !fs->orig_super || is_unreliable_io) {
+ 	fallback:
+ 		io_channel_set_blksize(fs->io, SUPERBLOCK_OFFSET);
+ 		retval = io_channel_write_blk64(fs->io, 1, -SUPERBLOCK_SIZE,
+-- 
+2.21.1 (Apple Git-122.3)
+

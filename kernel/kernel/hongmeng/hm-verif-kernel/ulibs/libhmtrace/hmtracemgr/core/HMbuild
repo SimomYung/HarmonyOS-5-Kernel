@@ -1,0 +1,10 @@
+# Copyright (c) Huawei Technologies Co., Ltd. 2022-2022. All rights reserved.
+# Description: HMbuild
+# Author: Huawei OS Kernel Lab
+# Create: Thu May 26 21:15:55 2022
+
+src-y: client.c
+src-y: server.c
+src-y: hmtracemgr.c
+src-y: hmtracemgr_core.c
+src-y: hmtracemgr_if.c

@@ -1,0 +1,59 @@
+From 228e9f0567eebd4597bd1771fc4bf3650190cf3e Mon Sep 17 00:00:00 2001
+From: zhanchengbin <zhanchengbin1@huawei.com>
+Date: Thu, 24 Feb 2022 10:06:30 +0800
+Subject: [PATCH] resize2fs: resize2fs disk hardlinks will be error
+
+Resize2fs disk hardlinks which mounting after the same name as tmpfs
+ filesystem it will be error. The items in /proc/mounts are traversed,
+when you get to tmpfs, file!=mnt->mnt_fsname, therefore, the
+stat(mnt->mnt_fsname, &st_buf) branch is used, however, the values of
+ file_rdev and st_buf.st_rdev are the same, As a result, the system
+mistakenly considers that disk is mounted to /root/tmp. As a result
+, resize2fs fails.
+
+example:
+dev_name="/dev/sdc" (ps: a disk in you self)
+mkdir /root/tmp
+mkdir /root/mnt
+mkfs.ext4 -F -b 1024 -E "resize=10000000" "${dev_name}" 32768
+mount -t tmpfs "${dev_name}" /root/tmp
+mount "${dev_name}" /root/tmp
+ln "${dev_name}" "${dev_name}"-ln
+resize2fs "${dev_name}"-ln 6G
+
+Signed-off-by: zhanchengbin <zhanchengbin1@huawei.com>
+Signed-off-by: guiyao <guiyao@huawei.com>
+---
+ lib/ext2fs/ismounted.c | 9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
+
+diff --git a/lib/ext2fs/ismounted.c b/lib/ext2fs/ismounted.c
+index aee7d72..463a82a 100644
+--- a/lib/ext2fs/ismounted.c
++++ b/lib/ext2fs/ismounted.c
+@@ -98,6 +98,7 @@ static errcode_t check_mntent_file(const char *mtab_file, const char *file,
+ {
+ 	struct mntent 	*mnt;
+ 	struct stat	st_buf;
++	struct stat	dir_st_buf;
+ 	errcode_t	retval = 0;
+ 	dev_t		file_dev=0, file_rdev=0;
+ 	ino_t		file_ino=0;
+@@ -144,8 +145,12 @@ static errcode_t check_mntent_file(const char *mtab_file, const char *file,
+ 		if (stat(mnt->mnt_fsname, &st_buf) == 0) {
+ 			if (ext2fsP_is_disk_device(st_buf.st_mode)) {
+ #ifndef __GNU__
+-				if (file_rdev && (file_rdev == st_buf.st_rdev))
+-					break;
++				if (file_rdev && (file_rdev == st_buf.st_rdev)) {
++					if (stat(mnt->mnt_dir, &dir_st_buf) != 0)
++						continue;
++					if (file_rdev == dir_st_buf.st_dev)
++						break;
++				}
+ 				if (check_loop_mounted(mnt->mnt_fsname,
+ 						st_buf.st_rdev, file_dev,
+ 						file_ino) == 1)
+-- 
+1.8.3.1
+

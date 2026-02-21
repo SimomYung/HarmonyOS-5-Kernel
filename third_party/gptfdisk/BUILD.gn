@@ -1,0 +1,54 @@
+# Copyright (c) 2021 Huawei Device Co., Ltd.
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+
+import("//build/ohos.gni")
+import("//build/ohos/ndk/ndk.gni")
+
+config("gptdisk_config") {
+  include_dirs = [
+    ".",
+    "//third_party/e2fsprogs/e2fsprogs/lib/",
+    "//third_party/popt/",
+  ]
+  cflags_cc = [
+    "-Wall",
+    "-D_FILE_OFFSET_BITS=64",
+    "-Wno-unused-parameter",
+    "-Wno-pragma-pack",
+    "-Wno-error=header-hygiene",
+    "-Wno-register",
+    "-Wno-unused-but-set-variable",
+  ]
+}
+ohos_executable("sgdisk") {
+  install_enable = true
+  sources = [
+    "attributes.cc",
+    "basicmbr.cc",
+    "bsd.cc",
+    "crc32.cc",
+    "diskio-unix.cc",
+    "diskio.cc",
+    "gpt.cc",
+    "gptcl.cc",
+    "gptpart.cc",
+    "guid.cc",
+    "mbr.cc",
+    "mbrpart.cc",
+    "parttypes.cc",
+    "sgdisk.cc",
+    "support.cc",
+  ]
+  public_configs = [ ":gptdisk_config" ]
+  deps = [
+    "//third_party/e2fsprogs:libext2_uuid",
+    "//third_party/popt:popt_static",
+  ]
+  subsystem_name = "thirdparty"
+  part_name = "gptfdisk"
+  install_images = [ "system" ]
+}

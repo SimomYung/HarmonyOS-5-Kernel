@@ -1,0 +1,63 @@
+From 851e3f835614371ab4e21c36f2ddcb6f0312a8bb Mon Sep 17 00:00:00 2001
+From: ZhiqiangLiu <lzhq28@mail.ustc.edu.cn>
+Date: Wed, 15 Jul 2020 21:20:25 +0800
+Subject: [PATCH] e2fsprogs: set hugefile from 4T to 1T in hugefile test
+
+When execing make check, 4T is too large for CI,
+so set hugefile from 4T to 1T in hugefile test.
+
+Signed-off-by: Zhiqiang Liu <lzhq28@mail.ustc.edu.cn>
+---
+ tests/m_hugefile/expect | 14 +++++++-------
+ tests/m_hugefile/script |  4 ++--
+ 2 files changed, 9 insertions(+), 9 deletions(-)
+
+diff --git a/tests/m_hugefile/expect b/tests/m_hugefile/expect
+index ee33fe5..170387a 100644
+--- a/tests/m_hugefile/expect
++++ b/tests/m_hugefile/expect
+@@ -1,19 +1,19 @@
+-mke2fs -F -T hugefile test.img 4T
+-Creating filesystem with 1073741824 4k blocks and 1048576 inodes
++mke2fs -F -T hugefile test.img 1T
++Creating filesystem with 268435456 4k blocks and 262144 inodes
+ Superblock backups stored on blocks: 
+ 
+ Allocating group tables: done                            
+-Writing inode tables:            done                            
++Writing inode tables:          done                            
+ Creating 1 huge file(s) : done
+-Writing superblocks and filesystem accounting information:            done
++Writing superblocks and filesystem accounting information:          done
+ 
+ Pass 1: Checking inodes, blocks, and sizes
+ Pass 2: Checking directory structure
+ Pass 3: Checking directory connectivity
+ Pass 4: Checking reference counts
+ Pass 5: Checking group summary information
+-test_filesys: 13/1048576 files (0.0% non-contiguous), 1073709417/1073741824 blocks
++test_filesys: 13/262144 files (0.0% non-contiguous), 268394593/268435456 blocks
+ Exit status is 0
+ debugfs -R "extents /store/big-data" test.img
+-Last logical block: 1073610751
+-Last physical block: 1073741823
++Last logical block: 268369919
++Last physical block: 268435455
+diff --git a/tests/m_hugefile/script b/tests/m_hugefile/script
+index 1abdb7d..e576a21 100644
+--- a/tests/m_hugefile/script
++++ b/tests/m_hugefile/script
+@@ -35,8 +35,8 @@ cat > $CONF << ENDL
+ 	}
+ ENDL
+ 
+-echo "mke2fs -F -T hugefile test.img 4T" > $OUT
+-MKE2FS_CONFIG=$CONF $MKE2FS -F -T hugefile $TMPFILE 4T >> $OUT 2>&1
++echo "mke2fs -F -T hugefile test.img 1T" > $OUT
++MKE2FS_CONFIG=$CONF $MKE2FS -F -T hugefile $TMPFILE 1T >> $OUT 2>&1
+ rm -f $CONF
+ 
+ # check the file system if we get this far, we succeeded...
+-- 
+2.21.1 (Apple Git-122.3)
+

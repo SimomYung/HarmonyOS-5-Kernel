@@ -1,0 +1,228 @@
+/*
+ * Copyright (c) Huawei Technologies Co., Ltd. 2021-2021. All rights reserved.
+ * Description: transfs operation sysif APIs
+ * Author: Huawei OS Kernel Lab
+ * Create: Thu Jul 1 16:05:44 2021
+ */
+
+/*
+ * To support the mixed data model which means the client and the server
+ * may use different data model. See the document for limitation of data type
+ * used in the sysif interfaces in <Documentation/sysif_compat.md>.
+ */
+/* !Now defined Method: 34, if you want to add more functions, please modify the number! */
+DEFINE_MANAGER(transfs, 35,
+	DEFINE_METHOD(transfs, mounted,
+		ARG(3,
+		struct hm_actv_buf, fs_name,
+		struct hm_actv_buf, dev_name,
+		struct hm_actv_buf, mount_opts),
+		RET(1,
+		struct transfs_m_info_t, m_info),
+		SLOWDATA)
+	DEFINE_METHOD(transfs, unmounted,
+		ARG(3,
+		unsigned int, s_index, int, flags, unsigned long long, file_id),
+		RET_NO,
+		SLOWDATA_NO)
+	DEFINE_METHOD(transfs, drop_caches,
+		ARG(3,
+		unsigned int, s_index, unsigned int, mode, int, max_nr),
+		RET_NO,
+		SLOWDATA_NO)
+	DEFINE_METHOD(transfs, mkdir,
+		ARG(4,
+		unsigned int, s_index, unsigned int, pd_index, mode_t, mode,
+		struct hm_actv_buf, actv_dname),
+		RET(1,
+		struct transfs_dn_info_t, dn_info_out),
+		SLOWDATA_NO)
+	DEFINE_METHOD(transfs, rmdir,
+		ARG(3,
+		unsigned int, s_index, unsigned int, pd_index, unsigned int, d_index),
+		RET_NO,
+		SLOWDATA_NO)
+	DEFINE_METHOD(transfs, create,
+		ARG(4,
+		unsigned int, s_index, unsigned int, pd_index, mode_t, mode,
+		struct hm_actv_buf, actv_dname),
+		RET(1,
+		struct transfs_dn_info_t, dn_info_out),
+		SLOWDATA_NO)
+	DEFINE_METHOD(transfs, unlink,
+		ARG(3,
+		unsigned int, s_index, unsigned int, pd_index, unsigned int, d_index),
+		RET_NO,
+		SLOWDATA_NO)
+	DEFINE_METHOD(transfs, mknod,
+		ARG(5,
+		unsigned int, s_index, unsigned int, pd_index, unsigned int, mode,
+		unsigned long long, devno, struct hm_actv_buf, actv_dname),
+		RET(1,
+		struct transfs_dn_info_t, dn_info_out),
+		SLOWDATA_NO)
+	DEFINE_METHOD(transfs, link,
+		ARG(4,
+		unsigned int, s_index, unsigned int, old_d_index,
+		unsigned int, new_pd_index, struct hm_actv_buf, actv_dname),
+		RET(1,
+		struct transfs_dn_info_t, dn_info_out),
+		SLOWDATA_NO)
+	DEFINE_METHOD(transfs, symlink,
+		ARG(4,
+		unsigned int, s_index, unsigned int, pd_index,
+		struct hm_actv_buf, actv_dname, struct hm_actv_buf, actv_path),
+		RET(1,
+		struct transfs_dn_info_t, dn_info_out),
+		SLOWDATA_NO)
+	DEFINE_METHOD(transfs, statfs,
+		ARG(3,
+		unsigned int, s_index, unsigned int, d_index, void *, buf),
+		RET_NO,
+		SLOWDATA_NO)
+	DEFINE_METHOD(transfs, rename,
+		ARG(6,
+		unsigned int, sb_index, unsigned int, old_pd_index,
+		unsigned int, old_d_index, unsigned int, new_pd_index,
+		unsigned int, new_d_index, struct hm_actv_buf, actv_dname),
+		RET_NO,
+		SLOWDATA_NO)
+	DEFINE_METHOD(transfs, lookup,
+		ARG(4,
+		unsigned int, sb_index, unsigned int, pd_index, struct hm_actv_buf, actv_dname, void *, meta),
+		RET(1,
+		struct transfs_dn_info_t, dn_info_out),
+		SLOWDATA_NO)
+	DEFINE_METHOD(transfs, setattr,
+		ARG(4,
+		unsigned int, sb_index, unsigned int, d_index, const void *, attr, uint64_t, size),
+		RET_NO,
+		SLOWDATA_NO)
+	DEFINE_METHOD(transfs, readlink,
+		ARG(4,
+		unsigned int, sb_index, unsigned int, d_index, char *, buf, size_t, bufsize),
+		RET_NO,
+		SLOWDATA_NO)
+	DEFINE_METHOD(transfs, getattr,
+		ARG(3,
+		unsigned int, sb_index, unsigned int, d_index, void *, meta),
+		RET_NO,
+		SLOWDATA_NO)
+	DEFINE_METHOD(transfs, listxattr,
+		ARG(4,
+		unsigned int, s_index, unsigned int, d_index, char *, buffer, size_t, size),
+		RET(1,
+		long long, written),
+		SLOWDATA_NO)
+	DEFINE_METHOD(transfs, getxattr,
+		ARG(6,
+		unsigned int, s_index, unsigned int, d_index, int, prefix,
+		struct hm_actv_buf, actv_name, char *, value, size_t, size),
+		RET(1,
+		long long, nbytes),
+		SLOWDATA_NO)
+	DEFINE_METHOD(transfs, setxattr,
+		ARG(7,
+		unsigned int, s_index, unsigned int, d_index, int, prefix,
+		struct hm_actv_buf, actv_name,
+		const char *, value, size_t, size, int, flags),
+		RET_NO,
+		SLOWDATA_NO)
+	DEFINE_METHOD(transfs, tmpfile,
+		ARG(4,
+		unsigned int, s_index, unsigned int, pd_addr, mode_t, mode,
+		struct hm_actv_buf, actv_dname),
+		RET(1,
+		struct transfs_dn_info_t, dn_info_out),
+		SLOWDATA_NO)
+	DEFINE_METHOD(transfs, kill_dentry,
+		ARG(2,
+		unsigned int, s_index, unsigned int, d_index),
+		RET_NO,
+		SLOWDATA_NO)
+	DEFINE_METHOD(transfs, node_put,
+		ARG(2,
+		unsigned int, s_index, unsigned int, v_index),
+		RET_NO,
+		SLOWDATA_NO)
+	DEFINE_METHOD(transfs, sync,
+		ARG(1,
+		unsigned int, s_index),
+		RET_NO,
+		SLOWDATA_NO)
+	DEFINE_METHOD(transfs, write,
+		ARG(5,
+		unsigned int, s_index, unsigned int, f_index, uint64_t, pos,
+		const void *, src, size_t, len),
+		RET(1,
+		long long, nwritten),
+		SLOWDATA_NO)
+	DEFINE_METHOD(transfs, read,
+		ARG(5,
+		unsigned int, s_index, unsigned int, f_index, uint64_t, pos,
+		const void *, src, size_t, len),
+		RET(1,
+		long long, nread),
+		SLOWDATA_NO)
+	DEFINE_METHOD(transfs, write_iter,
+		ARG(6,
+		unsigned int, s_index, unsigned int, f_index, uint64_t, pos,
+		const void *, iov, int, nr_segs, size_t, count),
+		RET(1,
+		long long, nwritten),
+		SLOWDATA_NO)
+	DEFINE_METHOD(transfs, fsync,
+		ARG(2,
+		unsigned int, s_index, unsigned int, f_index),
+		RET_NO,
+		SLOWDATA_NO)
+	DEFINE_METHOD(transfs, readdir,
+		ARG(5,
+		unsigned int, sb_index, unsigned int, f_index, uint64_t, pos,
+		void *, buf, size_t, size),
+		RET(1,
+		int64_t, fpos),
+		SLOWDATA_NO)
+	DEFINE_METHOD(transfs, open,
+		ARG(4,
+		unsigned int, sb_index, unsigned int, d_index, unsigned int, f_modes, unsigned int, f_flags),
+		RET(1,
+		unsigned int, f_index),
+		SLOWDATA_NO)
+	DEFINE_METHOD(transfs, fallocate,
+		ARG(5,
+		unsigned int, sb_index, unsigned int, f_index, unsigned int, mode, uint64_t, pos, uint64_t, len),
+		RET_NO,
+		SLOWDATA_NO)
+	DEFINE_METHOD(transfs, close,
+		ARG(2,
+		unsigned int, s_index, unsigned int, f_index),
+		RET_NO,
+		SLOWDATA_NO)
+	DEFINE_METHOD(transfs, ioctl,
+		ARG(4,
+		unsigned int, s_index, unsigned int, f_index,
+		unsigned int, cmd, unsigned long, arg),
+		RET_NO,
+		SLOWDATA_NO)
+	DEFINE_METHOD(transfs, direct_IO,
+		ARG(6,
+		unsigned int, s_index, unsigned int, f_index, uint64_t, offset,
+		void *, buf, size_t, len, unsigned int, type),
+		RET(1,
+		long long, nbytes),
+		SLOWDATA_NO)
+	DEFINE_METHOD(transfs, update_opts,
+		ARG(3,
+		unsigned int, s_index, char *, ubuf, size_t, buflen),
+		RET_NO,
+		SLOWDATA_NO)
+	DEFINE_METHOD(transfs, iommap,
+		ARG(8,
+		unsigned int, s_index, unsigned int, f_index,
+		unsigned long, addr, unsigned long long, vspace_rref,
+		unsigned long, length, unsigned long, prot,  unsigned int, flags, unsigned long, offset),
+		RET(2,
+		uintptr_t, addr, unsigned int, iomem_id),
+		SLOWDATA_NO)
+)

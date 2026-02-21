@@ -1,0 +1,13 @@
+/*
+ * Copyright (c) Huawei Technologies Co., Ltd. 2021-2021. All rights reserved.
+ * Description: Generate uvmm sysif apis using dsl code generator
+ * Author: Huawei OS Kernel Lab
+ * Create: Tue Jun 01 17:26:11 2021
+ */
+
+USE_CALL_PREFIX(uvmmcall)
+USE_HANDLER_PREFIX(uvmmhandler)
+USE_SERVER_NAME(uvmm)
+INCLUDE_SUBSYSTEM(libsysif/uvmm/uvmm.sysif)
+INCLUDE_SUBSYSTEM(libsysif/uvmm/vsock.sysif)
+INCLUDE_C_HEADER(libbunch/bunch_ipc.h)

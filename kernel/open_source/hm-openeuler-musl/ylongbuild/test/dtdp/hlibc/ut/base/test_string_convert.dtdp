@@ -1,0 +1,543 @@
+{
+    "root": {
+        "data": {
+            "id": "ci26txcan080",
+            "created": 1645493689739,
+            "text": "HLIBC",
+            "usecase": 99
+        },
+        "children": [
+            {
+                "data": {
+                    "id": "ci26yfp7p400",
+                    "created": 1645494043159,
+                    "text": "字符串转换类-strtok_r",
+                    "usecase": 1,
+                    "layout_mind_offset": {
+                        "x": -40,
+                        "y": -4
+                    },
+                    "layout": null
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "ci26ytuzrbs0",
+                            "created": 1645494073983,
+                            "text": "入参分析",
+                            "usecase": null,
+                            "layout": null
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "ci272s4n9fk0",
+                                    "created": 1645494383670,
+                                    "text": "待分割字符串空指针",
+                                    "usecase": 2,
+                                    "layout": null
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "ci27gpy2k540",
+                                            "created": 1645495476017,
+                                            "text": "传入空指针，分割得到空指针",
+                                            "usecase": 4,
+                                            "author": "x50021790",
+                                            "showId": "00006",
+                                            "layout": null
+                                        },
+                                        "children": []
+                                    }
+                                ]
+                            },
+                            {
+                                "data": {
+                                    "id": "ci53ja9bnf40",
+                                    "created": 1645789072392,
+                                    "text": "分隔符为空字符串",
+                                    "usecase": 2,
+                                    "layout": null
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "ci53ja9bm1s0",
+                                            "created": 1645789072392,
+                                            "text": "传入空指针，无法分割",
+                                            "usecase": 4,
+                                            "author": "x50021790",
+                                            "showId": "00034",
+                                            "layout": null
+                                        },
+                                        "children": []
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "data": {
+                            "id": "ci270vepp9k0",
+                            "created": 1645494234080,
+                            "text": "功能分析",
+                            "usecase": null,
+                            "expandState": "expand",
+                            "layout": null
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "ci27e5wi46o0",
+                                    "created": 1645495275658,
+                                    "text": "字符串分割",
+                                    "usecase": 2,
+                                    "author": "x50021790",
+                                    "showId": "00020",
+                                    "layout": null
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "ci4400sjhc80",
+                                            "created": 1645688824020,
+                                            "text": "连续分割符",
+                                            "usecase": 2,
+                                            "layout": null
+                                        },
+                                        "children": [
+                                            {
+                                                "data": {
+                                                    "id": "ci53g9vo10w0",
+                                                    "created": 1645788836473,
+                                                    "text": "使用待分割字符串“This is - www.huawei.com - website\"，分隔符\"--\"，分割成功",
+                                                    "usecase": 4,
+                                                    "author": "x50021790",
+                                                    "showId": "00031",
+                                                    "layout": null
+                                                },
+                                                "children": []
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "data": {
+                                            "id": "ci440cgcfvk0",
+                                            "created": 1645688849404,
+                                            "text": "头尾分隔符",
+                                            "usecase": 2,
+                                            "layout": null
+                                        },
+                                        "children": [
+                                            {
+                                                "data": {
+                                                    "id": "ci53gz0w6bc0",
+                                                    "created": 1645788891209,
+                                                    "text": "使用待分割字符串“-This is - www.huawei.com - website\"，分隔符\"-\"，分割成功",
+                                                    "usecase": 4,
+                                                    "author": "x50021790",
+                                                    "showId": "00032",
+                                                    "layout": null
+                                                },
+                                                "children": []
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "data": {
+                                            "id": "ci53fgeu1l40",
+                                            "created": 1645788772329,
+                                            "text": "分割符不存在",
+                                            "usecase": 2,
+                                            "layout": null
+                                        },
+                                        "children": [
+                                            {
+                                                "data": {
+                                                    "id": "ci53fp05uqo0",
+                                                    "created": 1645788791033,
+                                                    "text": "使用待分割字符串“This is - www.huawei.com - website\"，分隔符\"|\"，无法分割",
+                                                    "usecase": 4,
+                                                    "author": "x50021790",
+                                                    "showId": "00029",
+                                                    "layout": null
+                                                },
+                                                "children": []
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "data": {
+                                            "id": "ci53fwtch7s0",
+                                            "created": 1645788808035,
+                                            "text": "正常分割",
+                                            "usecase": 2,
+                                            "layout": null
+                                        },
+                                        "children": [
+                                            {
+                                                "data": {
+                                                    "id": "ci53g0sw3340",
+                                                    "created": 1645788816714,
+                                                    "text": "使用待分割字符串“This is - www.huawei.com - website\"，分隔符\"-\"，分割成功",
+                                                    "usecase": 4,
+                                                    "author": "x50021790",
+                                                    "showId": "00030",
+                                                    "layout": null
+                                                },
+                                                "children": []
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "data": {
+                            "id": "ci53hij3ncw0",
+                            "created": 1645788933669,
+                            "text": "可靠性分析",
+                            "usecase": null,
+                            "layout": null
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "ci53hij3v8g0",
+                                    "created": 1645788933669,
+                                    "text": "分隔符为空指针",
+                                    "usecase": 2,
+                                    "layout": null
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "ci53hij3ss80",
+                                            "created": 1645788933669,
+                                            "text": "传入空指针，函数错误",
+                                            "usecase": 4,
+                                            "author": "x50021790",
+                                            "showId": "00033",
+                                            "priority": null,
+                                            "layout": null
+                                        },
+                                        "children": []
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "data": {
+                    "id": "ci2j5rlu3lk0",
+                    "created": 1645528470944,
+                    "text": "字符串转换类-atoi，atof，strtol，strtod，strtof，strtoll，strtoull",
+                    "usecase": 1,
+                    "layout_mind_offset": {
+                        "x": -31,
+                        "y": 139
+                    },
+                    "layout": null
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "ci2j5rlugsg0",
+                            "created": 1645528470944,
+                            "text": "入参分析",
+                            "usecase": null,
+                            "layout": null
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "ci2j5rlugjk0",
+                                    "created": 1645528470944,
+                                    "text": "非数字字符串",
+                                    "usecase": 2,
+                                    "layout": null
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "ci2j5rlu2tc0",
+                                            "created": 1645528470944,
+                                            "text": "传入非数字字符串，转换得到0",
+                                            "usecase": 4,
+                                            "author": "x50021790",
+                                            "showId": "00012",
+                                            "layout": null
+                                        },
+                                        "children": []
+                                    }
+                                ]
+                            },
+                            {
+                                "data": {
+                                    "id": "ci538vlwg480",
+                                    "created": 1645788256859,
+                                    "text": "空字符串",
+                                    "usecase": 2,
+                                    "layout": null
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "ci538znm1gw0",
+                                            "created": 1645788265669,
+                                            "text": "转换得到0",
+                                            "usecase": 4,
+                                            "author": "x50021790",
+                                            "showId": "00028",
+                                            "layout": null
+                                        },
+                                        "children": []
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "data": {
+                            "id": "ci2j5rluk0w0",
+                            "created": 1645528470944,
+                            "text": "功能分析",
+                            "usecase": null,
+                            "expandState": "expand",
+                            "layout": null
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "ci2j5rluxbs0",
+                                    "created": 1645528470945,
+                                    "text": "数字字符串转数字",
+                                    "usecase": 2,
+                                    "layout": null
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "ci2j5rlutgg0",
+                                            "created": 1645528470945,
+                                            "text": "不带符号字符串转换数字",
+                                            "usecase": 4,
+                                            "author": "x50021790",
+                                            "showId": "00013",
+                                            "layout": null
+                                        },
+                                        "children": []
+                                    },
+                                    {
+                                        "data": {
+                                            "id": "ci2j5rlv3r40",
+                                            "created": 1645528470945,
+                                            "text": "带正号字符串转换数字",
+                                            "usecase": 4,
+                                            "author": "x50021790",
+                                            "showId": "00014",
+                                            "layout": null
+                                        },
+                                        "children": []
+                                    },
+                                    {
+                                        "data": {
+                                            "id": "ci2j5rlum8w0",
+                                            "created": 1645528470945,
+                                            "text": "带负号字符串转换数字",
+                                            "usecase": 4,
+                                            "author": "x50021790",
+                                            "showId": "00015",
+                                            "layout": null
+                                        },
+                                        "children": []
+                                    }
+                                ]
+                            },
+                            {
+                                "data": {
+                                    "id": "ci5373m0oxc0",
+                                    "created": 1645788117552,
+                                    "text": "不同进制转换",
+                                    "usecase": 2,
+                                    "author": "x50021790",
+                                    "showId": "00025",
+                                    "layout": null
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "ci537bq3dhs0",
+                                            "created": 1645788135212,
+                                            "text": "默认转换",
+                                            "usecase": 4,
+                                            "author": "x50021790",
+                                            "showId": "00022",
+                                            "layout": null
+                                        },
+                                        "children": []
+                                    },
+                                    {
+                                        "data": {
+                                            "id": "ci537dce5nk0",
+                                            "created": 1645788138738,
+                                            "text": "16进制转换",
+                                            "usecase": 4,
+                                            "author": "x50021790",
+                                            "showId": "00023",
+                                            "layout": null
+                                        },
+                                        "children": []
+                                    },
+                                    {
+                                        "data": {
+                                            "id": "ci537ouy7c00",
+                                            "created": 1645788163804,
+                                            "text": "10进制转换",
+                                            "usecase": 4,
+                                            "author": "x50021790",
+                                            "showId": "00024",
+                                            "layout": null
+                                        },
+                                        "children": []
+                                    },
+                                    {
+                                        "data": {
+                                            "id": "ci537vax3c00",
+                                            "created": 1645788177831,
+                                            "text": "2进制转换",
+                                            "usecase": 4,
+                                            "author": "x50021790",
+                                            "showId": "00026",
+                                            "layout": null
+                                        },
+                                        "children": []
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "data": {
+                            "id": "ci538htsjkw0",
+                            "created": 1645788226861,
+                            "text": "可靠性分析",
+                            "usecase": null,
+                            "layout": null
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "ci538htsb080",
+                                    "created": 1645788226861,
+                                    "text": "空指针",
+                                    "usecase": 2,
+                                    "layout": null
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "ci538htslpc0",
+                                            "created": 1645788226861,
+                                            "text": "传入空指针，函数错误",
+                                            "usecase": 4,
+                                            "author": "x50021790",
+                                            "showId": "00027",
+                                            "priority": null,
+                                            "layout": null
+                                        },
+                                        "children": []
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "data": {
+                    "id": "ci2j71umsu00",
+                    "created": 1645528571608,
+                    "text": "字符串转换类-ffs",
+                    "usecase": 1,
+                    "layout_mind_offset": {
+                        "x": -40,
+                        "y": -4
+                    },
+                    "layout": null
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "ci2j71un5vs0",
+                            "created": 1645528571608,
+                            "text": "功能分析",
+                            "usecase": null,
+                            "expandState": "expand",
+                            "layout": null
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "ci2j71umt5s0",
+                                    "created": 1645528571608,
+                                    "text": "查找一个整数中的第一个置位值",
+                                    "usecase": 2,
+                                    "layout": null
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "ci2j71umt3k0",
+                                            "created": 1645528571608,
+                                            "text": "传入0",
+                                            "usecase": 4,
+                                            "author": "x50021790",
+                                            "showId": "00016",
+                                            "layout": null
+                                        },
+                                        "children": []
+                                    },
+                                    {
+                                        "data": {
+                                            "id": "ci2j71umsko0",
+                                            "created": 1645528571608,
+                                            "text": "传入正数",
+                                            "usecase": 4,
+                                            "author": "x50021790",
+                                            "showId": "00017",
+                                            "layout": null
+                                        },
+                                        "children": []
+                                    },
+                                    {
+                                        "data": {
+                                            "id": "ci2j71umq1c0",
+                                            "created": 1645528571608,
+                                            "text": "传入负数",
+                                            "usecase": 4,
+                                            "author": "x50021790",
+                                            "showId": "00018",
+                                            "layout": null
+                                        },
+                                        "children": []
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    "templatePath": null,
+    "singleTemplatePath": null,
+    "testcaseFilePath": "",
+    "template": "right",
+    "theme": "fresh-blue",
+    "version": "1.4.43"
+}

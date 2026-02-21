@@ -1,0 +1,19 @@
+config AKMD_ENABLE
+	bool "AKMD driver support"
+	default n
+	help
+	  This feature driver supports akmd driver.
+
+config AKMD_AAE_RES_MGR
+	bool "AKMD aae resource manager"
+	default n
+	help
+	  This feature supports aae resource manager
+
+config AKMD_AAE_DEVICE
+	bool "AKMD aae device"
+	default n
+	help
+	  This feature supports aae device
+
+source "drivers/video/fbdev/akmd/aksm/Kconfig"

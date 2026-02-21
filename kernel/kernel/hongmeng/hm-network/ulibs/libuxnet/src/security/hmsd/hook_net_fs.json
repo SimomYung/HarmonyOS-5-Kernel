@@ -1,0 +1,23 @@
+{
+    "template": "hook",
+    "server": "net",
+    "manager": "net_fs",
+    "hooks": {
+        "net_fs": {
+            "generation": {
+                "performance_compatibility": true
+            },
+            "scheme": "security check/inner constraint",
+            "credential": {
+                "transaction": true
+            },
+            "module_relation": "{all:buckle}",
+            "ac": {
+                "buckle": {
+                    "alias": "sec_check_xact_ability_net_fs",
+                    "permission": "ab_net_fs"
+                }
+            }
+        }
+    }
+}

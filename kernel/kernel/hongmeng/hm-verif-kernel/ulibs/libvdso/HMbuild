@@ -1,0 +1,52 @@
+# Copyright (c) Huawei Technologies Co., Ltd. 2022-2022. All rights reserved.
+# Description: HMbuild for libvdso.so
+# Author: Huawei OS Kernel Lab
+# Create: Wed Mar 23 14:31:50 2022
+
+lib-dynamic-y: vdso
+
+subdir-CONFIG_AARCH64: arch/aarch64/vdso
+subdir-CONFIG_ARM: arch/arm/vdso
+
+src-y: sigentry.c
+include-sigentry.c-y: ../include
+cflags-sigentry.c-y: -D_GNU_SOURCE
+
+include-.-CONFIG_AARCH64: ../../arch/aarch64/include/mapi/uapi
+include-.-CONFIG_AARCH64: ../../arch/aarch64/include
+include-.-CONFIG_AARCH64: ../../arch/aarch64/ulibs/include
+include-.-CONFIG_AARCH64: ../../arch/aarch64/kernel
+
+include-.-CONFIG_ARM: ../../arch/arm/include/mapi/uapi
+include-.-CONFIG_ARM: ../../arch/arm/include
+include-.-CONFIG_ARM: ../../arch/arm/ulibs/include
+include-.-CONFIG_ARM: ../../arch/arm/kernel
+
+include-.-y: ../../kernel/include/mapi/uapi
+include-.-y: ../../klibs/include
+include-.-y: ../../libs/metalibs/include
+
+cflags-.-y: -fPIE
+cflags-.-y: -ffreestanding
+cflags-.-y: -Dvdso_EXPORTS
+cflags-.-y: -fno-common
+cflags-.-y: -fno-builtin
+cflags-.-y: -fomit-frame-pointer
+cflags-.-y: -fno-stack-protector
+cflags-.-y: -fno-asynchronous-unwind-tables
+cflags-.-y: -D__KERNEL__
+cflags-.-CONFIG_AARCH64: -funwind-tables
+cflags-.-CONFIG_AARCH64: -mgeneral-regs-only
+cflags-sigentry.c-y: -Wframe-larger-than=8192
+cflags-sigentry.c-y: -fno-omit-frame-pointer
+
+linklib-vdso: -nostdlib
+linklib-vdso: -Wl,-T,vdso.lds
+linklib-vdso: -Wl,--hash-style=both
+linklib-vdso: -Wl,-n
+linklib-vdso-CONFIG_HMBUILD_TOOLCHAIN_GNU: -Wl,-pie
+linklib-vdso: -Wl,-export-dynamic
+linklib-vdso: -Wl,-z,text
+linklib-vdso: -Wl,--no-undefined
+linklib-vdso: -Wframe-larger-than=8192
+linklib-vdso: -Wl,-z,max-page-size=4096

@@ -1,0 +1,32 @@
+/*
+ * Copyright (c) Huawei Technologies Co., Ltd. 2020-2020. All rights reserved.
+ * Description: Generate pwrmgr sysif apis using code generator
+ * Author: Huawei OS Kernel Lab
+ * Create: Mon 07 Dec 2020 07:40:23 PM CST
+ */
+
+INCLUDE_C_HEADER(libbunch/bunch_ipc.h)
+/* for struct reboot_cmd */
+INCLUDE_C_HEADER(libhmpm/shutdown.h)
+
+USE_CALL_PREFIX(pmcall)
+USE_HANDLER_PREFIX(pmhandler)
+USE_SERVER_NAME(pwrmgr)
+
+/* pwrmgr path */
+DECLARE_DATATYPE_BEGIN
+#define PWRMGR_PATH	"pwrmgr_actv"
+DECLARE_DATATYPE_END
+
+INCLUDE_SUBSYSTEM(libsysif/pwrmgr/pwrmgr_system.sysif)
+INCLUDE_SUBSYSTEM(libsysif/pwrmgr/pwrmgr_shutdown.sysif)
+INCLUDE_SUBSYSTEM(libsysif/pwrmgr/pwrmgr_suspend.sysif)
+INCLUDE_SUBSYSTEM(libsysif/pwrmgr/pwrmgr_sysfs.sysif)
+INCLUDE_SUBSYSTEM(libsysif/pwrmgr/pwrmgr_wakelock.sysif)
+INCLUDE_SUBSYSTEM(libsysif/pwrmgr/pwrmgr_cpuhp.sysif)
+INCLUDE_SUBSYSTEM(libsysif/pwrmgr/pwrmgr_pmqos.sysif)
+INCLUDE_SUBSYSTEM(libsysif/pwrmgr/pwrmgr_dh.sysif)
+INCLUDE_SUBSYSTEM(libsysif/pwrmgr/pwrmgr_sec.sysif)
+INCLUDE_SUBSYSTEM(libsysif/pwrmgr/thermmgr.sysif)
+INCLUDE_SUBSYSTEM(libsysif/pwrmgr/idlemgr.sysif)
+INCLUDE_SUBSYSTEM(libsysif/pwrmgr/pwrmgr_init_notify.sysif)

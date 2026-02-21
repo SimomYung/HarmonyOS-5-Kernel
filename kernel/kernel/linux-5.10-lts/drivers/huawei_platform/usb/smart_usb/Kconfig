@@ -1,0 +1,6 @@
+#smart usb
+menuconfig HUAWEI_ARMPC_SMART_USB
+	bool "hw armpc smart usb"
+	default n
+	help
+	Say yes here to support smart usb for hw arm PC.

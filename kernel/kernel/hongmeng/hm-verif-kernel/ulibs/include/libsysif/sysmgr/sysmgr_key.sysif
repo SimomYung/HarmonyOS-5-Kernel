@@ -1,0 +1,45 @@
+/*
+ * Copyright (c) Huawei Technologies Co., Ltd. 2021-2021. All rights reserved.
+ * Description: Install keyring to process and thread credential
+ * Author: Huawei OS Kernel Lab
+ * Create: Mon Jun 07 16:46:30 2021
+ */
+
+#ifdef SYSIF_EXPORT_API
+#include <libhmsrv_key/key.h>
+#endif
+
+/*
+ * To support the mixed data model which means the client and the server
+ * may use different data model. See the document for limitation of data type
+ * used in the sysif interfaces in <Documentation/sysif_compat.md>.
+ */
+DEFINE_MANAGER(key, 8,
+	DEFINE_SIMPLE_METHOD(key, install_keyring,
+		ARG(3,
+		int, short_key_id,
+		uintptr_t, key_addr,
+		bool, force),
+		RET_NO,
+		SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(key, lookup_keyring,
+		ARG(1, int, short_key_id),
+		RET(1, void *, key_addr),
+		SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(key, set_reqkey_keyring,
+		ARG(1, int, reqkey_defl),
+		RET(1, int, old_settings),
+		SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(key, get_reqkey_keyring,
+		ARG_NO,
+		RET_NO,
+		SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(key, call_sbin_request_key,
+		ARG_NO,
+		RET_NO,
+		SLOWDATA_NO)
+)

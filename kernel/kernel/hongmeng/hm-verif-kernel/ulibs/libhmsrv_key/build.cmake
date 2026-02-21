@@ -1,0 +1,6 @@
+add_hm_library(key_add.c)
+add_hm_library(key_control.c)
+add_hm_library(key_request.c)
+add_hm_library(keycall.c)
+add_hm_library(key_fscrypt_ctrl.c)
+add_hm_library(key_fsverity_ctrl.c)

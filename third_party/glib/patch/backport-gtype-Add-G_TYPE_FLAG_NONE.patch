@@ -1,0 +1,64 @@
+From 5e164c661537f6b6ef5adcf0fac949959ef9ffd5 Mon Sep 17 00:00:00 2001
+From: Simon McVittie <smcv@collabora.com>
+Date: Thu, 31 Mar 2022 13:58:36 +0100
+Subject: [PATCH] gtype: Add G_TYPE_FLAG_NONE
+
+This makes code that sets no flags a bit more self-documenting:
+using G_TYPE_FLAG_NONE makes it clearer that no special behaviour is
+required than literal 0, and clearer that there is no weird casting
+between types than (GTypeFlags) 0.
+
+GTypeFlags and GTypeFundamentalFlags occupy the same namespace and the
+same bitfield, so I intentionally haven't added
+G_TYPE_FUNDAMENTAL_FLAGS_NONE.
+
+Signed-off-by: Simon McVittie <smcv@collabora.com>
+
+Conflict:NA
+Reference:https://gitlab.gnome.org/GNOME/glib/-/commit/5e164c661537f6b6ef5adcf0fac949959ef9ffd5
+
+---
+ gobject/gtype.h | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/gobject/gtype.h b/gobject/gtype.h
+index 66cac1fc58..73d665626b 100644
+--- a/gobject/gtype.h
++++ b/gobject/gtype.h
+@@ -1030,6 +1030,8 @@ typedef void     (*GTypeInterfaceCheckFunc)  (gpointer	       check_data,
+  */
+ typedef enum    /*< skip >*/
+ {
++  /* There is no G_TYPE_FUNDAMENTAL_FLAGS_NONE: this is implemented to use
++   * the same bits as GTypeFlags */
+   G_TYPE_FLAG_CLASSED           = (1 << 0),
+   G_TYPE_FLAG_INSTANTIATABLE    = (1 << 1),
+   G_TYPE_FLAG_DERIVABLE         = (1 << 2),
+@@ -1037,6 +1039,7 @@ typedef enum    /*< skip >*/
+ } GTypeFundamentalFlags;
+ /**
+  * GTypeFlags:
++ * @G_TYPE_FLAG_NONE: No special flags. Since: 2.74
+  * @G_TYPE_FLAG_ABSTRACT: Indicates an abstract type. No instances can be
+  *  created for an abstract type
+  * @G_TYPE_FLAG_VALUE_ABSTRACT: Indicates an abstract value type, i.e. a type
+@@ -1049,6 +1052,7 @@ typedef enum    /*< skip >*/
+  */
+ typedef enum    /*< skip >*/
+ {
++  G_TYPE_FLAG_NONE GLIB_AVAILABLE_ENUMERATOR_IN_2_74 = 0,
+   G_TYPE_FLAG_ABSTRACT = (1 << 4),
+   G_TYPE_FLAG_VALUE_ABSTRACT = (1 << 5),
+   G_TYPE_FLAG_FINAL GLIB_AVAILABLE_ENUMERATOR_IN_2_70 = (1 << 6)
+@@ -2180,6 +2184,8 @@ type_name##_get_type_once (void) \
+   _G_DEFINE_TYPE_EXTENDED_BEGIN_PRE(TypeName, type_name, TYPE_PARENT) \
+   _G_DEFINE_TYPE_EXTENDED_BEGIN_REGISTER(TypeName, type_name, TYPE_PARENT, flags) \
+ 
++/* Intentionally using (GTypeFlags) 0 instead of G_TYPE_FLAG_NONE here,
++ * to avoid deprecation warnings with older GLIB_VERSION_MAX_ALLOWED */
+ #define _G_DEFINE_INTERFACE_EXTENDED_BEGIN(TypeName, type_name, TYPE_PREREQ) \
+ \
+ static void     type_name##_default_init        (TypeName##Interface *klass); \
+-- 
+GitLab
+

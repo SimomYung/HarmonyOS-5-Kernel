@@ -1,0 +1,38 @@
+From 003125b2f00aed8f0a1d8b5bd80fcbb1e8e2f13e Mon Sep 17 00:00:00 2001
+From: zhanchengbin <zhanchengbin1@huawei.com>
+Date: Thu, 4 Aug 2022 18:33:39 +0800
+Subject: [PATCH] tune2fs: do not change j_tail_sequence in journal superblock
+
+The function recover_ext3_journal() in debugfs/journal.c, if the log
+replay is over, the j_tail_sequence in journal superblock is not
+changed to the value of the last transaction sequence.  This will
+cause subsequent log commitids to count from the commitid in last
+time.  After tune2fs -e, the log commitid is counted from the commitid
+in last time, if the log ID of the current operation overlaps with
+that of the last operation, this will cause logs that were previously
+replayed by tune2fs to be replayed here.
+
+Signed-off-by: zhanchengbin <zhanchengbin1@huawei.com>
+Signed-off-by: Zhiqiang Liu <liuzhiqiang26@huawei.com>
+Signed-off-by: liangyun <liangyun2@huawei.com>
+Signed-off-by: Theodore Ts'o <tytso@mit.edu>
+---
+ debugfs/journal.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/debugfs/journal.c b/debugfs/journal.c
+index 095fff00..5bac0d3b 100644
+--- a/debugfs/journal.c
++++ b/debugfs/journal.c
+@@ -769,6 +769,8 @@ static errcode_t recover_ext3_journal(ext2_filsys fs)
+ 		mark_buffer_dirty(journal->j_sb_buffer);
+ 	}
+ 
++	journal->j_tail_sequence = journal->j_transaction_sequence;
++
+ errout:
+ 	jbd2_journal_destroy_revoke(journal);
+ 	jbd2_journal_destroy_revoke_record_cache();
+-- 
+2.37.1
+

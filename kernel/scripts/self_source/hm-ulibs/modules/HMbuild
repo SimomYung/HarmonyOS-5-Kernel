@@ -1,0 +1,9 @@
+# Copyright (c) Huawei Technologies Co., Ltd. 2022-2022. All rights reserved.
+# Author: Huawei OS Kernel Lab
+# Create: Tue Feb 08 16:24:29 2022
+
+subdir-y: include
+cflags-.-y: -D__MODULE__
+
+include-.-y: include
+include-.-y: include/mapi/

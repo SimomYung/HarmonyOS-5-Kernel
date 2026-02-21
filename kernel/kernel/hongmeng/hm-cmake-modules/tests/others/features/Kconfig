@@ -1,0 +1,6 @@
+# Copyright (c) Huawei Technologies Co., Ltd. 2022. All rights reserved.
+# Description: Kconfig
+# Author: Huawei OS Kernel Lab
+# Create: Thu Sep 22 15:59:45 2022
+
+source "$(HMCMAKENG_KCONFIG)"

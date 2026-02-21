@@ -1,0 +1,3 @@
+set(remove_file @hmbuild_file@)
+file(REMOVE ${remove_file})
+

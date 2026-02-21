@@ -1,0 +1,3 @@
+#include <udk/module.h>
+DEFINE_UDK_THIS_MODULE
+DEFINE_UDK_MODULE_PARAM_LIST

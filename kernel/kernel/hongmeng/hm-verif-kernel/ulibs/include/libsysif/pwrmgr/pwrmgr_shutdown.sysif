@@ -1,0 +1,33 @@
+/*
+ * Copyright (C) Huawei Technologies Co., Ltd. 2019-2020. All rights reserved.
+ * Description: The DSL for generating activation interface of shutdown
+ * Author: Huawei OS Kernel Lab
+ * Create: Fri Aug 30 15:51:27 2019
+ */
+
+/*
+ * To support the mixed data model which means the client and the server
+ * may use different data model. See the document for limitation of data type
+ * used in the sysif interfaces in <Documentation/sysif_compat.md>.
+ */
+DEFINE_MANAGER(shutdown, 5,
+	DEFINE_METHOD(shutdown, enter,
+		      ARG(1, long, timeout_ms),
+		      RET_NO,
+		      SLOWDATA_NO)
+	DEFINE_METHOD(shutdown, softreboot_enter,
+		      ARG_NO,
+		      RET_NO,
+		      SLOWDATA_NO)
+	DEFINE_METHOD(shutdown, reboot_enter,
+		      ARG(2, struct reboot_cmd, cmd,
+		      long, timeout_ms),
+		      RET_NO,
+		      SLOWDATA_NO)
+	DEFINE_LSYSCALL_METHOD(reboot, SYS_reboot,
+			       ARG(4, int, magic1, int, magic2, unsigned int, type, void *, cmd_arg))
+	DEFINE_METHOD(shutdown, kexec_enter,
+		      ARG(1, long, timeout_ms),
+		      RET_NO,
+		      SLOWDATA_NO)
+)

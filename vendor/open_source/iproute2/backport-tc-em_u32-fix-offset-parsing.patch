@@ -1,0 +1,63 @@
+From b84fc3321c6adaf76f36cf7ef0e17389bdf31500 Mon Sep 17 00:00:00 2001
+From: Andrea Claudi <aclaudi@redhat.com>
+Date: Fri, 6 May 2022 22:11:46 +0200
+Subject: [PATCH] tc: em_u32: fix offset parsing
+
+tc u32 ematch offset parsing might fail even if nexthdr offset is
+aligned to 4. The issue can be reproduced with the following script:
+
+tc qdisc del dev dummy0 root
+tc qdisc add dev dummy0 root handle 1: htb r2q 1 default 1
+tc class add dev dummy0 parent 1:1 classid 1:108 htb quantum 1000000 \
+	rate 1.00mbit ceil 10.00mbit burst 6k
+
+while true; do
+if ! tc filter add dev dummy0 protocol all parent 1: prio 1 basic match \
+	"meta(vlan mask 0xfff eq 1)" and "u32(u32 0x20011002 0xffffffff \
+	at nexthdr+8)" flowid 1:108; then
+		exit 0
+fi
+done
+
+which we expect to produce an endless loop.
+With the current code, instead, this ends with:
+
+u32: invalid offset alignment, must be aligned to 4.
+... meta(vlan mask 0xfff eq 1) and >>u32(u32 0x20011002 0xffffffff at nexthdr+8)<< ...
+... u32(u32 0x20011002 0xffffffff at >>nexthdr+8<<)...
+Usage: u32(ALIGN VALUE MASK at [ nexthdr+ ] OFFSET)
+where: ALIGN  := { u8 | u16 | u32 }
+
+Example: u32(u16 0x1122 0xffff at nexthdr+4)
+Illegal "ematch"
+
+This is caused by memcpy copying into buf an unterminated string.
+
+Fix it using strncpy instead of memcpy.
+
+Fixes: commit 311b41454dc4 ("Add new extended match files.")
+Reported-by: Alfred Yang <alf.redyoung@gmail.com>
+Signed-off-by: Andrea Claudi <aclaudi@redhat.com>
+Signed-off-by: Stephen Hemminger <stephen@networkplumber.org>
+Conflict: NA
+Reference: https://git.kernel.org/pub/scm/network/iproute2/iproute2.git/commit?id=b84fc3321c6
+---
+ tc/em_u32.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/tc/em_u32.c b/tc/em_u32.c
+index bc284af4..ea2bf882 100644
+--- a/tc/em_u32.c
++++ b/tc/em_u32.c
+@@ -84,7 +84,7 @@ static int u32_parse_eopt(struct nlmsghdr *n, struct tcf_ematch_hdr *hdr,
+ 		char buf[a->len - nh_len + 1];
+ 
+ 		offmask = -1;
+-		memcpy(buf, a->data + nh_len, a->len - nh_len);
++		strncpy(buf, a->data + nh_len, a->len - nh_len + 1);
+ 		offset = strtoul(buf, NULL, 0);
+ 	} else if (!bstrcmp(a, "nexthdr+")) {
+ 		a = bstr_next(a);
+-- 
+2.23.0
+

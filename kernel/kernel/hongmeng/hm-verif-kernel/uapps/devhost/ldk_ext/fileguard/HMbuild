@@ -1,0 +1,13 @@
+lib-dynamic-y: dhext_fileguard
+
+cflags-dhext_fileguard-y: -D_DH_PLUGIN_NAME=fileguard -fvisibility=hidden
+linklib-dhext_fileguard-y: -Tksymtab.lds
+
+src-dhext_fileguard-y: fileguard_if.c
+src-dhext_fileguard-y: ext_main.c
+src-dhext_fileguard-y: fileguard_hdr.c
+
+include-.-y: include/
+
+installinc: include/
+install-dhext_fileguard-y: BASE_LIBDIR

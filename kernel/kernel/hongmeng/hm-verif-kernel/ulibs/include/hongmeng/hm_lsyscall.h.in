@@ -1,0 +1,13 @@
+/*
+ * Copyright (c) Huawei Technologies Co., Ltd. 2023-2023. All rights reserved.
+ * Description: hm lsyscall number
+ * Author: Huawei OS Kernel Lab
+ * Create: Tue Mar 26 14:24:00 2024
+ */
+
+#if !defined(HM_LSYSCALL)
+# error This file should not be directly included
+#endif
+
+HM_LSYSCALL(hmprobe_event_ctl, 447)
+HM_LSYSCALL(xvm, 448)

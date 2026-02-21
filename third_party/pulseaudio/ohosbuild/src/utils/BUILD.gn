@@ -1,0 +1,64 @@
+# Copyright (c) 2021-2022 Huawei Device Co., Ltd.
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+import("//build/ohos.gni")
+
+config("pulseutils_config") {
+  visibility = [ ":*" ]
+
+  include_dirs = [
+    "../../../",
+    "../../../include",
+    "../../src",
+    "../../include",
+    "../../../src",
+  ]
+
+  cflags = [
+    "-Wall",
+    "-Werror",
+    "-Wno-implicit-function-declaration",
+    "-DHAVE_CONFIG_H",
+    "-D_GNU_SOURCE",
+  ]
+}
+
+ohos_executable("pactl") {
+  sources = [ "../../../src/utils/pactl.c" ]
+
+  configs = [ ":pulseutils_config" ]
+
+  deps = [
+    "../../src:pulsecommon",
+    "../../src/pulse:pulse",
+  ]
+  external_deps = [ "hilog:libhilog" ]
+  subsystem_name = "thirdparty"
+  part_name = "pulseaudio"
+}
+
+ohos_executable("pacmd") {
+  install_enable = true
+
+  sources = [ "../../../src/utils/pacmd.c" ]
+
+  configs = [ ":pulseutils_config" ]
+
+  deps = [
+    "../../src:pulsecommon",
+    "../../src/pulse:pulse",
+  ]
+  external_deps = [ "hilog:libhilog" ]
+  subsystem_name = "thirdparty"
+  part_name = "pulseaudio"
+}

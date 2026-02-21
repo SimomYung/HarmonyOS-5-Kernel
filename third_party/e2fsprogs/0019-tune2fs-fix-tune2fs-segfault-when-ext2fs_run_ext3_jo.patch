@@ -1,0 +1,57 @@
+From 66ecb6abe5d2c74191bb4bc24f3da036e5fa1213 Mon Sep 17 00:00:00 2001
+From: Zhiqiang Liu <liuzhiqiang26@huawei.com>
+Date: Mon, 5 Sep 2022 19:16:03 +0800
+Subject: [PATCH] tune2fs: fix tune2fs segfault when ext2fs_run_ext3_journal()
+ fails
+
+When ext2fs_run_ext3_journal() fails, tune2fs cmd will occur one
+segfault problem as follows.
+(gdb) bt
+#0  0x00007fdadad69917 in ext2fs_mmp_stop (fs=0x0) at mmp.c:405
+#1  0x0000558fa5a9365a in main (argc=<optimized out>, argv=<optimized out>) at tune2fs.c:3440
+
+misc/tune2fs.c:
+main()
+  -> ext2fs_open2(&fs)
+    -> ext2fs_mmp_start
+  ......
+  -> retval = ext2fs_run_ext3_journal(&fs)
+  -> if (retval)
+    // if ext2fs_run_ext3_journal fails, close and free fs.
+    -> ext2fs_close_free(&fs)
+    -> rc = 1
+    -> goto closefs
+  ......
+closefs:
+  -> if (rc)
+    -> ext2fs_mmp_stop(fs)     // fs has been set to NULL, boom!!
+  -> (ext2fs_close_free(&fs) ? 1 : 0); // close and free fs
+
+In main() of tune2fs cmd, if ext2fs_run_ext3_journal() fails,
+we should set rc=1 and goto closefs tag, in which will release fs
+resource.
+
+Fix: a2292f8a5108 ("tune2fs: reset MMP state on error exit")
+Signed-off-by: Zhiqiang Liu <liuzhiqiang26@huawei.com>
+Signed-off-by: zhanchengbin <zhanchengbin1@huawei.com>
+Signed-off-by: Theodore Ts'o <tytso@mit.edu>
+---
+ misc/tune2fs.c | 2 --
+ 1 file changed, 2 deletions(-)
+
+diff --git a/misc/tune2fs.c b/misc/tune2fs.c
+index a7ff16de..98e38983 100644
+--- a/misc/tune2fs.c
++++ b/misc/tune2fs.c
+@@ -3106,8 +3106,6 @@ _("Warning: The journal is dirty. You may wish to replay the journal like:\n\n"
+ 			com_err("tune2fs", retval,
+ 				"while recovering journal.\n");
+ 			printf(_("Please run e2fsck -fy %s.\n"), argv[1]);
+-			if (fs)
+-				ext2fs_close_free(&fs);
+ 			rc = 1;
+ 			goto closefs;
+ 		}
+-- 
+2.33.0
+

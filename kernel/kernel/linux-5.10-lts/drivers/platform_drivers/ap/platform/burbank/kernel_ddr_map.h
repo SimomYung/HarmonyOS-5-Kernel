@@ -1,0 +1,10 @@
+/* Copyright (c) Huawei Technologies Co., Ltd. 2022-2022. All rights reserved. */
+
+#ifndef _KERNEL_DDR_MAP_H_
+#define _KERNEL_DDR_MAP_H_
+
+/* BL31 & Kernel share this 64K memory*/
+#define ATF_SUB_RESERVED_BL31_SHARE_MEM_PHYMEM_BASE     0x11681000
+#define ATF_SUB_RESERVED_BL31_SHARE_MEM_PHYMEM_SIZE        0x10000
+
+#endif

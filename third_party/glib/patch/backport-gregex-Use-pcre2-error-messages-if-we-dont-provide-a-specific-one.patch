@@ -1,0 +1,187 @@
+From 6caf952e48dbed40b5dcff01a94f57ba079b526c Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Marco=20Trevisan=20=28Trevi=C3=B1o=29?= <mail@3v1n0.net>
+Date: Tue, 20 Sep 2022 18:06:35 +0200
+Subject: [PATCH] gregex: Use pcre2 error messages if we don't provide a
+ specific one
+
+In case we got a compilation or match error we should try to provide
+some useful error message, if possible, before returning a quite obscure
+"internal error" or "unknown error" string.
+
+So rely on PCRE2 strings even if they're not translated they can provide
+better information than the ones we're currently giving.
+
+Related to: https://gitlab.gnome.org/GNOME/glib/-/issues/2691
+Related to: https://gitlab.gnome.org/GNOME/glib/-/issues/2760
+
+Conflict:NA
+Reference:https://gitlab.gnome.org/GNOME/glib/-/commit/6caf952e48dbed40b5dcff01a94f57ba079b526c
+
+---
+ glib/gregex.c      | 64 ++++++++++++++++++++++++++++++++++++++++------
+ glib/tests/regex.c |  2 ++
+ 2 files changed, 58 insertions(+), 8 deletions(-)
+
+diff --git a/glib/gregex.c b/glib/gregex.c
+index 220a1a11ac..fcc28d62f4 100644
+--- a/glib/gregex.c
++++ b/glib/gregex.c
+@@ -456,8 +456,25 @@ get_pcre2_bsr_match_options (GRegexMatchFlags match_flags)
+   return 0;
+ }
+ 
++static char *
++get_pcre2_error_string (int errcode)
++{
++  PCRE2_UCHAR8 error_msg[2048];
++  int err_length;
++
++  err_length = pcre2_get_error_message (errcode, error_msg,
++                                        G_N_ELEMENTS (error_msg));
++
++  if (err_length <= 0)
++    return NULL;
++
++  /* The array is always filled with a trailing zero */
++  g_assert ((size_t) err_length < G_N_ELEMENTS (error_msg));
++  return g_memdup2 (error_msg, err_length + 1);
++}
++
+ static const gchar *
+-match_error (gint errcode)
++translate_match_error (gint errcode)
+ {
+   switch (errcode)
+     {
+@@ -511,7 +528,24 @@ match_error (gint errcode)
+     default:
+       break;
+     }
+-  return _("unknown error");
++  return NULL;
++}
++
++static char *
++get_match_error_message (int errcode)
++{
++  const char *msg = translate_match_error (errcode);
++  char *error_string;
++
++  if (msg)
++    return g_strdup (msg);
++
++  error_string = get_pcre2_error_string (errcode);
++
++  if (error_string)
++    return error_string;
++
++  return g_strdup (_("unknown error"));
+ }
+ 
+ static void
+@@ -743,7 +777,6 @@ translate_compile_error (gint *errcode, const gchar **errmsg)
+     case PCRE2_ERROR_INTERNAL_BAD_CODE:
+     case PCRE2_ERROR_INTERNAL_BAD_CODE_IN_SKIP:
+       *errcode = G_REGEX_ERROR_INTERNAL;
+-      *errmsg = _("internal error");
+       break;
+     case PCRE2_ERROR_INVALID_SUBPATTERN_NAME:
+     case PCRE2_ERROR_CLASS_INVALID_RANGE:
+@@ -772,12 +805,10 @@ translate_compile_error (gint *errcode, const gchar **errmsg)
+     case PCRE2_ERROR_BAD_LITERAL_OPTIONS:
+     default:
+       *errcode = G_REGEX_ERROR_COMPILE;
+-      *errmsg = _("internal error");
+       break;
+     }
+ 
+   g_assert (*errcode != -1);
+-  g_assert (*errmsg != NULL);
+ }
+ 
+ /* GMatchInfo */
+@@ -1096,9 +1127,12 @@ g_match_info_next (GMatchInfo  *match_info,
+ 
+   if (IS_PCRE2_ERROR (match_info->matches))
+     {
++      gchar *error_msg = get_match_error_message (match_info->matches);
++
+       g_set_error (error, G_REGEX_ERROR, G_REGEX_ERROR_MATCH,
+                    _("Error while matching regular expression %s: %s"),
+-                   match_info->regex->pattern, match_error (match_info->matches));
++                   match_info->regex->pattern, error_msg);
++      g_clear_pointer (&error_msg, g_free);
+       return FALSE;
+     }
+   else if (match_info->matches == 0)
+@@ -1800,11 +1834,20 @@ regex_compile (const gchar  *pattern,
+     {
+       GError *tmp_error;
+       gchar *offset_str;
++      gchar *pcre2_errmsg = NULL;
++      int original_errcode;
+ 
+       /* Translate the PCRE error code to GRegexError and use a translated
+        * error message if possible */
++      original_errcode = errcode;
+       translate_compile_error (&errcode, &errmsg);
+ 
++      if (!errmsg)
++        {
++          errmsg = _("unknown error");
++          pcre2_errmsg = get_pcre2_error_string (original_errcode);
++        }
++
+       /* PCRE uses byte offsets but we want to show character offsets */
+       erroffset = g_utf8_pointer_to_offset (pattern, &pattern[erroffset]);
+ 
+@@ -1812,9 +1855,11 @@ regex_compile (const gchar  *pattern,
+       tmp_error = g_error_new (G_REGEX_ERROR, errcode,
+                                _("Error while compiling regular expression ‘%s’ "
+                                  "at char %s: %s"),
+-                               pattern, offset_str, errmsg);
++                               pattern, offset_str,
++                               pcre2_errmsg ? pcre2_errmsg : errmsg);
+       g_propagate_error (error, tmp_error);
+       g_free (offset_str);
++      g_clear_pointer (&pcre2_errmsg, g_free);
+ 
+       return NULL;
+     }
+@@ -2402,9 +2447,12 @@ g_regex_match_all_full (const GRegex      *regex,
+         }
+       else if (IS_PCRE2_ERROR (info->matches))
+         {
++          gchar *error_msg = get_match_error_message (info->matches);
++
+           g_set_error (error, G_REGEX_ERROR, G_REGEX_ERROR_MATCH,
+                        _("Error while matching regular expression %s: %s"),
+-                       regex->pattern, match_error (info->matches));
++                       regex->pattern, error_msg);
++          g_clear_pointer (&error_msg, g_free);
+         }
+       else if (info->matches != PCRE2_ERROR_NOMATCH)
+         {
+diff --git a/glib/tests/regex.c b/glib/tests/regex.c
+index 9803d49659..52af212f29 100644
+--- a/glib/tests/regex.c
++++ b/glib/tests/regex.c
+@@ -2560,6 +2560,7 @@ main (int argc, char *argv[])
+   TEST_NEW_FAIL ("[a-z", 0, G_REGEX_ERROR_UNTERMINATED_CHARACTER_CLASS);
+   TEST_NEW_FAIL ("[\\B]", 0, G_REGEX_ERROR_INVALID_ESCAPE_IN_CHARACTER_CLASS);
+   TEST_NEW_FAIL ("[z-a]", 0, G_REGEX_ERROR_RANGE_OUT_OF_ORDER);
++  TEST_NEW_FAIL ("^[[:alnum:]-_.]+$", 0, G_REGEX_ERROR_COMPILE);
+   TEST_NEW_FAIL ("{2,4}", 0, G_REGEX_ERROR_NOTHING_TO_REPEAT);
+   TEST_NEW_FAIL ("a(?u)", 0, G_REGEX_ERROR_UNRECOGNIZED_CHARACTER);
+   TEST_NEW_FAIL ("a(?<$foo)bar", 0, G_REGEX_ERROR_MISSING_SUBPATTERN_NAME);
+@@ -2636,6 +2637,7 @@ main (int argc, char *argv[])
+   TEST_MATCH_SIMPLE("a", "a", G_REGEX_CASELESS, 0, TRUE);
+   TEST_MATCH_SIMPLE("a", "A", G_REGEX_CASELESS, 0, TRUE);
+   TEST_MATCH_SIMPLE("\\C\\C", "ab", G_REGEX_OPTIMIZE | G_REGEX_RAW, 0, TRUE);
++  TEST_MATCH_SIMPLE("^[[:alnum:]\\-_.]+$", "admin-foo", 0, 0, TRUE);
+   /* These are needed to test extended properties. */
+   TEST_MATCH_SIMPLE(AGRAVE, AGRAVE, G_REGEX_CASELESS, 0, TRUE);
+   TEST_MATCH_SIMPLE(AGRAVE, AGRAVE_UPPER, G_REGEX_CASELESS, 0, TRUE);
+-- 
+GitLab
+

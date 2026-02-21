@@ -1,0 +1,39 @@
+From 77ac16dfba42e0d152b1e99359e01a933f8cc6f9 Mon Sep 17 00:00:00 2001
+From: Zhiqiang Liu <liuzhiqiang26@huawei.com>
+Date: Mon, 5 Sep 2022 23:40:01 +0800
+Subject: [PATCH] tune2fs: tune2fs_main() should return rc when some error,
+ occurs
+
+If some error occurs, tune2fs_main() will go to closefs tag for
+releasing resource, and it should return correct value (rc) instead
+of 0 when ext2fs_close_free(&fs) successes.
+
+Signed-off-by: Zhiqiang Liu <liuzhiqiang26@huawei.com>
+Reviewed-by: Artem Blagodarenko <artem.blagodarenko@gmail.com>
+Signed-off-by: Theodore Ts'o <tytso@mit.edu>
+---
+ misc/tune2fs.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/misc/tune2fs.c b/misc/tune2fs.c
+index 98e38983..bed3d95b 100644
+--- a/misc/tune2fs.c
++++ b/misc/tune2fs.c
+@@ -3243,6 +3243,7 @@ _("Warning: The journal is dirty. You may wish to replay the journal like:\n\n"
+ 			fputs(_("Error in using clear_mmp. "
+ 				"It must be used with -f\n"),
+ 			      stderr);
++			rc = 1;
+ 			goto closefs;
+ 		}
+ 	}
+@@ -3447,5 +3448,5 @@ closefs:
+ 
+ 	if (feature_64bit)
+ 		convert_64bit(fs, feature_64bit);
+-	return (ext2fs_close_free(&fs) ? 1 : 0);
++	return (ext2fs_close_free(&fs) ? 1 : rc);
+ }
+-- 
+2.33.0
+

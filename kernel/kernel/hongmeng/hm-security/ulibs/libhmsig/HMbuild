@@ -1,0 +1,23 @@
+# Copyright (c) Huawei Technologies Co., Ltd. 2021-2022. All rights reserved.
+# Description: HMbuild for libhmsig
+# Author: Huawei OS Kernel Lab
+# Create: Tue Nov 09 10:25:23 2021
+
+findpkg: HMHitlsLib
+
+src-y: hmsig_crl.c
+src-y: cms_sig_verify.c
+src-y: hmsig.c
+
+inclib: HMHitlsLib::BslLib_include
+# libhmsig.a
+lib-static-y: hmsig
+cflags-hmsig-CONFIG_PIE: -fPIE
+install-hmsig-y: LIBDIR
+
+# libhmsig.so
+lib-dynamic-y: hmsig_shared
+output-hmsig_shared: hmsig
+install-hmsig_shared-y: LIBDIR
+
+# vim:ts=4:sw=4:expandtab

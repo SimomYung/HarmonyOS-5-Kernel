@@ -1,0 +1,12 @@
+# Copyright (c) Huawei Technologies Co., Ltd. 2022-2022. All rights reserved.
+# Description: HMbuild
+# Author: Huawei OS Kernel Lab
+# Create: Thu May 26 21:11:19 2022
+
+src-y: trace_class_api.c
+src-y: trace_event_api.c
+src-y: trace_buffer_api.c
+src-y: trace_efmt_api.c
+src-y: trace_iter_ops.c
+
+subdir-CONFIG_HMTRACE: core

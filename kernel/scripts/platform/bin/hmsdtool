@@ -1,0 +1,125 @@
+#!/usr/bin/env python3
+# coding=utf-8
+# Copyright (c) Huawei Technologies Co., Ltd. 2022-2022. All rights reserved.
+# Description: The tool that generate codes and tests by description files
+# Author: Huawei OS Kernel Lab
+# Create: Sat Dec 24 14:23:36 2022
+
+import os
+import argparse
+import sys
+import typing
+# file types
+import json
+# local
+from hmsd import make_generator
+from hmsd import register_options
+from hmsd import standardize_options
+from hmsd import SecurityDescription
+from hmsd import set_command_options
+
+
+class FileParser():
+    """
+    FileParser reads files and convert to python objects.
+    """
+
+    def __init__(self):
+        self._parsers = {
+            '.json': json.load,
+            '.toml': self._load_toml,
+            '.yaml': self._load_yaml,
+        }
+
+
+    def parse(self, files):
+        """
+        Parse some files.
+        """
+        return dict({fn: self._load_file(fn) for fn in files})
+
+
+    def _load_toml(self, file):
+        """
+        Load a toml file.
+        """
+        import toml
+        load = toml.load
+        self._parsers['.toml'] = load
+        return load(file)
+
+
+    def _load_yaml(self, file):
+        """
+        Load a yaml file.
+        """
+        import yaml
+        load = lambda f: yaml.load(f, Loader=yaml.FullLoader)
+        self._parsers['.yaml'] = load
+        return load(file)
+
+
+    def _load_file(self, filename):
+        """
+        Load a file based on the extension suffix.
+        """
+        _, ext = os.path.splitext(filename)
+        with open(filename, encoding='utf-8') as f:
+            try:
+                return self._parsers[ext](f)
+            except Exception as exception:
+                raise ValueError('Failed to load file', filename, e) from e
+
+
+class OptionParser(argparse.ArgumentParser):
+    """
+    OptionParser parses command arguments.
+    """
+
+    def __init__(self):
+        super().__init__(usage='%(prog)s [options] [file...]')
+        self.add_argument("files", nargs='*', help="files")
+        self.add_argument("-g", dest="generator", default=[], action='append',
+                          help="the type of the generator")
+        self.add_argument("-o", dest="output", default='.',
+                          help="the directory where output files are generated")
+        self.add_argument("-d", dest="dry", default=False, action='store_true',
+                          help="only print names of generated files")
+        self.add_argument("-s", dest="seharmony", default=False, action='store_true',
+                          help="enable seharmony")
+        register_options(self)
+
+
+    def parse_args(self):
+        """
+        Parse command arguments.
+        """
+        options = super().parse_args()
+        options.output = os.path.abspath(options.output)
+        options.generator = set(options.generator)
+        standardize_options(options)
+        return options
+
+
+def main() -> None:
+    """
+    The core logic.
+    """
+    op = OptionParser()
+    options = op.parse_args()
+
+    fp = FileParser()
+    objs = fp.parse(options.files)
+    sd = SecurityDescription(objs)
+
+    set_command_options(options)
+
+    for g in options.generator:
+        gen = make_generator(g, options)
+        gen.generate(sd)
+
+
+if __name__ == '__main__':
+    main()
+
+# vim: ts=4:sw=4:expandtab

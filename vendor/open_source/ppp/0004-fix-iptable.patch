@@ -1,0 +1,56 @@
+From 335ea59e34e59a65169ea8b3c835014565924651 Mon Sep 17 00:00:00 2001
+From: w30063796 <w30063796@notesmail.huawei.com/>
+Date: Sat, 2 Nov 2024 15:59:03 +0800
+Subject: [PATCH] TicketNo:DTS2024101019820 Description:fix iptable Team:OTHERS
+ Feature or Bugfix:Feature Binary Source:No PrivateCode(Yes/No):No
+
+Change-Id: I034fb194b0c2dbe87afd80b5dd12caeb02310e36
+---
+ pppd/main.c      | 3 +++
+ pppd/pathnames.h | 7 +++++++
+ 2 files changed, 10 insertions(+)
+
+diff --git a/pppd/main.c b/pppd/main.c
+index 4455199..607fcaa 100644
+--- a/pppd/main.c
++++ b/pppd/main.c
+@@ -1906,6 +1906,8 @@ run_program(char *prog, char * const *args, int must_exist, void (*done)(void *)
+     if (ret != 0) {
+         fatal("Failed to change directory to '/', %m");
+     }
++
++#ifndef SUPPORT_SYSVPN
+     ret = setuid(0);		/* set real UID = root */
+     if (ret != 0) {
+         fatal("Failed to set uid, %m");
+@@ -1914,6 +1916,7 @@ run_program(char *prog, char * const *args, int must_exist, void (*done)(void *)
+     if (ret != 0) {
+         fatal("failed to set gid, %m");
+     }
++#endif // SUPPORT_SYSVPN
+ 
+ #ifdef BSD
+     /* Force the priority back to zero if pppd is running higher. */
+diff --git a/pppd/pathnames.h b/pppd/pathnames.h
+index de2fb68..25d283e 100644
+--- a/pppd/pathnames.h
++++ b/pppd/pathnames.h
+@@ -98,8 +98,15 @@
+ #endif /* PPP_WITH_EAPTLS */
+ 
+ #define PPP_PATH_SYSOPTIONS     PPP_PATH_CONFDIR "/options"
++
++#ifdef SUPPORT_SYSVPN
++#define PPP_PATH_IPUP           "/system/bin/ip-up"
++#define PPP_PATH_IPDOWN         "/system/bin/ip-down"
++#else
+ #define PPP_PATH_IPUP           PPP_PATH_CONFDIR "/ip-up"
+ #define PPP_PATH_IPDOWN         PPP_PATH_CONFDIR "/ip-down"
++#endif // SUPPORT_SYSVPN
++
+ #define PPP_PATH_IPPREUP        PPP_PATH_CONFDIR "/ip-pre-up"
+ #define PPP_PATH_AUTHUP         PPP_PATH_CONFDIR "/auth-up"
+ #define PPP_PATH_AUTHDOWN       PPP_PATH_CONFDIR "/auth-down"
+-- 
+2.7.4
+

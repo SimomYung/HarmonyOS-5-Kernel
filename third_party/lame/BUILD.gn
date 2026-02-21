@@ -1,0 +1,88 @@
+# Copyright (C) 2024 Huawei Device Co., Ltd.
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# lame build
+import("//build/ohos.gni")
+config("lame_config") {
+  include_dirs = [ "//third_party/lame/include" ]
+
+  cflags = [
+    "-O2",
+    "-Wall",
+    "-Wno-sign-compare",
+    "-Wimplicit-function-declaration",
+    "-Wno-parentheses",
+    "-Wno-string-conversion",
+    "-Wno-string-plus-int",
+    "-Wno-asm-operand-widths",
+    "-Wno-pointer-sign",
+    "-Wno-deprecated-declarations",
+    "-Wno-implicit-int",
+    "-Wno-switch",
+    "-Wno-incompatible-pointer-types-discards-qualifiers",
+    "-Wno-int-conversion",
+    "-Wno-absolute-value",
+    "-Wno-unused-function",
+    "-Wno-unused-label",
+    "-Wno-unused-const-variable",
+    "-Wno-unused-variable",
+    "-Wno-visibility",
+    "-Wno-incompatible-pointer-types",
+    "-Wno-sometimes-uninitialized",
+    "-Wno-format",
+    "-Wno-tautological-constant-out-of-range-compare",
+    "-Wno-macro-redefined",
+    "-Wno-array-parameter",
+    "-Wno-deprecated-pragma",
+    "-DSTDC_HEADERS",
+    "-DHAVE_LIMITS_H",
+    "-Wno-shift-negative-value",
+    "-Wno-tautological-pointer-compare",
+    "-Wno-unused-but-set-variable",
+  ]
+
+  cflags_cc = [
+    "-std=c++17",
+    "-fno-rtti",
+  ]
+}
+
+ohos_shared_library("lame") {
+  public_configs = [ ":lame_config" ]
+
+  sources = [
+    "//third_party/lame/libmp3lame/VbrTag.c",
+    "//third_party/lame/libmp3lame/bitstream.c",
+    "//third_party/lame/libmp3lame/encoder.c",
+    "//third_party/lame/libmp3lame/fft.c",
+    "//third_party/lame/libmp3lame/gain_analysis.c",
+    "//third_party/lame/libmp3lame/id3tag.c",
+    "//third_party/lame/libmp3lame/lame.c",
+    "//third_party/lame/libmp3lame/mpglib_interface.c",
+    "//third_party/lame/libmp3lame/newmdct.c",
+    "//third_party/lame/libmp3lame/presets.c",
+    "//third_party/lame/libmp3lame/psymodel.c",
+    "//third_party/lame/libmp3lame/quantize.c",
+    "//third_party/lame/libmp3lame/quantize_pvt.c",
+    "//third_party/lame/libmp3lame/reservoir.c",
+    "//third_party/lame/libmp3lame/set_get.c",
+    "//third_party/lame/libmp3lame/tables.c",
+    "//third_party/lame/libmp3lame/takehiro.c",
+    "//third_party/lame/libmp3lame/util.c",
+    "//third_party/lame/libmp3lame/vbrquantize.c",
+    "//third_party/lame/libmp3lame/version.c",
+  ]
+
+  part_name = "lame"
+  subsystem_name = "thirdparty"
+}

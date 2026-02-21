@@ -1,0 +1,16 @@
+# Copyright (c) Huawei Technologies Co., Ltd. 2022-2023. All rights reserved.
+# Description: HMbuild
+# Author: Huawei OS Kernel Lab
+# Create: Thu May 26 19:12:11 2022
+
+src-y: wakelock.c
+src-y: pm_sysif.c
+src-y: shutdown.c
+src-y: suspend.c
+src-y: actv_helper.c
+src-y: cpuhp.c
+src-y: pmqos.c
+src-y: dfc.c
+src-y: idle.c
+src-y: reboot_type.c
+src-y: pm_init_notify.c

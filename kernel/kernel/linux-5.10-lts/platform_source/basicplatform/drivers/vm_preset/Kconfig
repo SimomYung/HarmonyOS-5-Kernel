@@ -1,0 +1,3 @@
+config VM_PRESET
+	bool "vm preset module support"
+	default n

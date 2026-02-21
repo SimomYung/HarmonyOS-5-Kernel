@@ -1,0 +1,81 @@
+# Copyright (c) 2021 Huawei Device Co., Ltd.
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License version 2 as
+# published by the Free Software Foundation.
+
+import("//build/ohos.gni")
+
+config("f2fs-defaults") {
+  cflags = [
+    "-Wno-pointer-sign",
+    "-Wno-unused-variable",
+    "-Wno-string-plus-int",
+    "-Wno-error=format",
+    "-Wno-unused-function",
+    "-Wno-unused-parameter",
+    "-Wno-incompatible-pointer-types",
+  ]
+  ldflags = [ "-lpthread" ]
+}
+
+###################################################
+##Build fsck
+ohos_executable("fsck.f2fs") {
+  configs = [ ":f2fs-defaults" ]
+  sources = [
+    "../tools/debug_tools/fsck_debug.c",
+    "../tools/hmfs_tools/hmfs_tools.c",
+    "compress.c",
+    "dedup.c",
+    "defrag.c",
+    "dict.c",
+    "dir.c",
+    "dump.c",
+    "extra_fsck.c",
+    "fsck.c",
+    "main.c",
+    "mkquota.c",
+    "mount.c",
+    "node.c",
+    "quotaio.c",
+    "quotaio_tree.c",
+    "quotaio_v2.c",
+    "resize.c",
+    "segment.c",
+    "sload.c",
+    "xattr.c",
+    "queue.c"
+  ]
+
+  include_dirs = [
+    ".",
+    "../tools/debug_tools",
+    "../tools/hmfs_tools",
+    "//third_party/f2fs-tools",
+    "//third_party/f2fs-tools/include",
+    "//third_party/f2fs-tools/lib",
+    "//third_party/e2fsprogs/e2fsprogs/contrib/android",
+  ]
+
+  deps = [
+    "//third_party/bounds_checking_function:libsec_static",
+    "//third_party/e2fsprogs:libdacconfig",
+    "//third_party/f2fs-tools/lib:libf2fs",
+  ]
+
+  defines = [ "HAVE_CONFIG_H" ]
+
+  symlink_target_name = [
+    "resize.f2fs",
+    "sload.f2fs",
+  ]
+
+  install_enable = true
+  subsystem_name = "thirdparty"
+  part_name = "f2fs-tools"
+  install_images = [
+    "system",
+    "updater",
+  ]
+}

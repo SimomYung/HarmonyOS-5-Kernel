@@ -1,0 +1,88 @@
+/*
+ * Copyright (c) Huawei Technologies Co., Ltd. 2021-2021. All rights reserved.
+ * Description: Implementation of fs sec
+ * Author: Huawei OS Kernel Lab
+ * Create: Wed Mar 31 12:47:04 2021
+ */
+
+/*
+ * To support the mixed data model which means the client and the server
+ * may use different data model. See the comment for limitation of data type
+ * used in the sysif interfaces in <libsysif/base/api.h>.
+ */
+
+DEFINE_MANAGER(sec, 16,
+	DEFINE_SIMPLE_METHOD(vfs, set_label,
+		      ARG(2, int, fd, unsigned long long, label),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(vfs, set_label_by_path,
+		      ARG(6, const char *, path, int, flag,
+			  unsigned long long, label,
+			  int, me_idx, int, link_cnt, int, actv_cnt),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(vfs, get_label,
+		      ARG(1, int, fd),
+		      RET(1, unsigned long long, label),
+		      SLOWDATA_NO)
+
+	DEFINE_METHOD(vfs, init_audit,
+		      ARG_NO,
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_METHOD(vfs, add_audit_rule,
+		      ARG(7, const char *, path, unsigned short, shm_rule_id,
+			  unsigned short, shm_rule_num, unsigned int, flags,
+			  int, me_idx, int, link_cnt, int, actv_cnt),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_METHOD(vfs, del_audit_rule,
+		      ARG(6, const char *, path, unsigned long long, rule_id,
+			  unsigned int, flags, int, me_idx,
+			  int, link_cnt, int, actv_cnt),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_METHOD(vfs, match_audit_watch_file,
+		     ARG(3, unsigned long long, rule_id, unsigned long long, dev_id,
+			 unsigned int, index),
+		     RET_NO,
+		     SLOWDATA_NO)
+
+	DEFINE_METHOD(vfs, match_audit_watch_dir,
+		     ARG(2,  unsigned long long, rule_id, int, audit_me_idx),
+		     RET_NO,
+		     SLOWDATA_NO)
+
+	DEFINE_METHOD(vfs, sec_mgmt,
+		      ARG(2, unsigned int, module, unsigned int, command),
+		      RET_NO,
+		      SLOWDATA)
+
+	DEFINE_SIMPLE_METHOD(vfs, proc_unauthoried_files,
+		      ARG_NO,
+		      RET_NO,
+		      SLOWDATA_NO)
+	DEFINE_METHOD(vfs, lock_in,
+		      ARG(1, unsigned int, user_id),
+		      RET_NO,
+		      SLOWDATA_NO)
+	DEFINE_METHOD(vfs, unlock_in,
+		      ARG(4, unsigned int, user_id, unsigned int, file,
+			 unsigned char *, iv, unsigned int, iv_len),
+		      RET(1, int, ret),
+		      SLOWDATA_NO)
+	DEFINE_METHOD(vfs, pac_fault_dfi,
+		      ARG_NO,
+		      RET_NO,
+		      SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(vfs, set_hkip_label,
+		      ARG(1, int, fd),
+		      RET_NO,
+		      SLOWDATA_NO)
+)

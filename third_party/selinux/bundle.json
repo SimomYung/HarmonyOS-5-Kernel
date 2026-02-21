@@ -1,0 +1,101 @@
+{
+    "name": "@ohos/selinux",
+    "description": "The CI now uses GitHub Actions to run tests and the SELinux testsuite in a virtual machine. Replace the Travis CI badge with the ones for these workflows.",
+    "version": "3.1",
+    "license": "GPL V2.0 or Public Domain or LGPL V2.1 or BSD 2-Clause License",
+    "publishAs": "code-segment",
+    "segment": {
+        "destPath": "third_party/selinux"
+    },
+    "dirs": {},
+    "scripts": {},
+    "licensePath": [
+        "libselinux/LICENSE",
+        "checkpolicy/COPYING",
+        "libsepol/COPYING",
+        "secilc/COPYING"
+    ],
+    "component": {
+        "name": "selinux",
+        "subsystem": "thirdparty",
+        "syscap": [],
+        "features": [],
+        "adapted_system_type": [
+            "standard"
+        ],
+        "rom": "1024KB",
+        "ram": "1024KB",
+        "deps": {
+            "components": [
+                "pcre2",
+                "FreeBSD"
+            ],
+            "third_party": []
+        },
+        "build": {
+            "sub_component": [
+                "//third_party/selinux:checkpolicy",
+                "//third_party/selinux:secilc",
+                "//third_party/selinux:sefcontext_compile",
+                "//third_party/selinux:chkcon",
+                "//third_party/selinux:getenforce",
+                "//third_party/selinux:getfilecon",
+                "//third_party/selinux:getpidcon",
+                "//third_party/selinux:selinux_check_access",
+                "//third_party/selinux:selinuxexeccon",
+                "//third_party/selinux:setenforce",
+                "//third_party/selinux:setfilecon"
+            ],
+            "inner_kits": [
+                {
+                    "name": "//third_party/selinux:libselinux",
+                    "header": {
+                        "header_files": [],
+                        "header_base": "//third_party/selinux/libselinux/include/selinux"
+                    }
+                },
+                {
+                    "name": "//third_party/selinux:libselinux_static",
+                    "header": {
+                        "header_files": [],
+                        "header_base": "//third_party/selinux/libselinux/include/selinux"
+                    }
+                },
+                {
+                    "name": "//third_party/selinux:checkpolicy"
+                },
+                {
+                    "name": "//third_party/selinux:secilc"
+                },
+                {
+                    "name": "//third_party/selinux:sefcontext_compile"
+                },
+                {
+                    "name": "//third_party/selinux:chkcon"
+                },
+                {
+                    "name": "//third_party/selinux:getenforce"
+                },
+                {
+                    "name": "//third_party/selinux:getfilecon"
+                },
+                {
+                    "name": "//third_party/selinux:getpidcon"
+                },
+                {
+                    "name": "//third_party/selinux:selinux_check_access"
+                },
+                {
+                    "name": "//third_party/selinux:selinuxexeccon"
+                },
+                {
+                    "name": "//third_party/selinux:setenforce"
+                },
+                {
+                    "name": "//third_party/selinux:setfilecon"
+                }
+            ],
+            "test": []
+        }
+    }
+}

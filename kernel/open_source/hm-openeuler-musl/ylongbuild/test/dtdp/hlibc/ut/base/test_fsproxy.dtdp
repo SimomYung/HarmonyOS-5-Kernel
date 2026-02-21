@@ -1,0 +1,776 @@
+{
+    "root": {
+        "data": {
+            "id": "ci4axzf6c8o0",
+            "created": 1645708412076,
+            "text": "fsproxy代理文件系统"
+        },
+        "children": [
+            {
+                "data": {
+                    "id": "ci4azvxyo6w0",
+                    "created": 1645708561233,
+                    "text": "hlibc"
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "ci4azvxz5ig0",
+                            "created": 1645708561234,
+                            "text": "open打开文件",
+                            "usecase": 1,
+                            "layout": null,
+                            "expandState": "expand"
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "ci4azvxzd8w0",
+                                    "created": 1645708561234,
+                                    "text": "入参分析",
+                                    "layout": null
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "ci4azvxz18o0",
+                                            "created": 1645708561234,
+                                            "text": "path",
+                                            "layout": null
+                                        },
+                                        "children": [
+                                            {
+                                                "data": {
+                                                    "id": "ci4azvxz05k0",
+                                                    "created": 1645708561234,
+                                                    "text": "是否为空",
+                                                    "usecase": 2,
+                                                    "layout": null
+                                                },
+                                                "children": [
+                                                    {
+                                                        "data": {
+                                                            "id": "ci4azvxzfm80",
+                                                            "created": 1645708561234,
+                                                            "text": "传入空指针，预期open失败",
+                                                            "usecase": 4,
+                                                            "author": "j00612876",
+                                                            "showId": "00001",
+                                                            "layout": null
+                                                        },
+                                                        "children": []
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "data": {
+                                                    "id": "ci4azvxz4ig0",
+                                                    "created": 1645708561234,
+                                                    "text": "长度",
+                                                    "usecase": 2,
+                                                    "layout": null
+                                                },
+                                                "children": [
+                                                    {
+                                                        "data": {
+                                                            "id": "ci4azvxzalc0",
+                                                            "created": 1645708561234,
+                                                            "text": "超过PATH_MAX长度，返回失败",
+                                                            "usecase": 4,
+                                                            "author": "j00612876",
+                                                            "showId": "00002",
+                                                            "layout": null
+                                                        },
+                                                        "children": []
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    }
+                                ]
+                            },
+                            {
+                                "data": {
+                                    "id": "ci4azvy00dc0",
+                                    "created": 1645708561235,
+                                    "text": "功能分析",
+                                    "layout": null
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "ci4azvxzgds0",
+                                            "created": 1645708561235,
+                                            "text": "打开文件",
+                                            "usecase": 2,
+                                            "layout": null
+                                        },
+                                        "children": [
+                                            {
+                                                "data": {
+                                                    "id": "ci4b17jh2i80",
+                                                    "created": 1645708664843,
+                                                    "text": "正常打开文件，返回可用fd",
+                                                    "usecase": 4,
+                                                    "author": "j00612876",
+                                                    "showId": "00030"
+                                                },
+                                                "children": []
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "data": {
+                            "id": "ci4azvxzvq00",
+                            "created": 1645708561235,
+                            "text": "write写入文件",
+                            "usecase": 1
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "ci4azvxzmy80",
+                                    "created": 1645708561235,
+                                    "text": "入参分析"
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "ci4azvxzwn40",
+                                            "created": 1645708561235,
+                                            "text": "buf"
+                                        },
+                                        "children": [
+                                            {
+                                                "data": {
+                                                    "id": "ci4azvy0kyg0",
+                                                    "created": 1645708561236,
+                                                    "text": "是否为空",
+                                                    "usecase": 2
+                                                },
+                                                "children": [
+                                                    {
+                                                        "data": {
+                                                            "id": "ci4azvy01g00",
+                                                            "created": 1645708561236,
+                                                            "text": "buf为空，预期write失败",
+                                                            "usecase": 4,
+                                                            "author": "j00612876",
+                                                            "showId": "00006"
+                                                        },
+                                                        "children": []
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    }
+                                ]
+                            },
+                            {
+                                "data": {
+                                    "id": "ci4azvy07mo0",
+                                    "created": 1645708561236,
+                                    "text": "功能分析"
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "ci4azvy03340",
+                                            "created": 1645708561236,
+                                            "text": "buf指向的内存不合法",
+                                            "usecase": 2
+                                        },
+                                        "children": [
+                                            {
+                                                "data": {
+                                                    "id": "ci4azvy08y80",
+                                                    "created": 1645708561236,
+                                                    "text": "buf指向内存地址不可读，预期write失败",
+                                                    "usecase": 4,
+                                                    "showId": "ci4azvy08y80"
+                                                },
+                                                "children": []
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "data": {
+                            "id": "ci4azvy0km80",
+                            "created": 1645708561236,
+                            "text": "read读取文件",
+                            "usecase": 1
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "ci4azvy0aj40",
+                                    "created": 1645708561236,
+                                    "text": "入参分析"
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "ci4azvy14wo0",
+                                            "created": 1645708561237,
+                                            "text": "buf"
+                                        },
+                                        "children": [
+                                            {
+                                                "data": {
+                                                    "id": "ci4azvy154g0",
+                                                    "created": 1645708561237,
+                                                    "text": "是否为空",
+                                                    "usecase": 2
+                                                },
+                                                "children": [
+                                                    {
+                                                        "data": {
+                                                            "id": "ci4azvy16ao0",
+                                                            "created": 1645708561237,
+                                                            "text": "buf为空，预期read失败",
+                                                            "usecase": 4,
+                                                            "author": "j00612876",
+                                                            "showId": "00009"
+                                                        },
+                                                        "children": []
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    }
+                                ]
+                            },
+                            {
+                                "data": {
+                                    "id": "ci4azvy1f600",
+                                    "created": 1645708561238,
+                                    "text": "功能分析"
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "ci4azvy1bsg0",
+                                            "created": 1645708561238,
+                                            "text": "buf指向的内存不合法",
+                                            "usecase": 2
+                                        },
+                                        "children": [
+                                            {
+                                                "data": {
+                                                    "id": "ci4azvy1eco0",
+                                                    "created": 1645708561238,
+                                                    "text": "buf指向内存地址不可写，预期read失败",
+                                                    "usecase": 4,
+                                                    "author": "j00612876",
+                                                    "showId": "ci4azvy1eco0"
+                                                },
+                                                "children": []
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "data": {
+                            "id": "ci4azvy1duo0",
+                            "created": 1645708561238,
+                            "text": "close关闭文件",
+                            "usecase": 1
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "ci4b7xevco00",
+                                    "created": 1645709191346,
+                                    "text": "功能",
+                                    "usecase": 2
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "ci4b7xevksw0",
+                                            "created": 1645709191346,
+                                            "text": "正常关闭文件",
+                                            "usecase": 4,
+                                            "author": "j00612876",
+                                            "showId": "00035"
+                                        },
+                                        "children": []
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "data": {
+                            "id": "ci4azvy2exs0",
+                            "created": 1645708561239,
+                            "text": "rename重命名文件或目录",
+                            "usecase": 1
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "ci4azvy1vjk0",
+                                    "created": 1645708561239,
+                                    "text": "入参分析"
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "ci4azvy22140",
+                                            "created": 1645708561239,
+                                            "text": "oldName/newName"
+                                        },
+                                        "children": [
+                                            {
+                                                "data": {
+                                                    "id": "ci4azvy228g0",
+                                                    "created": 1645708561239,
+                                                    "text": "是否为空",
+                                                    "usecase": 2,
+                                                    "layout": null
+                                                },
+                                                "children": [
+                                                    {
+                                                        "data": {
+                                                            "id": "ci4azvy28yw0",
+                                                            "created": 1645708561239,
+                                                            "text": "传入空指针，预期rename失败",
+                                                            "usecase": 4,
+                                                            "author": "j00612876",
+                                                            "showId": "00014",
+                                                            "layout": null
+                                                        },
+                                                        "children": []
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "data": {
+                                                    "id": "ci4b2wmzmmo0",
+                                                    "created": 1645708797839,
+                                                    "text": "长度",
+                                                    "usecase": 2
+                                                },
+                                                "children": [
+                                                    {
+                                                        "data": {
+                                                            "id": "ci4b32bkkxk0",
+                                                            "created": 1645708810209,
+                                                            "text": "超过NAME_MAX，预期返回失败",
+                                                            "usecase": 4,
+                                                            "author": "j00612876",
+                                                            "showId": "00031"
+                                                        },
+                                                        "children": []
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    }
+                                ]
+                            },
+                            {
+                                "data": {
+                                    "id": "ci4azvy2mxs0",
+                                    "created": 1645708561240,
+                                    "text": "功能分析"
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "ci4balhjqy00",
+                                            "created": 1645709400479,
+                                            "text": "正常重命名文件或目录",
+                                            "usecase": 4,
+                                            "author": "j00612876",
+                                            "showId": "00038"
+                                        },
+                                        "children": []
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "data": {
+                            "id": "ci4azvy3e5c0",
+                            "created": 1645708561241,
+                            "text": "access判断文件权限",
+                            "usecase": 1
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "ci4azvy32c80",
+                                    "created": 1645708561241,
+                                    "text": "入参分析"
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "ci4azvy3i140",
+                                            "created": 1645708561241,
+                                            "text": "pathname"
+                                        },
+                                        "children": [
+                                            {
+                                                "data": {
+                                                    "id": "ci4azvy3cvc0",
+                                                    "created": 1645708561241,
+                                                    "text": "是否为空",
+                                                    "usecase": 2
+                                                },
+                                                "children": [
+                                                    {
+                                                        "data": {
+                                                            "id": "ci4azvy3ihs0",
+                                                            "created": 1645708561241,
+                                                            "text": "pathname为空，预期access失败",
+                                                            "usecase": 4,
+                                                            "author": "j00612876",
+                                                            "showId": "00019"
+                                                        },
+                                                        "children": []
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "data": {
+                                                    "id": "ci4b4n9ivuo0",
+                                                    "created": 1645708934162,
+                                                    "text": "长度",
+                                                    "usecase": 2
+                                                },
+                                                "children": [
+                                                    {
+                                                        "data": {
+                                                            "id": "ci4b4n9j1i80",
+                                                            "created": 1645708934162,
+                                                            "text": "超过NAME_MAX，预期返回失败",
+                                                            "usecase": 4,
+                                                            "author": "j00612876",
+                                                            "showId": "00032"
+                                                        },
+                                                        "children": []
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    }
+                                ]
+                            },
+                            {
+                                "data": {
+                                    "id": "ci4b9y14gow0",
+                                    "created": 1645709349420,
+                                    "text": "功能分析"
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "ci4ba3vwh740",
+                                            "created": 1645709362164,
+                                            "text": "正常判断文件权限",
+                                            "usecase": 4,
+                                            "author": "j00612876",
+                                            "showId": "00037"
+                                        },
+                                        "children": []
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "data": {
+                            "id": "ci4azvy46bc0",
+                            "created": 1645708561242,
+                            "text": "unlink删除文件",
+                            "usecase": 1
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "ci4azvy46e00",
+                                    "created": 1645708561242,
+                                    "text": "入参分析"
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "ci4azvy3sfs0",
+                                            "created": 1645708561242,
+                                            "text": "pathname"
+                                        },
+                                        "children": [
+                                            {
+                                                "data": {
+                                                    "id": "ci4azvy42e80",
+                                                    "created": 1645708561242,
+                                                    "text": "是否为空",
+                                                    "usecase": 2
+                                                },
+                                                "children": [
+                                                    {
+                                                        "data": {
+                                                            "id": "ci4azvy3rvc0",
+                                                            "created": 1645708561242,
+                                                            "text": "pathname为空，预期unlink失败",
+                                                            "usecase": 4,
+                                                            "author": "j00612876",
+                                                            "showId": "00023"
+                                                        },
+                                                        "children": []
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "data": {
+                                                    "id": "ci4b5fc7n400",
+                                                    "created": 1645708995274,
+                                                    "text": "长度",
+                                                    "usecase": 2
+                                                },
+                                                "children": [
+                                                    {
+                                                        "data": {
+                                                            "id": "ci4b5fc75ts0",
+                                                            "created": 1645708995274,
+                                                            "text": "超过NAME_MAX，预期返回失败",
+                                                            "usecase": 4,
+                                                            "author": "j00612876",
+                                                            "showId": "00033"
+                                                        },
+                                                        "children": []
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    }
+                                ]
+                            },
+                            {
+                                "data": {
+                                    "id": "ci4azvy4maw0",
+                                    "created": 1645708561243,
+                                    "text": "功能分析"
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "ci4bc1n49g80",
+                                            "created": 1645709514008,
+                                            "text": "正常删除文件",
+                                            "usecase": 4,
+                                            "author": "j00612876",
+                                            "showId": "00041"
+                                        },
+                                        "children": []
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "data": {
+                            "id": "ci4azvy4dog0",
+                            "created": 1645708561243,
+                            "text": "mkdir创建目录",
+                            "usecase": 1
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "ci4azvy4a5c0",
+                                    "created": 1645708561243,
+                                    "text": "入参分析"
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "ci4azvy4bq00",
+                                            "created": 1645708561243,
+                                            "text": "pathname"
+                                        },
+                                        "children": [
+                                            {
+                                                "data": {
+                                                    "id": "ci4azvy4p080",
+                                                    "created": 1645708561243,
+                                                    "text": "是否为空",
+                                                    "usecase": 2
+                                                },
+                                                "children": [
+                                                    {
+                                                        "data": {
+                                                            "id": "ci4azvy4fy00",
+                                                            "created": 1645708561243,
+                                                            "text": "pathname为空，预期mkdir失败",
+                                                            "usecase": 4,
+                                                            "author": "j00612876",
+                                                            "showId": "00025"
+                                                        },
+                                                        "children": []
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "data": {
+                                                    "id": "ci4bbi4ch600",
+                                                    "created": 1645709471514,
+                                                    "text": "长度",
+                                                    "usecase": 2
+                                                },
+                                                "children": [
+                                                    {
+                                                        "data": {
+                                                            "id": "ci4bbvswkww0",
+                                                            "created": 1645709501297,
+                                                            "text": "超过NAME_MAX，预期返回失败",
+                                                            "usecase": 4,
+                                                            "author": "j00612876",
+                                                            "showId": "00040"
+                                                        },
+                                                        "children": []
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    }
+                                ]
+                            },
+                            {
+                                "data": {
+                                    "id": "ci4azvy53sg0",
+                                    "created": 1645708561244,
+                                    "text": "功能分析"
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "ci4bb9jv3zc0",
+                                            "created": 1645709452861,
+                                            "text": "正常创建目录",
+                                            "usecase": 4,
+                                            "author": "j00612876",
+                                            "showId": "00039"
+                                        },
+                                        "children": []
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "data": {
+                            "id": "ci4azvy54uo0",
+                            "created": 1645708561244,
+                            "text": "rmdir删除目录",
+                            "usecase": 1
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "ci4azvy59ig0",
+                                    "created": 1645708561244,
+                                    "text": "入参分析"
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "ci4azvy5bo80",
+                                            "created": 1645708561244,
+                                            "text": "pathname"
+                                        },
+                                        "children": [
+                                            {
+                                                "data": {
+                                                    "id": "ci4azvy5ca00",
+                                                    "created": 1645708561244,
+                                                    "text": "是否为空",
+                                                    "usecase": 2
+                                                },
+                                                "children": [
+                                                    {
+                                                        "data": {
+                                                            "id": "ci4azvy51sw0",
+                                                            "created": 1645708561244,
+                                                            "text": "pathname为空，预期rmdir失败",
+                                                            "usecase": 4,
+                                                            "author": "j00612876",
+                                                            "showId": "00028"
+                                                        },
+                                                        "children": []
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "data": {
+                                                    "id": "ci4b65ppyug0",
+                                                    "created": 1645709052688,
+                                                    "text": "长度",
+                                                    "usecase": 2
+                                                },
+                                                "children": [
+                                                    {
+                                                        "data": {
+                                                            "id": "ci4b65pqghs0",
+                                                            "created": 1645709052688,
+                                                            "text": "超过NAME_MAX，预期返回失败",
+                                                            "usecase": 4,
+                                                            "author": "j00612876",
+                                                            "showId": "00034"
+                                                        },
+                                                        "children": []
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    }
+                                ]
+                            },
+                            {
+                                "data": {
+                                    "id": "ci4azvy5aeg0",
+                                    "created": 1645708561244,
+                                    "text": "功能分析"
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "ci4b9cd8zfc0",
+                                            "created": 1645709302264,
+                                            "text": "正常删除目录",
+                                            "usecase": 4,
+                                            "author": "j00612876",
+                                            "showId": "00036"
+                                        },
+                                        "children": []
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    "templatePath": null,
+    "singleTemplatePath": null,
+    "testcaseFilePath": "",
+    "template": "default",
+    "theme": "fresh-blue-compat",
+    "version": "1.4.43"
+}

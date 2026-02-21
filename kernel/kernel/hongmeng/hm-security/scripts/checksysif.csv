@@ -1,0 +1,971 @@
+server,		interface,				inner/exported,		client,		check point,							action/ability
+devhost,	fops_poll,				inner,			vfs,		(devhost_find_file),
+devhost,	fops_poll_remove,			inner,			vfs,		(devhost_find_file),
+devhost,	fops_epoll_ctl,			inner,			vfs,		(devhost_find_file),
+devhost,	fops_epoll_recheck,			inner,			vfs,		(devhost_find_file),
+devhost,	fops_sync_ctrlmem_polllist,			inner,			vfs,		(devhost_find_file),
+devhost,	fops_ioctl,				exported,		,		(devhost_find_file),
+devhost,	fops_fcntl,				exported,		,		(devhost_find_file),
+devhost,	fops_llseek,				exported,		,		(devhost_find_file),
+devhost,	fops_read,				exported,		,		(devhost_find_file),
+devhost,	fops_write,				exported,		,		(devhost_find_file),
+devhost,	fops_read_iter,				exported,		,		(devhost_find_file),
+devhost,	fops_write_iter,			exported,		,		(devhost_find_file),
+devhost,	fops_flush,				exported,				(devhost_find_file),
+devhost,	fops_file_get,				exported,		,		(devhost_find_file),
+devhost,	block_check_feature,			inner,			vfs,		(devhost_find_file),
+devhost,	block_register_bio_notify,		inner,			vfs,		(devhost_find_file),
+devhost,	block_run_queue,			inner,			vfs,		(devhost_find_file),
+devhost,	block_submit_bio,			inner,			vfs,		(devhost_find_file),
+devhost,	block_direct_access,			inner,			vfs,		(devhost_find_file),
+devhost,	core_bind_device,			inner,			devmgr,		(DRVHANDLER_MUST_FROM_DEVMGR),
+devhost,	core_create_device,			inner,			devmgr,		(DRVHANDLER_MUST_FROM_DEVMGR),
+devhost,	core_load_driver,			inner,			devmgr,		(DRVHANDLER_MUST_FROM_DEVMGR),
+devhost,	core_unload_driver,			inner,			devmgr,		(DRVHANDLER_MUST_FROM_DEVMGR),
+devhost,	fops_close,				inner,			devmgr,		sec_chk_fops_close,						ab_devhost_fops
+devhost,	fops_mmap,				inner,			sysmgr,		sec_chk_fops_mmap,						ab_devhost_fops_mmap
+devhost,	fops_munmap,				inner,			sysmgr,		sec_chk_fops_mmap,						ab_devhost_fops_mmap
+devhost,	shrinker_query,				inner,			sysmgr,		(DRVHANDLER_MUST_FROM_SYSMG),
+devhost,	shrinker_shrink,			inner,			sysmgr,		(DRVHANDLER_MUST_FROM_SYSMG),
+devhost,	fops_open,				inner,			devmgr,		(DRVHANDLER_MUST_FROM_DEVMGR),
+devhost,	fops_sysfs_read,			inner,			vfs,		sec_chk_fops_sysfs,						ab_devhost_fops_sysfs
+devhost,	fops_sysfs_write,			inner,			vfs,		sec_chk_fops_sysfs,						ab_devhost_fops_sysfs
+devhost,	sysfs_poll,				inner,			devmgr,		(DRVHANDLER_MUST_FROM_DEVMGR),
+devhost,	sec_sync_fastpath_open,			inner,			vfs,		sec_chk_fops_open_sync_sec,					ab_as_vfs
+devhost,	sec_sync_fastpath_dev,			inner,			devmgr,		(DRVHANDLER_MUST_FROM_DEVMGR),
+devhost,	net_init,				inner,			devmgr,		sec_chk_net_init,						ab_devhost_net_init
+devhost,	net_prepare,				inner,			lwipd,		sec_chk_net_prepare,						ab_devhost_net_prepare
+devhost,	net_send,				inner,			lwipd,		sec_chk_net_send,						ab_netd
+devhost,	net_netlink_recv,			inner,			lwipd,		sec_chk_net_send,						ab_netd
+devhost,	net_ioctl,				inner,			lwipd,		sec_chk_net_ioctl,						ab_netd
+devhost,	net_status,				inner,			lwipd,		sec_chk_net_stat,						ab_netd
+devhost,	net_socket_close,			inner,			lwipd,		sec_chk_net_socket_close,					ab_devhost_net_socket
+devhost,	net_socket_connect,			inner,			lwipd,		sec_chk_net_socket_connect,					ab_devhost_net_socket
+devhost,	net_socket_bind,			inner,			lwipd,		sec_chk_net_socket_bind,					ab_devhost_net_socket
+devhost,	net_socket_listen,			inner,			lwipd,		sec_chk_net_socket_listen,					ab_devhost_net_socket
+devhost,	net_socket_accept,			inner,			lwipd,		sec_chk_net_socket_accept,					ab_devhost_net_socket
+devhost,	net_socket_shutdown,			inner,			lwipd,		sec_chk_net_socket_shutdown,					ab_devhost_net_socket
+devhost,	net_socket_ioctl,			inner,			lwipd,		sec_chk_net_socket_ioctl,					ab_devhost_net_socket
+devhost,	net_socket_dev_ioctl,			inner,			lwipd,		sec_chk_net_socket_dev_ioctl,					ab_devhost_net_socket
+devhost,	net_socket_fcntl,			inner,			lwipd,		sec_chk_net_socket_fcntl,					ab_devhost_net_socket
+devhost,	net_socket_send,			inner,			lwipd,		sec_chk_net_socket_send,					ab_devhost_net_socket
+devhost,	net_socket_recv,			inner,			lwipd,		sec_chk_net_socket_recv,					ab_devhost_net_socket
+devhost,	net_socket_sendmsg,			inner,			lwipd,		sec_chk_net_socket_sendmsg,					ab_devhost_net_socket
+devhost,	net_socket_recvmsg,			inner,			lwipd,		sec_chk_net_socket_recvmsg,					ab_devhost_net_socket
+devhost,	net_socket_sendto,			inner,			lwipd,		sec_chk_net_socket_sendto,					ab_devhost_net_socket
+devhost,	net_socket_recvfrom,			inner,			lwipd,		sec_chk_net_socket_recvfrom,					ab_devhost_net_socket
+devhost,	net_socket_writev,			inner,			lwipd,		sec_chk_net_socket_writev,					ab_devhost_net_socket
+devhost,	net_socket_readv,			inner,			lwipd,		sec_chk_net_socket_readv,					ab_devhost_net_socket
+devhost,	net_socket_getsockopt,			inner,			lwipd,		sec_chk_net_socket_getsockopt,					ab_devhost_net_socket
+devhost,	net_socket_setsockopt,			inner,			lwipd,		sec_chk_net_socket_setsockopt,					ab_devhost_net_socket
+devhost,	net_socket_getsockname,			inner,			lwipd,		sec_chk_net_socket_getsockname,					ab_devhost_net_socket
+devhost,	net_socket_getpeername,			inner,			lwipd,		sec_chk_net_socket_getpeername,					ab_devhost_net_socket
+devhost,	net_socket_socket,			inner,			lwipd,		sec_chk_net_socket_socket,					ab_devhost_net_socket
+devhost,	net_socket_fchown,			inner,			lwipd,		sec_chk_net_socket_fchown,					ab_devhost_net_socket
+devhost,	net_socket_register,			inner,			devmgr,		sec_chk_net_socket_register,					ab_devhost_net_socket
+devhost,	net_socket_recvmmsg,			inner,			lwipd,		sec_chk_net_socket_recvmmsg,					ab_devhost_net_socket
+devhost,	net_socket_sendmmsg,			inner,			lwipd,		sec_chk_net_socket_sendmmsg,					ab_devhost_net_socket
+devhost,	iaware_notify_thread_msg,		inner,			sysmgr,		sec_chk_iaware_notify_thread_msg,				ab_as_sysmgr
+devhost,	pm_action,				inner,			devmgr,		sec_chk_pm_action,						ab_devhost_pm
+devhost,	pm_power_off,				inner,			devmgr,		sec_chk_power_off,						ab_devhost_pm
+devhost,	pm_reboot,				inner,			devmgr,		sec_chk_power_off,						ab_devhost_pm
+devhost,	pm_cpuhp_action,			inner,			devmgr,		sec_chk_cpuhp_action,						ab_devhost_pm
+devhost,	pm_wl_stat,				inner,			devmgr,		(DRVHANDLER_MUST_FROM_DEVMGR),
+devhost,	rpc_export,				inner,			devhost,	(DRVHANDLER_MUST_FROM_DEVMGR),
+devhost,	rpc_invoke,				inner,			devhost,	sec_chk_rpc_invoke,						ab_devhost_rpc_invoke
+devhost,	clock_gettime,				inner,			vfs,		sec_chk_clock_gettime,						ab_devhost_fops
+devhost,	clock_settime,				inner,			vfs,		sec_chk_clock_settime,						ab_devhost_fops
+devhost,	clock_getres,				inner,			vfs,		sec_chk_clock_getres,						ab_devhost_fops
+devhost,	clock_adjtime,				inner,			vfs,		sec_chk_clock_adjtime,						ab_devhost_fops
+devhost,	clock_poweroff_alarm,			inner,			vfs,		sec_chk_clock_poweroff_alarm,					ab_devhost_fops
+vfs,		vfs_timerfd_register_devhost,		exported,		devhost,	sec_chk_src_actv_is_devhost,
+vfs,		clock_gettime,				exported,		,		,
+vfs,		clock_settime,				exported,		,		,
+vfs,		clock_getres,				exported,		,		,
+vfs,		clock_adjtime,				exported,		,		,
+devhost,	core_entropy_read,			inner,			crypto,		sec_chk_entropy_read,
+devhost,	transfs_rename,				inner,		vfs,		sec_chk_fops_transfs,		ab_as_vfs
+devhost,	transfs_readdir,			inner,		vfs,		sec_chk_fops_transfs,		ab_as_vfs
+devhost,	transfs_drop_caches,			inner,		vfs,		sec_chk_fops_transfs,		ab_as_vfs
+devhost,	transfs_sync,				inner,		vfs,		sec_chk_fops_transfs,		ab_as_vfs
+devhost,	transfs_fallocate,			inner,		vfs,		sec_chk_fops_transfs,		ab_as_vfs
+devhost,	transfs_tmpfile,			inner,		vfs,		sec_chk_fops_transfs,		ab_as_vfs
+devhost,	transfs_getattr,			inner,		vfs,		sec_chk_fops_transfs,		ab_as_vfs
+devhost,	transfs_readlink,			inner,		vfs,		sec_chk_fops_transfs,		ab_as_vfs
+devhost,	transfs_fsync,				inner,		vfs,		sec_chk_fops_transfs,		ab_as_vfs
+devhost,	transfs_unlink,				inner,		vfs,		sec_chk_fops_transfs,		ab_as_vfs
+devhost,	transfs_create,				inner,		vfs,		sec_chk_fops_transfs,		ab_as_vfs
+devhost,	transfs_unmounted,			inner,		vfs,		sec_chk_fops_transfs,		ab_as_vfs
+devhost,	transfs_getxattr,			inner,		vfs,		sec_chk_fops_transfs,		ab_as_vfs
+devhost,	transfs_open,				inner,		vfs,		sec_chk_fops_transfs,		ab_as_vfs
+devhost,	transfs_kill_dentry,			inner,		vfs,		sec_chk_fops_transfs,		ab_as_vfs
+devhost,	transfs_setxattr,			inner,		vfs,		sec_chk_fops_transfs,		ab_as_vfs
+devhost,	transfs_symlink,			inner,		vfs,		sec_chk_fops_transfs,		ab_as_vfs
+devhost,	transfs_lookup,				inner,		vfs,		sec_chk_fops_transfs,		ab_as_vfs
+devhost,	transfs_mknod,				inner,		vfs,		sec_chk_fops_transfs,		ab_as_vfs
+devhost,	transfs_mounted,			inner,		vfs,		sec_chk_fops_transfs,		ab_as_vfs
+devhost,	transfs_update_opts,			inner,		vfs,		sec_chk_fops_transfs,		ab_as_vfs
+devhost,	transfs_direct_IO,			inner,		vfs,		sec_chk_fops_transfs,		ab_as_vfs
+devhost,	transfs_write,				inner,		vfs,		sec_chk_fops_transfs,		ab_as_vfs
+devhost,	transfs_mkdir,				inner,		vfs,		sec_chk_fops_transfs,		ab_as_vfs
+devhost,	transfs_link,				inner,		vfs,		sec_chk_fops_transfs,		ab_as_vfs
+devhost,	transfs_close,				inner,		vfs,		sec_chk_fops_transfs,		ab_as_vfs
+devhost,	transfs_setattr,			inner,		vfs,		sec_chk_fops_transfs,		ab_as_vfs
+devhost,	transfs_statfs,				inner,		vfs,		sec_chk_fops_transfs,		ab_as_vfs
+devhost,	transfs_rmdir,				inner,		vfs,		sec_chk_fops_transfs,		ab_as_vfs
+devhost,	transfs_listxattr,			inner,		vfs,		sec_chk_fops_transfs,		ab_as_vfs
+devhost,	transfs_ioctl,				inner,		vfs,		sec_chk_fops_transfs,		ab_as_vfs
+devhost,	transfs_node_put,			inner,		vfs,		sec_chk_fops_transfs,		ab_as_vfs
+devhost,	transfs_write_iter,			inner,		vfs,		sec_chk_fops_transfs,		ab_as_vfs
+devhost,	transfs_read,				inner,		vfs,		sec_chk_fops_transfs,		ab_as_vfs
+devhost,	kstate_binderinfo_notify,	exported,	vfs,		sec_chk_kstate_binderinfo_notify,	ab_as_vfs
+devhost,	kstate_killinfo_notify,	exported,	vfs,		sec_chk_kstate_killinfo_notify,	ab_as_vfs
+devhost,	kstate_freeze_binder_info_notify,	exported,	vfs,		sec_chk_kstate_freeze_binder_info_notify,	ab_as_vfs
+devhost,	kstate_request_anco_thaw,	exported,	vfs,		sec_chk_ability_kstate_request_anco_thaw,	ab_as_vfs
+devhost,	pm_prepare,				todo,			,		,
+devhost,	process_revoke,				inner,		sysmgr,		(DRVHANDLER_MUST_FROM_SYSMG),
+devhost,	file_info_query_dmabuf,			inner,		sysmgr,		(DRVHANDLER_MUST_FROM_SYSMG),
+devhost,	file_info_query_fence,			inner,		sysmgr,		(DRVHANDLER_MUST_FROM_SYSMG),
+devhost,	file_info_query_ion,			inner,		sysmgr,		(DRVHANDLER_MUST_FROM_SYSMG),
+devhost,	file_info_query_meminfo,		inner,		sysmgr,		(DRVHANDLER_MUST_FROM_SYSMG),
+devhost,	file_info_lowmem_debug,			inner,		sysmgr,		(DRVHANDLER_MUST_FROM_SYSMG),
+devhost,	devfs_read,				exported,		,		,
+devhost,	devfs_write,				exported,		,		,
+devhost,	devfs_ioctl,				exported,		,		,
+devhost,	devfs_writev,				exported,		,		,
+devhost,	devfs_lseek,				exported,		,		,
+devhost,	devfs__llseek,				exported,		,		,
+devhost,	devfs_fcntl,				exported,		,		,
+devhost,	posix_vhangup,				exported,		,		sec_chk_has_capability,
+devmgr,		mgmt_dump,				exported,		,		sec_chk_mgmt_dump,						ab_stat
+devmgr,		mgmt_load_module,			exported,		,		sec_chk_mgmt_load_module,					ab_devmgr_mgmt
+devmgr,		mgmt_unload_module,			exported,		,		sec_chk_mgmt_unload_module,					ab_devmgr_mgmt
+devmgr,		mgmt_init_module,			exported,		,		sec_chk_mgmt_load_module,					ab_devmgr_mgmt
+devmgr,		mgmt_finit_module,			exported,		,		sec_chk_mgmt_load_module,					ab_devmgr_mgmt
+devmgr,		mgmt_delete_module,			exported,		,		sec_chk_mgmt_unload_module,					ab_devmgr_mgmt
+devmgr,		mgmt_sync,				inner,			,		sec_chk_mgmt_sync,						ab_devmgr_mgmt
+devmgr,		device_mgmt_index,			inner,			devhost,	sec_chk_device_mgmt_index,					ab_devmgr
+devmgr,		blkdev_register_region,			inner,			devhost,	blk_register_region,						ab_devmgr
+devmgr,		blkdev_unregister_region,		inner,			devhost,	blk_unregister_region,						ab_devmgr
+devmgr,		chrdev_register_region,			inner,			devhost,	sec_chk_chr_register_region,					ab_devmgr
+devmgr,		chrdev_unregister_region,		inner,			devhost,	sec_chk_chr_unregister_region,					ab_devmgr
+devmgr,		core_device_add,			inner,			devhost,	sec_chk_core_device_add,					ab_devmgr
+devmgr,		core_device_del,			inner,			devhost,	sec_chk_core_device_del,					ab_devmgr
+devmgr,		core_register_devhost,			inner,			devhost,	sec_chk_core_register_devhost,					ab_devmgr
+devmgr,		core_devhost_init_done,			inner,			devhost,	sec_chk_core_register_devhost,					ab_devmgr
+devmgr,		core_request_module,			inner,			devhost,	sec_chk_core_request_module,					ab_devmgr
+devmgr,		fops_open,				inner,			vfs,		sec_chk_fops_open,						ab_devmgr_fops
+devmgr,		fops_sysfs_read,			inner,			vfs,		sec_chk_fops_sysfs,						ab_devmgr_fops_sysfs
+devmgr,		fops_sysfs_write,			inner,			vfs,		sec_chk_fops_sysfs,						ab_devmgr_fops_sysfs
+devmgr,		fops_sysfs_open,			inner,			vfs,		sec_chk_fops_sysfs,						ab_devmgr_fops_sysfs
+devmgr,		fops_sysfs_close,			inner,			vfs,		sec_chk_fops_sysfs,						ab_devmgr_fops_sysfs
+devmgr,		sysfs_poll,				inner,			vfs,		sec_chk_fops_sysfs,						ab_devmgr_fops_sysfs
+devmgr,		procfs_read,				inner,			vfs,		sec_chk_procfs_access,						ab_procfsmgr_access
+devmgr,		procfs_write,				inner,			vfs,		sec_chk_procfs_access,						ab_procfsmgr_access
+devmgr,		sec_sync_fastpath_dev,			inner,			vfs,		sec_chk_sec_sync_fastpath_dev,					ab_as_vfs
+devmgr,		fw_acquire_contents,			inner,			devhost,	sec_chk_fw_acquire_contents,					ab_devmgr
+devmgr,		fw_cms_verify,				inner,			devhost,	sec_chk_fw_cms_verify,						ab_devmgr
+devmgr,		irq_fetch,				inner,			devhost,	sec_chk_irq_fetch,						ab_devmgr
+devmgr,		irq_map,				inner,			devhost,	sec_chk_irq_map,						ab_devmgr
+devmgr,		irq_return,				inner,			devhost,	sec_chk_irq_return,						ab_devmgr
+devmgr,		irq_translate,				inner,			devhost,	sec_chk_irq_translate,						ab_devmgr
+devmgr,		net_hmnetd_ready,			inner,			lwipd,		sec_chk_net_hmnetd_ready,					ab_devmgr_hmnetd
+devmgr,		net_init,				inner,			lwipd,		sec_chk_net_init,						ab_devmgr_hmnetd
+devmgr,		net_open,				inner,			lwipd,		sec_chk_net_open,						ab_devmgr_hmnetd
+devmgr,		net_alloc_ifindex,			inner,			devhost,	sec_chk_net_register,						ab_devmgr
+devmgr,		net_register,				inner,			devhost,	sec_chk_net_register,						ab_devmgr
+devmgr,		net_unregister,				inner,			devhost,	sec_chk_net_unregister,						ab_devmgr
+devmgr,		pm_action,				inner,			pwrmgr,		sec_chk_pm_action,						ab_devmgr_pm
+devmgr,		pm_power_off,				inner,			pwrmgr,		sec_chk_power_off,						ab_devmgr_pm
+devmgr,		pm_reboot,				inner,			pwrmgr,		sec_chk_power_off,						ab_devmgr_pm
+devmgr,		pm_cpuhp_action,			inner,			pwrmgr,		sec_chk_cpuhp_action,						ab_devmgr_pm
+devmgr,		pm_wl_stat,				inner,			pwrmgr,		sec_chk_wl_stat,						ab_devmgr_pm
+devmgr,		procfs_create_data,			inner,			devhost,	devmgr_cred_to_dh,
+devmgr,		procfs_unlink,				inner,			devhost,	devmgr_cred_to_dh,
+network,	socket_getpeername,			exported,		,		,
+network,	socket_listen,				exported,		,		,
+network,	socket_getsockopt,			exported,		,		,
+network,	cfg_getifaddrs,				exported,		,		,
+network,	socket_fork,				exported,		,		(cnode != hm_crt_sysmgr_cnode_idx()),
+network,	socket_ioctl,				exported,		,		,
+network,	socket_revoke,				inner,			,		(cnode == hm_crt_sysmgr_cnode_idx()),
+network,	socket_socketpair,			exported,		,		,
+network,	socket_dup,				exported,		,		,
+network,	socket_sendmsg,				exported,		,		,
+network,	epoll_ctl,				exported,		,		,
+network,	epoll_et_revents,			exported,		,		,
+network,	epoll_reinit,				exported,		,		,
+network,	socket_bind,
+network,	socket_shutdown,
+network,	socket_send,
+network,	socket_connect,
+network,	socket_recvfrom,
+network,	netdev_rx,
+network,	socket_fcntl,
+network,	socket_sendto,
+network,	cfg_loglevel,
+network,	procfs_read,				inner,		vfs,		sec_chk_net_fs,							ab_net_fs
+network,	procfs_write,				inner,		vfs,		sec_chk_net_fs,							ab_net_fs
+network,	procfs_fds_read,			inner,		vfs,		sec_chk_net_fs,							ab_net_fs
+network,	procfs_get_fd_path,			inner,		vfs,		sec_chk_net_fs,							ab_net_fs
+network,	socket_setsockopt,
+network,	socket_socket,
+network,	cfg_show_stats,
+network,	socket_accept,
+network,	socket_getsockname,
+network,	socket_recvmsg,
+network,	netdev_notify,				inner,		devmgr,		sec_chk_net_dev,						ab_net_dev
+network,	socket_close,
+network,	netdev_rx_ex,				inner,		devhost,	sec_chk_net_dev,						ab_net_dev
+network,	netdev_rx_ex_slowdata,			inner,		devhost,	sec_chk_net_dev,						ab_net_dev
+network,	socket_send_fd,				inner,		vfs,		sec_chk_net_fs,							ab_net_fs
+network,	socket_put_send_fd,			inner,		vfs,		sec_chk_net_fs,							ab_net_fs
+network,	socket_recv_fd,				inner,		vfs,		,
+network,	netlink_register_generic,		inner,		devhost,	sec_chk_net_dev,						ab_net_dev
+network,	netlink_unregister_generic,		inner,		devhost,	sec_chk_net_dev,						ab_net_dev
+network,	netlink_unicast,			inner,		devhost,	sec_chk_net_dev,						ab_net_dev
+network,	netlink_broadcast,			inner,		devhost,	sec_chk_net_dev,						ab_net_dev
+network,	vsock_register_vm,			inner,			uvmm,		sec_chk_vsock,							ab_vsock
+network,	vsock_vm_notify,			inner,			uvmm,		sec_chk_vsock,							ab_vsock
+network,	vsock_unregister_vm,			inner,			uvmm,		sec_chk_vsock,							ab_vsock
+network,	as_devhost,				inner,			devhost,	sec_chk_as_devhost,						ab_as_devhost
+pwrmgr,		shutdown_enter,				exported,		,		sec_chk_shutdown,						ab_reboot
+pwrmgr,		shutdown_reboot_enter,			exported,		,		sec_chk_reboot,							ab_reboot
+pwrmgr,		wakelock_acquire_timeout,		exported,		,		sec_chk_wakelock,						ab_wakelock
+pwrmgr,		wakelock_action,			exported,		,		sec_chk_wakelock,						ab_wakelock
+pwrmgr,		wakelock_get_count,			exported,		,		sec_chk_suspend,						ab_suspend_system
+pwrmgr,		wakelock_save_count,			exported,		,		sec_chk_suspend,						ab_suspend_system
+pwrmgr,		wakelock_stat,				exported,		,		,
+pwrmgr,		suspend_set_state,			inner,			vfs,		sec_chk_suspend,						ab_suspend_system
+pwrmgr,		suspend_disk_restore,			inner,			init,		sec_chk_suspend_restore,					ab_suspend_restore
+pwrmgr,		sysfs_read,				inner,			vfs,		sec_chk_sysfs,							ab_pwrmgr_sysfs
+pwrmgr,		sysfs_write,				inner,			vfs,		sec_chk_sysfs,							ab_pwrmgr_sysfs
+pwrmgr,		cpuhp_remove_notifier,			inner,		devmgr;uvmm,		,
+pwrmgr,		cpuhp_add_notifier,			inner,		devmgr;uvmm,		sec_chk_cpuhp,	ab_cpuhp_listen
+pwrmgr,		cpuhp_action,				inner,		devhost,		sec_chk_cpuhp_action,	ab_cpuhp_action
+pwrmgr,		idlemgr_stat,				exported,		,		,
+pwrmgr,		system_state,				inner,		vfs,			sec_chk_system_state,						ab_system_state
+pwrmgr,		pmqos_request_add,			inner,		devhost,		sec_chk_pmqos,							ab_pmqos
+pwrmgr,		pmqos_request_update,			inner,		devhost,		sec_chk_pmqos,							ab_pmqos
+pwrmgr,		pmqos_request_remove,			inner,		devhost,		sec_chk_pmqos,							ab_pmqos
+pwrmgr,		dh_register,				inner,		devhost,		sec_chk_dh_register,						ab_as_devhost
+pwrmgr,		dfc_cpu_freq_limit,			inner,		devhost,		sec_chk_cpufreq_limit,						ab_cpufreq_limit
+pwrmgr,		pm_init_notify,		        inner,		devhost,		sec_chk_pm_init_notify,						ab_pm_init_notify
+pwrmgr,		dfc_cpu_freq_query,			inner,		devhost,		sec_chk_cpufreq_query,						ab_cpufreq_query
+pwrmgr,		dfc_freq_stat,				exported,		,		,
+pwrmgr,		thermmgr_stat,				exported,		,		,
+sysmgr,		key_lookup_keyring,			inner,			keymgr,		,
+sysmgr,		key_install_keyring,			inner,			keymgr,		,
+sysmgr,		entropy_read,				,			,		,
+sysmgr,		irq_default_phyctrl_id,			exported,		,		,
+sysmgr,		irq_grant_ctrl,				exported,		,		sec_chk_irq_grant_ctrl,						"grant:ab_irq_sgi,grant:ab_irq_ioctl,ab_irq"
+sysmgr,		irq_stat,				exported,		,		sec_chk_irq_stat,						ab_stat
+sysmgr,		irq_to_logic,				exported,		,		sec_chk_irq_to_logic,						ab_irq
+sysmgr,		irq_version_check,			exported,		,		,
+sysmgr,		irq_version_get,			exported,		,		,
+sysmgr,		mem_alloc_pmem,				exported,		,		,
+sysmgr,		mem_alloc_kmem,				exported,		,		,
+sysmgr,		mem_brk,				exported,		,		,
+sysmgr,		mem_extend_ctable,			exported,		,		,
+sysmgr,		mem_extend_utable,			exported,		,		,
+sysmgr,		mem_extend_rtable,			exported,		,		,
+sysmgr,		mem_free_pmem,				exported,		,		,
+sysmgr,		mem_free_kmem,				exported,		,		,
+sysmgr,		mem_madvise,				exported,		,		,
+sysmgr,		mem_mlock,				exported,		,		sec_chk_mlock,							ab_ipc_lock
+sysmgr,		mem_mlockall,				exported,		,		sec_chk_mlock,							ab_ipc_lock
+sysmgr,		mem_mmap,				exported,		,		sec_chk_mlock;sec_chk_mem_mmap_addr,				ab_ipc_lock;ab_mmap_min_addr
+sysmgr,		mem_mremap,				exported,		,		,
+sysmgr,		mem_mprotect,				exported,		,		,
+sysmgr,		mem_msync,				exported,		,		,
+sysmgr,		mem_munlock,				exported,		,		,
+sysmgr,		mem_munlockall,				exported,		,		,
+sysmgr,		mem_munmap,				exported,		,		,
+sysmgr,		mem_rmap_unmap_page,			inner,			vfs,		sec_chk_rmap_unmap_page,					mac_cred->sid == vfs_t
+sysmgr,		mem_fs_stat_register,			inner,			vfs,		sec_chk_fs_stat_register,					mac_cred->sid == vfs_t
+sysmgr,		mem_file_mapping_stat,			inner,			vfs,		sec_chk_file_mapping_stat,					mac_cred->sid == vfs_t
+sysmgr,		mem_process_vm_access,			exported,		,		sec_chk_mem_process_vm_access sec_chk_mem_pro_vm_access_ptrace,					ac_ptrace
+sysmgr,		mem_drop_file_cache,			inner,			vfs,		sec_chk_drop_file_cache,					mac_cred->sid == vfs_t
+sysmgr,		mem_set_anon_name,			exported,		,		,
+sysmgr,		mem_shm_close,				inner,			,		sec_chk_mem_native_shm,
+sysmgr,		mem_shm_open,				inner,			,		sec_chk_mem_native_shm;sec_chk_shm_init,						ac_shm_create
+sysmgr,		mem_shm_open,				inner,			,		sec_chk_mem_native_shm;sec_chk_shm_open,						ac_shm_acquire
+sysmgr,		mem_shm_open_anon,			inner,			,		sec_chk_mem_native_shm,
+sysmgr,		mem_kshm_open_anon,			inner,			,		sec_chk_mem_native_shm,
+sysmgr,		mem_shm_unlink,				inner,			,		sec_chk_mem_native_shm;sec_chk_shm_unlink,						ac_shm_destroy
+sysmgr,		mem_shm_unlink_anon,			inner,			,		sec_chk_mem_native_shm;sec_chk_shm_unlink,						ac_shm_destroy
+sysmgr,		mem_query_shm_info,			inner,		        devhost,	sec_chk_mem_native_shm;sec_chk_shm_query,                                              ab_mem_shm
+sysmgr,		mem_query_shm_paddr,			inner,		        devhost,	sec_chk_mem_native_shm;sec_chk_shm_query,                                              ab_mem_shm
+sysmgr,		mem_shm_reclaim_pages,			inner,			vfs,		sec_chk_mem_native_shm;sec_chk_shm_reclaim_shm,					ab_as_vfs
+sysmgr,		mem_ashm_grant_trans,			inner,			,		sec_chk_mem_native_shm;sec_chk_shm_trans_grant_to,					ac_shm_trans_grant_to
+sysmgr,		mem_grant_shm_to_caller,		inner,			,		sec_chk_mem_native_shm,
+sysmgr,		mem_grant_shm_by_xref,			inner,			,		sec_chk_mem_native_shm,
+sysmgr,		mem_shm_check_owner,			inner,			,		sec_chk_mem_native_shm,
+sysmgr,		mem_shm_dump_info,			inner,			,		sec_chk_mem_native_shm;sec_chk_shm_dump,						ab_dumpshm
+sysmgr,		mem_shm_chmod,				inner,			,		sec_chk_mem_native_shm;sec_chk_shm_chmod,
+sysmgr,		mem_stat,				exported,		,		sec_chk_mem_native_shm;sec_chk_mem_stat,						ab_stat
+sysmgr,		mem_calculate,				exported,		,		,
+sysmgr,		mem_hugetlbfs_mount,			inner,			vfs,		sec_chk_hugetlbfs_mount,						mac_cred->sid == vfs_t
+sysmgr,		mem_register_devhost,			inner,			devhost,	sec_chk_mem_register_devhost,					mac_cred->sid == devhost_t
+sysmgr,		mem_iofast_declare,			inner,			devhost,	sec_chk_ab_devhost,                      			ab_as_devhost;
+sysmgr,		mem_iofast_alloc_pfn_v,			inner,			devhost,	sec_chk_ab_devhost,                      			ab_as_devhost;
+sysmgr,		mem_iofast_free_pfn_v,			inner,			devhost,	sec_chk_ab_devhost,                      			ab_as_devhost;
+sysmgr,		mem_iofast_map_pfn_v,			inner,			devhost,	sec_chk_ab_devhost,                      			ab_as_devhost;
+sysmgr,		mem_iofast_unmap_pfn_v,			inner,			devhost,	sec_chk_ab_devhost,                      			ab_as_devhost;
+sysmgr,		mem_query_pfn_range,			inner,			devhost,	sec_chk_query_pfn_range,                    			ab_as_devhost;
+sysmgr,		mem_iomap_prepare,			inner,			devhost,	sec_chk_ioremap_prepare;sec_chk_mem_mmap_addr,			mac_cred->sid == devhost_t;ab_mmap_min_addr
+sysmgr,		mem_iomap_populate,			inner,			devhost,	sec_chk_ioremap_prepare,					mac_cred->sid == devhost_t
+sysmgr,		mem_iomap_unpopulate,			inner,			devhost,	sec_chk_ioremap_prepare,					mac_cred->sid == devhost_t
+sysmgr,		mem_iomap_finish,			inner,			devhost,	sec_chk_ioremap_prepare,					mac_cred->sid == devhost_t
+sysmgr,		mem_iomap_statpage,			inner,			devhost,	sec_chk_mem_iomap_ops,						mac_cred->sid == devhost_t
+sysmgr,		mem_iomap_statvergion,			inner,			devhost,	sec_chk_mem_iomap_ops,						mac_cred->sid == devhost_t
+sysmgr,		mem_vmalloc_mmap_page,			inner,			devhost,	sec_chk_ab_devhost,                      			ab_as_devhost;
+sysmgr,		mem_cma_dyn_init,			inner,			devhost;uvmm,	sec_chk_cma_ops,						ab_mem_cma
+sysmgr,		mem_cma_id_fetch,			inner,			devhost;uvmm,	sec_chk_cma_ops,						ab_mem_cma
+sysmgr,		mem_cma_alloc,				inner,			devhost;uvmm,	sec_chk_cma_ops,						ab_mem_cma
+sysmgr,		mem_cma_free,				inner,			devhost;uvmm,	sec_chk_cma_ops,						ab_mem_cma
+sysmgr,		mem_swap_space_init,		exported,		,		,
+sysmgr,		mem_swap_alloc_extentid,	exported,		,		,
+sysmgr,		mem_swap_free_extentid,		exported,		,		,
+sysmgr,		mem_swap_in_range,			exported,		,		,
+sysmgr,		mem_swap_out_range,			exported,		,		,
+sysmgr,		mem_dmabuf_page_rmap,		exported,		,		,
+sysmgr,		mem_swap_space_init,			inner,			devhost,	sec_chk_mem_iomap_ops,                      			ab_as_devhost;
+sysmgr,		mem_swap_alloc_extentid,		inner,			devhost,	sec_chk_mem_iomap_ops,                      			ab_as_devhost;
+sysmgr,		mem_swap_free_extentid,			inner,			devhost,	sec_chk_mem_iomap_ops,                      			ab_as_devhost;
+sysmgr,		mem_swap_in_range,			inner,			devhost,	sec_chk_mem_iomap_ops,                      			ab_as_devhost;
+sysmgr,		mem_swap_out_range,			inner,			devhost,	sec_chk_mem_iomap_ops,                      			ab_as_devhost;
+sysmgr,		mem_resv_mem,				inner,			devhost,uvmm,	sec_chk_resv_mem,					ab_resv_mem
+sysmgr,		mem_raw_map,				inner,			devhost;vfs,uvmm	sec_chk_raw_map,					ab_raw_map
+sysmgr,		mem_flush_cache,			inner,			devhost,	sec_chk_mem_flush_cache,				ab_as_devhost
+sysmgr,		mem_enable_rsv_mem,			inner,			devhost,	sec_chk_ab_devhost,					ab_as_devhost
+sysmgr,		mem_fpool_alloc,			inner,			vfs,		sec_chk_mem_fpool_ops,					ab_as_vfs
+sysmgr,		mem_fpool_free,				inner,			vfs,		sec_chk_mem_fpool_ops,					ab_as_vfs
+sysmgr,		mem_fpool_va_to_pa,			inner,			vfs,		sec_chk_mem_fpool_ops,					ab_as_vfs
+sysmgr,		mqueue_close,				exported,		,		,
+sysmgr,		mqueue_getsetattr,			exported,		,		,
+sysmgr,		mqueue_chmod,				exported,		,		,
+sysmgr,		mqueue_open,				exported,		,		sec_chk_mqueue_init;sec_chk_mqueue_open;sec_chk_mqueue_limit,   ac_mq_create | ac_mq_acquire
+sysmgr,		mqueue_recv,				exported,		,		,
+sysmgr,		mqueue_send,				exported,		,		,
+sysmgr,		mqueue_unlink,				exported,		,		,
+sysmgr,		ns_setns,				exported,		,		sec_chk_ns,							ab_ns | ab_chroot
+sysmgr,		ns_unshare,				exported,		,		sec_chk_ns,							ab_ns
+sysmgr,		ns_get,					inner,			vfs,		sec_chk_procfs_access,						ab_procfsmgr_access
+sysmgr,		ns_put,					inner,			vfs,		sec_chk_procfs_access,						ab_procfsmgr_access
+sysmgr,		path_acquire_path,			exported,		,		sec_chk_path_acquire,						ac_path_acquire
+sysmgr,		path_release_path,			exported,		,		,
+sysmgr,		path_chmod,			 	exported,		,		,
+sysmgr,		path_add_path,				exported,		,		sec_chk_path_init,						ac_path_create
+sysmgr,		path_del_path,				exported,		,		,
+sysmgr,		path_grant_path,			inner,			system services, (process_is_system_service),
+sysmgr,		path_stat,				exported,		,		sec_chk_path_stat,						ab_stat
+sysmgr,		pwrmgr_check_resume_file,		exported,		,		sec_chk_as_tppmgr,						as_tppmgr
+sysmgr,		pwrmgr_free_image_memory,		exported,		,		sec_chk_as_tppmgr,						as_tppmgr
+sysmgr,		pwrmgr_preallocate_memory,		exported,		,		sec_chk_as_tppmgr,						as_tppmgr
+sysmgr,		pwrmgr_read_disk_image,		exported,		,		sec_chk_as_tppmgr,						as_tppmgr
+sysmgr,		pwrmgr_register_nosave_region,		exported,		,		sec_chk_ab_devhost,			ab_devhost
+sysmgr,		pwrmgr_resume_from_disk,		exported,		,		sec_chk_as_tppmgr,						as_tppmgr
+sysmgr,		pwrmgr_resume_abort,		exported,		,		sec_chk_as_tppmgr,						as_tppmgr
+sysmgr,		pwrmgr_resume_fast_cpu_read,		exported,		,		sec_chk_as_tppmgr||sec_chk_ab_devhost,				as_tppmgr||ab_as_devhost
+sysmgr,		pwrmgr_set_crypt_info,		exported,		,		sec_chk_ab_devhost,			ab_devhost
+sysmgr,		pwrmgr_snapshot,		exported,		,		sec_chk_as_tppmgr,						as_tppmgr
+sysmgr,		pwrmgr_suspend_to_disk,		exported,		,		sec_chk_as_tppmgr,						as_tppmgr
+sysmgr,		proc_cnode_idx_of,			exported,		,		,
+sysmgr,		proc_debug_thread,			exported,		,		,
+sysmgr,		proc_debug_wait_status,			exported,		,		,
+sysmgr,		proc_debug_vspace,			exported,		,		,
+sysmgr,		proc_execve,				exported,		,		sec_hook_cred,							ac_spawn
+sysmgr,		proc_exit,				exported,		,		,
+sysmgr,		proc_clone,				exported,		,		,
+sysmgr,		proc_get_coredump,			exported,		,		sec_chk_get_coredump,						ab_coredump
+sysmgr,		proc_getpgid,				exported,		,		,
+sysmgr,		proc_getpid,				exported,		,		,
+sysmgr,		proc_getppid,				exported,		,		,
+sysmgr,		proc_getrlimit,				exported,		,		sec_chk_rlimit,
+sysmgr,		proc_new_cpucontext,			exported,		,		sec_chk_cap_new_cpucontext,
+sysmgr,		proc_new_permission,			exported,		,		sec_chk_cap_new_permission,
+sysmgr,		proc_new_vm,				inner,		,		sec_chk_cap_new_vm,						ab_cap_new_vm
+sysmgr,		proc_register_event,			inner,			uvmm,		,
+sysmgr,		proc_new_vspace,			inner,		,		sec_chk_cap_new_vspace,						ab_cap_new_vspace
+sysmgr,		proc_nsid_of_cnode_idx,			exported,		vfs,		,
+sysmgr,		proc_pid_of,				exported,		,		,
+sysmgr,		proc_prlimit,				exported,		,		sec_chk_rlimit_hard;sec_chk_rlimit_other,			ab_rlimit
+sysmgr,		proc_set_coredump,			exported,		,		sec_chk_set_coredump,						ab_coredump
+sysmgr,		proc_set_signal_dump,			inner,		,		sec_chk_signal_dump,						ab_signal_dump
+sysmgr,		proc_setpgid,				exported,		,		,
+sysmgr,		proc_setrlimit,				exported,		,		sec_chk_rlimit_hard;sec_chk_rlimit_other,			ab_rlimit
+sysmgr,		proc_setuid,				exported,		,		sec_chk_setuid,							ab_setuid
+sysmgr,		proc_spawn,				exported,		,		sec_chk_spawn,							ab_spawn
+sysmgr,		proc_spawn,				exported,		,		sec_hook_cred,							ac_spawn
+sysmgr,		proc_stat,				exported,		,		sec_chk_proc_stat,						ab_stat
+sysmgr,		proc_elf_load_info,			exported,		,		sec_chk_proc_stat,						ab_stat
+sysmgr,         proc_binder_stats_request,              inner,                  devhost,        sec_chk_proc_stat,                                              ab_stat
+sysmgr,         proc_dubai_cpu_stat,                    inner,                  devhost,        sec_chk_proc_stat,                                              ab_stat
+sysmgr,         proc_dubai_proc_cmdline,                inner,                  devhost,        sec_chk_proc_stat,                                              ab_stat
+sysmgr,         proc_dubai_pids_of_uid,                 inner,                  devhost,        sec_chk_proc_stat,                                              ab_stat
+sysmgr,         proc_dubai_decomposed_procs_update,     inner,                  devhost,        sec_chk_proc_stat,                                              ab_stat
+sysmgr,         proc_abnormal_task_load_stat_request,   inner,                  tppmgr,		sec_chk_as_tppmgr,						ab_as_tppmgr
+sysmgr,		proc_acquire_fdtable_rref,		inner,			vfs;lwipd,	sec_chk_acquire_fdtable_rref,					ab_fdtable
+sysmgr,		proc_query_main_thread,			inner,			devhost,	sec_chk_proc_query_main_thread,					ab_as_devhost
+sysmgr,		timer_create_signal,			exported,		,		,
+sysmgr,		timer_create,				exported,		,		,
+sysmgr,		timer_delete,				exported,		,		,
+sysmgr,		timer_gettime,				exported,		,		,
+sysmgr,		timer_settime,				exported,		,		,
+sysmgr,		timer_getoverrun,			exported,		,		,
+sysmgr,		itimer_setitimer,			exported,		,		,
+sysmgr,		itimer_getitimer,			exported,		,		,
+sysmgr,		proc_waitid,				exported,		,		,
+sysmgr,		proc_wait4,				exported,		,		,
+sysmgr,		proc_get_cputime,			exported,		,		,
+sysmgr,		proc_getrusage,				exported,		,		,
+sysmgr,		proc_getsid,				exported,		,		,
+sysmgr,		proc_setsid,				exported,		,		,
+sysmgr,		proc_setfgpgrp,				inner,			devhost,	sec_chk_setfgpgrp,						ab_as_devhost
+sysmgr,		proc_getfgpgrp,				inner,			devhost,	sec_chk_getfgpgrp,						ab_as_devhost
+sysmgr,		proc_mysid,				inner,			devhost,	sec_chk_mysid,							ab_as_devhost
+sysmgr,		proc_signal_fgpgrp,			inner,			devhost,	sec_chk_signal_fgpgrp,						ab_as_devhost
+sysmgr,		proc_signal_check_ignore,		inner,			devhost,	sec_chk_signal_check_ignore,					ab_as_devhost
+sysmgr,		proc_getuid,				exported,		,		,
+sysmgr,		proc_getegid,				exported,		,		,
+sysmgr,		proc_setgroups,				exported,		,		sec_chk_setgroups,
+sysmgr,		proc_setresgid,				exported,		,		sec_chk_setresgid,						ab_setgid
+sysmgr,		proc_getgid,				exported,		,		,
+sysmgr,		proc_setfsgid,				exported,		,		sec_chk_setfsgid,						ab_setgid
+sysmgr,		proc_geteuid,				exported,		,		,
+sysmgr,		proc_setgid,				exported,		,		sec_chk_setgid,							ab_setgid
+sysmgr,		proc_getresgid,				exported,		,		,
+sysmgr,		proc_getresuid,				exported,		,		,
+sysmgr,		proc_setregid,				exported,		,		sec_chk_setregid,						ab_setgid
+sysmgr,		proc_setfsuid,				exported,		,		sec_chk_setfsuid,						ab_setuid
+sysmgr,		proc_setreuid,				exported,		,		sec_chk_setreuid,						ab_setuid
+sysmgr,		proc_setresuid,				exported,		,		sec_chk_setresuid,						ab_setuid
+sysmgr,		proc_getgroups,				exported,		,		,
+sysmgr,		proc_check_regs,			exported,		,		,
+sysmgr,		proc_get_dumpable,			exported,		,		,
+sysmgr,		proc_set_dumpable,			exported,		,		,
+sysmgr,		proc_set_subreaper,			exported,		,		,
+sysmgr,		proc_get_subreaper,			exported,		,		,
+sysmgr,		proc_set_privs,				exported,		,		,
+sysmgr,		proc_get_privs,				exported,		,		,
+sysmgr,		proc_affinity_get,			exported,		,		,
+sysmgr,		proc_dyn_libs_data,			inner,			vfs,		sec_chk_proc_dyn_libs_data,					mac_cred->sid == vfs_t
+sysmgr,		kbox_query_device,			exported,		,		sec_chk_kbox_admin,						ab_kbox_admin
+sysmgr,		kbox_query_region,			exported,		,		sec_chk_kbox_admin,						ab_kbox_admin
+sysmgr,		kbox_open_region,			exported,		,		sec_chk_kbox_user,						ab_kbox_user
+sysmgr,		kbox_close_region,			exported,		,		sec_chk_kbox_user,						ab_kbox_user
+sysmgr,		kbox_create_region,			exported,		,		sec_chk_kbox_user,						ab_kbox_user
+sysmgr,		kbox_delete_dynamic_regions,		exported,		,		sec_chk_kbox_admin,						ab_kbox_admin
+sysmgr,		kbox_check_region_dynamic,			exported,		,		sec_chk_kbox_admin,						ab_kbox_admin
+sysmgr,		hack_procfs_status,			exported,				,		sec_chk_procfs_access,					ab_hack_procfs_access
+sysmgr,		proc_pm_config_add,			inner,			pwrmgr,		sec_chk_pm_config_add,						ab_procmgr_pm
+sysmgr,		proc_pm_config_cleanup,			inner,			pwrmgr,		sec_chk_pm_config_cleanup,					ab_procmgr_pm
+sysmgr,		proc_pm_dormancy_enter,			inner,			pwrmgr,		sec_chk_pm_dormancy_enter,					ab_procmgr_pm
+sysmgr,		proc_pm_set_freezable,			inner,			system services,sec_chk_pm_set_freezable,					ab_procmgr_pm_frz
+sysmgr,		proc_pm_freezing,			inner,			system services,sec_chk_pm_freezing,						ab_procmgr_pm_frz
+sysmgr,		proc_pm_try_to_freeze,			inner,			system services,sec_chk_pm_try_to_freeze,					ab_procmgr_pm_frz
+sysmgr,		signal_kill,				exported,		,		sec_chk_signal,							ac_signal
+sysmgr,		signal_pthread_sigqueue,		exported,		,		sec_chk_signal,							ac_signal
+sysmgr,		signal_set_signal_handler,		exported,		,		,
+sysmgr,		signal_sigqueue,			exported,		,		sec_chk_signal,							ac_signal
+sysmgr,		signal_tgkill,				exported,		,		sec_chk_signal,							ac_signal
+sysmgr,		signal_tkill,				exported,		,		sec_chk_signal,							ac_signal
+sysmgr,		signal_read_signalfd,			exported,		,		,
+sysmgr,		signal_read_signalevents,		inner,			vfs,		sec_chk_signal_read_revents,
+sysmgr,		signal_epoll_ctrl,			inner,			vfs,		sec_chk_signal_epoll_ctrl,
+sysmgr,		signal_init,				exported,		,		,
+sysmgr,		signal_ign_map,				exported,		,		,
+sysmgr,		signal_set_sigmask,			exported,		,		,
+sysmgr,		signal_get_pending_signal,		exported,		,		,
+sysmgr,		signal_drop_pending_signal,		exported,		,		,
+sysmgr,		signal_set_sigstack,			exported,		,		,
+sysmgr,		signal_set_sigaction_mask,		exported,		,		,
+sysmgr,		signal_timedwait,			exported,		,		,
+sysmgr,		signal_restore,				exported,		,		,
+sysmgr,		sysctrl_cpustat,			exported,		,		,
+sysmgr,		sysctrl_kev_read_data,			exported,		,		sec_chk_kev_read,						ab_cperm_kev_read
+sysmgr,		sysctrl_kev_read_event_config,		exported,		,		sec_chk_kev_read_event_config,					ab_kevctrl
+sysmgr,		sysctrl_reserved_memory_read_config,	inner,		,		sec_chk_reserved_memory_read_config,				ab_as_devhost
+sysmgr,		sysctrl_require,			exported,		,		sec_chk_sysctrl,						"grant:ab_cpuctrl,ab_sysctrl_read,ab_sysctrl_debug,ab_settime,ab_syslog,ab_kevctrl,ab_respart"
+sysmgr,		sysctrl_track_info_set,			exported,		,		sec_chk_track_info_set,					ab_as_devhost
+sysmgr,		sysctrl_set_hostname,			exported,		,		sec_chk_set_hostname,						ab_admin
+sysmgr,		sysctrl_sysconf_ulong,			exported,		,		,
+sysmgr,		sysctrl_sysconf_string,			exported,		,		,
+sysmgr,		sysctrl_ekbox_read,			exported,		,		sec_chk_ekbox_read,						ab_syslog
+sysmgr,		sysctrl_sysinfo,			exported,		,		,
+sysmgr,		sysctrl_uname,				exported,		,		,
+sysmgr,		sysmgr_pm_action,		exported,		,		sec_chk_as_tppmgr,						as_tppmgr
+sysmgr,		sysmgr_pm_ap_acquire,		exported,		,		sec_chk_as_tppmgr,						as_tppmgr
+sysmgr,		thread_exit,				exported,		,		,
+sysmgr,		thread_get_robust_list,			exported,		,		sec_chk_get_robust_list,					ab_get_robust_list
+sysmgr,		thread_getpersonality,			exported,		,		,
+sysmgr,		thread_gettid,				exported,		,		,
+sysmgr,		thread_set_privs,			exported,		,		,
+sysmgr,		thread_get_privs,			exported,		,		,
+sysmgr,		thread_kill,				exported,		,		,
+sysmgr,		thread_set_robust_list,			exported,		,		,
+sysmgr,		thread_set_tid_address,			exported,		,		,
+sysmgr,		thread_setname,				exported,		,		,
+sysmgr,		thread_set_pdeath_signal,		exported,		,		,
+sysmgr,		thread_get_pdeath_signal,		exported,		,		,
+sysmgr,		thread_set_tickless,			exported,		,		,sec_chk_set_tickless, 								ac_sched_set
+sysmgr,		thread_freeze,				exported,		,		,
+sysmgr,		thread_thaw,				exported,		,		,
+sysmgr,		thread_setpersonality,			exported,		,		,
+sysmgr,		thread_tid2cref,			exported,		,		,
+sysmgr,		thread_cref2tid,			exported,		,		sec_chk_cref2tid,								ab_as_vfs
+sysmgr,		thread_setpriority,			exported,		,		sec_chk_sched_setnice,								ac_sched_set;ab_rlimit_nice
+sysmgr,		thread_sched_setparam,			exported,		,		sec_chk_sched_setscheduler;sec_chk_sched_native_service;sec_chk_sched_rlimit,	ab_sched_native_service;ac_sched_set;ab_rlimit_rtprio
+sysmgr,		thread_sched_setscheduler,		exported,		,		sec_chk_sched_setscheduler;sec_chk_sched_native_service;sec_chk_sched_rlimit,	ab_sched_native_service;ac_sched_set;ab_rlimit_rtprio
+sysmgr,		thread_sched_setaffinity,		exported,		,		sec_chk_sched_setscheduler,							ac_sched_set
+sysmgr,		thread_sched_getscheduler,		exported,		,		sec_chk_sched_getscheduler,							ac_sched_get
+sysmgr,		thread_sched_getparam,			exported,		,		sec_chk_sched_getscheduler,							ac_sched_get
+sysmgr,		thread_sched_getaffinity,		exported,		,		sec_chk_sched_getscheduler,							ac_sched_get
+sysmgr,		thread_getpriority,			exported,		,		,
+sysmgr,		thread_sched_get_avail_prio_max,	exported,		,		sec_chk_sched_getscheduler,							ac_sched_get
+sysmgr,		thread_sched_get_interval_rr,		exported,               ,		sec_chk_sched_getscheduler,							ac_sched_get
+sysmgr,		thread_getseq,				exported,		,		,
+sysmgr,		thread_futex_wait,			exported,		,		,
+sysmgr,		thread_update_vnotify_futex,		inner,			uvmm,		sec_chk_update_vnotify_futex,					ab_vnotify_update_futex
+sysmgr,		thread_futex_wake,			exported,		,		,
+sysmgr,		thread_futex_requeue,			exported,		,		,
+sysmgr,		thread_kexec,				exported,		,		sec_chk_kexec,							ab_kexec
+sysmgr,		guard_action,				inner,			hguard,		sec_chk_guard,							ab_sysguard
+sysmgr,		guard_alive,				inner,			hguard,		sec_chk_guard,							ab_sysguard
+sysmgr,		iov_add_device,				inner,			devhost,	,
+sysmgr,		iov_attach_device,			inner,			devhost,	,
+sysmgr,		iov_vspace_bind,			inner,			devhost,	,
+sysmgr,		iov_vspace_unbind,			inner,			devhost,	,
+sysmgr,		mem_iomem_mmap_page,			inner,			devhost,	sec_chk_iomem_mmap,						ab_iomem_mmap
+sysmgr,		mem_iomem_mmap_page_batch,		inner,			devhost,	sec_chk_iomem_mmap,						ab_iomem_mmap
+sysmgr,		mem_ioremap_prepare,			inner,			devhost,	sec_chk_ioremap_prepare,					ab_iomem_mmap
+sysmgr,		procfs_pid_read,			inner,			vfs,		sec_chk_procfs_access,						ab_procfsmgr_access
+sysmgr,		procfs_pid_write,			inner,			vfs,		sec_chk_procfs_access,						ab_procfsmgr_access
+sysmgr,		procfs_read,				inner,			vfs,		sec_chk_procfs_access,						ab_procfsmgr_access
+sysmgr,		procfs_simple_pid_read,			inner,			vfs,		sec_chk_procfs_access,						ab_procfsmgr_access
+sysmgr,		procfs_simple_read,			inner,			vfs,		sec_chk_procfs_access,						ab_procfsmgr_access
+sysmgr,		procfs_simple_tid_read,			inner,			vfs,		sec_chk_procfs_access,						ab_procfsmgr_access
+sysmgr,		procfs_tid_read,			inner,			vfs,		sec_chk_procfs_access,						ab_procfsmgr_access
+sysmgr,		procfs_tid_write,			inner,			vfs,		sec_chk_procfs_access,						ab_procfsmgr_access
+sysmgr,		procfs_write,				inner,			vfs,		sec_chk_procfs_access,						ab_procfsmgr_access
+sysmgr,		sysfs_read,				inner,			vfs,		sec_chk_procfs_access,						ab_procfsmgr_access
+sysmgr,		sysfs_write,				inner,			vfs,		sec_chk_procfs_access,						ab_procfsmgr_access
+sysmgr,		procfs_yama_write,			inner,			vfs,		sec_chk_procfs_pdebug_scope,					mac_cred->sid == vfs_t && original call has POSIX_CAP_SYS_PTRACE
+sysmgr,		procfs_get_allpids,			inner,			vfs,		sec_chk_procfs_access,						ab_procfsmgr_access
+sysmgr,		procfs_get_alltids,			inner,			vfs,		sec_chk_procfs_access,						ab_procfsmgr_access
+sysmgr,		procfs_get_processes_nr,		inner,			vfs,		sec_chk_procfs_access,						ab_procfsmgr_access
+sysmgr,		procfs_ptid_get_cnode_idx,	inner,			vfs,		sec_chk_procfs_access,						ab_procfsmgr_access
+sysmgr,		sec_cred_cfg,				inner,			,		,
+sysmgr,		sec_setexeccon,				exported,		,		sec_chk_setexeccon,						ab_setexeccon
+sysmgr,		sec_xpm_mode,				inner,			devhost,	sec_chk_ab_devhost,						ab_as_devhost
+sysmgr,		sec_shconf_set_field,			inner,			,		sec_chk_setshconf,						ab_setshconf
+sysmgr,		cert_verify_path_and_chksum,		exported,		,		,
+sysmgr,		sysctrl_attach_cpuctx,			inner,			perf,		sec_chk_cpuctx,							ab_perf
+sysmgr,		sysctrl_check_cpuctx,			inner,			perf,		,
+sysmgr,		sysctrl_detach_cpuctx,			inner,			perf,		sec_chk_cpuctx,							ab_perf
+sysmgr,		sysctrl_sysmgr_reboot,			inner,			devhost,	sec_chk_sysmgr_reboot,						ab_as_devhost
+sysmgr,		vm_get_region_num,			inner,			vmm,		process->resource.vm_vspace == NULL,
+sysmgr,		vm_map_iomem,				inner,			vmm,		process->resource.vm_vspace == NULL,
+sysmgr,		vm_map_shmmem,				inner,			vmm,		process->resource.vm_vspace == NULL,
+sysmgr,		vm_populate_map,			inner,			vmm,		process->resource.vm_vspace == NULL,
+sysmgr,		vm_map_ipcshm,				inner,			vmm,		process->resource.vm_vspace == NULL,
+sysmgr,		vm_unmap_ipcshm,			inner,			vmm,		process->resource.vm_vspace == NULL,
+sysmgr,		vm_mmap,				inner,			vmm,		process->resource.vm_vspace == NULL,
+sysmgr,		vm_munmap,				inner,			vmm,		process->resource.vm_vspace == NULL,
+sysmgr,		vm_mclone,				inner,			vmm,		process->resource.vm_vspace == NULL,
+sysmgr,		vm_mmap_vdso,				inner,			vmm,		,
+sysmgr,		vm_map_to_process,			inner,			devhost;lwipd,	sec_chk_vm_vhost,						ab_vm_vhost
+sysmgr,		vm_create_vm_vspace,			inner,			vmm,		sec_chk_vm_vspace_create,					ab_vm_vspace
+sysmgr,		vm_destroy_vm_vspace,			inner,			vmm,		sec_chk_vm_vspace_destroy,					ab_vm_vspace
+sysmgr,		vm_gpa_to_hpa,			        inner,			vmm,		sec_chk_vm_vspace_gpa_to_hpa,					ab_vm_vspace
+sysmgr,		vm_madvise,			        inner,			vmm,		process->resource.vm_vspace == NULL,
+sysmgr,		vm_new_vcpu,				inner,			vfs,		sec_chk_new_vcpu,								ab_as_vfs
+sysmgr,		vm_delete_vcpu,				inner,			vfs,		sec_chk_delete_vcpu,								ab_as_vfs
+sysmgr,		vm_vmexit_new_actvpool,			inner,			vfs,		sec_chk_vm_vmexit_new_actvpool,					ab_as_vfs
+sysmgr,		vm_vmexit_del_actvpool,			inner,			vfs,		sec_chk_vm_vmexit_del_actvpool,					ab_as_vfs
+sysmgr,		vm_register_mem,			inner,			vfs,		sec_chk_vm_register_mem,					ab_as_vfs
+sysmgr,		vm_unregister_mem,			inner,			vfs,		sec_chk_vm_unregister_mem,					ab_as_vfs
+sysmgr,		irq_revoke_ctrl,			inner,	devmgr,		sec_chk_irq_revoke_ctrl,					mac_cred->sid == devmgr_t
+sysmgr,		ftrace_modify_code,			exported,		,		,
+sysmgr,		hmtrace_alloc_eid,			exported,		,		,
+sysmgr,		hmtrace_free_eid,			exported,		,		,
+sysmgr,		module_grant_ctrl,			,			,		,
+sysmgr,		resmgr_create,				inner,			vfs,		sec_chk_res,							ab_resmgr_resmgrfs
+sysmgr,		resmgr_mount,				inner,			vfs,		sec_chk_res,							ab_resmgr_resmgrfs
+sysmgr,		resmgr_read,				inner,			vfs,		sec_chk_res,							ab_resmgr_resmgrfs
+sysmgr,		resmgr_remove,				inner,			vfs,		sec_chk_res,							ab_resmgr_resmgrfs
+sysmgr,		resmgr_umount,				inner,			vfs,		sec_chk_res,							ab_resmgr_resmgrfs
+sysmgr,		resmgr_write,				inner,			vfs,		sec_chk_res,							ab_resmgr_resmgrfs
+sysmgr,		resmgr_mem_mapping,			inner,			vfs,		sec_chk_res,							ab_resmgr_resmgrfs
+sysmgr,		resmgr_mem_fs_charge,			inner,			vfs,		sec_chk_res,							ab_resmgr_resmgrfs
+sysmgr,		resmgr_mem_fs_uncharge,			inner,			vfs,		sec_chk_res,							ab_resmgr_resmgrfs
+sysmgr,		resmgr_freeze_is_process_thawed,	inner,		vfs,		sec_chk_res,							ab_resmgr_resmgrfs
+sysmgr,		guard_sysrq,				inner,			vfs,		sec_chk_sysrq,							mac_cred->sid == vfs_t
+sysmgr,		proc_capget,				exported,		,		sec_chk_capget,							ac_capget
+sysmgr,		proc_capset,				exported,		,		sec_chk_capset,							ac_capset
+sysmgr,		proc_cap_bset_drop,			exported,		,		sec_chk_bset_drop,
+sysmgr,		proc_cap_ambient_clear,			exported,		,		,
+sysmgr,		proc_cap_ambient_add,			exported,		,		sec_chk_cap_ambient_add,
+sysmgr,		proc_cap_ambient_cut,			exported,		,		,
+sysmgr,		proc_cap_sbits,				exported,		,		sec_chk_cap_sbits,
+sysmgr,		proc_cap_keep,				exported,		,		sec_chk_cap_keep,
+sysmgr,		thread_bind_info,			inner,			sysmgr,		,
+sysmgr,		proc_show_pte,				exported,		,		sec_chk_hm_develop,						ab_hm_develop
+sysmgr,		thread_set_runqueue,			exported,		,		sec_chk_sched_native_service,						ab_sched_native_service
+sysmgr,		ipc_shmget,				exported,		,		sec_chk_svshm_init;sec_chk_svshm_open,				ac_svshm_create
+sysmgr,		ipc_shmat,				exported,		,		sec_chk_svshm_attach,						ac_svshm_read;ac_svshm_write
+sysmgr,		ipc_shmdt,				exported,		,		,
+sysmgr,		ipc_shmctl,				exported,		,		sec_chk_svshm_ctl,						ac_svshm_write;ac_svshm_destroy;
+sysmgr,		ipc_shmctl_get,				exported,		,		sec_chk_svshm_ctl,						ac_svshm_read;ab_stat
+sysmgr,		ipc_shm_setacl,				exported,		, 		sec_chk_svshm_setacl,						ac_svshm_setacl
+sysmgr,		ipc_shm_getacl,				exported,		, 		sec_chk_svshm_getacl,						ac_svshm_getacl
+sysmgr,		ipc_shm_removeacl,			exported,		, 		sec_chk_svshm_removeacl,					ac_svshm_removeacl
+sysmgr,		ipc_msgget,				exported,		,		sec_chk_svmqueue_init;sec_chk_svmqueue_open,			ac_svmq_create
+sysmgr,		ipc_msgrcv,				exported,		,		sec_chk_svmqueue_read,						ac_svmq_read
+sysmgr,		ipc_msgsnd,				exported,		,		sec_chk_svmqueue_write,						ac_svmq_write
+sysmgr,		ipc_msgctl,				exported,		,		sec_chk_svmqueue_ctl,						ac_svmq_read;ac_svmq_write;ac_svmq_destroy;ab_stat
+sysmgr,		ipc_semget,				exported,		,		sec_chk_svsem_init;sec_chk_svsem_open,				ac_svsem_create
+sysmgr,		ipc_semop,				exported,		,		sec_chk_svsem_read;sec_chk_svsem_write,				ac_svsem_read;ac_svsem_write
+sysmgr,		ipc_semctl,				exported,		,		sec_chk_svsem_ctl,						ac_svsem_read;ac_svsem_write;ac_svsem_destroy;ab_stat
+sysmgr,		inject_fault,				exported,		,		(DEBUG_BUILD),
+sysmgr,		ips_register,				exported,		,		sec_chk_ips_register,						ab_ips_register
+sysmgr,		ips_init,			        inner,		,		sec_chk_ips_init,					ac_ips_init
+sysmgr,		ips_read,			        exported,		,		sec_chk_ips_read,					ac_ips_read
+sysmgr,		audit_notify_rule_update,		inner,			auditmgr,	sec_chk_audit_sync_rule,					ab_as_auditmgr
+sysmgr,		thread_sched_trans,			exported,		,		sec_chk_sched_trans,						ab_as_vfs
+sysmgr,		seccomp_do_config,			exported,		,		,
+sysmgr,		thread_deadline_ctrl,			exported,		,		,
+sysmgr,		hmpsf_load,				exported,		,		,
+sysmgr,		hmpsf_release,				exported,		,		,
+sysmgr,		hmpsf_array_map_lookup,			exported,		,		,
+sysmgr,		hmpsf_array_map_update,			exported,		,		,
+sysmgr,         yama_ptrace_check,                      inner,                  vfs,            sec_chk_yama_ptrace_check,                                   ab_yama_ptrace_check
+sysmgr,		hmpsf_array_map_remove,			exported,		,		,
+vfs,		endio_io_done,				inner,			devhost,	sec_chk_src_actv_is_devhost,
+vfs,		vfs_devfs_remove_kshm,			inner,			devhost,	sec_chk_src_actv_is_devhost,
+vfs,		procfs_create_data,			inner,			all,		sec_chk_ab_procfs,						ab_procfs
+vfs,		procfs_delete_data,			inner,			all,		sec_chk_ab_procfs,						ab_procfs
+vfs,		sysfs_create_dir,			inner,			all,		sec_chk_ab_sysfs,						ab_sysfs
+vfs,		sysfs_create_file,			inner,			all,		sec_chk_ab_sysfs,						ab_sysfs
+vfs,		sysfs_create_symlink,			inner,			all,		sec_chk_ab_sysfs,						ab_sysfs
+vfs,		sysfs_delete,				inner,			all,		sec_chk_ab_sysfs,						ab_sysfs
+vfs,		sysfs_rename_link,			inner,			all,		sec_chk_ab_sysfs,						ab_sysfs
+vfs,		sysfs_notify,				inner,			all,		sec_chk_ab_sysfs,						ab_sysfs
+vfs,		vfs_open_exec,				inner,			sysmgr,		(sysif_actv_src_cnode_idx() != hm_crt_sysmgr_cnode_idx()),
+vfs,		vfs_close_exec,				inner,			sysmgr,		(sysif_actv_src_cnode_idx() != hm_crt_sysmgr_cnode_idx()),
+vfs,		vfs_set_elf_file,			inner,			sysmgr,		(sysif_actv_src_cnode_idx() != hm_crt_sysmgr_cnode_idx()),
+vfs,		vfs_get_root_path,			inner,                  vfs,            sec_chk_actv_is_from_fs,
+vfs,		vfs_client_init,			exported,			,		,
+vfs,		vfs_clone,				exported,			,		,
+vfs,		vfs_do_drop_caches,			inner,			procfs,		(cnode_idx != fs_m_info->fsmgr_cnode_idx),
+vfs,		vfs_do_sync,				inner,			vfs,		(cnode_idx != fs_m_info->fsmgr_cnode_idx),
+vfs,		vfs_drop_caches,			inner,			procfs,		(cnode_idx != fs_m_info->procfs_cnode_idx),
+vfs,		vfs_fscache_print_info,			inner,			procfs,		(cnode_idx != fs_m_info->procfs_cnode_idx),
+vfs,		vfs_fadvise,				exported,		,		,
+vfs,		vfs_fcntl,				exported,		,		sec_chk_fcntl;sec_chk_posix_file_getlock;sec_chk_posix_file_setlock,	ac_fwrite;ac_fread
+vfs,		vfs_fs_fork,				inner,			sysmgr,		(__RPC_SENDER_DECODE_SRC_CIDX(sender) != hm_crt_sysmgr_cnode_idx()),
+vfs,		vfs_fstat,				exported,		,		sec_chk_getfileattr,						ac_getfileattr
+vfs,		vfs_cnode_fstat,			inner,			devmgr,		caller_is_devmgr(),
+vfs,		vfs_fsync,				exported,		,		,
+vfs,		vfs_ftruncate,				exported,		,		,
+vfs,		procfs_get_fd_mode,			inner,			procfs,		sec_chk_ab_getprocfd;(__RPC_SENDER_DECODE_SRC_CIDX(sender) != cnode_idx),	ab_getprocfd
+vfs,		vfs_get_fd_path,			exported,		,		sec_chk_ab_getprocfd;(__RPC_SENDER_DECODE_SRC_CIDX(sender) != cnode_idx),	ab_getprocfd
+vfs,		vfs_get_label,				inner,			,		,
+vfs,		vfs_get_ns,				inner,			sysmgr,		(CNODE_IDX(sender) != hm_crt_sysmgr_cnode_idx() && CNODE_IDX(sender) != fs_m_info->fsmgr_cnode_idx && CNODE_IDX(sender) != fs_m_info->procfs_cnode_idx && CNODE_IDX(sender) != fs_m_info->sysfs_cnode_idx),
+vfs,		procfs_get_process_fds,			inner,			procfs,		sec_chk_ab_getprocfd;(__RPC_SENDER_DECODE_SRC_CIDX(sender) != cnode_idx),	ab_getprocfd
+vfs,		vfs_getxattr,				exported,		,		sec_chk_getfilexattr,						ac_getfileattr
+vfs,		vfs_fgetxattr,				exported,		,		sec_chk_getfilexattr,						ac_getfileattr
+vfs,		vfs_setxattr,				exported,		,		sec_chk_setfilexattr,						ac_setfilexattr
+vfs,		vfs_fsetxattr,				exported,		,		sec_chk_setfilexattr,						ac_setfilexattr
+vfs,		vfs_listxattr,				exported,		,		sec_chk_listfilexattr,						ac_getfileattr
+vfs,		vfs_flistxattr,				exported,		,		sec_chk_listfilexattr,						ac_getfileattr
+vfs,		vfs_removexattr,			exported,		,		sec_chk_removefilexattr,					ac_setfileattr
+vfs,		vfs_fremovexattr,			exported,		,		sec_chk_removefilexattr,					ac_setfileattr
+vfs,		vfs_init_eventfd,			exported,		,		,
+vfs,		vfs_write_eventfd,			inner,			sysmgr,		(__RPC_SENDER_DECODE_SRC_CIDX(sender) != hm_crt_sysmgr_cnode_idx()),
+vfs,		vfs_sysmgr_get_fd_path,			inner,			sysmgr,		(__RPC_SENDER_DECODE_SRC_CIDX(sender) != hm_crt_sysmgr_cnode_idx()),
+vfs,		vfs_sysmgr_get_fid_path,		inner,			sysmgr,		(sysif_actv_src_cnode_idx() != hmsrv_sysmgr_cnode_idx()),
+vfs,		vfs_init_signalfd,			,			,		,
+vfs,		vfs_pid_io_stats,			inner,			network,	sec_chk_pid_to_stats,							ab_as_lwipd
+vfs,		vfs_signalfd_notify,			inner,			sysmgr,		,sec_chk_signalfd_notify,
+vfs,		vfs_timerfd_create,			exported,		,		,
+vfs,		vfs_timerfd_settime,			exported,		,		,
+vfs,		vfs_timerfd_gettime,			exported,		,		,
+vfs,		vfs_timerfd_cancel,			exported,		,		,
+vfs,		vfs_timerfd_next_alarm_pid_and_name,	inner,		,		,
+vfs,		vfs_ioctl,				exported,		,		sec_chk_ioctl,                                                  ac_getfileattr
+vfs,		vfs_binderfs_mmap,			exported,		,		,
+vfs,		vfs_link,				exported,		,		sec_chk_fexec;sec_chk_addname;sec_chk_mknod,			ac_fexec;ac_addname;ac_mknod
+vfs,		vfs_lseek,				exported,		,		,
+vfs,		vfs_mknod,				exported,		,		sec_chk_fexec;sec_chk_create_node;sec_chk_addname,
+vfs,		vfs_mmap_change,			inner,			sysmgr,		(__RPC_SENDER_DECODE_SRC_CIDX(sender) != hm_crt_sysmgr_cnode_idx()),
+vfs,		vfs_mmap_change_page,			inner,			sysmgr,		(__RPC_SENDER_DECODE_SRC_CIDX(sender) != hm_crt_sysmgr_cnode_idx()),
+vfs,		vfs_mmap_create,			inner,			sysmgr,		(__RPC_SENDER_DECODE_SRC_CIDX(sender) != hm_crt_sysmgr_cnode_idx()),
+vfs,		vfs_mmap_fill_page,			inner,			sysmgr,		(__RPC_SENDER_DECODE_SRC_CIDX(sender) != hm_crt_sysmgr_cnode_idx()),
+vfs,		vfs_mmap_fetch_page,			inner,			sysmgr,		(__RPC_SENDER_DECODE_SRC_CIDX(sender) != hm_crt_sysmgr_cnode_idx()),
+vfs,		vfs_mmap_release_file,			inner,			sysmgr,		(__RPC_SENDER_DECODE_SRC_CIDX(sender) != hm_crt_sysmgr_cnode_idx()),
+vfs,		vfs_mmap_fallocate,			inner,			sysmgr,		(__RPC_SENDER_DECODE_SRC_CIDX(sender) != hm_crt_sysmgr_cnode_idx()),
+vfs,		vfs_mprotect_check,			inner,			sysmgr,		(__RPC_SENDER_DECODE_SRC_CIDX(sender) != hm_crt_sysmgr_cnode_idx()),
+vfs,		vfs_mount,				exported,		,		sec_chk_ab_mount,						ab_mount
+vfs,		vfs_open,				exported,		,		sec_chk_fread;sec_chk_fwrite;sec_chk_fappend;sec_chk_init_file_with_dentry,	ac_fread;ac_fwrite;ac_fappend
+vfs,		vfs_pipe2,				exported,		,		sec_chk_create_node;sec_chk_init_file_with_node;sec_hook_free_node,
+vfs,		vfs_epoll_ctl,				exported,		,		,
+vfs,		vfs_epoll_et_revents,			exported,		,		,
+vfs,		vfs_epoll_reinit,			exported,		,		,
+vfs,		vfs_close,				exported,			,		,
+vfs,		vfs_put_ns,				inner,			sysmgr,		(CNODE_IDX(sender) != hm_crt_sysmgr_cnode_idx() && CNODE_IDX(sender) != fs_m_info->fsmgr_cnode_idx && CNODE_IDX(sender) != fs_m_info->procfs_cnode_idx && CNODE_IDX(sender) != fs_m_info->sysfs_cnode_idx);sec_chk_umount,			ac_umount
+vfs,		vfs_query_info,				inner,			sysmgr,		(__RPC_SENDER_DECODE_SRC_CIDX(sender) != hm_crt_sysmgr_cnode_idx()),
+vfs,		vfs_read,				exported,		,		sec_chk_fread,							ac_fread
+vfs,		vfs_readv,				exported,		,		sec_chk_fread,							ac_fread
+vfs,		vfs_readdir,				exported,		,		sec_chk_fread,							ac_fread
+vfs,		vfs_rename,				exported,		,		sec_chk_fexec;sec_chk_rename,					ac_fexec;ac_delname;ac_rename;ac_addname;ac_delname;ac_unlink
+vfs,		vfs_revoke_process,			inner,			sysmgr,		(__RPC_SENDER_DECODE_SRC_CIDX(sender) != hm_crt_sysmgr_cnode_idx()),
+vfs,		vfs_set_label,				inner,			sysmgr;cpiofs;init,		sec_chk_setlabel,				ac_setlabel
+vfs,		vfs_set_label_by_path,			,			,		,
+vfs,		vfs_trans,				exported,		,		sec_chk_fwrite;sec_chk_ab_ftrans,				ac_fwrite;ab_ftrans
+vfs,		vfs_statfs,				exported,			,		,
+vfs,		vfs_tee,				exported,			,		,
+vfs,		vfs_splice,				exported,				sec_chk_fwrite;sec_chk_fread,					ac_fread;ac_fwrite
+vfs,		vfs_do_splice_srvs,			inner,			vfs,		sec_chk_xact_is_from_fs,					src_cred->sid == vfs_t
+vfs,		vfs_unlink,				exported,			,		,
+vfs,		vfs_write,				exported,		,		sec_chk_fwrite,							ac_fwrite
+vfs,		vfs_writev,				exported,		,		sec_chk_fwrite,							ac_fwrite
+vfs,		vfs_same_file,				exported,			,		,
+vfs,		vfs_truncate,				exported,			,		,
+vfs,		vfs_sync,				exported,			,		,
+vfs,		vfs_unmount,				exported,			,		,
+vfs,		vfs_setrlimit,				inner,			sysmgr,		(__RPC_SENDER_DECODE_SRC_CIDX(sender) != hm_crt_sysmgr_cnode_idx()),
+vfs,		vfs_set_cwdroot,			exported,		,		sec_chk_chroot,
+vfs,		vfs_disable_cwdroot,			exported,		,		sec_chk_chroot,
+vfs,		vfs_update_cwdroot,			inner,			vfs,		sec_chk_actv_is_from_fs,
+vfs,		vfs_fchdir,				exported,		,		,
+vfs,		vfs_getcwd,				exported,		,		,
+vfs,		vfs_get_process_cwdrootexe,		inner,			procfs,		(__RPC_SENDER_DECODE_SRC_CIDX(sender) != fs_m_info->procfs_cnode_idx),
+vfs,		vfs_stat,				exported,			,		,
+vfs,		vfs_stat_nocheck,			exported,		tppmgr,		sec_chk_src_actv_is_tppmgr,
+vfs,		vfs_quotactl,				exported,		,		sec_chk_quotactl;sec_chk_quotaon;sec_chk_getfsattr,				ac_getfsattr
+vfs,		vfs_device_mounted,			exported,		,		,
+vfs,		vfs_readahead,				exported,			,		,
+vfs,		vfs_symlink,				exported,		,		sec_chk_fwrite,							ac_fwrite
+vfs,		vfs_fstatfs,				exported,		,		sec_chk_getfsattr,						ac_getfsattr
+vfs,		vfs_access,				exported,		,		sec_chk_fexec,
+vfs,		vfs_iommap,				inner,			sysmgr,		(cnode_idx != hm_crt_sysmgr_cnode_idx()),
+vfs,		vfs_bind_update,			exported,			,		,
+vfs,		vfs_flock,				exported,		,		sec_hook_flock,							ac_fread;ac_fwrite
+vfs,		vfs_fchownat,				exported,		,		sec_chk_setfileattr,						ac_setfileattr
+vfs,		vfs_fchown,				exported,		,		sec_chk_setfileattr,						ac_setfileattr
+vfs,		vfs_fchmodat,				exported,		,		sec_chk_setfileattr,						ac_setfileattr
+vfs,		vfs_fchmod,				exported,		,		sec_chk_setfileattr,						ac_setfileattr
+vfs,		vfs_utimensat,				exported,               ,               sec_chk_setfileattr,                                            ac_setfileattr
+vfs,		vfs_futimens,				exported,               ,               sec_chk_setfileattr,                                            ac_setfileattr
+vfs,		vfs_fallocate,				exported,		,		sec_chk_fwrite,							ac_fwrite
+vfs,		vfs_memfd_create,			exported,		,		sec_chk_create_node,
+vfs,		inotify_init1,				exported,		,		,
+vfs,		inotify_add_watch,			exported,		,		,
+vfs,		inotify_rm_watch,			exported,		,		,
+vfs,		inotify_add_watch_internal,		inner,			vfs,		sec_chk_ab_inotify,						ab_inotify
+vfs,		inotify_rm_watch_internal,		inner,			vfs,		sec_chk_ab_inotify,						ab_inotify
+vfs,		inotify_notify,				inner,			vfs,		sec_chk_ab_inotify,						ab_inotify
+vfs,		inotify_inode_destroyed,		inner,			vfs,		sec_chk_ab_inotify,						ab_inotify
+vfs,		fanotify_init,				exported,		,		,
+vfs,		fanotify_mark,				exported,		,		,
+vfs,		fanotify_open,				exported,		,		,
+vfs,		fanotify_mark_internal,			inner,			vfs,		sec_chk_ab_fanotify,						ab_fanotify
+vfs,		fanotify_rm_watch_internal,		inner,			vfs,		sec_chk_ab_fanotify,						ab_fanotify
+vfs,		fanotify_notify,			inner,			vfs,		sec_chk_ab_fanotify,						ab_fanotify
+vfs,		fanotify_destroyed,			inner,			vfs,		sec_chk_ab_fanotify,						ab_fanotify
+vfs,		vfs_mkdirat,				exported,		,		sec_chk_create_node;sec_chk_addname;sec_chk_mknod		ac_addname;ac_mknod
+vfs,		vfs_send_fd,				exported,		vfs;network,	send_cidx != 0 then sec_chk_transfer_fd(SEC_CHK_BINDERFS | SEC_CHK_NET)
+vfs,		vfs_sfile_put,				exported,		vfs;network,	recv_cidx != 0 then sec_chk_transfer_fd(SEC_CHK_BINDERFS); recv_cidx == 0 then sec_chk_transfer_fd(SEC_CHK_NET),
+vfs,		vfs_recv_fd,				exported,		network,	recv_cidx != 0 then sec_chk_transfer_fd(SEC_CHK_NET); recv_cidx == 0 then sec_chk_transfer_fd(SEC_CHK_BINDERFS),
+vfs,		vfs_handle_global_locks,		inner,			vfs,		sec_chk_actv_is_from_fs,
+vfs,		vfs_readlinkat,				exported,		,		sec_chk_readlink,						ac_fread
+vfs,		vfs_get_slabinfo,			inner,			procfs,		(__RPC_SENDER_DECODE_SRC_CIDX(sender) != fs_m_info->procfs_cnode_idx),
+vfs,		vfs_do_get_slabinfo,			inner,			vfs,		(__RPC_SENDER_DECODE_SRC_CIDX(sender) != fs_m_info->fsmgr_cnode_idx),
+vfs,		vfs_check_mount,			inner,			vfs,		sec_chk_xact_is_from_fs,
+vfs,		vfs_mountpoint_del_mount,		inner,			vfs,		sec_chk_xact_is_from_fs,
+vfs,		vfs_free_fd,				exported,		,		,
+vfs,		vfs_fdtable_acquire,			exported,		,		cnode_idx == 0 || sec_chk_xact_is_from_fs,
+vfs,		vfs_fd_fault,				exported,		,		,
+vfs,		vfs_anon_register_devhost,		inner,			devhost,	sec_chk_src_actv_is_devhost,
+vfs,		vfs_get_unused_fd,			inner,			devhost,	sec_chk_src_actv_is_devhost,
+vfs,		vfs_fd_info_update,			inner,			devhost,	sec_chk_src_actv_is_devhost,
+vfs,		vfs_put_unused_fd,			inner,			devhost,	sec_chk_src_actv_is_devhost,
+vfs,		vfs_init_audit,				inner,			auditmgr,	,
+vfs,		vfs_del_audit_rule,			inner,			auditmgr,	,
+vfs,		vfs_add_audit_rule,			inner,			auditmgr,	,
+vfs,		vfs_match_audit_watch_file,		inner,			sysmgr;devmgr,	,
+vfs,		vfs_match_audit_watch_dir,		inner,			sysmgr;devmgr,	,
+vfs,		transfs_put_dentry,			inner,			devhost,	sec_chk_src_actv_is_devhost,
+vfs,		vfs_transfs_fget,			inner,			devhost,	sec_chk_src_actv_is_devhost,
+vfs,		vfs_transfs_fput,			inner,			devhost,	sec_chk_src_actv_is_devhost,
+vfs,		vfs_kstate_register_devhost,	exported,		devhost,	sec_chk_src_actv_is_devhost,
+vfs,		vfs_proc_has_binder_work,	exported,		devhost,	sec_chk_src_actv_is_devhost,
+vfs,		vfs_do_trans_fget,			inner,			vfs,	(__RPC_SENDER_DECODE_SRC_CIDX(sender) != fs_m_info->fsmgr_cnode_idx),
+vfs,		vfs_do_trans_fput,			inner,			vfs,	(__RPC_SENDER_DECODE_SRC_CIDX(sender) != fs_m_info->fsmgr_cnode_idx),
+vfs,		vfs_read_mounts,			inner,			vfs,		(sysif_actv_src_cnode_idx() != fs_m_info->procfs_cnode_idx),
+vfs,		vfs_attach_mount,			inner,			vfs,		sec_chk_xact_is_from_fs,
+vfs,		vfs_detach_mount,			inner,			vfs,		sec_chk_actv_is_from_fs,
+vfs,            vfs_iolimit_offon_write,                inner,                  sysmgr,         (sysif_actv_src_cnode_idx() != hmsrv_sysmgr_cnode_idx(),
+vfs,            vfs_iolimit_offon_read,                 inner,                  sysmgr,         (sysif_actv_src_cnode_idx() != hmsrv_sysmgr_cnode_idx(),
+vfs,            vfs_iolimit_readlimit_read,             inner,                  sysmgr,         (sysif_actv_src_cnode_idx() != hmsrv_sysmgr_cnode_idx(),
+vfs,            vfs_iolimit_readlimit_write,            inner,                  sysmgr,         (sysif_actv_src_cnode_idx() != hmsrv_sysmgr_cnode_idx(),
+vfs,            vfs_iolimit_writelimit_read,            inner,                  sysmgr,         (sysif_actv_src_cnode_idx() != hmsrv_sysmgr_cnode_idx(),
+vfs,            vfs_iolimit_writelimit_write,           inner,                  sysmgr,         (sysif_actv_src_cnode_idx() != hmsrv_sysmgr_cnode_idx(),
+vfs,            vfs_iolimit_alloc,                      inner,                  sysmgr,         (sysif_actv_src_cnode_idx() != hmsrv_sysmgr_cnode_idx(),
+vfs,            vfs_iolimit_free,                       inner,                  sysmgr,         (sysif_actv_src_cnode_idx() != hmsrv_sysmgr_cnode_idx(),
+vfs,            vfs_iolimit_attach,                     inner,                  sysmgr,         (sysif_actv_src_cnode_idx() != hmsrv_sysmgr_cnode_idx(),
+vfs,		vfs_hmfsd_die,				inner,			vfs,		sec_chk_actv_is_from_fs,
+vfs,		vfs_get_alive_super,			inner,			vfs,		sec_chk_xact_is_from_fs,
+vfs,		vfs_mntput,				inner,			vfs,		sec_chk_actv_is_from_fs,
+vfs,		vfs_clone_mount,			inner,			vfs,		sec_chk_xact_is_from_fs,
+vfs,		vfs_clone_mount_tree,			inner,			vfs,		sec_chk_xact_is_from_fs,
+vfs,		vfs_io_setup,				exported,		,		,
+vfs,		vfs_io_destroy,				exported,		,		,
+vfs,		vfs_io_submit,				exported,		,		sec_chk_fread;sec_chk_fwrite,					ac_fread;ac_fwrite,
+vfs,		vfs_io_getevents,			exported,		,		,
+vfs,		vfs_ws_state_write,			inner,			sysmgr,		__RPC_SENDER_DECODE_SRC_CIDX(sender) != hmsrv_sysmgr_cnode_idx(),
+vfs,		vfs_ws_state_read,			inner,			sysmgr,		__RPC_SENDER_DECODE_SRC_CIDX(sender) != hmsrv_sysmgr_cnode_idx(),
+vfs,		vfs_ws_data_write,			inner,			sysmgr,		__RPC_SENDER_DECODE_SRC_CIDX(sender) != hmsrv_sysmgr_cnode_idx(),
+vfs,		vfs_ws_data_read,			inner,			sysmgr,		__RPC_SENDER_DECODE_SRC_CIDX(sender) != hmsrv_sysmgr_cnode_idx(),
+vfs,		vfs_ws_clear_record_write,		inner,			sysmgr,		__RPC_SENDER_DECODE_SRC_CIDX(sender) != hmsrv_sysmgr_cnode_idx(),
+vfs,		vfs_ws_clear_young_write,		inner,			sysmgr,		__RPC_SENDER_DECODE_SRC_CIDX(sender) != hmsrv_sysmgr_cnode_idx(),
+vfs,		vfs_ws_alloc,				inner,			sysmgr,		__RPC_SENDER_DECODE_SRC_CIDX(sender) != hmsrv_sysmgr_cnode_idx(),
+vfs,		vfs_ws_free,				inner,			sysmgr,		__RPC_SENDER_DECODE_SRC_CIDX(sender) != hmsrv_sysmgr_cnode_idx(),
+vfs,		vfs_ws_online,				inner,			sysmgr,		__RPC_SENDER_DECODE_SRC_CIDX(sender) != hmsrv_sysmgr_cnode_idx(),
+vfs,		vfs_ws_offline,				inner,			sysmgr,		__RPC_SENDER_DECODE_SRC_CIDX(sender) != hmsrv_sysmgr_cnode_idx(),
+vfs,		vfs_ws_offline,				inner,			sysmgr,		__RPC_SENDER_DECODE_SRC_CIDX(sender) != hmsrv_sysmgr_cnode_idx(),
+srvmgr,		srvmgr_shutdown,			exported,		,		sec_chk_guard_reboot,						ab_reboot
+srvmgr,		srvmgr_notify,				inner,			all system services,	sec_chk_init_notify,					ab_init_notify
+srvmgr,		srvmgr_reboot,				exported,		,		sec_chk_guard_reboot,						ab_reboot
+hguard,		procfs_get_config,			inner,			vfs,		sec_chk_guard_fs,						ab_guard_fs
+hguard,		procfs_set_config,			inner,			vfs,		sec_chk_guard_fs,						ab_guard_fs
+hguard,		service_notify,				exported,		,		,
+hguard,		service_process_exit,			inner,			sysmgr,		(__RPC_SENDER_DECODE_SRC_CIDX(sender) != hm_crt_sysmgr_cnode_idx()),
+hguard,		service_start,			exported,		,		sec_check_guard_service_start,					ab_guard_service_ctrl
+hguard,		service_subscribe,			exported,		,		sec_check_guard_service_subscribe,				ab_guard_service_subscribe
+hmtracemgr,	hmtrace_get_registered_class_list,	lib,			,		(guaranteed by acquire pathmgr),
+hmtracemgr,	hmtrace_get_registered_events_list,	lib,			,		(guaranteed by acquire pathmgr),
+hmtracemgr,	hmtrace_get_available_events_list,	lib,			,		(guaranteed by acquire pathmgr),
+hmtracemgr,	hmtrace_register_event,			lib,			,		(guaranteed by acquire pathmgr),
+hmtracemgr,	hmtrace_unregister_event,		lib,			,		(guaranteed by acquire pathmgr),
+hmtracemgr,	hmtrace_set_event_tracing_on,		lib,			,		(guaranteed by acquire pathmgr),
+hmtracemgr,	hmtrace_set_event_tracing_off,		lib,			,		(guaranteed by acquire pathmgr),
+hmtracemgr,	hmtrace_get_event_tracing_status,	lib,			,		(guaranteed by acquire pathmgr),
+hmtracemgr,	hmtrace_get_event_tracing_eid,		lib,			,		(guaranteed by acquire pathmgr),
+hmtracemgr,	hmtrace_events_tracing_on,		lib,			,		(guaranteed by acquire pathmgr),
+hmtracemgr,	hmtrace_get_rb_info,			lib,			,		(guaranteed by acquire pathmgr),
+hmtracemgr,	hmtrace_ipc_buf_open,				lib,			,		(guaranteed by acquire pathmgr),
+hmtracemgr,	hmtrace_ipc_buf_read,				lib,			,		(guaranteed by acquire pathmgr),
+hmtracemgr,	hmtrace_ipc_buf_close,				lib,			,		(guaranteed by acquire pathmgr),
+crypto,		rng_random_bytes,			export,			,		,
+crypto,		rng_random_value,			export,			,		,
+crypto,		crypto_register,			inner,			devhost,	sec_chk_reg_entropy_src,
+crypto,		procfs_read,				inner,			vfs,		sec_chk_procfs_access,						ab_procfsmgr_access
+crypto,		procfs_write,				inner,			vfs,		sec_chk_procfs_access,						ab_procfsmgr_access
+crypto,		fops_open,					inner,			devmgr,		(DRVHANDLER_MUST_FROM_DEVMGR),
+crypto,		fops_close,					exported,		,			(device_find_file),
+crypto,		fops_read,					exported,		,			(device_find_file),
+crypto,		fops_write,					exported,		,			(device_find_file),
+crypto,		fops_llseek,				exported,		,			(device_find_file),
+crypto,		fops_epoll_ctl,				exported,		,			(device_find_file),
+crypto,		fops_epoll_close,			exported,		,			(device_find_file),
+crypto,		fops_epoll_et,				exported,		,			(device_find_file),
+crypto,		fops_epoll_reinit_add,		exported,		,			(device_find_file),
+crypto,		fops_epoll_ctl,			exported,		,			(device_find_file),
+crypto,		fops_epoll_recheck,			exported,		,			(device_find_file),
+crypto,		fops_poll,			exported,		,			(device_find_file),
+crypto,		fops_poll_remove,			exported,		,			(device_find_file),
+test_framework,	tsfw_test_fw_srv0,			test,			,		,
+test_framework,	tsfw_test_fw_srv1,			test,			,		,
+sysmgr,		dump_thread,				exported,			,		sec_chk_dumpthread,						ab_dumpthread
+sysmgr,		dump_addr2sym,				inner,			,                       sec_chk_dumpaddr2sym,						ab_dumpaddr2sym
+sysmgr,		dump_thread,				exported,			,		sec_chk_dumpcallchain,						ab_dumpcallchain
+sysmgr,		linuxemu_install_handler,		exported,		,		,
+sysmgr,		linuxemu_set_callsite,			exported,		,		,
+sysmgr,		perf_create_session,			exported,		,		sec_chk_perf_ops,							ab_perf
+sysmgr,		perf_release_session,			exported,		,		sec_chk_perf_ops,							ab_perf
+sysmgr,		perf_start_session,			exported,		,		sec_chk_perf_ops,							ab_perf
+sysmgr,		perf_config_event,			exported,		,		sec_chk_perf_ops,							ab_perf
+sysmgr,		perf_stop_session,			exported,		,		sec_chk_perf_ops,							ab_perf
+sysmgr,		perf_read_data,				exported,		,		sec_chk_perf_ops,							ab_perf
+sysmgr,		perf_get_kernel_load_info,		exported,		,		sec_chk_perf_ops,							ab_perf
+sysmgr,		hmspif_ksus_user_start_session,		exported,		,		sec_chk_perf_ops,							ab_perf
+sysmgr,		hmspif_ksus_user_create_region,		exported,		,		sec_chk_perf_ops,							ab_perf
+sysmgr,		hmspif_ksus_user_attach_process,	exported,		,		sec_chk_perf_ops,							ab_perf
+sysmgr,		hmspif_ksus_user_finish_session,	exported,		,		sec_chk_perf_ops,							ab_perf
+sysmgr,		hmspif_paju_cmd,			exported,		,		sec_chk_perf_ops,							ab_perf
+sysmgr,		livepatch_register_target,		exported,		,		,
+sysmgr,		livepatch_unregister_target,		exported,		,		,
+sysmgr,		livepatch_load,				exported,		,		sec_chk_livepatch,							ab_livepatch
+sysmgr,		livepatch_unload,			exported,		,		sec_chk_livepatch,							ab_livepatch
+sysmgr,		livepatch_enable,			exported,		,		sec_chk_livepatch,							ab_livepatch
+sysmgr,		livepatch_disable,			exported,		,		sec_chk_livepatch,							ab_livepatch
+sysmgr,		livepatch_list,				exported,		,		sec_chk_livepatch,							ab_livepatch
+sysmgr,		livepatch_reserved,			exported,		,		sec_chk_livepatch,							ab_livepatch
+sysmgr,		sec_crlread,				exported,		,		sec_chk_crlctrl,							ab_crlctrl
+sysmgr,		sec_crlwrite,				exported,		,		sec_chk_crlctrl,							ab_crlctrl
+sysmgr,		sec_umask,				exported,		,		,
+sysmgr,		time_clock_settime,			exported,		,		sec_chk_sys_time,							ab_sys_time
+sysmgr,		time_do_adjtimex,			exported,		,		sec_chk_sys_time,							ab_sys_time
+sysmgr,		time_do_settimeofday,			exported,		,		sec_chk_sys_time,							ab_sys_time
+sysmgr,		timer_create_signal,			exported,		,		sec_chk_wake_alarm,							ab_wake_alarm
+sysmgr,		procfs_irq_write,			inner,		vfs,		sec_chk_procfs_access,						ab_procfsmgr_access
+sysmgr,		procfs_irq_read,			inner,		vfs,		sec_chk_procfs_access,						ab_procfsmgr_access
+sysmgr,		procfs_get_irq_names,		inner,		vfs,		sec_chk_procfs_access,						ab_procfsmgr_access
+sysmgr,		mem_mincore,				todo,			,		,
+sysmgr,		procfs_simple_irq_read,		inner,		vfs,		sec_chk_procfs_access,						ab_procfsmgr_access
+sysmgr,		ec_create_ep,				exported,		,		sec_chk_ec_create_ep,							ab_ecmgr
+sysmgr,		ec_destroy_ep,				exported,		,		sec_chk_ec_destroy_ep,							ab_ecmgr
+sysmgr,		ec_attach_chn,				exported,		,		sec_chk_ec_attach_chn,							ab_ecmgr
+sysmgr,		ec_detach_chn,				exported,		,		sec_chk_ec_detach_chn,							ab_ecmgr
+sysmgr,		ec_is_ep_owner,				exported,				sec_chk_ec_is_ep_owner,							ab_ecmgr
+sysmgr,		ecmgr_chn_create,			exported,		,		sec_chk_ecmgr_chn_create,						ac_ec_create
+sysmgr,		ecmgr_chn_attach,			exported,		,		sec_chk_ecmgr_chn_attach,						ac_ec_attach
+sysmgr,		memcheck_signal,			inner,		devhost,		sec_chk_memcheck_signal,						ab_as_devhost
+sysmgr,		eventmgr_register_event,			inner,		devhost,tppmgr		sec_chk_event_ops,
+sysmgr,		eventmgr_unregister_event,			inner,		devhost,tppmgr		sec_chk_event_ops,
+sysmgr,		eventmgr_rule_ctrl,			inner,		devhost,tppmgr		sec_chk_event_ops,
+sysmgr,		actv_binder_new_actvpool,		inner,		vfs,			sec_chk_actv_binder,
+sysmgr,		actv_binder_del_actvpool,		inner,		vfs,			sec_chk_actv_binder,
+sysmgr,		actv_binder_grant_actvpool,		inner,		vfs,			sec_chk_actv_binder,
+sysmgr,		actv_binder_revoke_actvpool,		inner,		vfs,			sec_chk_actv_binder,
+sysmgr,		actv_binder_reject_actvpool,		inner,		vfs,			sec_chk_actv_binder,
+sysmgr,		tracemgr_register_devhost,			inner,		devhost,		sec_chk_trace_ops,							ab_as_devhost
+sysmgr,		tracemgr_register_events,		inner,		devhost;tppmgr,		sec_chk_tracemgr_register_events,							ab_as_tracemgr_register_events
+sysmgr,		tracemgr_register_ldk_events,		inner,		devhost,		sec_chk_trace_ops,							ab_as_devhost
+sysmgr,		tracemgr_add_ldk_printk_format,		inner,		devhost,		sec_chk_trace_ops,							ab_as_devhost
+sysmgr,		tracemgr_futex_wake,			inner,		sysmgr;devhost;tppmgr;vfs;devmgr,	sec_chk_tracemgr_futex_wake,
+sysmgr,		sysinfo_ram,		inner,		devhost,		sec_chk_sysinfo_ram,							ab_sysinfo_ram
+uvmm,		uvmm_mclone_to_vm,			exported,		,		sec_chk_mclone_to_vm,							ab_uvmm_mclone_to_vm
+uvmm,		uvmm_vnotify_send_ctrl_msg,		exported,		,		sec_chk_vnotify_send_msg,						ab_vnotify_send_msg
+uvmm,		uvmm_vm_shm_open,			exported,		,		sec_chk_static_shm_access,						ab_uvmm_static_shm
+uvmm,		uvmm_vm_shm_close,			exported,		,		sec_chk_static_shm_access,						ab_uvmm_static_shm
+uvmm,		uvmm_vm_get_info,			exported,		,		sec_chk_vm_get_info,							ab_uvmm_vm_get_info
+uvmm,		uvmm_vm_process_attach_chn,		exported,		,		sec_chk_vnotify_attach || sec_chk_vnotify_init,				ac_vnotify_attach || ac_vnotify_create
+uvmm,		uvmm_vm_process_delete_chn,		exported,		,		,
+uvmm,		uvmm_vm_process_notify_chn,		exported,		,		,
+uvmm,		uvmm_vm_process_inject_chn,		exported,		,		,
+uvmm,		uvmm_vm_process_read_chn_status,	exported,		,		,
+uvmm,		uvmm_vm_process_query_chn_status,	exported,		,		sec_chk_query_chn_status,						ab_vnotify_query_chn_status
+uvmm,		uvmm_handle_vm_process_exit,		exported,		,		,
+uvmm,		uvmm_vm_shutdown,			exported,		,		sec_chk_vm_shutdown,							ab_uvmm_vm_shutdown
+uvmm,		uvmm_vm_ctl,			exported,		,		sec_chk_vm_ctl,							ab_uvmm_vm_ctl
+uvmm,		uvmm_vm_pause,				exported,				sec_chk_vm_pause,							ab_uvmm_vm_pause
+uvmm,		uvmm_vm_unpause,			exported,				sec_chk_vm_unpause,							ab_uvmm_vm_unpause
+uvmm,		uvmm_vm_trace_stats,			exported,				sec_chk_vm_trace_stats,							ab_uvmm_vm_trace_stats
+uvmm,		uvmm_vm_resume,				exported,		,		sec_chk_vm_resume,							ab_uvmm_vm_resume
+uvmm,		uvmm_vm_cpu_hotplug,			inner,			tppmgr,		sec_chk_vcpu_hotplug_access,						ab_uvmm_vcpu_hotplug
+uvmm,		vsock_vm_rx,				inner,			network,	sec_chk_vsock,								mac_cred->sid == lwipd_t
+uvmm,		uvmm_vm_vnotify_chns_info,		exported,		,		,
+uvmm,		uvmm_vnotify_update_futex,		exported,		,		(is_process_attached(chn_id, cnode_idx)),
+uvmm,		uvmm_uvmm_handle_vm_process_exit,	inner,			sysmgr,		sec_chk_vnotify_clean_chns,						mac_cred->sid == sysmgr_t
+auditmgr,	msg_register,				inner,			system services,sec_chk_audit_msg,							ab_audit_msg
+auditmgr,	msg_recv,				inner,			system services,sec_chk_audit_msg,							ab_audit_msg
+keymgr,		keymgr_fscrypt_ctrl,			inner,			vfs,		sec_chk_fscryt_ctrl,	ab_as_vfs
+sysmgr,		thread_perf_ctrl_ioctl,			inner,			tppmgr,		sec_chk_as_tppmgr,					ab_as_tppmgr
+sysmgr,		thread_set_vip_prio,			inner,			devhost,	sec_chk_set_vip_prio,					ab_as_devhost
+crypto,		entropy_avail,				inner,			vfs,		sec_chk_rng_entropy_avail,						ab_as_vfs
+sysmgr,		sec_region_protect_services,		inner,			devhost,	sec_chk_sec_region_protect_services,					ab_as_devhost
+sysmgr,		sec_region_disable_forbidden,		inner,			init,		sec_chk_sec_region_disable_forbidden,					ab_as_init

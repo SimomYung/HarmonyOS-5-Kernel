@@ -1,0 +1,113 @@
+From b0cd09e5b65373fc9f89048958c093bb1e6a1ecb Mon Sep 17 00:00:00 2001
+From: Eric Biggers <ebiggers@google.com>
+Date: Wed, 2 Nov 2022 15:05:51 -0700
+Subject: e2fsck: don't allow journal inode to have encrypt flag
+
+Since the kernel is being fixed to consider journal inodes with the
+'encrypt' flag set to be invalid, also update e2fsck accordingly.
+
+Signed-off-by: Eric Biggers <ebiggers@google.com>
+Reviewed-by: Andreas Dilger <adilger@dilger.ca>
+Signed-off-by: Theodore Ts'o <tytso@mit.edu>
+---
+ e2fsck/journal.c                   |  3 ++-
+ tests/f_badjour_encrypted/expect.1 | 30 ++++++++++++++++++++++++++++++
+ tests/f_badjour_encrypted/expect.2 |  7 +++++++
+ tests/f_badjour_encrypted/name     |  1 +
+ tests/f_badjour_encrypted/script   | 11 +++++++++++
+ 5 files changed, 51 insertions(+), 1 deletion(-)
+ create mode 100644 tests/f_badjour_encrypted/expect.1
+ create mode 100644 tests/f_badjour_encrypted/expect.2
+ create mode 100644 tests/f_badjour_encrypted/name
+ create mode 100644 tests/f_badjour_encrypted/script
+
+diff --git a/e2fsck/journal.c b/e2fsck/journal.c
+index 1646b479..1bfabb02 100644
+--- a/e2fsck/journal.c
++++ b/e2fsck/journal.c
+@@ -1039,7 +1039,8 @@ static errcode_t e2fsck_get_journal(e2fsck_t ctx, journal_t **ret_journal)
+ 			tried_backup_jnl++;
+ 		}
+ 		if (!j_inode->i_ext2.i_links_count ||
+-		    !LINUX_S_ISREG(j_inode->i_ext2.i_mode)) {
++		    !LINUX_S_ISREG(j_inode->i_ext2.i_mode) ||
++		    (j_inode->i_ext2.i_flags & EXT4_ENCRYPT_FL)) {
+ 			retval = EXT2_ET_NO_JOURNAL;
+ 			goto try_backup_journal;
+ 		}
+diff --git a/tests/f_badjour_encrypted/expect.1 b/tests/f_badjour_encrypted/expect.1
+new file mode 100644
+index 00000000..0b13b9eb
+--- /dev/null
++++ b/tests/f_badjour_encrypted/expect.1
+@@ -0,0 +1,30 @@
++Superblock has an invalid journal (inode 8).
++Clear? yes
++
++*** journal has been deleted ***
++
++Pass 1: Checking inodes, blocks, and sizes
++Journal inode is not in use, but contains data.  Clear? yes
++
++Pass 2: Checking directory structure
++Pass 3: Checking directory connectivity
++Pass 4: Checking reference counts
++Pass 5: Checking group summary information
++Block bitmap differences:  -(24--25) -(27--41) -(107--1113)
++Fix? yes
++
++Free blocks count wrong for group #0 (934, counted=1958).
++Fix? yes
++
++Free blocks count wrong (934, counted=1958).
++Fix? yes
++
++Recreate journal? yes
++
++Creating journal (1024 blocks):  Done.
++
++*** journal has been regenerated ***
++
++test_filesys: ***** FILE SYSTEM WAS MODIFIED *****
++test_filesys: 11/256 files (0.0% non-contiguous), 1114/2048 blocks
++Exit status is 1
+diff --git a/tests/f_badjour_encrypted/expect.2 b/tests/f_badjour_encrypted/expect.2
+new file mode 100644
+index 00000000..76934be2
+--- /dev/null
++++ b/tests/f_badjour_encrypted/expect.2
+@@ -0,0 +1,7 @@
++Pass 1: Checking inodes, blocks, and sizes
++Pass 2: Checking directory structure
++Pass 3: Checking directory connectivity
++Pass 4: Checking reference counts
++Pass 5: Checking group summary information
++test_filesys: 11/256 files (9.1% non-contiguous), 1114/2048 blocks
++Exit status is 0
+diff --git a/tests/f_badjour_encrypted/name b/tests/f_badjour_encrypted/name
+new file mode 100644
+index 00000000..e8f4c04f
+--- /dev/null
++++ b/tests/f_badjour_encrypted/name
+@@ -0,0 +1 @@
++journal inode has encrypt flag
+diff --git a/tests/f_badjour_encrypted/script b/tests/f_badjour_encrypted/script
+new file mode 100644
+index 00000000..e6778f1d
+--- /dev/null
++++ b/tests/f_badjour_encrypted/script
+@@ -0,0 +1,11 @@
++if ! test -x $DEBUGFS_EXE; then
++	echo "$test_name: $test_description: skipped (no debugfs)"
++	return 0
++fi
++
++touch $TMPFILE
++$MKE2FS -t ext4 -b 1024 $TMPFILE 2M
++$DEBUGFS -w -R 'set_inode_field <8> flags 0x80800' $TMPFILE
++
++SKIP_GUNZIP="true"
++. $cmd_dir/run_e2fsck
+-- 
+cgit 
+

@@ -1,0 +1,211 @@
+From 7045260c226e409530e4f961f613f8c7d6f6725a Mon Sep 17 00:00:00 2001
+From: Simon McVittie <smcv@collabora.com>
+Date: Thu, 23 Jun 2022 09:41:21 +0100
+Subject: [PATCH] gsignal: Add G_CONNECT_DEFAULT
+
+This makes calls to g_signal_connect_data() and g_signal_connect_object()
+with default flags more self-documenting.
+
+Signed-off-by: Simon McVittie <smcv@collabora.com>
+
+Conflict:NA
+Reference:https://gitlab.gnome.org/GNOME/glib/-/commit/7045260c226e409530e4f961f613f8c7d6f6725a
+
+---
+ gio/gcancellable.c             |  2 +-
+ gio/gdbusobjectmanagerclient.c |  4 ++--
+ gio/gdbusserver.c              |  2 +-
+ gio/glocalfilemonitor.c        |  5 +++--
+ gio/gsubprocess.c              |  4 +++-
+ gio/gtask.c                    |  3 ++-
+ gobject/gobject.c              |  8 ++++----
+ gobject/gsignal.h              | 11 ++++++++---
+ gobject/tests/signals.c        |  6 ++++--
+ 9 files changed, 28 insertions(+), 17 deletions(-)
+
+diff --git a/gio/gcancellable.c b/gio/gcancellable.c
+index 64755206be..fe3cbeb7f7 100644
+--- a/gio/gcancellable.c
++++ b/gio/gcancellable.c
+@@ -589,7 +589,7 @@ g_cancellable_connect (GCancellable   *cancellable,
+       id = g_signal_connect_data (cancellable, "cancelled",
+                                   callback, data,
+                                   (GClosureNotify) data_destroy_func,
+-                                  0);
++                                  G_CONNECT_DEFAULT);
+ 
+       g_mutex_unlock (&cancellable_mutex);
+     }
+diff --git a/gio/gdbusobjectmanagerclient.c b/gio/gdbusobjectmanagerclient.c
+index bfb73b5308..fa5e73041e 100644
+--- a/gio/gdbusobjectmanagerclient.c
++++ b/gio/gdbusobjectmanagerclient.c
+@@ -1456,7 +1456,7 @@ initable_init (GInitable     *initable,
+                             G_CALLBACK (on_notify_g_name_owner),
+                             weak_ref_new (G_OBJECT (manager)),
+                             (GClosureNotify) weak_ref_free,
+-                            0  /* flags */);
++                            G_CONNECT_DEFAULT);
+ 
+   manager->priv->signal_signal_id =
+       g_signal_connect_data (manager->priv->control_proxy,
+@@ -1464,7 +1464,7 @@ initable_init (GInitable     *initable,
+                             G_CALLBACK (on_control_proxy_g_signal),
+                             weak_ref_new (G_OBJECT (manager)),
+                             (GClosureNotify) weak_ref_free,
+-                            0  /* flags */);
++                            G_CONNECT_DEFAULT);
+ 
+   manager->priv->name_owner = g_dbus_proxy_get_name_owner (manager->priv->control_proxy);
+   if (manager->priv->name_owner == NULL && manager->priv->name != NULL)
+diff --git a/gio/gdbusserver.c b/gio/gdbusserver.c
+index fe5b23ed4d..f144d129ae 100644
+--- a/gio/gdbusserver.c
++++ b/gio/gdbusserver.c
+@@ -630,7 +630,7 @@ g_dbus_server_start (GDBusServer *server)
+                                                          G_CALLBACK (on_run),
+                                                          g_object_ref (server),
+                                                          (GClosureNotify) g_object_unref,
+-                                                         0  /* flags */);
++                                                         G_CONNECT_DEFAULT);
+   g_socket_service_start (G_SOCKET_SERVICE (server->listener));
+   server->active = TRUE;
+   g_object_notify (G_OBJECT (server), "active");
+diff --git a/gio/glocalfilemonitor.c b/gio/glocalfilemonitor.c
+index fde52193a9..8de4079394 100644
+--- a/gio/glocalfilemonitor.c
++++ b/gio/glocalfilemonitor.c
+@@ -809,7 +809,8 @@ g_local_file_monitor_start (GLocalFileMonitor *local_monitor,
+ 
+       local_monitor->mount_monitor = g_unix_mount_monitor_get ();
+       g_signal_connect_object (local_monitor->mount_monitor, "mounts-changed",
+-                               G_CALLBACK (g_local_file_monitor_mounts_changed), local_monitor, 0);
++                               G_CALLBACK (g_local_file_monitor_mounts_changed), local_monitor,
++                               G_CONNECT_DEFAULT);
+ #endif
+     }
+ 
+@@ -924,7 +925,7 @@ g_local_file_monitor_new_in_worker (const gchar           *pathname,
+     {
+       if (callback)
+         g_signal_connect_data (monitor, "changed", G_CALLBACK (callback),
+-                               user_data, destroy_user_data, 0  /* flags */);
++                               user_data, destroy_user_data, G_CONNECT_DEFAULT);
+ 
+       g_local_file_monitor_start (monitor, pathname, is_directory, flags, GLIB_PRIVATE_CALL(g_get_worker_context) ());
+     }
+diff --git a/gio/gsubprocess.c b/gio/gsubprocess.c
+index bb157197fc..c4747a1481 100644
+--- a/gio/gsubprocess.c
++++ b/gio/gsubprocess.c
+@@ -756,7 +756,9 @@ g_subprocess_wait_async (GSubprocess         *subprocess,
+        * see the cancellation in the _finish().
+        */
+       if (cancellable)
+-        g_signal_connect_object (cancellable, "cancelled", G_CALLBACK (g_subprocess_wait_cancelled), task, 0);
++        g_signal_connect_object (cancellable, "cancelled",
++                                 G_CALLBACK (g_subprocess_wait_cancelled),
++                                 task, G_CONNECT_DEFAULT);
+ 
+       subprocess->pending_waits = g_slist_prepend (subprocess->pending_waits, task);
+       task = NULL;
+diff --git a/gio/gtask.c b/gio/gtask.c
+index d0f8b4e33a..774cba793a 100644
+--- a/gio/gtask.c
++++ b/gio/gtask.c
+@@ -1530,7 +1530,8 @@ g_task_start_task_thread (GTask           *task,
+       g_signal_connect_data (task->cancellable, "cancelled",
+                              G_CALLBACK (task_thread_cancelled),
+                              g_object_ref (task),
+-                             task_thread_cancelled_disconnect_notify, 0);
++                             task_thread_cancelled_disconnect_notify,
++                             G_CONNECT_DEFAULT);
+     }
+ 
+   if (g_private_get (&task_private))
+diff --git a/gobject/gobject.c b/gobject/gobject.c
+index df908984b7..5ba8fd017b 100644
+--- a/gobject/gobject.c
++++ b/gobject/gobject.c
+@@ -3093,8 +3093,8 @@ g_object_get_property (GObject	   *object,
+  *
+  * The signal specs expected by this function have the form
+  * "modifier::signal_name", where modifier can be one of the following:
+- * - signal: equivalent to g_signal_connect_data (..., NULL, 0)
+- * - object-signal, object_signal: equivalent to g_signal_connect_object (..., 0)
++ * - signal: equivalent to g_signal_connect_data (..., NULL, G_CONNECT_DEFAULT)
++ * - object-signal, object_signal: equivalent to g_signal_connect_object (..., G_CONNECT_DEFAULT)
+  * - swapped-signal, swapped_signal: equivalent to g_signal_connect_data (..., NULL, G_CONNECT_SWAPPED)
+  * - swapped_object_signal, swapped-object-signal: equivalent to g_signal_connect_object (..., G_CONNECT_SWAPPED)
+  * - signal_after, signal-after: equivalent to g_signal_connect_data (..., NULL, G_CONNECT_AFTER)
+@@ -3135,12 +3135,12 @@ g_object_connect (gpointer     _object,
+       if (strncmp (signal_spec, "signal::", 8) == 0)
+ 	g_signal_connect_data (object, signal_spec + 8,
+ 			       callback, data, NULL,
+-			       0);
++			       G_CONNECT_DEFAULT);
+       else if (strncmp (signal_spec, "object_signal::", 15) == 0 ||
+                strncmp (signal_spec, "object-signal::", 15) == 0)
+ 	g_signal_connect_object (object, signal_spec + 15,
+ 				 callback, data,
+-				 0);
++				 G_CONNECT_DEFAULT);
+       else if (strncmp (signal_spec, "swapped_signal::", 16) == 0 ||
+                strncmp (signal_spec, "swapped-signal::", 16) == 0)
+ 	g_signal_connect_data (object, signal_spec + 16,
+diff --git a/gobject/gsignal.h b/gobject/gsignal.h
+index 7b3974a8c4..53da2a6eab 100644
+--- a/gobject/gsignal.h
++++ b/gobject/gsignal.h
+@@ -155,9 +155,11 @@ typedef enum
+ #define G_SIGNAL_FLAGS_MASK  0x1ff
+ /**
+  * GConnectFlags:
+- * @G_CONNECT_AFTER: whether the handler should be called before or after the
+- *  default handler of the signal.
+- * @G_CONNECT_SWAPPED: whether the instance and data should be swapped when
++ * @G_CONNECT_DEFAULT: Default behaviour (no special flags). Since: 2.74
++ * @G_CONNECT_AFTER: If set, the handler should be called after the
++ *  default handler of the signal. Normally, the handler is called before
++ *  the default handler.
++ * @G_CONNECT_SWAPPED: If set, the instance and data should be swapped when
+  *  calling the handler; see g_signal_connect_swapped() for an example.
+  * 
+  * The connection flags are used to specify the behaviour of a signal's 
+@@ -165,6 +167,7 @@ typedef enum
+  */
+ typedef enum
+ {
++  G_CONNECT_DEFAULT GLIB_AVAILABLE_ENUMERATOR_IN_2_74 = 0,
+   G_CONNECT_AFTER	= 1 << 0,
+   G_CONNECT_SWAPPED	= 1 << 1
+ } GConnectFlags;
+@@ -504,6 +507,8 @@ void   g_signal_chain_from_overridden_handler (gpointer           instance,
+  * 
+  * Returns: the handler ID, of type #gulong (always greater than 0 for successful connections)
+  */
++/* Intentionally not using G_CONNECT_DEFAULT here to avoid deprecation
++ * warnings with older GLIB_VERSION_MAX_ALLOWED */
+ #define g_signal_connect(instance, detailed_signal, c_handler, data) \
+     g_signal_connect_data ((instance), (detailed_signal), (c_handler), (data), NULL, (GConnectFlags) 0)
+ /**
+diff --git a/gobject/tests/signals.c b/gobject/tests/signals.c
+index ea9a778bf8..e4be41575f 100644
+--- a/gobject/tests/signals.c
++++ b/gobject/tests/signals.c
+@@ -1109,8 +1109,10 @@ test_destroy_target_object (void)
+   sender = g_object_new (test_get_type (), NULL);
+   target1 = g_object_new (test_get_type (), NULL);
+   target2 = g_object_new (test_get_type (), NULL);
+-  g_signal_connect_object (sender, "simple", G_CALLBACK (simple_handler1), target1, 0);
+-  g_signal_connect_object (sender, "simple", G_CALLBACK (simple_handler2), target2, 0);
++  g_signal_connect_object (sender, "simple", G_CALLBACK (simple_handler1),
++                           target1, G_CONNECT_DEFAULT);
++  g_signal_connect_object (sender, "simple", G_CALLBACK (simple_handler2),
++                           target2, G_CONNECT_DEFAULT);
+   g_signal_emit_by_name (sender, "simple");
+   g_object_unref (sender);
+ }
+-- 
+GitLab
+

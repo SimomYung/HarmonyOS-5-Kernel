@@ -1,0 +1,400 @@
+From afc612dcc6ed5f5f1c14ed913174a2c73dd9fa8e Mon Sep 17 00:00:00 2001
+From: w30063796 <w30063796@notesmail.huawei.com/>
+Date: Tue, 24 Dec 2024 16:49:24 +0800
+Subject: [PATCH] TicketNo:DTS2024121134413 Description:optimized get
+ options.l2tpd.client.conf file by ipc form netmanager_ext Team:OTHERS Feature
+ or Bugfix:Bugfix Binary Source:No PrivateCode(Yes/No):No
+
+Change-Id: Ie29e9a43636da93e3b35eee89379c2f4130338b6
+---
+ pppd/ipc_request.cpp |  16 +++
+ pppd/ipc_request.h   |  10 ++
+ pppd/options.c       | 304 +++++++++++++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 330 insertions(+)
+
+diff --git a/pppd/ipc_request.cpp b/pppd/ipc_request.cpp
+index 23c2c09..c720cc1 100644
+--- a/pppd/ipc_request.cpp
++++ b/pppd/ipc_request.cpp
+@@ -14,7 +14,9 @@
+  */
+ 
+ #include "ipc_request.h"
++
+ #include "networkvpn_client.h"
++#include "securec.h"
+ 
+ using namespace std;
+ using namespace OHOS::NetManagerStandard;
+@@ -23,3 +25,17 @@ int32_t SendRequest(char *stage, int32_t state)
+ {
+     return NetworkVpnClient::GetInstance().NotifyConnectStage(std::string(stage), state);
+ }
++
++int32_t GetSysVpnCertUri(enum IpsecVpnCertType type, uint8_t *certUrl, uint32_t srcSize)
++{
++    std::string uri;
++    int32_t ret = NetworkVpnClient::GetInstance().GetSysVpnCertUri(type, uri);
++    if (ret != 0) {
++        return 0;
++    }
++    uint32_t size = strlen(uri.c_str());
++    size = size < srcSize ? size : srcSize;
++    (void)memset_s(certUrl, srcSize, 0, srcSize);
++    memcpy_s(certUrl, srcSize, (uint8_t *)(uri.c_str()), size);
++    return size;
++}
+diff --git a/pppd/ipc_request.h b/pppd/ipc_request.h
+index b25dc22..b068a8a 100644
+--- a/pppd/ipc_request.h
++++ b/pppd/ipc_request.h
+@@ -22,7 +22,17 @@
+ extern "C" {
+ #endif
+ 
++enum IpsecVpnCertType : int32_t {
++    CA_CERT = 0,
++    USER_CERT,
++    SERVER_CERT,
++    SWAN_CTL_CONF,
++    OPTIONS_L2TP_CLIENT_CONF,
++    L2TP_IPSEC_SECRETS_CONF,
++};
++
+ int32_t SendRequest(char *stage, int32_t state);
++int32_t GetSysVpnCertUri(enum IpsecVpnCertType type, uint8_t *certUrl, uint32_t size);
+ 
+ #ifdef __cplusplus
+ }
+diff --git a/pppd/options.c b/pppd/options.c
+index 42e39b8..e8063d5 100644
+--- a/pppd/options.c
++++ b/pppd/options.c
+@@ -82,6 +82,11 @@
+ #include "upap.h"
+ #include "pathnames.h"
+ 
++#ifdef SUPPORT_SYSVPN
++#include "ipc_request.h"
++#include "securec.h"
++#endif // SUPPORT_SYSVPN
++
+ #if defined(ultrix) || defined(NeXT)
+ char *strdup(char *);
+ #endif
+@@ -533,6 +538,299 @@ parse_args(int argc, char **argv)
+     return 1;
+ }
+ 
++#ifdef SUPPORT_SYSVPN
++int
++getword_from_conf_buf(uint8_t conf_buf[], int *conf_buf_index, char *word, int *newlinep)
++{
++    int c, len, escape;
++    int quoted, comment;
++    int value, digit, got, n;
++
++#define isoctal(c) ((c) >= '0' && (c) < '8')
++
++    *newlinep = 0;
++    len = 0;
++    escape = 0;
++    comment = 0;
++    quoted = 0;
++
++    /*
++     * First skip white-space and comments.
++     */
++    for (;;) {
++	c = conf_buf[*conf_buf_index];
++	*conf_buf_index += 1;
++	if (c == EOF)
++	    break;
++
++	/*
++	 * A newline means the end of a comment; backslash-newline
++	 * is ignored.  Note that we cannot have escape && comment.
++	 */
++	if (c == '\n') {
++	    if (!escape) {
++		*newlinep = 1;
++		comment = 0;
++	    } else
++		escape = 0;
++	    continue;
++	}
++
++	/*
++	 * Ignore characters other than newline in a comment.
++	 */
++	if (comment)
++	    continue;
++
++	/*
++	 * If this character is escaped, we have a word start.
++	 */
++	if (escape)
++	    break;
++
++	/*
++	 * If this is the escape character, look at the next character.
++	 */
++	if (c == '\\') {
++	    escape = 1;
++	    continue;
++	}
++
++	/*
++	 * If this is the start of a comment, ignore the rest of the line.
++	 */
++	if (c == '#') {
++	    comment = 1;
++	    continue;
++	}
++
++	/*
++	 * A non-whitespace character is the start of a word.
++	 */
++	if (!isspace(c))
++	    break;
++    }
++
++	/*
++	 * Process characters until the end of the word.
++	 */
++	while (c != EOF)
++	{
++		if (escape)
++		{
++			/*
++			 * This character is escaped: backslash-newline is ignored,
++			 * various other characters indicate particular values
++			 * as for C backslash-escapes.
++			 */
++			escape = 0;
++			if (c == '\n')
++			{
++				c = conf_buf[*conf_buf_index];
++				*conf_buf_index += 1;
++				continue;
++			}
++
++			got = 0;
++			switch (c)
++			{
++			case 'a':
++				value = '\a';
++				break;
++			case 'b':
++				value = '\b';
++				break;
++			case 'f':
++				value = '\f';
++				break;
++			case 'n':
++				value = '\n';
++				break;
++			case 'r':
++				value = '\r';
++				break;
++			case 's':
++				value = ' ';
++				break;
++			case 't':
++				value = '\t';
++				break;
++
++			default:
++				if (isoctal(c))
++				{
++					/*
++					 * \ddd octal sequence
++					 */
++					value = 0;
++					for (n = 0; n < 3 && isoctal(c); ++n)
++					{
++						value = (value << 3) + (c & 07);
++						c = conf_buf[*conf_buf_index];
++				        *conf_buf_index += 1;
++					}
++					got = 1;
++					break;
++				}
++
++				if (c == 'x')
++				{
++					/*
++					 * \x<hex_string> sequence
++					 */
++					value = 0;
++					c =  conf_buf[*conf_buf_index];
++				    *conf_buf_index += 1;
++					for (n = 0; n < 2 && isxdigit(c); ++n)
++					{
++						digit = toupper(c) - '0';
++						if (digit > 10)
++							digit += '0' + 10 - 'A';
++						value = (value << 4) + digit;
++						c =  conf_buf[*conf_buf_index];
++				        *conf_buf_index += 1;
++					}
++					got = 1;
++					break;
++				}
++
++				/*
++				 * Otherwise the character stands for itself.
++				 */
++				value = c;
++				break;
++			}
++
++			/*
++			 * Store the resulting character for the escape sequence.
++			 */
++			if (len < MAXWORDLEN)
++			{
++				word[len] = value;
++				++len;
++			}
++
++			if (!got) {
++	            c = conf_buf[*conf_buf_index];
++				*conf_buf_index += 1;
++			}
++			continue;
++		}
++
++		/*
++		 * Backslash starts a new escape sequence.
++		 */
++		if (c == '\\')
++		{
++			escape = 1;
++			c = conf_buf[*conf_buf_index];
++		    *conf_buf_index += 1;
++			continue;
++		}
++
++		/*
++		 * Not escaped: check for the start or end of a quoted
++		 * section and see if we've reached the end of the word.
++		 */
++		if (quoted)
++		{
++			if (c == quoted)
++			{
++				quoted = 0;
++				c =  conf_buf[*conf_buf_index];
++				*conf_buf_index += 1;
++				continue;
++			}
++		}
++		else if (c == '"' || c == '\'')
++		{
++			quoted = c;
++			c = conf_buf[*conf_buf_index];
++			*conf_buf_index += 1;
++			continue;
++		}
++		else if (isspace(c) || c == '#')
++		{
++			*conf_buf_index -= 1;
++			break;
++		}
++
++		/*
++		 * An ordinary character: store it in the word and get another.
++		 */
++		if (len < MAXWORDLEN)
++		{
++			word[len] = c;
++			++len;
++		}
++
++		c = conf_buf[*conf_buf_index];
++		*conf_buf_index += 1;
++	}
++	word[MAXWORDLEN-1] = 0;	/* make sure word is null-terminated */
++
++    /*
++     * Warn if the word was too long, and append a terminating null.
++     */
++    if (len >= MAXWORDLEN) {
++	ppp_option_error("warning: word in file too long (%.20s...)", word);
++	len = MAXWORDLEN - 1;
++    }
++    word[len] = 0;
++
++    return 1;
++
++#undef isoctal
++}
++
++/*
++ * ppp_options_from_netmanager - Read a string of options from netmanager,
++ * and interpret them.
++ */
++int
++ppp_options_from_netmanager(char *filename, int must_exist, int check_prot, int priv)
++{
++    uint8_t conf_buf[MAXWORDLEN];
++    memset_s(conf_buf, MAXWORDLEN, 0, MAXWORDLEN);
++    int32_t conf_buf_len = GetSysVpnCertUri(OPTIONS_L2TP_CLIENT_CONF, conf_buf, MAXWORDLEN);
++	int conf_buf_index = 0;
++
++    int i, newline, ret, err;
++    struct option *opt;
++    int oldpriv, n;
++    char *oldsource;
++    uid_t euid;
++    char *argv[MAXARGS];
++    char args[MAXARGS][MAXWORDLEN];
++    char cmd[MAXWORDLEN];
++
++    ret = 0;
++    while (getword_from_conf_buf(conf_buf, &conf_buf_index, cmd, &newline) && conf_buf_index < conf_buf_len) {
++		opt = find_option(cmd);
++		if (opt == NULL) {
++			ppp_option_error("In file %s: unrecognized option '%s'",
++				filename, cmd);
++			return 0;
++		}
++		n = n_arguments(opt);
++		for (i = 0; i < n; ++i) {
++			if (!getword_from_conf_buf(conf_buf, &conf_buf_index, args[i], &newline)) {
++			ppp_option_error(
++				"In file %s: too few parameters for option '%s'",
++				filename, cmd);
++				return 0;
++			}
++			argv[i] = args[i];
++		}
++		if (!process_option(opt, cmd, argv)) {
++			ppp_option_error("process_option failed, cmd:%s", cmd);
++			return 0;
++		}
++	}
++    return 1;
++}
++#endif // SUPPORT_SYSVPN
++
+ /*
+  * options_from_file - Read a string of options from a file,
+  * and interpret them.
+@@ -540,6 +838,12 @@ parse_args(int argc, char **argv)
+ int
+ ppp_options_from_file(char *filename, int must_exist, int check_prot, int priv)
+ {
++#ifdef SUPPORT_SYSVPN
++	if (filename != NULL && strstr(filename, "/data/service/el")) {
++        return ppp_options_from_netmanager(filename, must_exist, check_prot, priv);
++	}
++#endif // SUPPORT_SYSVPN
++
+     FILE *f;
+     int i, newline, ret, err;
+     struct option *opt;
+-- 
+2.7.4
+

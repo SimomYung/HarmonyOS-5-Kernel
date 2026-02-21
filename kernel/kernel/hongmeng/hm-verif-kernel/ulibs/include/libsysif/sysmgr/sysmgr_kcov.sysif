@@ -1,0 +1,30 @@
+/*
+ * Copyright (C) Huawei Technologies Co., Ltd. 2023. All rights reserved.
+ * Description: kcov sysif API in sysmgr
+ * Author: Huawei OS Kernel Lab
+ * Create: Fri Dec 29 10:29:00 2023
+ */
+
+DEFINE_MANAGER(kcov, 4,
+	DEFINE_SIMPLE_METHOD(kcov, open,
+		ARG_NO,
+		RET(1, long long, kcov),
+		SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(kcov, ioctl,
+		ARG(3, long long, kcov,
+		unsigned int, cmd,
+		unsigned long, arg),
+		RET_NO,
+		SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(kcov, close,
+		ARG(1, long long, kcov),
+		RET_NO,
+		SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(kcov, map_shm,
+		ARG(3, __u32, cnode_idx, __u32, kcov_idx, long long, remote_service_data_ptr),
+		RET_NO,
+		SLOWDATA_NO)
+)

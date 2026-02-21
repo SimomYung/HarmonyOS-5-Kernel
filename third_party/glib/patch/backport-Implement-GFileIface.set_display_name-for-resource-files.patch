@@ -1,0 +1,52 @@
+From a9394bd68e222377f0156bf9c213b3f3a1e340d0 Mon Sep 17 00:00:00 2001
+From: Emmanuele Bassi <ebassi@gnome.org>
+Date: Sat, 30 Jul 2022 20:03:42 +0100
+Subject: [PATCH] Implement GFileIface.set_display_name() for resource files
+
+Resource files cannot be renamed, and GFileIface.set_display_name() is
+mandatory.
+
+Fixes: #2705
+
+Conflict:NA
+Reference:https://gitlab.gnome.org/GNOME/glib/-/commit/a9394bd68e222377f0156bf9c213b3f3a1e340d0
+
+---
+ gio/gresourcefile.c | 14 ++++++++++++++
+ 1 file changed, 14 insertions(+)
+
+diff --git a/gio/gresourcefile.c b/gio/gresourcefile.c
+index 340d3378b3..24f20f2903 100644
+--- a/gio/gresourcefile.c
++++ b/gio/gresourcefile.c
+@@ -646,6 +646,19 @@ g_resource_file_monitor_file (GFile              *file,
+   return g_object_new (g_resource_file_monitor_get_type (), NULL);
+ }
+
++static GFile *
++g_resource_file_set_display_name (GFile         *file,
++                                  const char    *display_name,
++                                  GCancellable  *cancellable,
++                                  GError       **error)
++{
++  g_set_error_literal (error,
++                       G_IO_ERROR,
++                       G_IO_ERROR_NOT_SUPPORTED,
++                       _("Resource files cannot be renamed"));
++  return NULL;
++}
++
+ static void
+ g_resource_file_file_iface_init (GFileIface *iface)
+ {
+@@ -664,6 +677,7 @@ g_resource_file_file_iface_init (GFileIface *iface)
+   iface->get_relative_path = g_resource_file_get_relative_path;
+   iface->resolve_relative_path = g_resource_file_resolve_relative_path;
+   iface->get_child_for_display_name = g_resource_file_get_child_for_display_name;
++  iface->set_display_name = g_resource_file_set_display_name;
+   iface->enumerate_children = g_resource_file_enumerate_children;
+   iface->query_info = g_resource_file_query_info;
+   iface->query_filesystem_info = g_resource_file_query_filesystem_info;
+--
+GitLab
+

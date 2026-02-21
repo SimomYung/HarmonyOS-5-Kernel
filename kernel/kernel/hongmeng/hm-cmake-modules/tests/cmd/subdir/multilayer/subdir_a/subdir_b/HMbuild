@@ -1,0 +1,8 @@
+# Copyright (c) Huawei Technologies Co., Ltd. 2022. All rights reserved.
+# Description: HMbuild for subdir_b of subdir_multilayer_test
+# Author: Huawei OS Kernel Lab
+# Create: Mon Mar 21 11:33:11 2022
+
+src-y: subdir.c
+
+# vim:ts=4:sw=4:expandtab

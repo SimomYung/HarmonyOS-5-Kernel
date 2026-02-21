@@ -1,0 +1,8 @@
+# Copyright (c) Huawei Technologies Co., Ltd. 2022-2022. All rights reserved.
+# Description: HMbuild
+# Author: Huawei OS Kernel Lab
+# Create: Wed Mar 30 09:48:41 2022
+
+lib-static-y: builtin_depends
+src-y: foo.c
+subdir-y: subdir

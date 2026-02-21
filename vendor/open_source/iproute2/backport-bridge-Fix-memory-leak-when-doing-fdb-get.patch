@@ -1,0 +1,68 @@
+From 6db01afd60748afbba114be2773be338c5be28ff Mon Sep 17 00:00:00 2001
+From: Benjamin Poirier <bpoirier@nvidia.com>
+Date: Mon, 11 Jul 2022 08:52:51 +0900
+Subject: [PATCH] bridge: Fix memory leak when doing 'fdb get'
+
+With the following command sequence:
+
+ip link add br0 up type bridge
+ip link add dummy0 up address 02:00:00:00:00:01 master br0 type dummy
+bridge fdb get 02:00:00:00:00:01 br br0
+
+when running the last command under valgrind, it reports
+
+32,768 bytes in 1 blocks are definitely lost in loss record 2 of 2
+   at 0x483F7B5: malloc (vg_replace_malloc.c:381)
+   by 0x11C1EC: rtnl_recvmsg (libnetlink.c:838)
+   by 0x11C4D1: __rtnl_talk_iov.constprop.0 (libnetlink.c:1040)
+   by 0x11D994: __rtnl_talk (libnetlink.c:1141)
+   by 0x11D994: rtnl_talk (libnetlink.c:1147)
+   by 0x10D336: fdb_get (fdb.c:652)
+   by 0x48907FC: (below main) (libc-start.c:332)
+
+Free the answer obtained from rtnl_talk().
+
+Fixes: 4ed5ad7bd3c6 ("bridge: fdb get support")
+Reported-by: Ido Schimmel <idosch@nvidia.com>
+Reviewed-by: Ido Schimmel <idosch@nvidia.com>
+Signed-off-by: Benjamin Poirier <bpoirier@nvidia.com>
+Signed-off-by: Stephen Hemminger <stephen@networkplumber.org>
+Conflict: NA
+Reference: https://git.kernel.org/pub/scm/network/iproute2/iproute2.git/commit?id=6db01afd
+---
+ bridge/fdb.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
+
+diff --git a/bridge/fdb.c b/bridge/fdb.c
+index 8912f092..08f6c72b 100644
+--- a/bridge/fdb.c
++++ b/bridge/fdb.c
+@@ -571,6 +571,7 @@ static int fdb_get(int argc, char **argv)
+ 	char *addr = NULL;
+ 	short vlan = -1;
+ 	char *endptr;
++	int ret;
+ 
+ 	while (argc > 0) {
+ 		if ((strcmp(*argv, "brport") == 0) || strcmp(*argv, "dev") == 0) {
+@@ -657,13 +658,15 @@ static int fdb_get(int argc, char **argv)
+ 	 * if -json was specified.
+ 	 */
+ 	new_json_obj(json);
++	ret = 0;
+ 	if (print_fdb(answer, stdout) < 0) {
+ 		fprintf(stderr, "An error :-)\n");
+-		return -1;
++		ret = -1;
+ 	}
+ 	delete_json_obj();
++	free(answer);
+ 
+-	return 0;
++	return ret;
+ }
+ 
+ int do_fdb(int argc, char **argv)
+-- 
+2.23.0
+

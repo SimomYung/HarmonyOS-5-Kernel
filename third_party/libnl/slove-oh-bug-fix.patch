@@ -1,0 +1,35 @@
+diff -urN libnl-3.7.0/lib/nl.c libnl-3.7.0_new/lib/nl.c
+--- libnl-3.7.0/lib/nl.c	2022-05-04 00:50:34.000000000 +0800
++++ libnl-3.7.0_new/lib/nl.c	2024-08-08 15:28:38.266789900 +0800
+@@ -481,7 +481,7 @@
+ 		nlh->nlmsg_pid = nl_socket_get_local_port(sk);
+ 
+ 	if (nlh->nlmsg_seq == NL_AUTO_SEQ)
+-		nlh->nlmsg_seq = sk->s_seq_next++;
++		nlh->nlmsg_seq = nl_socket_use_seq(sk);
+ 
+ 	if (msg->nm_protocol == -1)
+ 		msg->nm_protocol = sk->s_proto;
+diff -urN libnl-3.7.0/lib/socket.c libnl-3.7.0_new/lib/socket.c
+--- libnl-3.7.0/lib/socket.c	2022-05-24 16:55:12.000000000 +0800
++++ libnl-3.7.0_new/lib/socket.c	2024-08-08 15:29:22.409796400 +0800
+@@ -22,7 +22,7 @@
+  */
+ 
+ #include "defs.h"
+-
++#include <limits.h>
+ #include "sys/socket.h"
+ 
+ #include <netlink-private/netlink.h>
+@@ -291,6 +291,10 @@
+  */
+ unsigned int nl_socket_use_seq(struct nl_sock *sk)
+ {
++	if (sk->s_seq_next == UINT_MAX) {
++		sk->s_seq_next = 0;
++		return UINT_MAX;
++	}
+ 	return sk->s_seq_next++;
+ }
+ 

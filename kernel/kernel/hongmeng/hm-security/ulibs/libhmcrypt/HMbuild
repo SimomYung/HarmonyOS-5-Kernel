@@ -1,0 +1,34 @@
+# Copyright (c) Huawei Technologies Co., Ltd. 2021-2022. All rights reserved.
+# Description: HMbuild for libhmcrypt
+# Author: Huawei OS Kernel Lab
+# Create: Tue Nov 09 10:25:23 2021
+
+findpkg: HMLibC
+findpkg: HMHitlsLib
+findpkg: HMOpensslLib
+
+subdir-y: libentropy
+subdir-y: libprng
+subdir-y: libhmcrypt
+
+include-y: ../../include
+inclib: HMHitlsLib::BslLib_include
+
+# libhmcrypt.a
+lib-static-y: hmcrypt
+cflags-hmcrypt-y: -ffunction-sections
+cflags-hmcrypt-y: -fdata-sections
+cflags-hmcrypt-CONFIG_PIE: -fPIE
+install-hmcrypt-y: LIBDIR
+
+# libhmcrypt.so
+lib-dynamic-y: hmcrypt_shared
+linklib-hmcrypt_shared-y: HMLibC::HMSysLibC_shared
+linklib-hmcrypt_shared-CONFIG_CRYPTO_HITLS: HMHitlsLib::CryptoLib_static
+linklib-hmcrypt_shared-CONFIG_CRYPTO_HITLS: HMHitlsLib::BslLib_static
+linklib-hmcrypt_shared-CONFIG_CRYPTO_PART_HITLS: HMHitlsLib::CryptoLib_static
+linklib-hmcrypt_shared-CONFIG_CRYPTO_PART_HITLS: HMHitlsLib::BslLib_static
+linklib-hmcrypt_shared-CONFIG_CRYPTO_OPENSSL: OpensslLib::OpensslLib_static
+output-hmcrypt_shared: hmcrypt
+install-hmcrypt_shared-y: LIBDIR
+# vim:ts=4:sw=4:expandtab

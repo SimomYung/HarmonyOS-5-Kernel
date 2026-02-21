@@ -1,0 +1,17 @@
+/*
+ * Copyright (C) Huawei Technologies Co., Ltd. 2019-2020. All rights reserved.
+ * Description: Profiling
+ * Author: Huawei OS Kernel Lab
+ * Create: Thu Jul 25 15:23:21 2019
+ */
+#ifndef UAPI_HMKERNEL_PROFILING_SWINC_H
+#define UAPI_HMKERNEL_PROFILING_SWINC_H
+
+#define PROFILING_SWINC_EVT_FASTPATH_CALL	0
+#define PROFILING_SWINC_EVT_FASTPATH_RESTORE	1
+#define PROFILING_SWINC_EVT_SLOWPATH_CALL	2
+#define PROFILING_SWINC_EVT_SLOWPATH_RESTORE	3
+#define PROFILING_SWINC_EVT_RREF_CACHE_HIT	4
+#define PROFILING_SWINC_EVT_RREF_CACHE_MISS	5
+
+#endif

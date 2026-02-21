@@ -1,0 +1,24 @@
+# Copyright (c) Huawei Technologies Co., Ltd. 2022-2022. All rights reserved.
+# Description: HMbuild
+# Author: Huawei OS Kernel Lab
+# Create: Thu May 26 16:23:11 2022
+
+src-y: sysmgr_client.c
+src-y: devmgr_client.c
+src-y: devhost_client.c
+src-y: fs_client.c
+src-y: pwrmgr_client.c
+src-y: freqmgr_client.c
+src-y: utils_ldso.c
+src-y: utils.c
+src-y: utils_devmgr.c
+src-y: srvmgr_client.c
+src-y: hguard_client.c
+src-y: auditmgr_client.c
+src-y: uvmm_client.c
+src-y: crypto_client.c
+src-y: keymgr_client.c
+src-CONFIG_EVENTMGR: eventcb_client.c
+
+cflags-utils_devmgr.c-y: -D_GNU_SOURCE
+cflags-utils_devmgr.c-y: -Wno-strict-prototypes

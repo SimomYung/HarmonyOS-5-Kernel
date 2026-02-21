@@ -1,0 +1,29 @@
+/*
+ * Copyright (C) Huawei Technologies Co., Ltd. 2019-2020. All rights reserved.
+ * Description: Definition for pwrmgr suspend sysif
+ * Author: Huawei OS Kernel Lab
+ * Create: Sat Sep 7 17:13:41 2019
+ */
+
+/*
+ * To support the mixed data model which means the client and the server
+ * may use different data model. See the document for limitation of data type
+ * used in the sysif interfaces in <Documentation/sysif_compat.md>.
+ */
+#ifdef SYSIF_EXPORT_API
+
+#include <libhmpm/suspend.h>
+
+#endif
+
+DEFINE_MANAGER(suspend, 3,
+	DEFINE_METHOD(suspend, set_state,
+		      ARG(1, int, state),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_METHOD(suspend, disk_restore,
+		      ARG_NO,
+		      RET_NO,
+		      SLOWDATA_NO)
+)

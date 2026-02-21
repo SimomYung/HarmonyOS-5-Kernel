@@ -1,0 +1,56 @@
+From 1052048fb8f4ddcc0160eb670ef746ef7ee505a4 Mon Sep 17 00:00:00 2001
+From: Theodore Ts'o <tytso@mit.edu>
+Date: Mon, 6 Jun 2022 11:39:23 -0400
+Subject: e2fsck: fix potential out-of-bounds read in inc_ea_inode_refs()
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+If there isn't enough space for a full extended attribute entry,
+inc_ea_inode_refs() might end up reading beyond the allocated memory
+buffer.
+
+Reported-by: Nils Bars <nils.bars@rub.de>
+Reported-by: Moritz Schlögel <moritz.schloegel@rub.de>
+Reported-by: Nico Schiller <nico.schiller@rub.de>
+Signed-off-by: Theodore Ts'o <tytso@mit.edu>
+---
+ e2fsck/pass1.c | 13 ++++++++-----
+ 1 file changed, 8 insertions(+), 5 deletions(-)
+
+diff --git a/e2fsck/pass1.c b/e2fsck/pass1.c
+index dde862a8..2a17bb8a 100644
+--- a/e2fsck/pass1.c
++++ b/e2fsck/pass1.c
+@@ -389,13 +389,13 @@ static problem_t check_large_ea_inode(e2fsck_t ctx,
+ static void inc_ea_inode_refs(e2fsck_t ctx, struct problem_context *pctx,
+ 			      struct ext2_ext_attr_entry *first, void *end)
+ {
+-	struct ext2_ext_attr_entry *entry;
++	struct ext2_ext_attr_entry *entry = first;
++	struct ext2_ext_attr_entry *np = EXT2_EXT_ATTR_NEXT(entry);
+ 
+-	for (entry = first;
+-	     (void *)entry < end && !EXT2_EXT_IS_LAST_ENTRY(entry);
+-	     entry = EXT2_EXT_ATTR_NEXT(entry)) {
++	while ((void *) entry < end && (void *) np < end &&
++	       !EXT2_EXT_IS_LAST_ENTRY(entry)) {
+ 		if (!entry->e_value_inum)
+-			continue;
++			goto next;
+ 		if (!ctx->ea_inode_refs) {
+ 			pctx->errcode = ea_refcount_create(0,
+ 							   &ctx->ea_inode_refs);
+@@ -408,6 +408,9 @@ static void inc_ea_inode_refs(e2fsck_t ctx, struct problem_context *pctx,
+ 		}
+ 		ea_refcount_increment(ctx->ea_inode_refs, entry->e_value_inum,
+ 				      0);
++	next:
++		entry = np;
++		np = EXT2_EXT_ATTR_NEXT(entry);
+ 	}
+ }
+ 
+-- 
+cgit 
+

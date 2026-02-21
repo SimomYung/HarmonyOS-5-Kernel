@@ -1,0 +1,92 @@
+/*
+ * Copyright (C) Huawei Technologies Co., Ltd. 2024-2024. All rights reserved.
+ * Description: Header file for socket sysif api
+ * Author: Huawei OS Kernel Lab
+ * Create: Fri Mar 29 06:04:28 2024
+ */
+
+/*
+ * To support the mixed data model which means the client and the server
+ * may use different data model. See the comment for limitation of data type
+ * used in the sysif interfaces in <libsysif/base/api.h>.
+ */
+DEFINE_MANAGER(sockfs, 46,
+	DEFINE_LSYSCALL_METHOD(socket, SYS_socket,
+			     ARG(3, int, domain, int, type, int, protocol))
+	DEFINE_LSYSCALL_METHOD(socketpair, SYS_socketpair,
+			     ARG(4, int, domain, int, type, int, protocol, int *, fd))
+	DEFINE_LSYSCALL_METHOD(shutdown, SYS_shutdown,
+			     ARG(2, long long, socket, int, how))
+	DEFINE_LSYSCALL_METHOD(bind, NATIVE, SYS_bind,
+			     ARG(4, long long, socket, const void *, addr, int, len, int, fd))
+	DEFINE_LSYSCALL_METHOD(listen, NATIVE, SYS_listen,
+			     ARG(2, long long, socket, int, backlog))
+	DEFINE_LSYSCALL_METHOD(accept, SYS_accept,
+			     ARG(3, long long, socket, void *, addr, void *, addrlen))
+	DEFINE_LSYSCALL_METHOD(accept4, SYS_accept4,
+			     ARG(4, long long, socket, void *, addr, void *, addrlen, int, flags))
+	DEFINE_LSYSCALL_METHOD(connect, SYS_connect,
+			     ARG(4, long long, socket, const void *, addr, int, addrlen, int, fd))
+	DEFINE_LSYSCALL_METHOD_LONG(send, SYS_send,
+			     ARG(4, long long, socket, const void *, buf, size_t, len, int, flags),
+			     ARCH(__arm__))
+	DEFINE_LSYSCALL_METHOD_LONG(recv, SYS_recv,
+			     ARG(4, long long, socket, void *, buf, size_t, len, int, flags),
+			     ARCH(__arm__))
+	DEFINE_LSYSCALL_METHOD(sendmmsg, SYS_sendmmsg,
+			     ARG(4, long long, socket, const void *, msgvec, size_t, vlen, int, flags))
+	DEFINE_LSYSCALL_METHOD(recvmmsg, SYS_recvmmsg,
+			     ARG(5, long long, socket, const void *, msgvec, size_t, vlen, int, flags, void *, timeout))
+	DEFINE_LSYSCALL_METHOD_LONG(sendmsg, SYS_sendmsg,
+			     ARG(3, long long, socket, const void *, msg, int, flags))
+	DEFINE_LSYSCALL_METHOD_LONG(recvmsg, SYS_recvmsg,
+			     ARG(3, long long, socket, void *, msg, int, flags))
+	DEFINE_LSYSCALL_METHOD_LONG(sendto, SYS_sendto,
+			     ARG(6, long long, socket, const void *, buf, size_t, len, int, flags, const void *, addr, int, addrlen))
+	DEFINE_LSYSCALL_METHOD_LONG(recvfrom, SYS_recvfrom,
+			     ARG(6, long long, socket, void *, buf, size_t, len, int, flags, void *, addr, void *, addrlen))
+	DEFINE_LSYSCALL_METHOD(getsockopt, SYS_getsockopt,
+			     ARG(5, long long, socket, int, level, int, optname,
+				    void *, optval, int *, optlen))
+	DEFINE_LSYSCALL_METHOD(setsockopt, SYS_setsockopt,
+			     ARG(5, long long, socket, int, level, int, optname,
+				    const void *, optval, int, optlen))
+	DEFINE_LSYSCALL_METHOD(getsockname, SYS_getsockname,
+			     ARG(3, long long, socket, void *, addr, void *, addrlen))
+	DEFINE_LSYSCALL_METHOD(getpeername, SYS_getpeername,
+			     ARG(3, long long, socket, void *, addr, void *, addrlen))
+	DEFINE_SIMPLE_METHOD_LONG(sockfs, sys_read,
+			     ARG(5, uint32_t, cnode, int, fd,
+				    void *, buf, size_t, len, int, flags),
+			     RET_NO,
+			     SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD_LONG(sockfs, sys_write,
+			     ARG(5, uint32_t, cnode, int, fd,
+				    const void *, buf, size_t, len, int, flags),
+			     RET_NO,
+			     SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(sockfs, new_ns,
+			     ARG(2, uint32_t, cnode_idx, unsigned int, nsid),
+			     RET_NO,
+			     SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(sockfs, destroy_ns,
+			     ARG(1, unsigned int, nsid),
+			     RET_NO,
+			     SLOWDATA_NO)
+	DEFINE_METHOD(sockfs, get_netstat,
+			     ARG(4, int, callnum, void *, buf, size_t, count, int, type),
+			     RET_NO,
+			     SLOWDATA_NO)
+	DEFINE_METHOD(sockfs, set_max_dgram_qlen,
+			     ARG(4, int, callnum, const void *, buf, size_t, count, int, type),
+			     RET_NO,
+			     SLOWDATA_NO)
+	DEFINE_METHOD(sockfs, get_max_dgram_qlen,
+			     ARG(4, int, callnum, void *, buf, size_t, count, int, type),
+			     RET_NO,
+			     SLOWDATA_NO)
+	DEFINE_METHOD(sockfs, get_socket_process_info,
+			     ARG(3, void *, buf, size_t, count, int, type),
+			     RET_NO,
+			     SLOWDATA_NO)
+)

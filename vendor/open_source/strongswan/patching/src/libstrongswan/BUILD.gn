@@ -1,0 +1,522 @@
+# Copyright (c) 2024 Huawei Device Co., Ltd.
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+import("//build/ohos.gni")
+import("//vendor/open_source/strongswan/strongswan_config.gni")
+
+source_gen_dir = "${target_gen_dir}/../../../strongswan/src/libstrongswan"
+sources_list = [
+  "${source_gen_dir}/library.c",
+  "${source_gen_dir}/asn1/asn1.c",
+  "${source_gen_dir}/asn1/asn1_parser.c",
+  "${source_gen_dir}/bio/bio_reader.c",
+  "${source_gen_dir}/bio/bio_writer.c",
+  "${source_gen_dir}/collections/blocking_queue.c",
+  "${source_gen_dir}/collections/enumerator.c",
+  "${source_gen_dir}/collections/hashtable.c",
+  "${source_gen_dir}/collections/hashlist.c",
+  "${source_gen_dir}/collections/array.c",
+  "${source_gen_dir}/collections/linked_list.c",
+  "${source_gen_dir}/crypto/crypters/crypter.c",
+  "${source_gen_dir}/crypto/drbgs/drbg.c",
+  "${source_gen_dir}/crypto/hashers/hasher.c",
+  "${source_gen_dir}/crypto/hashers/hash_algorithm_set.c",
+  "${source_gen_dir}/crypto/proposal/proposal.c",
+  "${source_gen_dir}/crypto/proposal/proposal_keywords.c",
+  "${source_gen_dir}/crypto/prfs/prf.c",
+  "${source_gen_dir}/crypto/prfs/mac_prf.c",
+  "${source_gen_dir}/crypto/pkcs5.c",
+  "${source_gen_dir}/crypto/rngs/rng.c",
+  "${source_gen_dir}/crypto/rngs/rng_tester.c",
+  "${source_gen_dir}/crypto/signers/signer.c",
+  "${source_gen_dir}/crypto/signers/mac_signer.c",
+  "${source_gen_dir}/crypto/crypto_factory.c",
+  "${source_gen_dir}/crypto/crypto_tester.c",
+  "${source_gen_dir}/crypto/key_exchange.c",
+  "${source_gen_dir}/crypto/aead.c",
+  "${source_gen_dir}/crypto/transform.c",
+  "${source_gen_dir}/crypto/iv/iv_gen.c",
+  "${source_gen_dir}/crypto/iv/iv_gen_rand.c",
+  "${source_gen_dir}/crypto/iv/iv_gen_seq.c",
+  "${source_gen_dir}/crypto/iv/iv_gen_null.c",
+  "${source_gen_dir}/crypto/kdfs/kdf.c",
+  "${source_gen_dir}/crypto/xofs/xof.c",
+  "${source_gen_dir}/crypto/xofs/xof_bitspender.c",
+  "${source_gen_dir}/credentials/credential_factory.c",
+  "${source_gen_dir}/credentials/builder.c",
+  "${source_gen_dir}/credentials/cred_encoding.c",
+  "${source_gen_dir}/credentials/keys/private_key.c",
+  "${source_gen_dir}/credentials/keys/public_key.c",
+  "${source_gen_dir}/credentials/keys/shared_key.c",
+  "${source_gen_dir}/credentials/keys/signature_params.c",
+  "${source_gen_dir}/credentials/certificates/certificate.c",
+  "${source_gen_dir}/credentials/certificates/crl.c",
+  "${source_gen_dir}/credentials/certificates/ocsp_response.c",
+  "${source_gen_dir}/credentials/certificates/x509.c",
+  "${source_gen_dir}/credentials/certificates/certificate_printer.c",
+  "${source_gen_dir}/credentials/containers/container.c",
+  "${source_gen_dir}/credentials/containers/pkcs12.c",
+  "${source_gen_dir}/credentials/credential_manager.c",
+  "${source_gen_dir}/credentials/sets/auth_cfg_wrapper.c",
+  "${source_gen_dir}/credentials/sets/ocsp_response_wrapper.c",
+  "${source_gen_dir}/credentials/sets/cert_cache.c",
+  "${source_gen_dir}/credentials/sets/mem_cred.c",
+  "${source_gen_dir}/credentials/sets/callback_cred.c",
+  "${source_gen_dir}/credentials/auth_cfg.c",
+  "${source_gen_dir}/database/database.c",
+  "${source_gen_dir}/database/database_factory.c",
+  "${source_gen_dir}/fetcher/fetcher.c",
+  "${source_gen_dir}/fetcher/fetcher_manager.c",
+  "${source_gen_dir}/eap/eap.c",
+  "${source_gen_dir}/ipsec/ipsec_types.c",
+  "${source_gen_dir}/metadata/metadata_factory.c",
+  "${source_gen_dir}/metadata/metadata_int.c",
+  "${source_gen_dir}/metadata/metadata_set.c",
+  "${source_gen_dir}/networking/host.c",
+  "${source_gen_dir}/networking/host_resolver.c",
+  "${source_gen_dir}/networking/packet.c",
+  "${source_gen_dir}/networking/tun_device.c",
+  "${source_gen_dir}/networking/streams/stream_manager.c",
+  "${source_gen_dir}/networking/streams/stream.c",
+  "${source_gen_dir}/networking/streams/stream_service.c",
+  "${source_gen_dir}/networking/streams/stream_tcp.c",
+  "${source_gen_dir}/networking/streams/stream_service_tcp.c",
+  "${source_gen_dir}/pen/pen.c",
+  "${source_gen_dir}/plugins/plugin_loader.c",
+  "${source_gen_dir}/plugins/plugin_feature.c",
+  "${source_gen_dir}/processing/jobs/job.c",
+  "${source_gen_dir}/processing/jobs/callback_job.c",
+  "${source_gen_dir}/processing/processor.c",
+  "${source_gen_dir}/processing/scheduler.c",
+  "${source_gen_dir}/processing/watcher.c",
+  "${source_gen_dir}/resolver/resolver_manager.c",
+  "${source_gen_dir}/resolver/rr_set.c",
+  "${source_gen_dir}/selectors/sec_label.c",
+  "${source_gen_dir}/selectors/traffic_selector.c",
+  "${source_gen_dir}/settings/settings.c",
+  "${source_gen_dir}/settings/settings_types.c",
+  "${source_gen_dir}/utils/cpu_feature.c",
+  "${source_gen_dir}/utils/utils.c",
+  "${source_gen_dir}/utils/chunk.c",
+  "${source_gen_dir}/utils/debug.c",
+  "${source_gen_dir}/utils/enum.c",
+  "${source_gen_dir}/utils/identification.c",
+  "${source_gen_dir}/utils/lexparser.c",
+  "${source_gen_dir}/utils/optionsfrom.c",
+  "${source_gen_dir}/utils/capabilities.c",
+  "${source_gen_dir}/utils/backtrace.c",
+  "${source_gen_dir}/utils/parser_helper.c",
+  "${source_gen_dir}/utils/test.c",
+  "${source_gen_dir}/utils/process.c",
+  "${source_gen_dir}/utils/utils/strerror.c",
+  "${source_gen_dir}/utils/utils/atomics.c",
+  "${source_gen_dir}/utils/utils/string.c",
+  "${source_gen_dir}/utils/utils/memory.c",
+  "${source_gen_dir}/utils/utils/tty.c",
+  "${source_gen_dir}/utils/utils/path.c",
+  "${source_gen_dir}/utils/utils/status.c",
+  "${source_gen_dir}/utils/utils/time.c",
+  "${source_gen_dir}/utils/utils/align.c",
+]
+
+sources_list += [
+  "${source_gen_dir}/threading/thread.c",
+  "${source_gen_dir}/threading/thread_value.c",
+  "${source_gen_dir}/threading/mutex.c",
+  "${source_gen_dir}/threading/rwlock.c",
+  "${source_gen_dir}/threading/spinlock.c",
+  "${source_gen_dir}/threading/semaphore.c",
+  "${source_gen_dir}/networking/streams/stream_unix.c",
+  "${source_gen_dir}/networking/streams/stream_service_unix.c",
+]
+
+sources_list += [ "${source_gen_dir}/utils/printf_hook/printf_hook_builtin.c" ]
+
+# adding the plugin source files
+# pkcs11 aes des rc2 sha2 sha1 md5 random nonce x509 revocation constraints pubkey pkcs1 pkcs7
+# pkcs12 pgp dnskey sshkey pem openssl pkcs8 af-alg fips-prf curve25519 xcbc cmac hmac kdf ctr ccm gcm drbg
+
+# plugins/pkcs11
+sources_list += [
+  "${source_gen_dir}/plugins/pkcs11/pkcs11_public_key.c",
+  "${source_gen_dir}/plugins/pkcs11/pkcs11_creds.c",
+  "${source_gen_dir}/plugins/pkcs11/pkcs11_manager.c",
+  "${source_gen_dir}/plugins/pkcs11/pkcs11_private_key.c",
+  "${source_gen_dir}/plugins/pkcs11/pkcs11_hasher.c",
+  "${source_gen_dir}/plugins/pkcs11/pkcs11_dh.c",
+  "${source_gen_dir}/plugins/pkcs11/pkcs11_plugin.c",
+  "${source_gen_dir}/plugins/pkcs11/pkcs11_rng.c",
+  "${source_gen_dir}/plugins/pkcs11/pkcs11_library.c",
+]
+
+# plugins/aes
+sources_list += [
+  "${source_gen_dir}/plugins/aes/aes_crypter.c",
+  "${source_gen_dir}/plugins/aes/aes_plugin.c",
+]
+
+# plugins/des
+sources_list += [
+  "${source_gen_dir}/plugins/des/des_plugin.c",
+  "${source_gen_dir}/plugins/des/des_crypter.c",
+]
+
+# plugins/rc2
+sources_list += [
+  "${source_gen_dir}/plugins/rc2/rc2_crypter.c",
+  "${source_gen_dir}/plugins/rc2/rc2_plugin.c",
+]
+
+# plugins/sha2
+sources_list += [
+  "${source_gen_dir}/plugins/sha2/sha2_plugin.c",
+  "${source_gen_dir}/plugins/sha2/sha2_hasher.c",
+]
+
+# plugins/sha1
+sources_list += [
+  "${source_gen_dir}/plugins/sha1/sha1_hasher.c",
+  "${source_gen_dir}/plugins/sha1/sha1_plugin.c",
+  "${source_gen_dir}/plugins/sha1/sha1_prf.c",
+]
+
+# plugins/md5
+sources_list += [
+  "${source_gen_dir}/plugins/md5/md5_plugin.c",
+  "${source_gen_dir}/plugins/md5/md5_hasher.c",
+]
+
+# plugins/random
+sources_list += [
+  "${source_gen_dir}/plugins/random/random_plugin.c",
+  "${source_gen_dir}/plugins/random/random_rng.c",
+]
+
+# plugins/nonce
+sources_list += [
+  "${source_gen_dir}/plugins/nonce/nonce_nonceg.c",
+  "${source_gen_dir}/plugins/nonce/nonce_plugin.c",
+]
+
+# plugins/x509
+sources_list += [
+  "${source_gen_dir}/plugins/x509/x509_cert.c",
+  "${source_gen_dir}/plugins/x509/x509_ocsp_response.c",
+  "${source_gen_dir}/plugins/x509/x509_crl.c",
+  "${source_gen_dir}/plugins/x509/x509_ocsp_request.c",
+  "${source_gen_dir}/plugins/x509/x509_ac.c",
+  "${source_gen_dir}/plugins/x509/x509_pkcs10.c",
+  "${source_gen_dir}/plugins/x509/x509_plugin.c",
+]
+
+# plugins/revocation
+sources_list += [
+  "${source_gen_dir}/plugins/revocation/revocation_plugin.c",
+  "${source_gen_dir}/plugins/revocation/revocation_validator.c",
+]
+
+# plugins/constraints
+sources_list += [
+  "${source_gen_dir}/plugins/constraints/constraints_plugin.c",
+  "${source_gen_dir}/plugins/constraints/constraints_validator.c",
+]
+
+# plugins/pubkey
+sources_list += [
+  "${source_gen_dir}/plugins/pubkey/pubkey_cert.c",
+  "${source_gen_dir}/plugins/pubkey/pubkey_plugin.c",
+]
+
+# plugins/pkcs1
+sources_list += [
+  "${source_gen_dir}/plugins/pkcs1/pkcs1_plugin.c",
+  "${source_gen_dir}/plugins/pkcs1/pkcs1_encoder.c",
+  "${source_gen_dir}/plugins/pkcs1/pkcs1_builder.c",
+]
+
+# plugins/pkcs7
+sources_list += [
+  "${source_gen_dir}/plugins/pkcs7/pkcs7_signed_data.c",
+  "${source_gen_dir}/plugins/pkcs7/pkcs7_enveloped_data.c",
+  "${source_gen_dir}/plugins/pkcs7/pkcs7_data.c",
+  "${source_gen_dir}/plugins/pkcs7/pkcs7_plugin.c",
+  "${source_gen_dir}/plugins/pkcs7/pkcs7_attributes.c",
+  "${source_gen_dir}/plugins/pkcs7/pkcs7_generic.c",
+  "${source_gen_dir}/plugins/pkcs7/pkcs7_encrypted_data.c",
+]
+
+# plugins/pkcs12
+sources_list += [
+  "${source_gen_dir}/plugins/pkcs12/pkcs12_plugin.c",
+  "${source_gen_dir}/plugins/pkcs12/pkcs12_decode.c",
+]
+
+# plugins/pgp
+sources_list += [
+  "${source_gen_dir}/plugins/pgp/pgp_plugin.c",
+  "${source_gen_dir}/plugins/pgp/pgp_builder.c",
+  "${source_gen_dir}/plugins/pgp/pgp_cert.c",
+  "${source_gen_dir}/plugins/pgp/pgp_utils.c",
+  "${source_gen_dir}/plugins/pgp/pgp_encoder.c",
+]
+
+# plugins/dnskey
+sources_list += [
+  "${source_gen_dir}/plugins/dnskey/dnskey_encoder.c",
+  "${source_gen_dir}/plugins/dnskey/dnskey_plugin.c",
+  "${source_gen_dir}/plugins/dnskey/dnskey_builder.c",
+]
+
+# plugins/sshkey
+sources_list += [
+  "${source_gen_dir}/plugins/sshkey/sshkey_plugin.c",
+  "${source_gen_dir}/plugins/sshkey/sshkey_builder.c",
+  "${source_gen_dir}/plugins/sshkey/sshkey_encoder.c",
+]
+
+# plugins/pem
+sources_list += [
+  "${source_gen_dir}/plugins/pem/pem_builder.c",
+  "${source_gen_dir}/plugins/pem/pem_plugin.c",
+  "${source_gen_dir}/plugins/pem/pem_encoder.c",
+]
+
+# plugins/openssl
+sources_list += [
+  "${source_gen_dir}/plugins/openssl/openssl_pkcs7.c",
+  "${source_gen_dir}/plugins/openssl/openssl_plugin.c",
+  "${source_gen_dir}/plugins/openssl/openssl_ec_private_key.c",
+  "${source_gen_dir}/plugins/openssl/openssl_crl.c",
+  "${source_gen_dir}/plugins/openssl/openssl_kdf.c",
+  "${source_gen_dir}/plugins/openssl/openssl_util.c",
+  "${source_gen_dir}/plugins/openssl/openssl_hasher.c",
+  "${source_gen_dir}/plugins/openssl/openssl_x_diffie_hellman.c",
+  "${source_gen_dir}/plugins/openssl/openssl_ed_public_key.c",
+  "${source_gen_dir}/plugins/openssl/openssl_engine.c",
+  "${source_gen_dir}/plugins/openssl/openssl_ec_public_key.c",
+  "${source_gen_dir}/plugins/openssl/openssl_xof.c",
+  "${source_gen_dir}/plugins/openssl/openssl_diffie_hellman.c",
+  "${source_gen_dir}/plugins/openssl/openssl_ed_private_key.c",
+  "${source_gen_dir}/plugins/openssl/openssl_rsa_public_key.c",
+  "${source_gen_dir}/plugins/openssl/openssl_x509.c",
+  "${source_gen_dir}/plugins/openssl/openssl_sha1_prf.c",
+  "${source_gen_dir}/plugins/openssl/openssl_ec_diffie_hellman.c",
+  "${source_gen_dir}/plugins/openssl/openssl_crypter.c",
+  "${source_gen_dir}/plugins/openssl/openssl_aead.c",
+  "${source_gen_dir}/plugins/openssl/openssl_rng.c",
+  "${source_gen_dir}/plugins/openssl/openssl_hmac.c",
+  "${source_gen_dir}/plugins/openssl/openssl_rsa_private_key.c",
+  "${source_gen_dir}/plugins/openssl/openssl_pkcs12.c",
+]
+
+# plugins/pkcs8
+sources_list += [
+  "${source_gen_dir}/plugins/pkcs8/pkcs8_builder.c",
+  "${source_gen_dir}/plugins/pkcs8/pkcs8_plugin.c",
+]
+
+# plugins/af_alg
+sources_list += [
+  "${source_gen_dir}/plugins/af_alg/af_alg_crypter.c",
+  "${source_gen_dir}/plugins/af_alg/af_alg_ops.c",
+  "${source_gen_dir}/plugins/af_alg/af_alg_prf.c",
+  "${source_gen_dir}/plugins/af_alg/af_alg_plugin.c",
+  "${source_gen_dir}/plugins/af_alg/af_alg_signer.c",
+  "${source_gen_dir}/plugins/af_alg/af_alg_hasher.c",
+]
+
+# plugins/fips_prf
+sources_list += [
+  "${source_gen_dir}/plugins/fips_prf/fips_prf_plugin.c",
+  "${source_gen_dir}/plugins/fips_prf/fips_prf.c",
+]
+
+# plugins/curve25519
+sources_list += [
+  "${source_gen_dir}/plugins/curve25519/curve25519_private_key.c",
+  "${source_gen_dir}/plugins/curve25519/curve25519_drv_portable.c",
+  "${source_gen_dir}/plugins/curve25519/ref10/ref10.c",
+  "${source_gen_dir}/plugins/curve25519/curve25519_drv.c",
+  "${source_gen_dir}/plugins/curve25519/curve25519_identity_hasher.c",
+  "${source_gen_dir}/plugins/curve25519/curve25519_plugin.c",
+  "${source_gen_dir}/plugins/curve25519/curve25519_dh.c",
+  "${source_gen_dir}/plugins/curve25519/curve25519_public_key.c",
+]
+
+# plugins/xcbc
+sources_list += [
+  "${source_gen_dir}/plugins/xcbc/xcbc.c",
+  "${source_gen_dir}/plugins/xcbc/xcbc_plugin.c",
+]
+
+# plugins/cmac
+sources_list += [
+  "${source_gen_dir}/plugins/cmac/cmac_plugin.c",
+  "${source_gen_dir}/plugins/cmac/cmac.c",
+]
+
+# plugins/hmac
+sources_list += [
+  "${source_gen_dir}/plugins/hmac/hmac_plugin.c",
+  "${source_gen_dir}/plugins/hmac/hmac.c",
+]
+
+# plugins/kdf
+sources_list += [
+  "${source_gen_dir}/plugins/kdf/kdf_plugin.c",
+  "${source_gen_dir}/plugins/kdf/kdf_kdf.c",
+]
+
+# plugins/ctr
+sources_list += [
+  "${source_gen_dir}/plugins/ctr/ctr_plugin.c",
+  "${source_gen_dir}/plugins/ctr/ctr_ipsec_crypter.c",
+]
+
+# plugins/ccm
+sources_list += [
+  "${source_gen_dir}/plugins/ccm/ccm_plugin.c",
+  "${source_gen_dir}/plugins/ccm/ccm_aead.c",
+]
+
+# plugins/gcm
+sources_list += [
+  "${source_gen_dir}/plugins/gcm/gcm_aead.c",
+  "${source_gen_dir}/plugins/gcm/gcm_plugin.c",
+]
+
+# plugins/drbg
+sources_list += [
+  "${source_gen_dir}/plugins/drbg/drbg_ctr.c",
+  "${source_gen_dir}/plugins/drbg/drbg_plugin.c",
+  "${source_gen_dir}/plugins/drbg/drbg_hmac.c",
+]
+
+# netmanager
+sources_list += [
+  "${source_gen_dir}/netmanager/src/ipc_request.cpp",
+  "${source_gen_dir}/netmanager/src/net_manager_api.c",
+  "${source_gen_dir}/netmanager/src/net_manager_log.c",
+]
+
+action("libstrongswan_install_action") {
+  script = "//vendor/open_source/strongswan/empty.py"
+  outputs = sources_list
+  deps = [ "../../../:strongswan_install_action" ]
+}
+
+action("parse_settings_l_install_action") {
+  script = "//vendor/open_source/strongswan/parse_l.py"
+  outputs = [ "${source_gen_dir}/settings/settings_lexer.c" ]
+  deps = [ "../../../:strongswan_install_action" ]
+  args = [
+    "--gen-dir",
+    rebase_path("${source_gen_dir}", root_build_dir),
+    "--source-file",
+    rebase_path("//vendor/open_source/strongswan"),
+    "--parse-files",
+    "settings/settings_lexer.l",
+  ]
+}
+
+action("parse_settings_y_install_action") {
+  script = "//vendor/open_source/strongswan/parse_y.py"
+  outputs = [ "${source_gen_dir}/settings/settings_parser.c" ]
+  deps = [ "../../../:strongswan_install_action" ]
+  args = [
+    "--gen-dir",
+    rebase_path("${source_gen_dir}", root_build_dir),
+    "--source-file",
+    rebase_path("//vendor/open_source/strongswan"),
+    "--parse-files",
+    "settings/settings_parser.y",
+  ]
+}
+
+action("parse_proposal_c_install_action") {
+  script = "//vendor/open_source/strongswan/parse_c.py"
+  outputs = [ "${source_gen_dir}/crypto/proposal/proposal_keywords_static.c" ]
+  deps = [ "../../../:strongswan_install_action" ]
+  args = [
+    "--gen-dir",
+    rebase_path("${source_gen_dir}", root_build_dir),
+    "--parse-files-h",
+    "crypto/proposal/proposal_keywords_static.h.in",
+    "--parse-files-txt",
+    "crypto/proposal/proposal_keywords_static.txt",
+    "--parse-args",
+    "-N proposal_get_token_static -m 10 -C -G -c -t -D",
+  ]
+}
+
+action("parse_plugins_install_action") {
+  script = "//vendor/open_source/strongswan/parse_plugins.py"
+  outputs = [ "${source_gen_dir}/plugin_constructors.c" ]
+  deps = [ "../../../:strongswan_install_action" ]
+  args = [
+    "--parse-plugins",
+    "pkcs11 aes des rc2 sha2 sha1 md5 random nonce x509 revocation constraints pubkey pkcs1 pkcs7 pkcs12 pgp dnskey sshkey pem openssl pkcs8 af-alg fips-prf curve25519 xcbc cmac hmac kdf ctr ccm gcm drbg",
+    "--gen-dir",
+    rebase_path("${source_gen_dir}", root_build_dir),
+    "--output-file",
+    "plugin_constructors.c",
+  ]
+}
+
+action("parse_settings_pl_install_action") {
+  script = "//vendor/open_source/strongswan/parse_pl.py"
+  outputs = [ "${source_gen_dir}/asn1/oid.c" ]
+  deps = [ "../../../:strongswan_install_action" ]
+  args = [
+    "--gen-dir",
+    rebase_path("${source_gen_dir}", root_build_dir),
+    "--parse-files-pl",
+    "asn1/oid.pl",
+  ]
+}
+
+ohos_shared_library("libstrongswan") {
+  sources = get_target_outputs(":libstrongswan_install_action")
+  sources += get_target_outputs(":parse_settings_l_install_action")
+  sources += get_target_outputs(":parse_settings_y_install_action")
+  sources += get_target_outputs(":parse_proposal_c_install_action")
+  sources += get_target_outputs(":parse_settings_pl_install_action")
+  include_dirs = [
+    "${source_gen_dir}",
+    "${source_gen_dir}/netmanager/include",
+  ]
+  defines = common_defines
+  cflags = common_cflags
+  cflags_cc = common_cflags_cc
+
+  deps = [
+    ":libstrongswan_install_action",
+    ":parse_plugins_install_action",
+    ":parse_proposal_c_install_action",
+    ":parse_settings_l_install_action",
+    ":parse_settings_pl_install_action",
+    ":parse_settings_y_install_action",
+  ]
+
+  external_deps = [
+    "c_utils:utils",
+    "hilog:libhilog",
+    "ipc:ipc_single",
+    "netmanager_ext:net_vpn_manager_if",
+    "openssl:libcrypto_shared",
+    "openssl:libssl_shared",
+  ]
+
+  part_name = "strongswan"
+  subsystem_name = "open_source"
+}

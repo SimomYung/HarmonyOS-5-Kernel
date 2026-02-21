@@ -1,0 +1,13 @@
+config RTM_DEBUG
+	depends on ARM64 && DFX_DEBUG_FS
+	bool "rtm"
+	default n
+	help
+		Say y if you want to use rtm feature.
+
+config RTM_DEBUG_EN_AVAILABLE
+	depends on ARM64 && DFX_DEBUG_FS
+	bool "rtm"
+	default n
+	help
+		The debug_en function is available only when it is supported.

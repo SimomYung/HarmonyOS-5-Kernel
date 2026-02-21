@@ -1,0 +1,36 @@
+{
+    "template": "hook",
+    "server": "net",
+    "manager": "vsock",
+    "hooks": {
+        "vsock": {
+            "generation": {
+                "performance_compatibility": true
+            },
+            "scheme": "security check/inner constraint",
+            "module_relation": "{all:buckle}",
+            "ac": {
+                "buckle": {
+                    "alias": "sec_chk_ability_vsock",
+                    "permission": "ab_vsock"
+                }
+            }
+        },
+        "vsock_create": {
+            "generation": {
+                "performance_compatibility": true
+            },
+            "scheme": "security check/privilege",
+            "arguments": [],
+            "ac": {
+                "ability": {
+                    "alias": "sec_chk_ability_vsock_create",
+                    "permission": "ab_vsock_create"
+                },
+                "capability": {
+                    "enabled": false
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,56 @@
+From 1f88976610d5bcc15ad58c9345848d736d64fd55 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Marco=20Trevisan=20=28Trevi=C3=B1o=29?= <mail@3v1n0.net>
+Date: Tue, 6 Sep 2022 17:16:07 +0200
+Subject: [PATCH] gregex: Do not try access the undefined match offsets if we
+ have no match
+
+In case we're getting NO-MATCH "errors", we were still recomputing the
+match offsets and taking decisions based on that, that might lead to
+undefined behavior.
+
+Avoid this by just returning early a FALSE result (but with no error) in
+case there's no result to proceed on.
+
+Fixes: #2741
+---
+ glib/gregex.c      | 6 ++++++
+ glib/tests/regex.c | 6 ++++++
+ 2 files changed, 12 insertions(+)
+
+diff --git a/glib/gregex.c b/glib/gregex.c
+index 219d9cee34..f2a5b5fd1c 100644
+--- a/glib/gregex.c
++++ b/glib/gregex.c
+@@ -1073,6 +1073,12 @@ g_match_info_next (GMatchInfo  *match_info,
+                    match_info->regex->pattern, match_error (match_info->matches));
+       return FALSE;
+     }
++  else if (match_info->matches == PCRE2_ERROR_NOMATCH)
++    {
++      /* We're done with this match info */
++      match_info->pos = -1;
++      return FALSE;
++    }
+   else
+     if (!recalc_match_offsets (match_info, error))
+       return FALSE;
+diff --git a/glib/tests/regex.c b/glib/tests/regex.c
+index 10daa7814a..291c21b4c7 100644
+--- a/glib/tests/regex.c
++++ b/glib/tests/regex.c
+@@ -1669,6 +1669,12 @@ test_class (void)
+   res = g_match_info_next (match, NULL);
+   g_assert (!res);
+ 
++  /* Accessing match again should not crash */
++  g_test_expect_message ("GLib", G_LOG_LEVEL_CRITICAL,
++                         "*match_info->pos >= 0*");
++  g_assert_false (g_match_info_next (match, NULL));
++  g_test_assert_expected_messages ();
++
+   g_match_info_free (match);
+   g_regex_unref (regex);
+ }
+-- 
+GitLab
+

@@ -1,0 +1,6 @@
+
+ifneq ($(findstring $(CONFIG_VCODEC_PLATFORM_VCODECV800)$(CONFIG_VCODEC_PLATFORM_VCODECV900), y),)
+obj-$(CONFIG_VCODEC_VDEC) += vdec8.0/
+else
+obj-$(CONFIG_VCODEC_VDEC) += vdec/ vfmw/
+endif

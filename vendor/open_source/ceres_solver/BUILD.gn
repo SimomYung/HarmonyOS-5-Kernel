@@ -1,0 +1,86 @@
+import("//build/ohos.gni")
+import("./ceres.gni")
+
+declare_args() {
+  # Template specializations for the Schur complement based solvers. If
+  # compile time, binary size or compiler performance is an issue, you
+  # may consider enabling this.
+  restrict_schur_specializations = false
+}
+
+config("ceres_config") {
+  include_dirs = [
+    "include",
+    "config",
+    "internal/ceres/miniglog",
+    "internal",
+  ]
+
+  cflags = [
+    "-Wno-sign-compare",
+
+    # Disable warnings about deprecated interfraces while we are
+    # transitioning from LocalParameterization to Manifolds.
+    "-Wno-deprecated-declarations",
+
+    "-O2",
+    "-D_FORTIFY_SOURCE=2",
+  ]
+  if (restrict_schur_specializations) {
+    cflags += [ "-DCERES_RESTRICT_SCHUR_SPECIALIZATION" ]
+  }
+
+  configs = ["//vendor/open_source/eigen:eigen_includes"]
+}
+
+config("ceres_interface") {
+  include_dirs = [
+    "include",
+    "config",
+    "internal/ceres/miniglog",
+  ]
+
+  defines = [
+    "CERES_NO_SUITESPARSE",
+    "CERES_NO_ACCELERATE_SPARSE",
+    "CERES_NO_LAPACK",
+    "CERES_NO_CUDA",
+    "CERES_NO_EIGEN_METIS",
+    "CERES_NO_CHOLMOD_PARTITION",
+    "CERES_RESTRICT_SCHUR_SPECIALIZATION",
+    "CERES_NO_EXPORT=",
+    "CERES_USE_EIGEN_SPARSE",
+    "CERES_EXPORT=",
+  ]
+}
+
+ohos_shared_library("ceres") {
+  branch_protector_ret = "pac_ret" # 加入 PAC 后向 CFI 开启选项
+
+  sources = ceres_srcs + minilog_srcs + internal_hdrs
+  if (restrict_schur_specializations) {
+    sources += specialized_schur_srcs
+  } else {
+    sources += schur_srcs
+  }
+
+  remove_configs = [
+    "//build/config/compiler:no_rtti",
+    "//build/config/compiler:no_exceptions",
+  ]
+
+  configs = [":ceres_config"]
+
+  public_configs = [":ceres_interface"]
+
+  innerapi_tags = [ "platformsdk" ]
+
+  part_name = "ceres_solver"
+  subsystem_name = "open_source"
+}
+
+group("ceres_solver") {
+  deps = [
+    ":ceres"
+  ]
+}

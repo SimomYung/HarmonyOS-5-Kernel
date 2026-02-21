@@ -1,0 +1,9 @@
+lib-dynamic-y: dhext_dfx
+
+cflags-dhext_dfx-y: -D_DH_PLUGIN_NAME=dfx -fvisibility=hidden
+linklib-dhext_dfx-y: -Tksymtab.lds
+
+src-dhext_dfx-y: dfx.c
+src-dhext_dfx-y: ulibs_syms.c
+
+install-dhext_dfx-y: BASE_LIBDIR

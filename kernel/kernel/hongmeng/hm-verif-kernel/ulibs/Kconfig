@@ -1,0 +1,816 @@
+# Copyright (c) Huawei Technologies Co., Ltd. 2022-2022. All rights reserved.
+# Description: Kconfig for hm ulibs
+# Author: Huawei OS Kernel Lab
+# Create: Mon May 23 16:07:11 2022
+
+source "$(HMCMAKENG_KCONFIG)"
+
+choice
+    prompt "Target Arch"
+    default AARCH64
+    config ARM
+        bool "ARM"
+    config AARCH64
+        bool "AARCH64"
+endchoice
+
+config COMPAT
+    bool "Support for 32-bit applications at EL0"
+    default n
+config NO_COMPAT
+    def_bool !COMPAT
+
+config HMVSYSCALL_TRACE
+    bool "Enable syscall trace"
+    default n
+
+# Dependency: KEYMGR_FUSION -> KEYMGR -> LIBKEYMGR (in security)
+config KEYMGR_FUSION
+  bool "enable key retention feature for sysmgr"
+  select KEYMGR
+  default n
+
+config KEYMGR
+  bool "enable key retention feature"
+  default n
+
+config FS_SAFETY_READ
+    bool "Enable safety read feature"
+    default n
+
+config DLIST_DEBUG
+    bool "Dlist check data corruption debug"
+    default y
+
+config CC_USE_CLANG
+    bool "Use Clang as compiler"
+    default n
+
+config NEED_SHADOW_STACK
+    bool "split shadow stack for sfi and shadow_stack feature"
+    default n
+
+config HKIP
+    bool "enable hkip feature"
+    depends on AARCH64
+    default n
+
+config HKIP_SECCOMP_PROT
+    bool "Enable hkip to seccomp"
+    depends on HKIP
+    default n
+
+config SMT
+  bool "Enable SMT topology support"
+  default n
+  help
+    Enable SMT topology
+
+config SCHED_SMT_HIDE
+  bool "Enable SMT hide for uapps"
+  default n
+  depends on SMT
+
+config DFC_FREQ_HIDE
+  bool "Enable Freq-Info hide"
+  default n
+
+config SFI
+    bool "Enable aarch64 sfi protect"
+    depends on AARCH64
+    depends on !CC_USE_CLANG
+    select NEED_SHADOW_STACK
+    default n
+
+config SHADOW_STACK
+    bool "Enable aarch64 shadow stack"
+    depends on AARCH64
+    depends on !CC_USE_CLANG
+    select NEED_SHADOW_STACK
+    default n
+
+config UCFI
+  bool "Enable ucfi"
+  default n
+
+config PERF_INTERNAL_PROFILING
+    bool "Supoort perf internal profiling"
+    default n
+
+config AARCH64_V8_1
+    bool "Support for V8_1"
+    default n
+    depends on AARCH64
+
+config AARCH64_V8_2
+    bool "Support for V8_2"
+    default n
+    depends on AARCH64
+    select AARCH64_V8_1
+
+config AARCH64_V8_3
+    bool "Support for V8_3"
+    default n
+    depends on AARCH64
+    select AARCH64_V8_1
+	select AARCH64_V8_2
+
+config HM_NOTIFIER
+    bool "Notifier chain support"
+    default n
+
+config SHMALLOC_MEM_BITS
+    int "Share memory malloc bits"
+    default 12
+
+config LIBFAULTEVT
+    bool "Enable fault event"
+    default n
+
+config SYSEVENT
+    bool "Enable sysevent"
+    default n
+
+config KCOV
+    bool "Enable kcov"
+    select ACTV_LOCAL_AREA_KCOV_INFO
+    default n
+
+config FUNCTION_TRACE
+    bool "Enable function trace"
+    depends on AARCH64
+    default n
+
+config FUNCTION_GRAPH
+    bool "Enable function trace"
+    depends on FUNCTION_TRACE
+    default n
+
+config RT_FUTEX
+    bool "RT futex support"
+    default y
+
+config RAW_THREAD_COMPATIBLE_WITH_PTHREAD
+    bool "Make raw thread compatible with pthread"
+    default y
+
+config FORK_COW
+    bool "Enable fork CoW(Copy on Write) support"
+    default y
+
+config DEBUG_BUILD
+    bool "Build kernel with debug mode"
+    default n
+
+config LOCK_TRACE_RAW_MUTEX
+    bool "Enable raw_mutex lock trace"
+    default y
+
+config LOCK_TRACE_RAW_RWLOCK
+    bool "Enable raw_rwlock lock trace"
+    default y
+
+config AARCH64_DSU
+    bool "Support DSU"
+    default n
+    help
+        "DSU driver"
+
+config AARCH64_NAMTSO_PMU
+    bool "Support NAMTSO"
+    default n
+    help
+        "NAMTSO PMU driver"
+
+config DEEP_IDLE
+    bool "deep idle support"
+    default n
+
+config ILP32
+    bool "Support for aarch64ilp32 applications at EL0"
+    depends on AARCH64
+    default n
+    help
+        This option enables support for the aarch64ilp32 EL0 apps running
+        under 64-bit kernel and 64-bit servers.
+config NO_ILP32
+    def_bool !ILP32
+
+config SMP
+    bool "Enable Symmetric multi-processing support"
+    default y
+    help
+        Enable SMP
+
+config CACHELINE_SIZE_L1
+    int "Cache line size for L1"
+    default 64 if AARCH64
+    default 32 if ARM
+
+config STRICT_MODE
+    bool "Enable strict mode"
+    default y
+    help
+        Enable some macros to check impossible condition
+
+config STRICT_NO_OVERFLOW
+    bool "Enable integer arithmetic overflow checker macros"
+    depends on STRICT_MODE
+    default y
+    help
+        Enable integer arithmetic overflow checker macros
+
+config STRICT_FOR_CODEDEX
+    bool "Enable codedex specific code checker macros"
+    depends on STRICT_MODE
+    default y
+    help
+        Enable codedex specific code checker macros
+
+config MODULE_SCHED_CLASS
+    bool "Sched Class module"
+    default y
+
+config ICES_SCHEDULER
+    bool "Enable ICES scheduler class"
+    depends on MODULE_SCHED_CLASS
+    default y
+    help
+        This option provides ICES(Interactive Centric and Energy-Saving)
+        scheduler. ICES aims to handset market which requires smoothly
+        graphic experience, long battery life and low surface temperature.
+
+config MODULE_TIMER_RBTREE
+    bool "Enable module timer implementation"
+    default y
+    help
+        All aarch64 platforms support module timer implementation.
+
+config RTC
+    bool "Enable rtc support"
+    default n
+    help
+        Enable rtc device.
+
+config HMTRACE
+    bool "Enable hmtrace"
+    default n
+
+config HMPSF
+  bool "Enable programmable system framework"
+  default n
+
+config HMPROBE
+  bool "Enable hmprobe"
+  default n
+
+config AUDIT
+    bool "Enable the audit feature"
+    depends on HMTRACE
+    select HMTRACE_UNBLOCK_WRITE
+    default n
+
+config HMTRACE_UNBLOCK_WRITE
+    bool "Write hmtrace events unblockly"
+    depends on HMTRACE
+    default n
+
+config CPU_HOTPLUG
+    bool "Enable CPU hotplug"
+    default n
+
+config DAC
+    bool "Enable GUID and DAC access control"
+    select POSIX_CAPS
+    default y
+
+config POSIX_CAPS
+    bool "Enable posix caps"
+    depends on DAC
+    default y
+
+config BRK
+    bool "Enable changing data segment size"
+    default n
+
+config RLIMIT
+    bool "Resource limit"
+    default y
+
+config HARMONYOS_DEMO
+    bool "Hacks and workarounds to run HarmonyOS demo"
+    default n
+
+config ULWT
+    bool "Throutine support"
+    default n
+
+config SLAB_FREELIST_RANDOM
+    bool "Enable slab freelist random"
+    default n
+
+config PER_CPU_SLAB
+    bool "Enable per-cpu slab"
+    default n
+
+config SLAB_DEBUG
+    bool "Enable slab debug"
+    default n
+
+config SLAB_DEBUG_USAGE
+    bool "Enable slab debug from applicant's view"
+    depends on SLAB_DEBUG
+    default n
+
+config SLAB_CACHE_NUM
+    int "per-cpu slab supports cpu num"
+    depends on PER_CPU_SLAB
+    default 16
+
+config PROCESS_KMEM_STAT
+  bool "Enable per-process kernel memory statistic"
+  default n
+
+config SLAB_DOUBLE_CHECK
+    bool "Enable slab checks the cache obj when free it"
+    depends on PER_CPU_SLAB
+    default n
+
+config FPU
+    bool "Enable kernel FPU support"
+    default y
+    help
+        Say Y to enable the FPU support in kernel, such as handling the FPU
+        exception and saving/restoring th FPU registers when switching context
+
+config SUPPORT_SPIN_FPU
+    bool "The system services support use FPU"
+    depends on FPU
+    default y
+    help
+      Say Y to enable the system services use FPU
+
+config AARCH64_UAO
+    bool "Enable User Access Override (UAO)"
+    depends on AARCH64
+    default n
+    help
+        User Access Override (UAO) is part of the ARMv8.2 Extensions Feature.
+        Enable UAO will make LDTR/STTR(Unprivilege) running in current execption
+        level.
+
+config PERF_CONTEXT
+    bool "Support perf context"
+    default n
+
+config AARCH64_PMUV3
+    bool "Support pmuv3 (on aarch64)"
+    depends on AARCH64 && PERF_CONTEXT
+    default y
+    help
+        "AARCH64 PMUv3 driver"
+
+config ARM_PMUV1
+    bool "Suport pmuv1 (on arm32)"
+    depends on ARM && PERF_CONTEXT
+    default y
+    help
+        "ARMV7 CORTEX-A9 PMUv1 driver"
+
+config WCET_PLUGIN
+    depends on (PERF_CONTEXT && AARCH64_PMUV3)
+    bool "Build with WCET plugin"
+    default n
+
+config PERF_INTERNAL_PROFILING
+    bool "Supoort perf internal profiling"
+    default n
+
+config SYSVIPC
+    bool "for system-v ipc"
+    default y
+
+config SYSMGR_FAULT_INJECT
+    bool "inject fault into sysmgr"
+    default y if DEBUG_BUILD
+
+config SAVE_LOAD_INFO
+    bool "Enable saving loadinfo of system services to reserved memory"
+    default n
+
+config RRU_PERF_HACK
+    bool "For rru performance hacking"
+    default n
+
+config SPIF
+    bool "Enable sysmgr spif support"
+    default y
+
+config SUBREAPER
+    bool "prctl subreaper feature support"
+    default n
+
+config NO_NEW_PRIVS
+    bool "prctl no_new_privs feature support"
+    default n
+
+config SECCOMP
+    bool "Enable the secure computing feature"
+    default n
+
+config ARM_GENERIC_TIMER
+    bool "Unrelated option ARM_GENERIC_TIMER"
+    default y
+
+config HYPERVISOR
+    bool "Enable the HongMeng hypervisor"
+    depends on AARCH64
+    select CAP_VM_ENABLE
+    default n
+    help
+        Enable the HongMeng hypervisor support.
+
+config CAP_VM_ENABLE
+    bool "Enable vm capability"
+    default n
+    help
+      Enable vm capability
+
+if CAP_VM_ENABLE
+  choice
+    prompt "VM Mode"
+    default VM_MODE_HYPER
+
+  config VM_MODE_HYPER
+    bool "Enable vm with hypervisor mode"
+    depends on HYPERVISOR
+    help
+        Virtual machine has two different modes, this one is the
+        traditional mode, the guest os is running with hypervisor.
+
+  config VM_MODE_BM
+    bool "Enable vm with bare metal mode"
+    help
+        This is another mode of virtual machine, in this mode, the guest
+        os is running on a bare metal core without hypervisor.
+
+  endchoice
+endif
+
+config VM_MODE_UM
+    bool "Enable vm with user virtual machine mode"
+    default n
+
+config AARCH64_VCPU_SVE
+    bool "Enable ARMv8.2-SVE for vCPU"
+    depends on AARCH64_V8_2
+    default n
+
+config MMIO_DISPATCHER
+    bool "Enable hypervisor MMIO region dispatcher"
+    default n
+    depends on HYPERVISOR
+    help
+        Enable MMIO region dispatcher on hypervisor
+
+config VNOTIFY_DRIVER_EXTENSION
+    bool "Enable vnotify driver in kernel"
+    default n
+    depends on CAP_VM_ENABLE
+    help
+        Vnotify driver is designed to build the notification between host APP and VM.
+        It provides VM channels to provide P2P level notification.
+        And kernel provides extcall to userspace.
+
+config MMIO_DISPATCHER_KICK_TYPE
+    bool "Enable kick type mmio region dispatcher"
+    default n
+    depends on MMIO_DISPATCHER
+    help
+        Enable kick type mmio region dispatcher.
+
+config UTS_NS
+    bool "UTS Namespace"
+    default n
+
+config PID_NS
+    bool "PID Namespace"
+    default y
+
+config IPC_NS
+    bool "IPC Namespace"
+    default n
+
+config TIMERFD_SUPPORT
+    bool "timerfd Support"
+    default n
+
+config SIGNALFD_SUPPORT
+    bool "signalfd Support"
+    default n
+
+config VTIMEDEV_PERIODIC_HZ
+    int "Periodic tick HZ"
+    range 1 1000
+    default 100
+    help
+        Frequency of tick in PERIODIC vtimedev.
+
+config HMLDKUNAME
+    bool "Enable HM-LDK uname"
+    default n
+    help
+	Support libhmuname.so to get LDK uname data
+
+config MEMPOOL_RANGE_MMAP
+    bool "use mmap to create mempool range"
+    default n
+
+config SYSK
+    bool "output suffix _sysk"
+    default n
+config NOSYSK
+    def_bool !SYSK
+
+config FS_AIO
+   bool "Support FS Async I/O"
+   default n
+   help
+	AIO should be enabled only in case of FS_SINGLE_SERVER.
+
+config ACTV_LOCAL_AREA_K
+  bool "Get some kernel information from TLS"
+  default y
+  help
+    Support to obtain some real-time kernel information about
+    the current activation quickly, which is synchronized from
+    kernel to actv stack in user space. unset this configuration
+    when disable process preempt.
+
+config ACTV_SCHED_LT
+  bool "Support to synchronized load tracking info from actv local area"
+  select ACTV_LOCAL_AREA_K
+  default n
+
+config ACTV_SCHED_FS
+  bool "Support to synchronized fs info from actv local area"
+  select ACTV_LOCAL_AREA_K
+  default n
+
+config ACTV_LOCAL_AREA_THREAD_INFO
+  bool "Get thread info from ALS for uev trace"
+  help
+    Get tid, pid, tcb name info from ALS for uev trace
+  depends on ACTV_LOCAL_AREA_K
+  default n
+
+config ACTV_LOCAL_AREA_KCOV_INFO
+  bool "Get kcov info from actv local"
+  help
+    Get kcov info
+  depends on ACTV_LOCAL_AREA_K
+  default n
+
+config ACTV_SCHED_STAT
+  bool "Get tcb sched statistics on the actv period from ALS for sysif trace"
+  help
+    Get ready_time, ready_cnt, block_time, block_cnt on the actv period from ALS for sysif trace
+  depends on ACTV_LOCAL_AREA_K
+  default n
+
+config USER_FUTEX
+  bool "Enable user space futex support"
+  depends on ACTV_LOCAL_AREA_K
+  default n
+
+config USER_FUTEX_DEBUGGING
+  bool "Enables user-futex debugging infrasture"
+  depends on USER_FUTEX
+  default y if DEBUG_BUILD
+
+config ACTV_LOCAL_AREA_SERVICE_INFO
+  bool "Support to record service info in ALS"
+  depends on ACTV_LOCAL_AREA_K
+  default n
+  help
+    Sync credential info of base actv for sysmgr to support
+    pid namespace, ACTV_LOCAL_AREA_SERVICE_INFO should be selected
+    by CONFIG PID NS to keep the correctness of pidns's semantics.
+    To do: it will be selected by pidns after testing.
+
+config SHMEC
+  bool "Enable shared memory event channel"
+  default n
+
+config SHMEC_RECV_BUFFER_PAGE_NUM
+  int "Number of pages of the shmec receive buffer size"
+  default 1
+  range 1 4
+  depends on SHMEC
+
+config SEHARMONY
+  bool "Enable seharmony"
+  default n
+
+config EVENTMGR
+  bool "Event manager"
+  default y
+
+config RADIX_TREE_SHIFT_SIZE
+  int "Number of radix tree shift size"
+  default 4
+  range 4 6
+
+config BLK_INLINE_ENCRYPTION
+  bool "Enable block inline encrypt"
+  default n
+
+config HISI_INLINE_ENCRYPTION
+  bool "Enable hisi inline encrypt"
+  default n
+
+config MODULE_SCHED_HMLT
+  bool "Enable HongMeng window assisted load tracking"
+  default n
+
+config MODULE_LOAD_DL_GROUP
+  bool "deadline group load tracking"
+  default n
+
+config MODULE_CPUISOCTL
+  bool "Enable isolation control"
+  default n
+
+config MODULE_SCHED_INDICATOR
+  bool "Enable schedule indicator for frequency scaling"
+  default n
+
+config CORE_SCHEDULING
+  bool "Core Scheduling for SMT"
+  default n
+
+config PTRACE
+  bool "Enable ptrace"
+  default n
+
+config OPENHARMONY
+	bool "Enable openharmony functions"
+	default n
+
+config TRACEMGR
+  bool "Trace manager"
+  default n
+
+config TRACE_SNAPSHOT
+  bool "Enable trace snapshot"
+  default n
+  depends on TRACEMGR
+
+config TRACE_BLOCK_INFO
+  bool "Enable trace block info"
+  default y
+  depends on TRACEMGR
+
+config LOCK_TRACE_UEV_LOGGING
+    bool "Enable user event trace of lock events"
+    depends on DEBUG_BUILD
+    default y
+
+config XDEP_RAW_MUTEX
+	bool "Enable execusion dependency (xdep) for raw_mutex"
+	default n
+
+config XDEP_RAW_RWLOCK_MULTI
+	bool "Enable execusion dependency (xdep) for raw_rwlock multi holders"
+	default n
+
+config RWLOCK_REDUCE_USELESS_WAKE
+    bool "Support rwlock to reduce useless wake"
+    default n
+    help
+      Change rwlock unlock policy, only wake up one writer
+      if first waiter in futex queue is write lock and wake
+      up all reader if first waiter in futex queue is reader.
+
+config WRHOLD_RAW_RWLOCK
+    bool "Enable rdlock set blocked"
+    default n
+    help
+     write hold for raw rwlock, set rdlock to blocked if there is
+     wrlock waiting for lock. Avoid situations that rdlock locks
+     frequently causing wrlock starves to death
+
+
+config PAC
+    bool "Enable PAC key register management in ulibs"
+    default n
+    help
+        Enable PAC
+
+choice
+  prompt "PAC BWCFI Key"
+  default PAC_BWCFI_IB_KEY
+  config PAC_BWCFI_IA_KEY
+    bool "Use IA key (pacia and retaa)"
+  config PAC_BWCFI_IB_KEY
+    bool "Use IB key (pacib and retab)"
+endchoice
+
+config VIRTUAL_SMMU_INTERFACE
+  bool "Enable virtual smmu trace"
+  default n
+
+config FLUSH_CACHE_ALL_WATERMARK_ENABLED
+  bool "Use watermark for calling __flush_cache_all"
+  default n
+  help
+      Enable setting watermark for calling __flush_cache_all
+      Once the watermark is reached, __flush_cache_all will be called
+      instead of flush_cache_range
+
+config FLUSH_CACHE_ALL_WATERMARK
+    hex "Set watermark for calling __flush_cache_all"
+    depends on FLUSH_CACHE_ALL_WATERMARK_ENABLED
+    default 2000000
+    help
+        Set watermark for calling __flush_cache_all
+	Once the watermark is reached, __flush_cache_all will be called
+	instead of flush_cache_range
+
+config LOCKDEP
+    bool "Support lockdep framework"
+    depends on DEBUG_BUILD
+    default n
+
+config LOCKSTAT
+    bool "Support lockstat"
+    depends on LOCKDEP
+    default n
+
+config HARDENED_USERCOPY
+    bool "Support hardened user copy"
+    default y
+    help
+      Hardened usercopy checks for obvious malicious copy range such as
+      overflowing stack or reading/writing text. By enabling this CONFIG,
+      extra checks are applied in hm_copy_{from,to}_user.
+
+config SLAB_REDZONE
+    bool "Enable redzone check when free it"
+    depends on SLAB_DEBUG
+    default n
+
+config ARM64_BTI_USER
+    bool "Enable BTI fot user app"
+    depends on AARCH64
+    default n
+    help
+        Enable BTI
+
+config KEV_KLOG_TCB_INFO
+  bool "Output tcb info such as pid, tid and name to kev klog"
+  default n
+
+config KEV_KLOG_TOYBOX
+  bool "klog message support toybox dmesg klogctl_mode"
+  default n
+
+config AARCH64_PAN
+  bool "support pan feature"
+  depends on AARCH64_V8_1
+  depends on SYSK
+  default y
+
+config TRACK_INFO
+  bool "Enable track info"
+  default n
+
+config SNAPSHOT_COMPRESS
+    bool "snapshot should be decompress or not"
+    default n
+
+config SUPPORT_GETPROCNAME
+    bool "Enable obtaining process_name by tid as the devhost"
+    default n
+
+config KASAN_DUMPSTACK
+  bool "Dump stack in kasan report"
+  select SLAB_DEBUG
+  select SLAB_DEBUG_USAGE
+  default n
+
+config USE_LIBOPT
+    bool 'Use optimized ARM libraries'
+    depends on AARCH64
+    depends on !CONFIG_ILP32
+    default y
+
+config USE_PREEMPT_PROCESS
+  bool "use the userspace preempt control for sysmgr"
+  default n
+
+config HMLOG_STKCHK
+  bool "Enable available stack size check for hmlog"
+  default n
+
+source "exts/hisi/Kconfig"

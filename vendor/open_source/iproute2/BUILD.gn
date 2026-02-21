@@ -1,0 +1,301 @@
+# Copyright (c) 2020-2023 Huawei Device Co., Ltd.
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+import("//build/ohos.gni")
+
+netlink_source = [
+  "${target_gen_dir}/iproute2-5.15.0/lib/libgenl.c",
+  "${target_gen_dir}/iproute2-5.15.0/lib/libnetlink.c"
+]
+
+iprouteutil_source = [
+  "${target_gen_dir}/iproute2-5.15.0/lib/utils.c",
+  "${target_gen_dir}/iproute2-5.15.0/lib/utils_math.c",
+  "${target_gen_dir}/iproute2-5.15.0/lib/rt_names.c",
+  "${target_gen_dir}/iproute2-5.15.0/lib/ll_map.c",
+  "${target_gen_dir}/iproute2-5.15.0/lib/ll_types.c",
+  "${target_gen_dir}/iproute2-5.15.0/lib/ll_proto.c",
+  "${target_gen_dir}/iproute2-5.15.0/lib/ll_addr.c",
+  "${target_gen_dir}/iproute2-5.15.0/lib/inet_proto.c",
+  "${target_gen_dir}/iproute2-5.15.0/lib/namespace.c",
+  "${target_gen_dir}/iproute2-5.15.0/lib/json_writer.c",
+  "${target_gen_dir}/iproute2-5.15.0/lib/json_print.c",
+  "${target_gen_dir}/iproute2-5.15.0/lib/json_print_math.c",
+  "${target_gen_dir}/iproute2-5.15.0/lib/names.c",
+  "${target_gen_dir}/iproute2-5.15.0/lib/color.c",
+  "${target_gen_dir}/iproute2-5.15.0/lib/bpf_legacy.c",
+  "${target_gen_dir}/iproute2-5.15.0/lib/bpf_glue.c",
+  "${target_gen_dir}/iproute2-5.15.0/lib/exec.c",
+  "${target_gen_dir}/iproute2-5.15.0/lib/fs.c",
+  "${target_gen_dir}/iproute2-5.15.0/lib/cg_map.c",
+  "${target_gen_dir}/iproute2-5.15.0/lib/mpls_ntop.c",
+  "${target_gen_dir}/iproute2-5.15.0/lib/mpls_pton.c"
+]
+
+ip_source = [
+  "${target_gen_dir}/iproute2-5.15.0/ip/ip.c",
+  "${target_gen_dir}/iproute2-5.15.0/ip/ipaddress.c",
+  "${target_gen_dir}/iproute2-5.15.0/ip/ipaddrlabel.c",
+  "${target_gen_dir}/iproute2-5.15.0/ip/iproute.c",
+  "${target_gen_dir}/iproute2-5.15.0/ip/iprule.c",
+  "${target_gen_dir}/iproute2-5.15.0/ip/ipnetns.c",
+  "${target_gen_dir}/iproute2-5.15.0/ip/rtm_map.c",
+  "${target_gen_dir}/iproute2-5.15.0/ip/iptunnel.c",
+  "${target_gen_dir}/iproute2-5.15.0/ip/ip6tunnel.c",
+  "${target_gen_dir}/iproute2-5.15.0/ip/tunnel.c",
+  "${target_gen_dir}/iproute2-5.15.0/ip/ipneigh.c",
+  "${target_gen_dir}/iproute2-5.15.0/ip/ipntable.c",
+  "${target_gen_dir}/iproute2-5.15.0/ip/iplink.c",
+  "${target_gen_dir}/iproute2-5.15.0/ip/ipmaddr.c",
+  "${target_gen_dir}/iproute2-5.15.0/ip/ipmonitor.c",
+  "${target_gen_dir}/iproute2-5.15.0/ip/ipmroute.c",
+  "${target_gen_dir}/iproute2-5.15.0/ip/ipprefix.c",
+  "${target_gen_dir}/iproute2-5.15.0/ip/iptuntap.c",
+  "${target_gen_dir}/iproute2-5.15.0/ip/iptoken.c",
+  "${target_gen_dir}/iproute2-5.15.0/ip/ipxfrm.c",
+  "${target_gen_dir}/iproute2-5.15.0/ip/xfrm_state.c",
+  "${target_gen_dir}/iproute2-5.15.0/ip/xfrm_policy.c",
+  "${target_gen_dir}/iproute2-5.15.0/ip/xfrm_monitor.c",
+  "${target_gen_dir}/iproute2-5.15.0/ip/iplink_dummy.c",
+  "${target_gen_dir}/iproute2-5.15.0/ip/iplink_ifb.c",
+  "${target_gen_dir}/iproute2-5.15.0/ip/iplink_nlmon.c",
+  "${target_gen_dir}/iproute2-5.15.0/ip/iplink_team.c",
+  "${target_gen_dir}/iproute2-5.15.0/ip/iplink_vcan.c",
+  "${target_gen_dir}/iproute2-5.15.0/ip/iplink_vxcan.c",
+  "${target_gen_dir}/iproute2-5.15.0/ip/iplink_vlan.c",
+  "${target_gen_dir}/iproute2-5.15.0/ip/link_veth.c",
+  "${target_gen_dir}/iproute2-5.15.0/ip/link_gre.c",
+  "${target_gen_dir}/iproute2-5.15.0/ip/iplink_can.c",
+  "${target_gen_dir}/iproute2-5.15.0/ip/iplink_xdp.c",
+  "${target_gen_dir}/iproute2-5.15.0/ip/iplink_macvlan.c",
+  "${target_gen_dir}/iproute2-5.15.0/ip/ipl2tp.c",
+  "${target_gen_dir}/iproute2-5.15.0/ip/link_vti.c",
+  "${target_gen_dir}/iproute2-5.15.0/ip/link_vti6.c",
+  "${target_gen_dir}/iproute2-5.15.0/ip/link_xfrm.c",
+  "${target_gen_dir}/iproute2-5.15.0/ip/iplink_vxlan.c",
+  "${target_gen_dir}/iproute2-5.15.0/ip/tcp_metrics.c",
+  "${target_gen_dir}/iproute2-5.15.0/ip/iplink_ipoib.c",
+  "${target_gen_dir}/iproute2-5.15.0/ip/ipnetconf.c",
+  "${target_gen_dir}/iproute2-5.15.0/ip/link_ip6tnl.c",
+  "${target_gen_dir}/iproute2-5.15.0/ip/link_iptnl.c",
+  "${target_gen_dir}/iproute2-5.15.0/ip/link_gre6.c",
+  "${target_gen_dir}/iproute2-5.15.0/ip/iplink_bond.c",
+  "${target_gen_dir}/iproute2-5.15.0/ip/iplink_bond_slave.c",
+  "${target_gen_dir}/iproute2-5.15.0/ip/iplink_hsr.c",
+  "${target_gen_dir}/iproute2-5.15.0/ip/iplink_bridge.c",
+  "${target_gen_dir}/iproute2-5.15.0/ip/iplink_bridge_slave.c",
+  "${target_gen_dir}/iproute2-5.15.0/ip/ipfou.c",
+  "${target_gen_dir}/iproute2-5.15.0/ip/iplink_ipvlan.c",
+  "${target_gen_dir}/iproute2-5.15.0/ip/iplink_geneve.c",
+  "${target_gen_dir}/iproute2-5.15.0/ip/iplink_vrf.c",
+  "${target_gen_dir}/iproute2-5.15.0/ip/iproute_lwtunnel.c",
+  "${target_gen_dir}/iproute2-5.15.0/ip/ipmacsec.c",
+  "${target_gen_dir}/iproute2-5.15.0/ip/ipila.c",
+  "${target_gen_dir}/iproute2-5.15.0/ip/ipvrf.c",
+  "${target_gen_dir}/iproute2-5.15.0/ip/iplink_xstats.c",
+  "${target_gen_dir}/iproute2-5.15.0/ip/ipseg6.c",
+  "${target_gen_dir}/iproute2-5.15.0/ip/iplink_netdevsim.c",
+  "${target_gen_dir}/iproute2-5.15.0/ip/iplink_rmnet.c",
+  "${target_gen_dir}/iproute2-5.15.0/ip/ipnexthop.c",
+  "${target_gen_dir}/iproute2-5.15.0/ip/ipmptcp.c",
+  "${target_gen_dir}/iproute2-5.15.0/ip/iplink_bareudp.c",
+  "${target_gen_dir}/iproute2-5.15.0/ip/iplink_wwan.c",
+  "${target_gen_dir}/iproute2-5.15.0/ip/ipioam6.c"
+]
+
+tc_source = [
+]
+
+action("iproute2_action") {
+  script = "//vendor/open_source/iproute2/install-all-patch.sh"
+  outputs = [
+    "${target_gen_dir}/iproute2-5.15.0/lib/bpf_libbpf.c",
+    "${target_gen_dir}/iproute2-5.15.0/lib/mnl_utils.c",
+    "${target_gen_dir}/iproute2-5.15.0/tc/emp_ematch.lex.c",
+    "${target_gen_dir}/iproute2-5.15.0/tc/emp_ematch.yacc.c",
+    "${target_gen_dir}/iproute2-5.15.0/include/static-syms.h",
+    "${target_gen_dir}/iproute2-5.15.0/tc/q_aggrq.c",
+    "${target_gen_dir}/iproute2-5.15.0/tc/tc.c",
+    "${target_gen_dir}/iproute2-5.15.0/tc/tc_util.c",
+    "${target_gen_dir}/iproute2-5.15.0/tc/tc_cbq.c",
+    "${target_gen_dir}/iproute2-5.15.0/tc/tc_class.c",
+    "${target_gen_dir}/iproute2-5.15.0/tc/tc_core.c",
+    "${target_gen_dir}/iproute2-5.15.0/tc/tc_estimator.c",
+    "${target_gen_dir}/iproute2-5.15.0/tc/tc_exec.c",
+    "${target_gen_dir}/iproute2-5.15.0/tc/tc_filter.c",
+    "${target_gen_dir}/iproute2-5.15.0/tc/tc_monitor.c",
+    "${target_gen_dir}/iproute2-5.15.0/tc/tc_qdisc.c",
+    "${target_gen_dir}/iproute2-5.15.0/tc/tc_red.c",
+    "${target_gen_dir}/iproute2-5.15.0/tc/tc_stab.c",
+    "${target_gen_dir}/iproute2-5.15.0/tc/q_choke.c",
+    "${target_gen_dir}/iproute2-5.15.0/tc/q_gred.c",
+    "${target_gen_dir}/iproute2-5.15.0/tc/q_red.c",
+    "${target_gen_dir}/iproute2-5.15.0/tc/q_sfq.c",
+
+    "${target_gen_dir}/iproute2-5.15.0/tc/m_estimator.c",
+    "${target_gen_dir}/iproute2-5.15.0/tc/m_action.c",
+
+    "${target_gen_dir}/iproute2-5.15.0/tc/q_clsact.c",
+    "${target_gen_dir}/iproute2-5.15.0/tc/f_u32.c",
+
+    "${target_gen_dir}/iproute2-5.15.0/tc/m_police.c",
+    "${target_gen_dir}/iproute2-5.15.0/tc/m_mirred.c",
+  ]
+  outputs += ip_source
+  outputs += iprouteutil_source
+  outputs += netlink_source
+  outputs += tc_source
+
+  inputs = [ "//vendor/open_source/iproute2/iproute2-5.15.0.tar.xz" ]
+
+  args = [
+    rebase_path("//vendor/open_source/iproute2", root_build_dir),
+    rebase_path("${target_gen_dir}", root_build_dir),
+  ]
+}
+
+tc_source += [
+  "${target_gen_dir}/iproute2-5.15.0/tc/m_action.c",
+  "${target_gen_dir}/iproute2-5.15.0/tc/m_estimator.c",
+  "${target_gen_dir}/iproute2-5.15.0/tc/m_mirred.c",
+  "${target_gen_dir}/iproute2-5.15.0/tc/m_police.c",
+  "${target_gen_dir}/iproute2-5.15.0/tc/f_u32.c",
+  "${target_gen_dir}/iproute2-5.15.0/tc/q_clsact.c",
+  "${target_gen_dir}/iproute2-5.15.0/tc/tc.c",
+  "${target_gen_dir}/iproute2-5.15.0/tc/tc_cbq.c",
+  "${target_gen_dir}/iproute2-5.15.0/tc/tc_class.c",
+  "${target_gen_dir}/iproute2-5.15.0/tc/tc_core.c",
+  "${target_gen_dir}/iproute2-5.15.0/tc/tc_estimator.c",
+  "${target_gen_dir}/iproute2-5.15.0/tc/tc_exec.c",
+  "${target_gen_dir}/iproute2-5.15.0/tc/tc_filter.c",
+  "${target_gen_dir}/iproute2-5.15.0/tc/tc_monitor.c",
+  "${target_gen_dir}/iproute2-5.15.0/tc/tc_qdisc.c",
+  "${target_gen_dir}/iproute2-5.15.0/tc/tc_red.c",
+  "${target_gen_dir}/iproute2-5.15.0/tc/tc_stab.c",
+  "${target_gen_dir}/iproute2-5.15.0/tc/tc_util.c",
+]
+
+iproute2_include = [
+    "${target_gen_dir}/iproute2-5.15.0/include",
+    "${target_gen_dir}/iproute2-5.15.0/include/uapi",
+]
+
+iproute2_cflags = [
+  "-O2",
+  "-pipe",
+  "-Wall",
+  "-fPIE",
+  "-fPIC",
+  "-fstack-protector-all",
+  "-DRESOLVE_HOSTNAMES",
+  "-DHAVE_SETNS",
+  "-DHAVE_HANDLE_AT",
+  "-DNEED_STRLCPY",
+  "-DOHOS",
+]
+
+iproute2_ldflags = [
+  "-pie",
+  "-Wl,-z,relro",
+  "-Wl,-z,now",
+  "-Wl,-z,noexecstack",
+]
+
+ohos_static_library("libiprouteutil") {
+  include_dirs = iproute2_include
+  sources = iprouteutil_source
+
+  if (defined(HAVE_ELF) && defined(HAVE_LIBBPF)) {
+    sources += ["${target_gen_dir}/iproute2-5.15.0/lib/bpf_libbpf.c"]
+  }
+
+  subsystem_name = "communication"
+  part_name = "iproute2"
+
+  deps = [
+    ":iproute2_action",
+    ":libnetlink",
+  ]
+
+  cflags = iproute2_cflags
+  cflags += ["-fPIC"]
+}
+
+ohos_static_library("libnetlink") {
+  include_dirs = iproute2_include
+  sources = netlink_source
+
+  subsystem_name = "communication"
+  part_name = "iproute2"
+
+  cflags = iproute2_cflags
+  cflags += ["-fPIC"]
+
+  if (defined(HAVE_MNL)) {
+    sources += ["${target_gen_dir}/iproute2-5.15.0/lib/mnl_utils.c"]
+  }
+
+  deps = [
+    ":iproute2_action",
+  ]
+}
+
+ohos_executable("ip") {
+  include_dirs = iproute2_include
+  sources = ip_source
+  subsystem_name = "communication"
+  part_name = "iproute2"
+
+  ldflags = [
+    "-Wl,-export-dynamic",
+  ]
+
+  cflags = iproute2_cflags
+
+  ldflags += iproute2_ldflags
+  ldflags += ["-s"]
+
+  deps = [
+    ":iproute2_action",
+    ":libnetlink",
+    ":libiprouteutil"
+  ]
+}
+
+ohos_executable("tc") {
+  include_dirs = iproute2_include
+  sources = tc_source
+  subsystem_name = "communication"
+  part_name = "iproute2"
+
+  ldflags = [
+    "-Wl,-export-dynamic",
+  ]
+
+  cflags = iproute2_cflags
+
+  ldflags += iproute2_ldflags
+  ldflags += ["-s"]
+
+  deps = [
+    ":iproute2_action",
+    ":libnetlink",
+    ":libiprouteutil"
+  ]
+}
+
+group("iproute2_target") {
+  deps = [
+    ":ip",
+    ":tc"
+  ]
+}

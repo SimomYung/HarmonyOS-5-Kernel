@@ -1,0 +1,98 @@
+From f923f6ddbd555801f1d6495904de4fefb363fa57 Mon Sep 17 00:00:00 2001
+From: liangyun2 <liangyun2@huawei.com>
+Date: Sat, 19 Dec 2020 12:05:37 +0800
+Subject: [PATCH] e2fsck: exit journal recovery when jounral superblock fails
+ to update
+
+Jounral superblock may be failed to update in e2fsck_journal_release.
+But if needs_recovery flag is cleared, e2fsck_check_ext3_journal will be failed.
+
+To fix this case, we use "fatal_error" when recover journal failed.
+So we can reserve the recovery flag to recover the journal when try e2fsck again.
+
+Fix issue: https://gitee.com/src-openeuler/e2fsprogs/issues/I4S0SD?from=project-issue
+
+conflict: 	journal_destroy_revoke	        ->  jbd2_journal_destroy_revoke
+ 		journal_destroy_revoke_caches   ->  jbd2_journal_destroy_revoke_record_cache
+						    jbd2_journal_destroy_revoke_table_cache
+		JFS_BARRIER -> JBD2_BARRIER
+		blkdev_issue_flush(kdev, a, b) -> blkdev_issue_flush(kdev)
+
+Reported-by: Liangyun <liangyun2@huawei.com>
+Signed-off-by: Haotian Li <lihaotian9@huawei.com>
+Signed-off-by: Zhiqiang Liu <liuzhiqiang26@huawei.com>
+---
+ e2fsck/journal.c | 26 ++++++++++++++++++++++++--
+ 1 file changed, 24 insertions(+), 2 deletions(-)
+
+diff --git a/e2fsck/journal.c b/e2fsck/journal.c
+index 7081b6e..f4253c0 100644
+--- a/e2fsck/journal.c
++++ b/e2fsck/journal.c
+@@ -1444,10 +1444,12 @@ static errcode_t e2fsck_journal_fix_corrupt_super(e2fsck_t ctx,
+ 	return 0;
+ }
+ 
+-static void e2fsck_journal_release(e2fsck_t ctx, journal_t *journal,
++static errcode_t e2fsck_journal_release(e2fsck_t ctx, journal_t *journal,
+ 				   int reset, int drop)
+ {
+ 	journal_superblock_t *jsb;
++	errcode_t err = 0;
++	errcode_t err2;
+ 
+ 	if (drop)
+ 		mark_buffer_clean(journal->j_sb_buffer);
+@@ -1461,6 +1463,16 @@ static void e2fsck_journal_release(e2fsck_t ctx, journal_t *journal,
+ 	}
+ 	brelse(journal->j_sb_buffer);
+ 
++	if(reset == 1 && drop == 0) {
++		err = sync_blockdev(journal->j_fs_dev);
++		/* Make sure all replayed data is on permanent storage */
++		if (journal->j_flags & JBD2_BARRIER) {
++			err2 = blkdev_issue_flush(journal->j_fs_dev);
++			if (!err)
++				err = err2;
++		}
++	}
++
+ 	if (ctx->journal_io) {
+ 		if (ctx->fs && ctx->fs->io != ctx->journal_io)
+ 			io_channel_close(ctx->journal_io);
+@@ -1474,6 +1486,8 @@ static void e2fsck_journal_release(e2fsck_t ctx, journal_t *journal,
+ 	if (journal->j_fs_dev)
+ 		ext2fs_free_mem(&journal->j_fs_dev);
+ 	ext2fs_free_mem(&journal);
++
++	return err;
+ }
+ 
+ /*
+@@ -1612,6 +1626,7 @@ static errcode_t recover_ext3_journal(e2fsck_t ctx)
+ 	struct problem_context	pctx;
+ 	journal_t *journal;
+ 	errcode_t retval;
++	errcode_t recover_retval;
+ 
+ 	clear_problem_context(&pctx);
+ 
+@@ -1659,7 +1674,14 @@ errout:
+ 	jbd2_journal_destroy_revoke(journal);
+ 	jbd2_journal_destroy_revoke_record_cache();
+ 	jbd2_journal_destroy_revoke_table_cache();
+-	e2fsck_journal_release(ctx, journal, 1, 0);
++	recover_retval = e2fsck_journal_release(ctx, journal, 1, 0);
++	if(recover_retval == -EIO) {
++		ctx->fs->flags &= ~EXT2_FLAG_VALID;
++		com_err(ctx->program_name, 0,
++			_("e2fsck journal release failed "
++			"on %s, retval=%d \n"), ctx->device_name, recover_retval);
++		fatal_error(ctx, 0);
++	}
+ 	return retval;
+ }
+ 
+-- 
+1.8.3.1
+

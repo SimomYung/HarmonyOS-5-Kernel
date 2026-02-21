@@ -1,0 +1,341 @@
+{
+    "root": {
+        "data": {
+            "id": "cj4n0wpjomg0",
+            "created": 1649398653024,
+            "text": "Hlog",
+            "usecase": 99
+        },
+        "children": [
+            {
+                "data": {
+                    "id": "cj4n157y8i80",
+                    "created": 1649398671551,
+                    "text": "日志速率抑制",
+                    "usecase": 1
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "cj4n3ed7eow0",
+                            "created": 1649398848188,
+                            "text": "功能分析"
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "cj4o04lvuww0",
+                                    "created": 1649401412963,
+                                    "text": "开始抑制"
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "cj4o0d6odgg0",
+                                            "created": 1649401431634,
+                                            "text": "秒级抑制",
+                                            "usecase": 2
+                                        },
+                                        "children": [
+                                            {
+                                                "data": {
+                                                    "id": "cj4o0d6oae00",
+                                                    "created": 1649401431634,
+                                                    "text": "mod+err（emer，err）",
+                                                    "usecase": 3
+                                                },
+                                                "children": [
+                                                    {
+                                                        "data": {
+                                                            "id": "cj4o0d6o4ag0",
+                                                            "created": 1649401431634,
+                                                            "text": "小于500条/s",
+                                                            "usecase": 4,
+                                                            "author": "w00613451",
+                                                            "showId": "00011"
+                                                        },
+                                                        "children": [
+                                                            {
+                                                                "data": {
+                                                                    "id": "cj4o0d6ovww0",
+                                                                    "created": 1649401431635,
+                                                                    "text": "根据周期抑制速率判断是否抑制",
+                                                                    "usecase": 5
+                                                                },
+                                                                "children": []
+                                                            }
+                                                        ]
+                                                    },
+                                                    {
+                                                        "data": {
+                                                            "id": "cj4o0d6ov4o0",
+                                                            "created": 1649401431635,
+                                                            "text": "大于500条/s",
+                                                            "usecase": 4,
+                                                            "author": "w00613451",
+                                                            "showId": "00012"
+                                                        },
+                                                        "children": [
+                                                            {
+                                                                "data": {
+                                                                    "id": "cj4o0d6org00",
+                                                                    "created": 1649401431635,
+                                                                    "text": "抑制该模块等级的日志，并打印“Mod:%s level:%s  excess %u/s. Suppress this mod in this second.”",
+                                                                    "usecase": 5
+                                                                },
+                                                                "children": []
+                                                            }
+                                                        ]
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "data": {
+                                                    "id": "cj4o0d6oxeo0",
+                                                    "created": 1649401431635,
+                                                    "text": "mod+info（warn，info，debug且非默认场景）",
+                                                    "usecase": 3
+                                                },
+                                                "children": [
+                                                    {
+                                                        "data": {
+                                                            "id": "cj4o0d6p1gw0",
+                                                            "created": 1649401431635,
+                                                            "text": "小于200条/s",
+                                                            "usecase": 4,
+                                                            "author": "w00613451",
+                                                            "showId": "00013"
+                                                        },
+                                                        "children": [
+                                                            {
+                                                                "data": {
+                                                                    "id": "cj4o0d6p8u80",
+                                                                    "created": 1649401431636,
+                                                                    "text": "根据周期抑制速率判断是否抑制",
+                                                                    "usecase": 5
+                                                                },
+                                                                "children": []
+                                                            }
+                                                        ]
+                                                    },
+                                                    {
+                                                        "data": {
+                                                            "id": "cj4o0d6p97k0",
+                                                            "created": 1649401431636,
+                                                            "text": "大于200条/s",
+                                                            "usecase": 4,
+                                                            "author": "w00613451",
+                                                            "showId": "00014"
+                                                        },
+                                                        "children": [
+                                                            {
+                                                                "data": {
+                                                                    "id": "cj4o0d6pok80",
+                                                                    "created": 1649401431636,
+                                                                    "text": "抑制该模块等级的日志，并打印“Mod:%s level:%s  excess %u/s. Suppress this mod in this second.”",
+                                                                    "usecase": 5
+                                                                },
+                                                                "children": []
+                                                            }
+                                                        ]
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "data": {
+                                            "id": "cj4o0ejaxxs0",
+                                            "created": 1649401434575,
+                                            "text": "周期抑制",
+                                            "usecase": 2
+                                        },
+                                        "children": [
+                                            {
+                                                "data": {
+                                                    "id": "cj4o0ejc1nk0",
+                                                    "created": 1649401434576,
+                                                    "text": "mod+err（emer，err）",
+                                                    "usecase": 3
+                                                },
+                                                "children": [
+                                                    {
+                                                        "data": {
+                                                            "id": "cj4o0ejbk940",
+                                                            "created": 1649401434576,
+                                                            "text": "小于1000条/5s",
+                                                            "usecase": 4,
+                                                            "author": "w00613451",
+                                                            "showId": "00015"
+                                                        },
+                                                        "children": [
+                                                            {
+                                                                "data": {
+                                                                    "id": "cj4o0ejbyig0",
+                                                                    "created": 1649401434576,
+                                                                    "text": "根据秒级抑制速率判断是否抑制",
+                                                                    "usecase": 5
+                                                                },
+                                                                "children": []
+                                                            }
+                                                        ]
+                                                    },
+                                                    {
+                                                        "data": {
+                                                            "id": "cj4o0ejbuvs0",
+                                                            "created": 1649401434576,
+                                                            "text": "大于1000条/5s",
+                                                            "usecase": 4,
+                                                            "author": "w00613451",
+                                                            "showId": "00016"
+                                                        },
+                                                        "children": [
+                                                            {
+                                                                "data": {
+                                                                    "id": "cj4o0ejbo3k0",
+                                                                    "created": 1649401434576,
+                                                                    "text": "抑制该模块等级的日志，并打印“Mod:%s level:%s  excess %u/%u s. Suppress this mod now.”",
+                                                                    "usecase": 5
+                                                                },
+                                                                "children": []
+                                                            }
+                                                        ]
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "data": {
+                                                    "id": "cj4o0ejbsmg0",
+                                                    "created": 1649401434576,
+                                                    "text": "mod+info（warn，info，debug且非默认场景）",
+                                                    "usecase": 3
+                                                },
+                                                "children": [
+                                                    {
+                                                        "data": {
+                                                            "id": "cj4o0ejbsa80",
+                                                            "created": 1649401434576,
+                                                            "text": "小于400条/5s",
+                                                            "usecase": 4,
+                                                            "author": "w00613451",
+                                                            "showId": "00017"
+                                                        },
+                                                        "children": [
+                                                            {
+                                                                "data": {
+                                                                    "id": "cj4o0ejbjew0",
+                                                                    "created": 1649401434576,
+                                                                    "text": "根据秒级抑制速率判断是否抑制",
+                                                                    "usecase": 5
+                                                                },
+                                                                "children": []
+                                                            }
+                                                        ]
+                                                    },
+                                                    {
+                                                        "data": {
+                                                            "id": "cj4o0ejbnxk0",
+                                                            "created": 1649401434577,
+                                                            "text": "大于400条/5s",
+                                                            "usecase": 4,
+                                                            "author": "w00613451",
+                                                            "showId": "00018"
+                                                        },
+                                                        "children": [
+                                                            {
+                                                                "data": {
+                                                                    "id": "cj4o0ejca5c0",
+                                                                    "created": 1649401434577,
+                                                                    "text": "抑制该模块等级的日志，并打印“Mod:%s level:%s  excess %u/%u s. Suppress this mod now.”",
+                                                                    "usecase": 5
+                                                                },
+                                                                "children": []
+                                                            }
+                                                        ]
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    }
+                                ]
+                            },
+                            {
+                                "data": {
+                                    "id": "cj4o0gr4lpc0",
+                                    "created": 1649401439401,
+                                    "text": "取消抑制"
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "cjgjs7mfu1s0",
+                                            "created": 1650608227654,
+                                            "text": "秒级抑制",
+                                            "usecase": 2
+                                        },
+                                        "children": [
+                                            {
+                                                "data": {
+                                                    "id": "cjgjs7mfwp40",
+                                                    "created": 1650608227654,
+                                                    "text": "秒级抑制被触发",
+                                                    "usecase": 3
+                                                },
+                                                "children": [
+                                                    {
+                                                        "data": {
+                                                            "id": "cjgjs7mg4wo0",
+                                                            "created": 1650608227654,
+                                                            "text": "下一秒开始会取消抑制，并打印“Mod:%s level:%s log has been suppressed, suppressNum:%u. Unsuppress and reset counter.”",
+                                                            "usecase": 5
+                                                        },
+                                                        "children": []
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "data": {
+                                            "id": "cjgjs7mfsg80",
+                                            "created": 1650608227654,
+                                            "text": "周期抑制",
+                                            "usecase": 2
+                                        },
+                                        "children": [
+                                            {
+                                                "data": {
+                                                    "id": "cjgjs7mg0wo0",
+                                                    "created": 1650608227654,
+                                                    "text": "周期抑制被触发",
+                                                    "usecase": 3
+                                                },
+                                                "children": [
+                                                    {
+                                                        "data": {
+                                                            "id": "cjgjs7mgoig0",
+                                                            "created": 1650608227655,
+                                                            "text": "下一个周期开始会取消抑制，并打印“Mod:%s level:%s log has been suppressed, suppressNum:%u. Unsuppress and reset counter.”",
+                                                            "usecase": 5
+                                                        },
+                                                        "children": []
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    "templatePath": null,
+    "singleTemplatePath": null,
+    "testcaseFilePath": "",
+    "template": "right",
+    "theme": "fresh-blue",
+    "version": "1.4.43"
+}

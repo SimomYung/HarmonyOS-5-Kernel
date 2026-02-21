@@ -1,0 +1,13 @@
+# Copyright (c) Huawei Technologies Co., Ltd. 2022-2022. All rights reserved.
+# Description: HMbuild
+# Author: Huawei OS Kernel Lab
+# Create: Thu May 26 16:03:20 2022
+
+src-y: dsu_pmu.c
+src-y: option_parser.c
+src-y: perf.c
+src-y: proc_maps.c
+src-CONFIG_AARCH64: pmuv3.c
+src-CONFIG_ARM: pmuv1.c
+subdir-CONFIG_PERF_INTERNAL_PROFILING: internal-profiling
+cflags-proc_maps.c-y: -Wframe-larger-than=8192

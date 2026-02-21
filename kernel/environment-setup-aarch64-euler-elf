@@ -1,0 +1,124 @@
+# Check for LD_LIBRARY_PATH being set, which can break SDK and generally is a bad practice
+# http://tldp.org/HOWTO/Program-Library-HOWTO/shared-libraries.html#AEN80
+# http://xahlee.info/UnixResource_dir/_/ldpath.html
+# Only disable this check if you are absolutely know what you are doing!
+if [ ! -z "$LD_LIBRARY_PATH" ]; then
+    echo "Your environment is misconfigured, you probably need to 'unset LD_LIBRARY_PATH'"
+    echo "but please check why this was set in the first place and that it's safe to unset."
+    echo "The SDK will not operate correctly in most cases when LD_LIBRARY_PATH is set."
+    echo "For more references see:"
+    echo "  http://tldp.org/HOWTO/Program-Library-HOWTO/shared-libraries.html#AEN80"
+    echo "  http://xahlee.info/UnixResource_dir/_/ldpath.html"
+    return 1
+fi
+
+export SDKTARGETSYSROOT=${TOPDIR}/output/aarch64
+HMSDKTARGET=qemu64le
+if [ $# -ge 1 ]; then
+    HMSDKTARGET=$1
+fi
+if [ "x$HMSDKTARGET" != "x$(readlink $SDKTARGETSYSROOT)" ]; then
+    if [ -d $(dirname $SDKTARGETSYSROOT)/$HMSDKTARGET ]; then
+        rm -f $SDKTARGETSYSROOT
+        ln -s $HMSDKTARGET $SDKTARGETSYSROOT
+    else
+        echo "Product $HMSDKTARGET not exist"
+    fi
+fi
+if [ $# -ge 1 ]; then
+    export SDKTARGETSYSROOT=$(dirname $SDKTARGETSYSROOT)/$1
+fi
+export PATH=${TOPDIR}/output/tools/usr/bin:${TOPDIR}/output/tools/usr/sbin:${TOPDIR}/output/tools/bin:${TOPDIR}/output/tools/sbin:${TOPDIR}/output/tools/usr/bin/aarch64-hongmeng-musl:${TOPDIR}/output/tools/usr/bin/aarch64-linux-ohos:${TOPDIR}/output/tools/usr/bin/aarch64-hongmeng-linux-musl:$PATH
+export PKG_CONFIG_SYSROOT_DIR=$SDKTARGETSYSROOT
+export PKG_CONFIG_PATH=$SDKTARGETSYSROOT/usr/lib/pkgconfig:$SDKTARGETSYSROOT/usr/share/pkgconfig
+export CONFIG_SITE=/tmp/.SDK/site-config-aarch64-hongmeng-musl
+export OECORE_NATIVE_SYSROOT="${TOPDIR}/output/tools"
+export OECORE_TARGET_SYSROOT="$SDKTARGETSYSROOT"
+export OECORE_ACLOCAL_OPTS="-I ${TOPDIR}/output/tools/usr/share/aclocal"
+export OECORE_BASELIB="lib"
+export OECORE_TARGET_ARCH="aarch64"
+export OECORE_TARGET_OS="elf"
+unset command_not_found_handle
+
+if [ "${TOOLCHAIN_CC}" = "clang" ]; then
+    export CC="clang --target=aarch64-linux-ohos -mlittle-endian     --target=aarch64-linux-ohos     -Wno-unused-command-line-argument     --ld-path=${TOPDIR}/output/tools/bin/ld.lld     -isystem $SDKTARGETSYSROOT/usr/include   -L$SDKTARGETSYSROOT/lib     -Dhongmeng=1     -D__hongmeng=1     -D__hongmeng__=1     -Ulinux     -U__linux     -U__linux__     -U__gnu_linux__     -fno-emulated-tls     -fno-builtin-bcmp     -Wl,--apply-dynamic-relocs     -Wl,--dynamic-linker=/lib/hmld.so.elf          -mno-outline-atomics      --sysroot=$SDKTARGETSYSROOT -isystem $SDKTARGETSYSROOT/usr/include "
+    export CXX="clang++  --target=aarch64-linux-ohos -mlittle-endian  --target=aarch64-linux-ohos  -Wno-unused-command-line-argument  --ld-path=${TOPDIR}/output/tools/bin/ld.lld     -isystem $SDKTARGETSYSROOT/usr/include   -L$SDKTARGETSYSROOT/lib     -Dhongmeng=1     -D__hongmeng=1     -D__hongmeng__=1     -Ulinux     -U__linux     -U__linux__     -U__gnu_linux__     -fno-emulated-tls     -fno-builtin-bcmp     -Wl,--apply-dynamic-relocs     -Wl,--dynamic-linker=/lib/hmld.so.elf          -mno-outline-atomics      --sysroot=$SDKTARGETSYSROOT -isystem $SDKTARGETSYSROOT/usr/include "
+    export CPP="clang -E  -mlittle-endian --sysroot=$SDKTARGETSYSROOT --target=aarch64-linux-ohos"
+    export AS="llvm-as "
+    export LD="ld.lld  --sysroot=$SDKTARGETSYSROOT"
+    export STRIP=llvm-strip
+    export RANLIB=llvm-ranlib
+    export OBJCOPY=llvm-objcopy
+    export OBJDUMP=llvm-objdump
+    export READELF=llvm-readelf
+    export AR=llvm-ar
+    export NM=llvm-nm
+    export M4=m4
+    export TARGET_PREFIX=aarch64-euler-elf-
+    export CONFIGURE_FLAGS="--target=aarch64-linux-ohos --host=aarch64-linux-ohos --build=x86_64-linux --with-libtool-sysroot=$SDKTARGETSYSROOT"
+    export CROSS_COMPILE=aarch64-euler-elf-
+else
+    export CC="aarch64-hongmeng-musl-gcc  -mlittle-endian --sysroot=$SDKTARGETSYSROOT"
+    export CXX="aarch64-hongmeng-musl-g++  -mlittle-endian --sysroot=$SDKTARGETSYSROOT"
+    export CPP="aarch64-hongmeng-musl-gcc -E  -mlittle-endian --sysroot=$SDKTARGETSYSROOT"
+    export AS="aarch64-hongmeng-musl-as "
+    export LD="aarch64-hongmeng-musl-ld  --sysroot=$SDKTARGETSYSROOT"
+    export GDB=aarch64-hongmeng-musl-gdb
+    export STRIP=aarch64-hongmeng-musl-strip
+    export RANLIB=aarch64-hongmeng-musl-ranlib
+    export OBJCOPY=aarch64-hongmeng-musl-objcopy
+    export OBJDUMP=aarch64-hongmeng-musl-objdump
+    export READELF=aarch64-hongmeng-musl-readelf
+    export AR=aarch64-hongmeng-musl-ar
+    export NM=aarch64-hongmeng-musl-nm
+    export M4=m4
+    export TARGET_PREFIX=aarch64-hongmeng-musl-
+    export CONFIGURE_FLAGS="--target=aarch64-hongmeng-musl --host=aarch64-hongmeng-musl --build=x86_64-linux --with-libtool-sysroot=$SDKTARGETSYSROOT"
+    export CROSS_COMPILE=aarch64-hongmeng-musl-
+fi
+
+export CFLAGS="     -fstack-protector-strong      -O2 -pipe "
+export CXXFLAGS="     -fstack-protector-strong      -O2 -pipe "
+export LDFLAGS="     -Wl,-z,relro     -Wl,-z,now     -Wl,-z,noexecstack     -Wl,-O1 -Wl,--hash-style=gnu -Wl,--as-needed "
+export CPPFLAGS=""
+export KCFLAGS="--sysroot=$SDKTARGETSYSROOT"
+export OECORE_DISTRO_VERSION="0.0.1"
+export OECORE_SDK_VERSION="0.0.1"
+export ARCH=aarch64
+export OECORE_TUNE_CCARGS=" -mlittle-endian"
+
+# Append environment subscripts
+if [ -d "$OECORE_TARGET_SYSROOT/environment-setup.d" ]; then
+    for envfile in $OECORE_TARGET_SYSROOT/environment-setup.d/*.sh; do
+	    . $envfile
+    done
+fi
+if [ -d "$OECORE_NATIVE_SYSROOT/environment-setup.d" ]; then
+    for envfile in $OECORE_NATIVE_SYSROOT/environment-setup.d/*.sh; do
+	    . $envfile
+    done
+fi
+export HMSDKPATH_NATIVE=$OECORE_NATIVE_SYSROOT
+export HMSDKPATH=$OECORE_NATIVE_SYSROOT/../..
+export HMSDKSYSROOTPATH=$SDKTARGETSYSROOT
+export HMSDKNATIVESYSROOTPATH=$OECORE_NATIVE_SYSROOT
+export _HMSDKNATIVESYSROOTPATH=$OECORE_NATIVE_SYSROOT
+export _HMSDKSYSROOTPATH=$SDKTARGETSYSROOT
+export _HMSDKINCLUDE=$SDKTARGETSYSROOT/usr/include
+export _HMSDKLIB=$SDKTARGETSYSROOT/usr/lib
+export HMSECURITY_KCFI_CFLAGS=-fplugin=`$CC -print-file-name=plugin`/libkcfi.so
+export HMSECURITY_KASAN_CFLAGS="-fsanitize=kernel-address                                         -fasan-shadow-offset=0x6666666000                                         --param asan-stack=1                                         --param asan-globals=1                                         -DENABLE_KASAN -fno-omit-frame-pointer -funwind-tables"
+export HMSECURITY_KASAN_SHARED_LDFLAGS="-Wl,-lkasan     -Wl,-lhmulibs     -Wl,-lc_kasan     -Wl,-lhwsecurec     -Wl,-lhmsrv_fs_kasan     -Wl,-lhmsrv_kernfs_kasan     -Wl,-lhmsrv_net_kasan     -Wl,-lhmsrv_sec_kasan  -Wl,-export-dynamic"
+export HMSECURITY_KASAN_STATIC_LDFLAGS="-Wl,--wrap,hmcrt_posthook     -Wl,--wrap,hm_mem_brk     -Wl,--wrap,hm_mem_mmap_posix     -Wl,--wrap,hm_mem_mmap_fixed     -Wl,--wrap,hm_mem_munmap     -Wl,--wrap,malloc     -Wl,--wrap,free     -Wl,--wrap,calloc     -Wl,--wrap,realloc     -Wl,--wrap,hm_mem_mremap     -Wl,--wrap,hm_mem_mmap     -Wl,--wrap,hm_server_mem_mmap_posix     -Wl,--wrap,hm_server_mem_munmap     -Wl,--wrap,actv_open_region     -Wl,--wrap,actv_close_region     -Wl,--wrap,copage_alloc     -Wl,--wrap,copage_free     -Wl,--wrap,copage_populate     -Wl,--wrap,hm_mem_alloc_shm_anon     -Wl,--wrap,hm_mem_free_shm_anon     -Wl,--wrap,hm_vm_map_to_process     -Wl,--wrap,hm_vm_map_iomem     -Wl,--wrap,mem_pool_alloc     -Wl,--wrap,mem_pool_free     -Wl,--wrap,hm_mem_mprotect     -Wl,--wrap,hm_ipc_shmat     -Wl,--wrap,hm_ipc_shmdt "
+export HMSECURITY_KASAN_CMAKE_CFLAGS="-fsanitize=kernel-address     -fasan-shadow-offset=0x6666666000     'SHELL:--param asan-stack=1'     'SHELL:--param asan-globals=1'     -DENABLE_KASAN -fno-omit-frame-pointer -funwind-tables"
+export HMSECURITY_KASAN_CMAKE_LIBRARIES="-lkasan "
+export HMSECURITY_KASAN_CMAKE_LIBRARIES_COMMON="-lhmulibs     -lc_kasan     -lhwsecurec     -lhmsrv_fs_kasan     -lhmsrv_kernfs_kasan     -lhmsrv_net_kasan     -lhmsrv_sec_kasan "
+export HMSECURITY_UBSAN_CFLAGS="-fsanitize=undefined                                         -fsanitize-undefined-trap-on-error                                         -fno-sanitize=alignment"
+export HMSECURITY_SSTACK_REG_CFLAGS="-fplugin=`$CC -print-file-name=plugin`/libshadow_stack.so -fplugin-arg-libshadow_stack-method=reg -ffixed-x18"
+export HMSECURITY_SSTACK_MEM_CFLAGS="-fplugin=`$CC -print-file-name=plugin`/libshadow_stack.so -fplugin-arg-libshadow_stack-method=mem -fplugin-arg-libshadow_stack-offset=176"
+export HMSECURITY_XOM_CFLAGS=""
+export HMSECURITY_UCFI_CFLAGS="-fplugin=`$CC -print-file-name=plugin`/libucfi.so"
+#export HMSECURITY_UCFI_CMAKE_LIBRARIES="-lucfi "
+export HMSECURITY_UCFI_CMAKE_LIBRARIES_COMMON="-lhmulibs     -lc     -lhwsecurec     -lhmsrv_fs     -lhmsrv_kernfs     -lhmsrv_net "
+export HMSECURITY_TSAN_CFLAGS="-fsanitize=thread -fplugin=`$CC -print-file-name=plugin`/libtsan_plugin.so"
+export HMSECURITY_TSAN_CMAKE_LIBRARIES="-ltsan"

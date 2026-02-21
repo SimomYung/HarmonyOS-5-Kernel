@@ -1,0 +1,16 @@
+/*
+ * Copyright (c) Huawei Technologies Co., Ltd. 2023-2023. All rights reserved.
+ * Description: Devhost process sysif APIs
+ * Author: Huawei OS Kernel Lab
+ * Create: Thu May 04 11:36:30 2023
+ */
+
+DEFINE_MANAGER(process, 1,
+	DEFINE_METHOD(process, revoke,
+		      ARG(3,
+			  unsigned int, cnode_idx,
+			  pid_t, pid,
+			  uid_t, uid),
+		      RET_NO,
+		      SLOWDATA_NO)
+)

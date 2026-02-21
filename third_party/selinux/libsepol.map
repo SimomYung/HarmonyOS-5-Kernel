@@ -1,0 +1,134 @@
+# Copyright (c) 2023 Huawei Device Co., Ltd.
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+1.0 {
+  global:
+	"sepol_set_policydb";
+	"sepol_set_sidtab";
+	"policy_file_init";
+	"policydb_init";
+	"policydb_read";
+	"policydb_load_isids";
+	"policydb_optimize";
+	"sepol_module_policydb_to_cil";
+	"sepol_kernel_policydb_to_conf";
+	"policydb_destroy";
+	"sepol_sidtab_destroy";
+	"sepol_transition_sid";
+	"hashtab_search";
+	"sepol_member_sid";
+	"sepol_ibendport_sid";
+	"sepol_load_policy";
+	"sepol_netif_sid";
+	"sepol_sid_to_context";
+	"sepol_fs_sid";
+	"sepol_sidtab_map";
+	"sepol_context_to_sid";
+	"sepol_fs_use";
+	"sepol_get_user_sids";
+	"evaluate_conds";
+	"sepol_ibpkey_sid";
+	"sepol_compute_av_reason_buffer";
+	"sepol_genfs_sid";
+	"sepol_compute_av";
+	"sepol_validate_transition_reason_buffer";
+	"sepol_change_sid";
+	"sepol_node_sid";
+	"sepol_port_sid";
+	"hashtab_map";
+	"sepol_kernel_policydb_to_cil";
+	"policydb_sort_ocontexts";
+	"policydb_write";
+	"policydb_set_target_platform";
+	"link_modules";
+	"expand_module";
+	"symtab_insert";
+	"ebitmap_set_bit";
+	"role_datum_destroy";
+	"role_datum_init";
+	"hashtab_insert";
+	"type_datum_init";
+	"type_datum_destroy";
+	"user_datum_destroy";
+	"user_datum_init";
+	"symtab_init";
+	"hashtab_destroy";
+	"policydb_index_classes";
+	"cond_destroy_bool";
+	"level_datum_init";
+	"ebitmap_destroy";
+	"level_datum_destroy";
+	"cat_datum_init";
+	"cat_datum_destroy";
+	"ebitmap_get_bit";
+	"get_decl_cond_list";
+	"avrule_block_create";
+	"avrule_decl_create";
+	"avrule_block_destroy";
+	"ebitmap_union";
+	"sepol_polcap_getnum";
+	"ebitmap_cpy";
+	"avrule_init";
+	"avrule_destroy";
+	"class_perm_node_init";
+	"ebitmap_or";
+	"type_set_destroy";
+	"type_set_expand";
+	"role_set_init";
+	"type_set_init";
+	"role_set_expand";
+	"role_allow_rule_init";
+	"policydb_filetrans_insert";
+	"filename_trans_rule_init";
+	"type_set_cpy";
+	"constraint_expr_init";
+	"constraint_expr_destroy";
+	"cond_expr_destroy";
+	"cond_normalize_expr";
+	"cond_node_destroy";
+	"mls_semantic_level_cpy";
+	"mls_semantic_cat_init";
+	"policydb_index_others";
+	"policydb_context_isvalid";
+	"range_trans_rule_init";
+	"range_trans_rule_destroy";
+	"policydb_index_bools";
+	"cil_set_log_level";
+	"cil_db_init";
+	"cil_set_disable_dontaudit";
+	"cil_set_multiple_decls";
+	"cil_set_disable_neverallow";
+	"cil_set_preserve_tunables";
+	"cil_set_qualified_names";
+	"cil_set_handle_unknown";
+	"cil_set_mls";
+	"cil_set_target_platform";
+	"cil_set_policy_version";
+	"cil_set_attrs_expand_generated";
+	"cil_set_attrs_expand_size";
+	"cil_add_file";
+	"cil_compile";
+	"cil_build_policydb";
+	"sepol_policydb_optimize";
+	"sepol_policy_file_create";
+	"sepol_policy_file_set_fp";
+	"sepol_policydb_write";
+	"cil_filecons_to_string";
+	"cil_db_destroy";
+	"sepol_policydb_free";
+	"sepol_policy_file_free";
+	"sepol_set_policydb_from_file";
+	"sepol_check_context";
+  local:
+    *;
+};

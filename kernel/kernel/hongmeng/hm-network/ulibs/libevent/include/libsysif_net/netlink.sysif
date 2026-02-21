@@ -1,0 +1,39 @@
+/*
+ * Copyright (c) Huawei Technologies Co., Ltd. 2020-2020. All rights reserved.
+ * Description: Header of netlink interface for sysif
+ * Author: Huawei OS Kernel Lab
+ * Create: Mon Aug  3 21:22:19 2020
+ */
+DEFINE_MANAGER(netlink, 8,
+	DEFINE_SIMPLE_METHOD(netlink, register_generic,
+			     ARG(1, unsigned long long, dh_ap_uref),
+			     RET(2, unsigned short, familyid, unsigned int, mcgrps_offset),
+			     SLOWDATA)
+	DEFINE_SIMPLE_METHOD(netlink, unregister_generic,
+			     ARG(1, unsigned short, familyid),
+			     RET_NO,
+			     SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(netlink, unicast,
+			     ARG(3, int, protocol, unsigned int, src_portid,
+			     unsigned int, dst_port),
+			     RET_NO,
+			     SLOWDATA)
+	DEFINE_SIMPLE_METHOD(netlink, broadcast,
+			     ARG(3, int, protocol, unsigned int, src_portid,
+				 unsigned int, dst_group),
+			     RET_NO,
+			     SLOWDATA)
+	DEFINE_SIMPLE_METHOD(netlink, create_service,
+			     ARG(1, int, protocol),
+			     RET_NO,
+			     SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(netlink, release_service,
+			     ARG(1, int, protocol),
+			     RET_NO,
+			     SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(netlink, unicast_nowait,
+			     ARG(3, int, protocol, unsigned int, src_portid,
+			     unsigned int, dst_port),
+			     RET_NO,
+			     SLOWDATA)
+)

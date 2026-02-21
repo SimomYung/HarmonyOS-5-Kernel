@@ -1,0 +1,21 @@
+/*
+ * Copyright (c) Huawei Technologies Co., Ltd. 2023-2023. All rights reserved.
+ * Description: devhost shrinker sysif APIs
+ * Author: Huawei OS Kernel Lab
+ * Create: Fri Mar 31 10:42:51 2023
+ */
+
+DEFINE_MANAGER(shrinker, 6,
+	DEFINE_METHOD(shrinker, query,
+		      ARG(1,
+			  int, type),
+		      RET_NO,
+		      SLOWDATA_NO)
+	DEFINE_METHOD(shrinker, shrink,
+		      ARG(1,
+			  int, max_nr),
+		      RET(2,
+			  int, cnt,
+			  int, scanned),
+		      SLOWDATA_NO)
+)

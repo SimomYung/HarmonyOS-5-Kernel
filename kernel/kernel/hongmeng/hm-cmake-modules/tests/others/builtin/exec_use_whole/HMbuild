@@ -1,0 +1,11 @@
+# Copyright (c) Huawei Technologies Co., Ltd. 2021. All rights reserved.
+# Description: HMbuild
+# Author: Huawei OS Kernel Lab
+# Create: Wed Sep 22 16:29:50 2021
+
+exec-dynamic-y: test.elf
+src-test.elf-y: whole_main.c
+src-y: fooa.c
+subdir-y: subdir
+linklib-test.elf-y: -Wl,--whole-archive pthread -Wl,--no-whole-archive
+# vim:ts=4:sw=4:expandtab

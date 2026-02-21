@@ -1,0 +1,44 @@
+{
+    "template": "hook",
+    "server": "devhost",
+    "manager": "pm",
+    "generation": {
+        "header": {
+            "embedded_code": {
+                "hook": ""
+            }
+        }
+    },
+    "hooks": {
+        "pm_action": {
+            "scheme": "security check/inner constraint",
+            "arguments": [],
+            "ac": {
+                "buckle": {
+                    "alias": "sec_chk_ability_pm_action",
+                    "permission": "ab_devhost_pm"
+                }
+            }
+        },
+        "power_off": {
+            "scheme": "security check/inner constraint",
+            "arguments": [],
+            "ac": {
+                "buckle": {
+                    "alias": "sec_chk_ability_power_off",
+                    "permission": "ab_devhost_pm"
+                }
+            }
+        },
+        "cpuhp_action": {
+            "scheme": "security check/inner constraint",
+            "arguments": [],
+            "ac": {
+                "buckle": {
+                    "alias": "sec_chk_ability_cpuhp_action",
+                    "permission": "ab_devhost_pm"
+                }
+            }
+        }
+    }
+}

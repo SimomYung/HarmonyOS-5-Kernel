@@ -1,0 +1,54 @@
+From 2cb76253ed852559a4f2b315f5e23457a15d71e5 Mon Sep 17 00:00:00 2001
+From: Benjamin Poirier <bpoirier@nvidia.com>
+Date: Mon, 11 Jul 2022 08:52:53 +0900
+Subject: [PATCH] mptcp: Fix memory leak when getting limits
+
+When running the command `ip mptcp limits` under valgrind, it reports
+
+32,768 bytes in 1 blocks are definitely lost in loss record 1 of 1
+   at 0x483F7B5: malloc (vg_replace_malloc.c:381)
+   by 0x17A0BC: rtnl_recvmsg (libnetlink.c:838)
+   by 0x17A3A1: __rtnl_talk_iov.constprop.0 (libnetlink.c:1040)
+   by 0x17B864: __rtnl_talk (libnetlink.c:1141)
+   by 0x17B864: rtnl_talk (libnetlink.c:1147)
+   by 0x16837D: mptcp_limit_get_set (ipmptcp.c:436)
+   by 0x1174CB: do_cmd (ip.c:136)
+   by 0x116F7C: main (ip.c:324)
+
+Free the answer obtained from rtnl_talk().
+
+Fixes: 7e0767cd862b ("add support for mptcp netlink interface")
+Suggested-by: Ido Schimmel <idosch@nvidia.com>
+Reviewed-by: Ido Schimmel <idosch@nvidia.com>
+Signed-off-by: Benjamin Poirier <bpoirier@nvidia.com>
+Signed-off-by: Stephen Hemminger <stephen@networkplumber.org>
+Conflict: NA
+Reference: https://git.kernel.org/pub/scm/network/iproute2/iproute2.git/commit?id=2cb76253
+---
+ ip/ipmptcp.c | 10 +++++++---
+ 1 file changed, 7 insertions(+), 3 deletions(-)
+
+diff --git a/ip/ipmptcp.c b/ip/ipmptcp.c
+index 54817e46..ce62ab9a 100644
+--- a/ip/ipmptcp.c
++++ b/ip/ipmptcp.c
+@@ -436,9 +436,13 @@ static int mptcp_limit_get_set(int argc, char **argv, int cmd)
+ 	if (rtnl_talk(&genl_rth, &req.n, do_get ? &answer : NULL) < 0)
+ 		return -2;
+ 
+-	if (do_get)
+-		return print_mptcp_limit(answer, stdout);
+-	return 0;
++	ret = 0;
++	if (do_get) {
++		ret = print_mptcp_limit(answer, stdout);
++		free(answer);
++	}
++
++	return ret;
+ }
+ 
+ static const char * const event_to_str[] = {
+-- 
+2.23.0
+

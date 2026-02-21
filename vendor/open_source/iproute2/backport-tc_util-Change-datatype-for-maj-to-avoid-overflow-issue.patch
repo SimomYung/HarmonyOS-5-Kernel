@@ -1,0 +1,33 @@
+From 455fa8295298a68a2dedabf9dd4c1dbf847b128b Mon Sep 17 00:00:00 2001
+From: Lai Peter Jun Ann <jun.ann.lai@intel.com>
+Date: Mon, 21 Nov 2022 10:29:09 +0800
+Subject: [PATCH] tc_util: Change datatype for maj to avoid overflow issue
+
+The return value by stroul() is unsigned long int. Hence the datatype
+for maj should defined as unsigned long to avoid overflow issue.
+
+Conflict:NA
+Reference:https://git.kernel.org/pub/scm/network/iproute2/iproute2.git/commit?id=455fa8295298a68a2dedabf9dd4c1dbf847b128b
+
+Signed-off-by: Muhammad Husaini Zulkifli <muhammad.husaini.zulkifli@intel.com>
+Signed-off-by: Lai Peter Jun Ann <jun.ann.lai@intel.com>
+Signed-off-by: Stephen Hemminger <stephen@networkplumber.org>
+---
+ tc/tc_util.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/tc/tc_util.c b/tc/tc_util.c
+index 334334db..8cd3c035 100644
+--- a/tc/tc_util.c
++++ b/tc/tc_util.c
+@@ -74,7 +74,7 @@ const char *get_tc_lib(void)
+ 
+ int get_qdisc_handle(__u32 *h, const char *str)
+ {
+-	__u32 maj;
++	unsigned long maj;
+ 	char *p;
+ 
+ 	maj = TC_H_UNSPEC;
+-- 
+2.23.0

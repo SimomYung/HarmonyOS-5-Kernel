@@ -1,0 +1,41 @@
+From b795c06d8a44f42cdffdf5aa9561ff8de20d78cc Mon Sep 17 00:00:00 2001
+From: "Ritesh Harjani (IBM)" <ritesh.list@gmail.com>
+Date: Mon, 7 Nov 2022 17:50:50 +0530
+Subject: libext2fs: fix ext2fs_compare_generic_bmap logic
+
+Currently this function was not correctly comparing against the right
+length of the bitmap. Also when we compare bitarray v/s rbtree bitmap
+the value returned by ext2fs_test_generic_bmap() could be different in
+these two implementations.  Hence only check against boolean value.
+
+Signed-off-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
+Signed-off-by: Theodore Ts'o <tytso@mit.edu>
+---
+ lib/ext2fs/gen_bitmap64.c | 10 +++++++---
+ 1 file changed, 7 insertions(+), 3 deletions(-)
+
+diff --git a/lib/ext2fs/gen_bitmap64.c b/lib/ext2fs/gen_bitmap64.c
+index c860c10e..f7710afd 100644
+--- a/lib/ext2fs/gen_bitmap64.c
++++ b/lib/ext2fs/gen_bitmap64.c
+@@ -629,10 +629,14 @@ errcode_t ext2fs_compare_generic_bmap(errcode_t neq,
+ 	    (bm1->end != bm2->end))
+ 		return neq;
+ 
+-	for (i = bm1->end - ((bm1->end - bm1->start) % 8); i <= bm1->end; i++)
+-		if (ext2fs_test_generic_bmap(gen_bm1, i) !=
+-		    ext2fs_test_generic_bmap(gen_bm2, i))
++	for (i = bm1->start; i < bm1->end; i++) {
++		int ret1, ret2;
++		ret1 = !!ext2fs_test_generic_bmap(gen_bm1, i);
++		ret2 = !!ext2fs_test_generic_bmap(gen_bm2, i);
++		if (ret1 != ret2) {
+ 			return neq;
++		}
++	}
+ 
+ 	return 0;
+ }
+-- 
+cgit 
+

@@ -1,0 +1,1145 @@
+diff -urN libnl-3.7.0/include/linux-private/linux/if_bridge.h libnl-3.7.0_new/include/linux-private/linux/if_bridge.h
+--- libnl-3.7.0/include/linux-private/linux/if_bridge.h	2022-05-04 00:50:34.000000000 +0800
++++ libnl-3.7.0_new/include/linux-private/linux/if_bridge.h	2024-06-03 17:46:47.872030900 +0800
+@@ -16,7 +16,7 @@
+ 
+ #include <linux/types.h>
+ #include <linux/if_ether.h>
+-#include <linux/in6.h>
++#include <netinet/in.h>
+ 
+ #define SYSFS_BRIDGE_ATTR	"bridge"
+ #define SYSFS_BRIDGE_FDB	"brforward"
+diff -urN libnl-3.7.0/include/netlink-private/nl-auto.h libnl-3.7.0_new/include/netlink-private/nl-auto.h
+--- libnl-3.7.0/include/netlink-private/nl-auto.h	2022-05-24 16:55:12.000000000 +0800
++++ libnl-3.7.0_new/include/netlink-private/nl-auto.h	2024-06-03 17:37:51.785691800 +0800
+@@ -99,4 +99,11 @@
+ #define _nl_auto_nl_socket _nl_auto(_nl_auto_nl_socket_fcn)
+ _NL_AUTO_DEFINE_FCN_TYPED0(struct nl_sock *, _nl_auto_nl_socket_fcn, nl_socket_free);
+ 
++struct xfrmnl_user_tmpl;
++void xfrmnl_user_tmpl_free(struct xfrmnl_user_tmpl *utmpl);
++#define _nl_auto_xfrmnl_user_tmpl _nl_auto(_nl_auto_xfrmnl_user_tmpl_fcn)
++_NL_AUTO_DEFINE_FCN_TYPED0(struct xfrmnl_user_tmpl *,
++			   _nl_auto_xfrmnl_user_tmpl_fcn,
++			   xfrmnl_user_tmpl_free);
++
+ #endif /* NETLINK_NL_AUTO_H_ */
+diff -urN libnl-3.7.0/include/netlink-private/utils.h libnl-3.7.0_new/include/netlink-private/utils.h
+--- libnl-3.7.0/include/netlink-private/utils.h	2022-05-24 16:55:12.000000000 +0800
++++ libnl-3.7.0_new/include/netlink-private/utils.h	2024-06-03 17:36:49.655447000 +0800
+@@ -361,8 +361,7 @@
+ 	struct in6_addr a6;
+ } _NLIPAddr;
+ 
+-static inline char *_nl_inet_ntop(int addr_family, const void *addr,
+-				  char buf[static INET_ADDRSTRLEN])
++static inline char *_nl_inet_ntop(int addr_family, const void *addr, char *buf)
+ {
+ 	char *r;
+ 
+diff -urN libnl-3.7.0/lib/attr.c libnl-3.7.0_new/lib/attr.c
+--- libnl-3.7.0/lib/attr.c	2022-07-06 23:01:59.000000000 +0800
++++ libnl-3.7.0_new/lib/attr.c	2024-06-03 17:39:30.549111300 +0800
+@@ -349,10 +349,13 @@
+ 
+ 	if (!src)
+ 		return 0;
+-	
++
+ 	minlen = min_t(int, count, nla_len(src));
+-	memcpy(dest, nla_data(src), minlen);
+ 
++	if (minlen <= 0)
++		return 0;
++
++	memcpy(dest, nla_data(src), minlen);
+ 	return minlen;
+ }
+ 
+@@ -988,6 +991,15 @@
+ {
+ 	ssize_t len;
+ 
++	if (!attr) {
++		/* For robustness, allow a NULL attr to do nothing. NULL is also
++		 * what nla_nest_start() when out of buffer space.
++		 *
++		 * Warning, before libnl-3.8, the function did not accept NULL!
++		 * If you care, catch NULL yourself. */
++		return;
++	}
++
+ 	len = (char *) nlmsg_tail(msg->nm_nlh) - (char *) attr;
+ 	if (len < 0)
+ 		BUG();
+diff -urN libnl-3.7.0/lib/object.c libnl-3.7.0_new/lib/object.c
+--- libnl-3.7.0/lib/object.c	2022-07-06 22:13:48.000000000 +0800
++++ libnl-3.7.0_new/lib/object.c	2024-06-03 17:41:15.060021200 +0800
+@@ -392,7 +392,7 @@
+ 	diff = nl_object_diff64(a, b);
+ 
+ 	return (diff & ~((uint64_t) 0xFFFFFFFF))
+-		? (uint32_t) diff | (1 << 31)
++		? (uint32_t) diff | (((uint32_t ) 1u) << 31)
+ 		: (uint32_t) diff;
+ }
+ 
+diff -urN libnl-3.7.0/lib/route/cls/flower.c libnl-3.7.0_new/lib/route/cls/flower.c
+--- libnl-3.7.0/lib/route/cls/flower.c	2022-07-06 23:02:41.000000000 +0800
++++ libnl-3.7.0_new/lib/route/cls/flower.c	2024-06-03 18:28:20.501852400 +0800
+@@ -787,6 +787,7 @@
+ int rtnl_flower_append_action(struct rtnl_cls *cls, struct rtnl_act *act)
+ {
+ 	struct rtnl_flower *f;
++	int err;
+ 
+ 	if (!act)
+ 		return 0;
+@@ -796,8 +797,11 @@
+ 
+ 	f->cf_mask |= FLOWER_ATTR_ACTION;
+ 
++	if ((err = rtnl_act_append(&f->cf_act, act)) < 0)
++		return err;
++
+ 	rtnl_act_get(act);
+-	return rtnl_act_append(&f->cf_act, act);
++	return 0;
+ }
+ 
+ /**
+diff -urN libnl-3.7.0/lib/route/link/bridge.c libnl-3.7.0_new/lib/route/link/bridge.c
+--- libnl-3.7.0/lib/route/link/bridge.c	2022-05-24 16:55:12.000000000 +0800
++++ libnl-3.7.0_new/lib/route/link/bridge.c	2024-06-03 16:55:11.850716100 +0800
+@@ -189,6 +189,7 @@
+ 		if (nla_type(attr) == IFLA_BRIDGE_MODE) {
+ 			bd->b_hwmode = nla_get_u16(attr);
+ 			bd->ce_mask |= BRIDGE_ATTR_HWMODE;
++			continue;
+ 		} else if (nla_type(attr) != IFLA_BRIDGE_VLAN_INFO)
+ 			continue;
+ 
+diff -urN libnl-3.7.0/lib/route/link.c libnl-3.7.0_new/lib/route/link.c
+--- libnl-3.7.0/lib/route/link.c	2022-05-24 16:55:12.000000000 +0800
++++ libnl-3.7.0_new/lib/route/link.c	2024-06-03 17:44:18.163118300 +0800
+@@ -115,7 +115,7 @@
+ 	struct rtnl_link_af_ops *ops;
+ 
+ 	ops = rtnl_link_af_ops_lookup(af_type);
+-	if (ops && ops->ao_override_rtm(changes))
++	if (ops && ops->ao_override_rtm && ops->ao_override_rtm(changes))
+ 		return RTM_SETLINK;
+ 
+ 	return RTM_NEWLINK;
+diff -urN libnl-3.7.0/lib/route/tc.c libnl-3.7.0_new/lib/route/tc.c
+--- libnl-3.7.0/lib/route/tc.c	2022-05-24 16:55:12.000000000 +0800
++++ libnl-3.7.0_new/lib/route/tc.c	2024-06-03 17:36:24.831904500 +0800
+@@ -666,14 +666,14 @@
+ /**
+  * Calculate the binary logarithm for a specific cell size
+  * @arg cell_size	Size of cell, must be a power of two.
+- * @return Binary logirhtm of cell size or a negative error code.
++ * @return Binary logarithm of cell size or a negative error code.
+  */
+ int rtnl_tc_calc_cell_log(int cell_size)
+ {
+ 	int i;
+ 
+ 	for (i = 0; i < 32; i++)
+-		if ((1 << i) == cell_size)
++		if ((((uint32_t)1u) << i) == cell_size)
+ 			return i;
+ 
+ 	return -NLE_INVAL;
+diff -urN libnl-3.7.0/lib/socket.c libnl-3.7.0_new/lib/socket.c
+--- libnl-3.7.0/lib/socket.c	2022-05-24 16:55:12.000000000 +0800
++++ libnl-3.7.0_new/lib/socket.c	2024-06-03 17:45:33.823477800 +0800
+@@ -54,6 +54,24 @@
+ 	}
+ }
+ 
++static uint32_t _badrandom_from_time(void)
++{
++	uint32_t result;
++	uint64_t v64;
++	time_t t;
++
++	t = time(NULL);
++	v64 = (uint64_t)t;
++	result = (uint32_t)v64;
++
++	/* XOR with the upper bits. Otherwise, coverity warns about only
++	 * considering 32 bit from time_t.  Use the inverse, so that for the
++	 * most part the bits don't change.  */
++	result ^= (~(v64 >> 32));
++
++	return result;
++}
++
+ static uint32_t used_ports_map[32];
+ static NL_RW_LOCK(port_map_lock);
+ 
+@@ -67,7 +85,7 @@
+ 	nl_write_lock(&port_map_lock);
+ 
+ 	if (idx_state == 0) {
+-		uint32_t t = time(NULL);
++		uint32_t t = _badrandom_from_time();
+ 
+ 		/* from time to time (on average each 2^15 calls), the idx_state will
+ 		 * be zero again. No problem, just "seed" anew with time(). */
+@@ -184,7 +202,8 @@
+ 	sk->s_cb = nl_cb_get(cb);
+ 	sk->s_local.nl_family = AF_NETLINK;
+ 	sk->s_peer.nl_family = AF_NETLINK;
+-	sk->s_seq_expect = sk->s_seq_next = time(NULL);
++	sk->s_seq_next = _badrandom_from_time();
++	sk->s_seq_expect = sk->s_seq_next;
+ 
+ 	/* the port is 0 (unspecified), meaning NL_OWN_PORT */
+ 	sk->s_flags = NL_OWN_PORT;
+diff -urN libnl-3.7.0/lib/utils.c libnl-3.7.0_new/lib/utils.c
+--- libnl-3.7.0/lib/utils.c	2022-07-06 23:21:11.000000000 +0800
++++ libnl-3.7.0_new/lib/utils.c	2024-06-03 17:37:18.340704700 +0800
+@@ -880,7 +880,7 @@
+ 		return p->p_proto;
+ 
+ 	l = strtoul(name, &end, 0);
+-	if (l == ULONG_MAX || *end != '\0')
++	if (name == end || *end != '\0' || l > (unsigned long)INT_MAX)
+ 		return -NLE_OBJ_NOTFOUND;
+ 
+ 	return (int) l;
+diff -urN libnl-3.7.0/lib/xfrm/ae.c libnl-3.7.0_new/lib/xfrm/ae.c
+--- libnl-3.7.0/lib/xfrm/ae.c	2022-05-24 16:55:12.000000000 +0800
++++ libnl-3.7.0_new/lib/xfrm/ae.c	2024-06-03 17:42:21.017726700 +0800
+@@ -301,6 +301,7 @@
+ 	char                flags[128], buf[128];
+ 	time_t              add_time, use_time;
+ 	struct tm           *add_time_tm, *use_time_tm;
++	struct tm           tm_buf;
+ 
+ 	nl_dump_line(p, "src %s dst %s \n", nl_addr2str(ae->saddr, src, sizeof(src)),
+ 				nl_addr2str(ae->sa_id.daddr, dst, sizeof(dst)));
+@@ -320,7 +321,7 @@
+ 	if (ae->lifetime_cur.add_time != 0)
+ 	{
+ 		add_time = ae->lifetime_cur.add_time;
+-		add_time_tm = gmtime (&add_time);
++		add_time_tm = gmtime_r (&add_time, &tm_buf);
+ 		strftime (flags, 128, "%Y-%m-%d %H-%M-%S", add_time_tm);
+ 	}
+ 	else
+@@ -331,7 +332,7 @@
+ 	if (ae->lifetime_cur.use_time != 0)
+ 	{
+ 		use_time = ae->lifetime_cur.use_time;
+-		use_time_tm = gmtime (&use_time);
++		use_time_tm = gmtime_r (&use_time, &tm_buf);
+ 		strftime (buf, 128, "%Y-%m-%d %H-%M-%S", use_time_tm);
+ 	}
+ 	else
+@@ -505,11 +506,18 @@
+ 	if (err < 0)
+ 		goto errout;
+ 
+-	ae->sa_id.daddr = nl_addr_build(ae_id->sa_id.family, &ae_id->sa_id.daddr, sizeof (ae_id->sa_id.daddr));
++	if (!(ae->sa_id.daddr = nl_addr_build(ae_id->sa_id.family, &ae_id->sa_id.daddr,
++					       sizeof (ae_id->sa_id.daddr)))) {
++		err = -NLE_NOMEM;
++		goto errout;
++	}
+ 	ae->sa_id.family= ae_id->sa_id.family;
+ 	ae->sa_id.spi   = ntohl(ae_id->sa_id.spi);
+ 	ae->sa_id.proto = ae_id->sa_id.proto;
+-	ae->saddr       = nl_addr_build(ae_id->sa_id.family, &ae_id->saddr, sizeof (ae_id->saddr));
++	if (!(ae->saddr = nl_addr_build(ae_id->sa_id.family, &ae_id->saddr, sizeof (ae_id->saddr)))) {
++		err = -NLE_NOMEM;
++		goto errout;
++	}
+ 	ae->reqid       = ae_id->reqid;
+ 	ae->flags       = ae_id->flags;
+ 	ae->ce_mask |= (XFRM_AE_ATTR_DADDR | XFRM_AE_ATTR_FAMILY | XFRM_AE_ATTR_SPI |
+diff -urN libnl-3.7.0/lib/xfrm/sa.c libnl-3.7.0_new/lib/xfrm/sa.c
+--- libnl-3.7.0/lib/xfrm/sa.c	2022-05-24 16:55:12.000000000 +0800
++++ libnl-3.7.0_new/lib/xfrm/sa.c	2024-06-03 18:32:07.233173600 +0800
+@@ -415,6 +415,7 @@
+ 	char                flags[128], mode[128];
+ 	time_t              add_time, use_time;
+ 	struct tm           *add_time_tm, *use_time_tm;
++	struct tm           tm_buf;
+ 
+ 	nl_dump_line(p, "src %s dst %s family: %s\n", nl_addr2str(sa->saddr, src, sizeof(src)),
+ 	             nl_addr2str(sa->id.daddr, dst, sizeof(dst)),
+@@ -467,7 +468,7 @@
+ 	if (sa->curlft.add_time != 0)
+ 	{
+ 		add_time = sa->curlft.add_time;
+-		add_time_tm = gmtime (&add_time);
++		add_time_tm = gmtime_r (&add_time, &tm_buf);
+ 		strftime (flags, 128, "%Y-%m-%d %H-%M-%S", add_time_tm);
+ 	}
+ 	else
+@@ -478,7 +479,7 @@
+ 	if (sa->curlft.use_time != 0)
+ 	{
+ 		use_time = sa->curlft.use_time;
+-		use_time_tm = gmtime (&use_time);
++		use_time_tm = gmtime_r (&use_time, &tm_buf);
+ 		strftime (mode, 128, "%Y-%m-%d %H-%M-%S", use_time_tm);
+ 	}
+ 	else
+@@ -717,9 +718,19 @@
+ 		goto errout;
+ 
+ 	if (sa_info->sel.family == AF_INET)
+-		addr    = nl_addr_build (sa_info->sel.family, &sa_info->sel.daddr.a4, sizeof (sa_info->sel.daddr.a4));
++	{
++		if (!(addr = nl_addr_build (sa_info->sel.family, &sa_info->sel.daddr.a4, sizeof (sa_info->sel.daddr.a4)))) {
++			err = -NLE_NOMEM;
++			goto errout;
++		}
++	}
+ 	else
+-		addr    = nl_addr_build (sa_info->sel.family, &sa_info->sel.daddr.a6, sizeof (sa_info->sel.daddr.a6));
++	{
++		if (!(addr = nl_addr_build (sa_info->sel.family, &sa_info->sel.daddr.a6, sizeof (sa_info->sel.daddr.a6)))) {
++			err = -NLE_NOMEM;
++			goto errout;
++		}
++	}
+ 	nl_addr_set_prefixlen (addr, sa_info->sel.prefixlen_d);
+ 	xfrmnl_sel_set_daddr (sa->sel, addr);
+ 	/* Drop the reference count from the above set operation */
+@@ -727,9 +738,19 @@
+ 	xfrmnl_sel_set_prefixlen_d (sa->sel, sa_info->sel.prefixlen_d);
+ 
+ 	if (sa_info->sel.family == AF_INET)
+-		addr    = nl_addr_build (sa_info->sel.family, &sa_info->sel.saddr.a4, sizeof (sa_info->sel.saddr.a4));
++	{
++		if (!(addr = nl_addr_build (sa_info->sel.family, &sa_info->sel.saddr.a4, sizeof (sa_info->sel.saddr.a4)))) {
++			err = -NLE_NOMEM;
++			goto errout;
++		}
++	}
+ 	else
+-		addr    = nl_addr_build (sa_info->sel.family, &sa_info->sel.saddr.a6, sizeof (sa_info->sel.saddr.a6));
++	{
++		if (!(addr = nl_addr_build (sa_info->sel.family, &sa_info->sel.saddr.a6, sizeof (sa_info->sel.saddr.a6)))) {
++			err = -NLE_NOMEM;
++			goto errout;
++		}
++	}
+ 	nl_addr_set_prefixlen (addr, sa_info->sel.prefixlen_s);
+ 	xfrmnl_sel_set_saddr (sa->sel, addr);
+ 	/* Drop the reference count from the above set operation */
+@@ -747,17 +768,37 @@
+ 	sa->ce_mask             |= XFRM_SA_ATTR_SEL;
+ 
+ 	if (sa_info->family == AF_INET)
+-		sa->id.daddr        = nl_addr_build (sa_info->family, &sa_info->id.daddr.a4, sizeof (sa_info->id.daddr.a4));
++	{
++		if (!(sa->id.daddr = nl_addr_build (sa_info->family, &sa_info->id.daddr.a4, sizeof (sa_info->id.daddr.a4)))) {
++			err = -NLE_NOMEM;
++			goto errout;
++		}
++	}
+ 	else
+-		sa->id.daddr        = nl_addr_build (sa_info->family, &sa_info->id.daddr.a6, sizeof (sa_info->id.daddr.a6));
++	{
++		if (!(sa->id.daddr = nl_addr_build (sa_info->family, &sa_info->id.daddr.a6, sizeof (sa_info->id.daddr.a6)))) {
++			err = -NLE_NOMEM;
++			goto errout;
++		}
++	}
+ 	sa->id.spi              = ntohl(sa_info->id.spi);
+ 	sa->id.proto            = sa_info->id.proto;
+ 	sa->ce_mask             |= (XFRM_SA_ATTR_DADDR | XFRM_SA_ATTR_SPI | XFRM_SA_ATTR_PROTO);
+ 
+ 	if (sa_info->family == AF_INET)
+-		sa->saddr           = nl_addr_build (sa_info->family, &sa_info->saddr.a4, sizeof (sa_info->saddr.a4));
++	{
++		if (!(sa->saddr = nl_addr_build (sa_info->family, &sa_info->saddr.a4, sizeof (sa_info->saddr.a4)))) {
++			err = -NLE_NOMEM;
++			goto errout;
++		}
++	}
+ 	else
+-		sa->saddr           = nl_addr_build (sa_info->family, &sa_info->saddr.a6, sizeof (sa_info->saddr.a6));
++	{
++		if (!(sa->saddr = nl_addr_build (sa_info->family, &sa_info->saddr.a6, sizeof (sa_info->saddr.a6)))) {
++			err = -NLE_NOMEM;
++			goto errout;
++		}
++	}
+ 	sa->ce_mask             |= XFRM_SA_ATTR_SADDR;
+ 
+ 	sa->lft->soft_byte_limit    =   sa_info->lft.soft_byte_limit;
+@@ -865,9 +906,19 @@
+ 		sa->encap->encap_sport  =   ntohs(encap->encap_sport);
+ 		sa->encap->encap_dport  =   ntohs(encap->encap_dport);
+ 		if (sa_info->family == AF_INET)
+-			sa->encap->encap_oa =   nl_addr_build (sa_info->family, &encap->encap_oa.a4, sizeof (encap->encap_oa.a4));
++		{
++			if (!(sa->encap->encap_oa = nl_addr_build (sa_info->family, &encap->encap_oa.a4, sizeof (encap->encap_oa.a4)))) {
++				err = -NLE_NOMEM;
++				goto errout;
++			}
++		}
+ 		else
+-			sa->encap->encap_oa =   nl_addr_build (sa_info->family, &encap->encap_oa.a6, sizeof (encap->encap_oa.a6));
++		{
++			if (!(sa->encap->encap_oa = nl_addr_build (sa_info->family, &encap->encap_oa.a6, sizeof (encap->encap_oa.a6)))) {
++				err = -NLE_NOMEM;
++				goto errout;
++			}
++		}
+ 		sa->ce_mask     |= XFRM_SA_ATTR_ENCAP;
+ 	}
+ 
+@@ -879,13 +930,19 @@
+ 	if (tb[XFRMA_COADDR]) {
+ 		if (sa_info->family == AF_INET)
+ 		{
+-			sa->coaddr  = nl_addr_build(sa_info->family, nla_data(tb[XFRMA_COADDR]),
+-			                            sizeof (uint32_t));
++			if (!(sa->coaddr = nl_addr_build(
++					sa_info->family, nla_data(tb[XFRMA_COADDR]), sizeof (uint32_t)))) {
++				err = -NLE_NOMEM;
++				goto errout;
++			}	
+ 		}
+ 		else
+ 		{
+-			sa->coaddr  = nl_addr_build(sa_info->family, nla_data(tb[XFRMA_COADDR]),
+-			                            sizeof (uint32_t) * 4);
++			if (!(sa->coaddr = nl_addr_build(
++					sa_info->family, nla_data(tb[XFRMA_COADDR]), sizeof (uint32_t) * 4))) {
++				err = -NLE_NOMEM;
++				goto errout;
++			}
+ 		}
+ 		sa->ce_mask         |= XFRM_SA_ATTR_COADDR;
+ 	}
+diff -urN libnl-3.7.0/lib/xfrm/sp.c libnl-3.7.0_new/lib/xfrm/sp.c
+--- libnl-3.7.0/lib/xfrm/sp.c	2022-05-24 16:55:12.000000000 +0800
++++ libnl-3.7.0_new/lib/xfrm/sp.c	2024-06-03 17:43:31.464119900 +0800
+@@ -324,6 +324,7 @@
+ 	char                dst[INET6_ADDRSTRLEN+5], src[INET6_ADDRSTRLEN+5];
+ 	time_t              add_time, use_time;
+ 	struct tm           *add_time_tm, *use_time_tm;
++	struct tm           tm_buf;
+ 
+ 	nl_addr2str(xfrmnl_sel_get_saddr (sp->sel), src, sizeof(src));
+ 	nl_addr2str (xfrmnl_sel_get_daddr (sp->sel), dst, sizeof (dst));
+@@ -384,7 +385,7 @@
+ 	if (sp->curlft.add_time != 0)
+ 	{
+ 		add_time = sp->curlft.add_time;
+-		add_time_tm = gmtime (&add_time);
++		add_time_tm = gmtime_r (&add_time, &tm_buf);
+ 		strftime (dst, INET6_ADDRSTRLEN+5, "%Y-%m-%d %H-%M-%S", add_time_tm);
+ 	}
+ 	else
+@@ -395,7 +396,7 @@
+ 	if (sp->curlft.use_time != 0)
+ 	{
+ 		use_time = sp->curlft.use_time;
+-		use_time_tm = gmtime (&use_time);
++		use_time_tm = gmtime_r (&use_time, &tm_buf);
+ 		strftime (src, INET6_ADDRSTRLEN+5, "%Y-%m-%d %H-%M-%S", use_time_tm);
+ 	}
+ 	else
+@@ -557,19 +558,43 @@
+ 	}
+ 
+ 	if (sp_info->sel.family == AF_INET)
+-		addr    = nl_addr_build (sp_info->sel.family, &sp_info->sel.daddr.a4, sizeof (sp_info->sel.daddr.a4));
++	{
++		if (!(addr = nl_addr_build (sp_info->sel.family, &sp_info->sel.daddr.a4, sizeof (sp_info->sel.daddr.a4)))) {
++			err = -NLE_NOMEM;
++			goto errout;
++		}
++	}
+ 	else
+-		addr    = nl_addr_build (sp_info->sel.family, &sp_info->sel.daddr.a6, sizeof (sp_info->sel.daddr.a6));
++	{
++		if (!(addr = nl_addr_build (sp_info->sel.family, &sp_info->sel.daddr.a6, sizeof (sp_info->sel.daddr.a6)))) {
++			err = -NLE_NOMEM;
++			goto errout;
++		}
++	}
+ 	nl_addr_set_prefixlen (addr, sp_info->sel.prefixlen_d);
+ 	xfrmnl_sel_set_daddr (sp->sel, addr);
++	/* Drop the reference count from the above set operation */
++	nl_addr_put(addr);
+ 	xfrmnl_sel_set_prefixlen_d (sp->sel, sp_info->sel.prefixlen_d);
+ 
+ 	if (sp_info->sel.family == AF_INET)
+-		addr    = nl_addr_build (sp_info->sel.family, &sp_info->sel.saddr.a4, sizeof (sp_info->sel.saddr.a4));
++	{
++		if (!(addr = nl_addr_build (sp_info->sel.family, &sp_info->sel.saddr.a4, sizeof (sp_info->sel.saddr.a4)))) {
++			err = -NLE_NOMEM;
++			goto errout;
++		}
++	}
+ 	else
+-		addr    = nl_addr_build (sp_info->sel.family, &sp_info->sel.saddr.a6, sizeof (sp_info->sel.saddr.a6));
++	{
++		if (!(addr = nl_addr_build (sp_info->sel.family, &sp_info->sel.saddr.a6, sizeof (sp_info->sel.saddr.a6)))) {
++			err = -NLE_NOMEM;
++			goto errout;
++		}
++	}
+ 	nl_addr_set_prefixlen (addr, sp_info->sel.prefixlen_s);
+ 	xfrmnl_sel_set_saddr (sp->sel, addr);
++	/* Drop the reference count from the above set operation */
++	nl_addr_put(addr);
+ 	xfrmnl_sel_set_prefixlen_s (sp->sel, sp_info->sel.prefixlen_s);
+ 
+ 	xfrmnl_sel_set_dport (sp->sel, ntohs (sp_info->sel.dport));
+@@ -628,13 +653,13 @@
+ 
+ 	if (tb[XFRMA_TMPL]) {
+ 		struct xfrm_user_tmpl*      tmpl = nla_data(tb[XFRMA_TMPL]);
+-		struct xfrmnl_user_tmpl*    sputmpl;
+ 		uint32_t                    i;
+ 		uint32_t                    num_tmpls = nla_len(tb[XFRMA_TMPL]) / sizeof (*tmpl);
+ 		struct  nl_addr*            addr;
+ 
+ 		for (i = 0; (i < num_tmpls) && (tmpl); i ++, tmpl++)
+ 		{
++			_nl_auto_xfrmnl_user_tmpl struct xfrmnl_user_tmpl *sputmpl = NULL;
+ 			if ((sputmpl = xfrmnl_user_tmpl_alloc ()) == NULL)
+ 			{
+ 				err = -NLE_NOMEM;
+@@ -642,19 +667,43 @@
+ 			}
+ 
+ 			if (tmpl->family == AF_INET)
+-				addr = nl_addr_build(tmpl->family, &tmpl->id.daddr.a4, sizeof (tmpl->id.daddr.a4));
++			{
++				if (!(addr = nl_addr_build(tmpl->family, &tmpl->id.daddr.a4, sizeof (tmpl->id.daddr.a4)))) {
++					err = -NLE_NOMEM;
++					goto errout;
++				}
++			}
+ 			else
+-				addr = nl_addr_build(tmpl->family, &tmpl->id.daddr.a6, sizeof (tmpl->id.daddr.a6));
++			{
++				if (!(addr = nl_addr_build(tmpl->family, &tmpl->id.daddr.a6, sizeof (tmpl->id.daddr.a6)))) {
++					err = -NLE_NOMEM;
++					goto errout;
++				}
++			}
+ 			xfrmnl_user_tmpl_set_daddr (sputmpl, addr);
++			/* Drop the reference count from the above set operation */
++			nl_addr_put(addr);
+ 			xfrmnl_user_tmpl_set_spi (sputmpl, ntohl(tmpl->id.spi));
+ 			xfrmnl_user_tmpl_set_proto (sputmpl, tmpl->id.proto);
+ 			xfrmnl_user_tmpl_set_family (sputmpl, tmpl->family);
+ 
+ 			if (tmpl->family == AF_INET)
+-				addr = nl_addr_build(tmpl->family, &tmpl->saddr.a4, sizeof (tmpl->saddr.a4));
++			{
++				if (!(addr = nl_addr_build(tmpl->family, &tmpl->saddr.a4, sizeof (tmpl->saddr.a4)))) {
++					err = -NLE_NOMEM;
++					goto errout;
++				}
++			}
+ 			else
+-				addr = nl_addr_build(tmpl->family, &tmpl->saddr.a6, sizeof (tmpl->saddr.a6));
++			{
++				if (!(addr = nl_addr_build(tmpl->family, &tmpl->saddr.a6, sizeof (tmpl->saddr.a6)))) {
++					err = -NLE_NOMEM;
++					goto errout;
++				}
++			}
+ 			xfrmnl_user_tmpl_set_saddr (sputmpl, addr);
++			/* Drop the reference count from the above set operation */
++			nl_addr_put(addr);
+ 
+ 			xfrmnl_user_tmpl_set_reqid (sputmpl, tmpl->reqid);
+ 			xfrmnl_user_tmpl_set_mode (sputmpl, tmpl->mode);
+@@ -663,7 +712,7 @@
+ 			xfrmnl_user_tmpl_set_aalgos (sputmpl, tmpl->aalgos);
+ 			xfrmnl_user_tmpl_set_ealgos (sputmpl, tmpl->ealgos);
+ 			xfrmnl_user_tmpl_set_calgos (sputmpl, tmpl->calgos);
+-			xfrmnl_sp_add_usertemplate (sp, sputmpl);
++			xfrmnl_sp_add_usertemplate (sp, _nl_steal_pointer(&sputmpl));
+ 
+ 			sp->ce_mask     |=  XFRM_SP_ATTR_TMPL;
+ 		}
+@@ -1316,6 +1365,8 @@
+ 	if (sp->ce_mask & XFRM_SP_ATTR_TMPL) {
+ 		sp->nr_user_tmpl--;
+ 		nl_list_del(&utmpl->utmpl_list);
++		if (sp->nr_user_tmpl == 0)
++			sp->ce_mask &= ~XFRM_SP_ATTR_TMPL;
+ 	}
+ }
+ 
+diff -urN libnl-3.7.0/tests/params.h libnl-3.7.0_new/tests/params.h
+--- libnl-3.7.0/tests/params.h	1970-01-01 08:00:00.000000000 +0800
++++ libnl-3.7.0_new/tests/params.h	2024-06-03 16:23:13.861244200 +0800
+@@ -0,0 +1,5 @@
++#define DST_ADDR "addr"
++#define IP "ip"
++#define NEXTHOP "dev=1,via=2"
++#define DEV_NAME "dev_name"
++
+diff -urN libnl-3.7.0/tests/test-add-delete-addr.c libnl-3.7.0_new/tests/test-add-delete-addr.c
+--- libnl-3.7.0/tests/test-add-delete-addr.c	1970-01-01 08:00:00.000000000 +0800
++++ libnl-3.7.0_new/tests/test-add-delete-addr.c	2024-06-03 16:23:13.861244200 +0800
+@@ -0,0 +1,39 @@
++#include <netlink/cli/utils.h>
++#include <netlink/cli/addr.h>
++#include <netlink/cli/link.h>
++#include <linux/netlink.h>
++#include <stdio.h>
++#include <params.h>
++
++
++int main(int argc, char *argv[])
++{
++    struct nl_sock *sock;
++    struct rtnl_addr *addr;
++    struct nl_cache *link_cache;
++    int err = 0, nlflags = NLM_F_CREATE;
++
++    sock = nl_cli_alloc_socket();
++    nl_cli_connect(sock, NETLINK_ROUTE);
++    link_cache = nl_cli_link_alloc_cache(sock);
++    addr = nl_cli_addr_alloc();
++
++    nl_cli_addr_parse_local(addr, IP);
++    nl_cli_addr_parse_dev(addr, link_cache, DEV_NAME);
++    
++    if ((err = rtnl_addr_add(sock, addr, nlflags)) < 0) {
++        printf("Unable to add route: %s", nl_geterror(err));
++        goto END;
++    }
++
++    if ((err = rtnl_addr_delete(sock, addr, nlflags)) < 0) {
++        printf("Unable to add route: %s", nl_geterror(err));
++        goto END;
++    }
++
++END:
++    rtnl_addr_put(addr);
++    nl_cache_put(link_cache);
++    nl_socket_free(sock);
++    return err;
++}
+diff -urN libnl-3.7.0/tests/test-add-delete-class.c libnl-3.7.0_new/tests/test-add-delete-class.c
+--- libnl-3.7.0/tests/test-add-delete-class.c	1970-01-01 08:00:00.000000000 +0800
++++ libnl-3.7.0_new/tests/test-add-delete-class.c	2024-06-03 16:23:13.876242300 +0800
+@@ -0,0 +1,142 @@
++#include <netlink/cli/utils.h>
++#include <netlink/cli/tc.h>
++#include <netlink/cli/class.h>
++#include <netlink/cli/link.h>
++#include <netlink-private/route/tc-api.h>
++#include <linux/netlink.h>
++#include <stdio.h>
++#include <params.h>
++
++static int default_yes = 0, deleted = 0, interactive = 0;
++static struct nl_sock *sk;
++
++static int test_add_class()
++{
++    struct rtnl_class *class;
++    struct rtnl_tc *tc;
++    struct nl_cache *link_cache;
++    struct nl_cli_tc_module *tm;
++    struct rtnl_tc_ops *ops;
++    int err = 0, flags = NLM_F_CREATE | NLM_F_EXCL;
++    char kind[] = "htb";
++    char *rate[] = {DEV_NAME, "root", "htb", "--rate=100mbit"};
++
++    sk = nl_cli_alloc_socket();
++    nl_cli_connect(sk, NETLINK_ROUTE);
++    link_cache = nl_cli_link_alloc_cache(sk);
++    class = nl_cli_class_alloc();
++    tc = (struct rtnl_tc *) class;
++
++    nl_cli_tc_parse_dev(tc, link_cache, DEV_NAME);
++    nl_cli_tc_parse_parent(tc, "root");
++    if (!rtnl_tc_get_ifindex(tc)) {
++        printf("You must specify a network device (--dev=XXX)\n");
++        err = -1;
++        goto END;
++    }
++    if (!rtnl_tc_get_parent(tc)) {
++        printf("You must specify a parent (--parent=XXX)\n");
++        err = -1;
++        goto END;
++    }
++
++    rtnl_tc_set_kind(tc, kind);
++    if (!(ops = rtnl_tc_get_ops(tc))) {
++        printf("Unknown class \"%s\"\n", kind);
++        err = -1;
++        goto END;
++    }
++    if (!(tm = nl_cli_tc_lookup(ops))) {
++        printf("class type \"%s\" not supported.\n", kind);
++        err = -1;
++        goto END;
++    }
++    tm->tm_parse_argv(tc, 4, rate);
++
++    if ((err = rtnl_class_add(sk, class, flags)) < 0) {
++        printf("Unable to add class: %s\n", nl_geterror(err));
++        goto END;
++    }
++
++END:
++    nl_cache_mngt_unprovide(link_cache);
++    nl_cache_put(link_cache);
++    rtnl_class_put(class);
++    nl_socket_free(sk);
++    return err;
++}
++
++
++static void delete_cb(struct nl_object *obj, void *arg)
++{
++    struct rtnl_class *class = nl_object_priv(obj);
++    struct nl_dump_params params = {
++        .dp_type = NL_DUMP_LINE,
++        .dp_fd = stdout,
++	};
++    int err;
++
++    if (interactive && !nl_cli_confirm(obj, &params, default_yes))
++        return;
++
++    if ((err = rtnl_class_delete(sk, class)) < 0)
++        nl_cli_fatal(err, "Unable to delete class: %s\n", nl_geterror(err));
++
++    deleted++;
++}
++
++static int test_delete_class()
++{
++    struct rtnl_class *class;
++    struct rtnl_tc *tc;
++    struct nl_cache *link_cache, *class_cache;
++    struct nl_cli_tc_module *tm;
++    struct rtnl_tc_ops *ops;
++    char kind[] = "htb";
++    int err = 0;
++    
++    sk = nl_cli_alloc_socket();
++    nl_cli_connect(sk, NETLINK_ROUTE);
++    link_cache = nl_cli_link_alloc_cache(sk);
++    class = nl_cli_class_alloc();
++    tc = (struct rtnl_tc *) class;
++
++    nl_cli_tc_parse_dev(tc, link_cache, DEV_NAME);
++    nl_cli_tc_parse_parent(tc, "root");
++    if (!rtnl_tc_get_ifindex(tc)) {
++        printf("You must specify a network device (--dev=XXX)\n");
++        err = -1;
++        goto END;
++    }
++    if (!rtnl_tc_get_parent(tc)) {
++        printf("You must specify a parent (--parent=XXX)\n");
++        err = -1;
++        goto END;
++    }
++    rtnl_tc_set_kind(tc, kind);
++    if (!(ops = rtnl_tc_get_ops(tc))) {
++        printf("Unknown class \"%s\"\n", kind);
++        err = -1;
++        goto END;
++    }
++    class_cache = nl_cli_class_alloc_cache(sk, rtnl_tc_get_ifindex(tc));
++    nl_cache_foreach_filter(class_cache, OBJ_CAST(class), delete_cb, NULL);
++
++END:
++    nl_cache_put(link_cache);
++    nl_socket_free(sk);
++    rtnl_class_put(class);
++    return err;
++}
++
++int main(int argc, char *argv[])
++{
++    int err = 0;
++    if ((err = test_add_class()) < 0) {
++        printf("Unable to add class\n");
++    }
++    if ((err = test_delete_class()) < 0) {
++        printf("Unable to delete class");
++    }
++    return err;
++}
+diff -urN libnl-3.7.0/tests/test-add-delete-neigh.c libnl-3.7.0_new/tests/test-add-delete-neigh.c
+--- libnl-3.7.0/tests/test-add-delete-neigh.c	1970-01-01 08:00:00.000000000 +0800
++++ libnl-3.7.0_new/tests/test-add-delete-neigh.c	2024-06-03 16:23:13.876242300 +0800
+@@ -0,0 +1,41 @@
++#include <netlink/cli/utils.h>
++#include <netlink/cli/neigh.h>
++#include <netlink/cli/link.h>
++#include <linux/netlink.h>
++#include <stdio.h>
++#include <params.h>
++
++
++int main(int argc, char *argv[])
++{
++    struct nl_sock *sk;
++    struct rtnl_neigh *neigh;
++    struct nl_cache *link_cache;
++    int err = 0, ok = 0, nlflags = NLM_F_REPLACE | NLM_F_CREATE;
++    char lladdr[] = "AA:BB:CC:DD:EE:FF";
++
++    sk = nl_cli_alloc_socket();
++    nl_cli_connect(sk, NETLINK_ROUTE);
++    link_cache = nl_cli_link_alloc_cache(sk);
++    neigh = nl_cli_neigh_alloc();
++
++    nl_cli_neigh_parse_dst(neigh, DST_ADDR);
++    nl_cli_neigh_parse_lladdr(neigh, lladdr);
++    nl_cli_neigh_parse_dev(neigh, link_cache, DEV_NAME);
++
++    if ((err = rtnl_neigh_add(sk, neigh, nlflags)) < 0){
++        printf("Unable to add neighbour: %s\n",nl_geterror(err));
++        goto END;
++    } 
++
++    if ((err = rtnl_neigh_delete(sk, neigh, nlflags)) < 0){
++        printf("Unable to add neighbour: %s\n",nl_geterror(err));
++        goto END;
++    }
++
++END:   
++    nl_socket_free(sk);
++    nl_cache_put(link_cache);
++    rtnl_neigh_put(neigh);
++    return err;
++}
+diff -urN libnl-3.7.0/tests/test-add-delete-qdisc.c libnl-3.7.0_new/tests/test-add-delete-qdisc.c
+--- libnl-3.7.0/tests/test-add-delete-qdisc.c	1970-01-01 08:00:00.000000000 +0800
++++ libnl-3.7.0_new/tests/test-add-delete-qdisc.c	2024-06-03 16:23:13.892190500 +0800
+@@ -0,0 +1,156 @@
++#include <netlink/cli/utils.h>
++#include <netlink/cli/tc.h>
++#include <netlink/cli/qdisc.h>
++#include <netlink/cli/link.h>
++#include <netlink-private/route/tc-api.h>
++#include <linux/netlink.h>
++#include <stdio.h>
++#include <params.h>
++
++
++static int default_yes = 0, deleted = 0, interactive = 0;
++static struct nl_sock *sk;
++
++static void delete_cb(struct nl_object *obj, void *arg)
++{
++    struct rtnl_qdisc *qdisc = nl_object_priv(obj);
++    struct nl_dump_params params = {
++        .dp_type = NL_DUMP_LINE,
++        .dp_fd = stdout,
++    };
++    int err;
++
++        /* Ignore default qdiscs, unable to delete */
++    if (rtnl_tc_get_handle((struct rtnl_tc *) qdisc) == 0)
++         return;
++
++    if (interactive && !nl_cli_confirm(obj, &params, default_yes))
++         return;
++
++    if ((err = rtnl_qdisc_delete(sk, qdisc)) < 0) {
++         nl_cli_fatal(err, "Unable to delete qdisc: %s\n", nl_geterror(err));
++    }
++    deleted++;
++}
++
++static int test_delete_qdisc()
++{
++    struct rtnl_qdisc *qdisc;
++    struct rtnl_tc *tc;
++    struct nl_cache *link_cache, *qdisc_cache;
++    struct nl_cli_tc_module *tm;
++    struct rtnl_tc_ops *ops;
++    char kind[] = "htb";
++    int err = 0;
++
++    sk = nl_cli_alloc_socket();
++    nl_cli_connect(sk, NETLINK_ROUTE);
++    link_cache = nl_cli_link_alloc_cache(sk);
++    qdisc_cache = nl_cli_qdisc_alloc_cache(sk);
++    qdisc = nl_cli_qdisc_alloc();
++    tc = (struct rtnl_tc *) qdisc;
++    nl_cli_tc_parse_dev(tc, link_cache, DEV_NAME);
++    nl_cli_tc_parse_parent(tc, "root");
++
++    if (!rtnl_tc_get_ifindex(tc)) {
++        printf("You must specify a network device (--dev=XXX)");
++        goto END;
++    }
++
++    if (!rtnl_tc_get_parent(tc)) {
++        printf("You must specify a parent");
++        goto END;
++    }
++
++    rtnl_tc_set_kind(tc, kind);
++    if (!(ops = rtnl_tc_get_ops(tc))) {
++        printf("Unknown qdisc \"%s\"", kind);
++        goto END;
++    }
++
++    if (!(tm = nl_cli_tc_lookup(ops))) {
++        nl_cli_fatal(ENOTSUP, "Qdisc type \"%s\" not supported.", kind);
++        goto END;
++    }
++
++
++    nl_cache_foreach_filter(qdisc_cache, OBJ_CAST(qdisc), delete_cb, NULL);
++
++END:
++    nl_cache_put(link_cache);
++    nl_cache_put(qdisc_cache);
++    rtnl_qdisc_put(qdisc);
++    nl_socket_free(sk);
++    return err;
++}
++
++static int test_add_qdisc()
++{
++    struct rtnl_qdisc *qdisc;
++    struct rtnl_tc *tc;
++    struct nl_cache *link_cache;
++    struct nl_cli_tc_module *tm;
++    struct rtnl_tc_ops *ops;
++    char kind[] = "htb";
++    int err = 0, flags = NLM_F_CREATE | NLM_F_EXCL;
++
++    if (!(sk = nl_socket_alloc())){
++        printf("Unable to allocate netlink socket\n");
++        return -1;
++    }
++    if ((err = nl_connect(sk, NETLINK_ROUTE)) < 0) {
++        printf("Unable to connect netlink socket: %s\n", nl_geterror(err));
++        nl_socket_free(sk);
++        return -1;
++    }
++    link_cache = nl_cli_link_alloc_cache(sk);
++    qdisc = nl_cli_qdisc_alloc();
++    tc = (struct rtnl_tc *) qdisc;
++
++    nl_cli_tc_parse_dev(tc, link_cache, DEV_NAME);
++    nl_cli_tc_parse_parent(tc, "root");
++
++    if (!rtnl_tc_get_ifindex(tc)){
++        printf("You must specify a network device (--dev=XXX)\n");
++        goto END;
++    }
++
++    if (!rtnl_tc_get_parent(tc)){
++        printf("You must specify a parent\n");
++        goto END;
++    }
++
++    rtnl_tc_set_kind(tc, kind);
++    if (!(ops = rtnl_tc_get_ops(tc))){
++        printf("Unknown qdisc \"%s\"\n", kind);
++        goto END;
++    }
++    if (!(tm = nl_cli_tc_lookup(ops))){
++        nl_cli_fatal(ENOTSUP, "Qdisc type \"%s\" not supported.\n", kind);
++        goto END;
++    }
++
++    if ((err = rtnl_qdisc_add(sk, qdisc, flags)) < 0){
++        printf("Unable to add qdisc: %s\n", nl_geterror(err));
++        goto END;
++    }
++
++END:
++    nl_cache_mngt_unprovide(link_cache);
++    nl_cache_put(link_cache);
++    rtnl_qdisc_put(qdisc);
++    nl_socket_free(sk);
++    return err;
++}
++
++int main(int args, char *argv[])
++{
++    int err = 0;
++    if ((err = test_add_qdisc()) < 0) {
++        printf("Unable to add qdisc:%s", nl_geterror(err));
++    }
++    if ((err = test_delete_qdisc()) < 0) {
++        printf("Unable to delete qdisc:%s", nl_geterror(err));
++    }
++    return err;
++}
+diff -urN libnl-3.7.0/tests/test-add-delete-route.c libnl-3.7.0_new/tests/test-add-delete-route.c
+--- libnl-3.7.0/tests/test-add-delete-route.c	1970-01-01 08:00:00.000000000 +0800
++++ libnl-3.7.0_new/tests/test-add-delete-route.c	2024-06-03 16:23:13.892190500 +0800
+@@ -0,0 +1,43 @@
++#include <netlink/cli/utils.h>
++#include <netlink/cli/route.h>
++#include <netlink/cli/link.h>
++#include <linux/netlink.h>
++#include <stdio.h>
++#include <params.h>
++
++
++int main(int argc, char argv[])
++{
++    struct nl_sock *sk;
++    struct rtnl_route *route;
++    struct nl_cache *link_cache, *route_cache;
++    char dst_addr[] = DST_ADDR;
++    char nexthop[] = NEXTHOP;
++    int err = 0;
++
++    sk = nl_cli_alloc_socket();
++    nl_cli_connect(sk, NETLINK_ROUTE);
++    link_cache = nl_cli_link_alloc_cache(sk);
++    route_cache = nl_cli_route_alloc_cache(sk, 0);
++    route = nl_cli_route_alloc();
++
++    nl_cli_route_parse_dst(route, dst_addr);
++    nl_cli_route_parse_nexthop(route, nexthop, link_cache);
++
++    if ((err = rtnl_route_add(sk, route, NLM_F_EXCL)) < 0) {
++        printf("Unable to add route: %s", nl_geterror(err));
++        goto END;
++    }
++
++    if ((err = rtnl_route_delete(sk, route, NLM_F_EXCL)) < 0) {
++        printf("Unable to delete route: %s", nl_geterror(err));
++        goto END;
++    }
++
++END:
++    rtnl_route_put(route);
++    nl_cache_put(link_cache);
++    nl_cache_put(route_cache);
++    nl_socket_free(sk);
++    return err;
++}
+diff -urN libnl-3.7.0/tests/test-genl-connect.c libnl-3.7.0_new/tests/test-genl-connect.c
+--- libnl-3.7.0/tests/test-genl-connect.c	1970-01-01 08:00:00.000000000 +0800
++++ libnl-3.7.0_new/tests/test-genl-connect.c	2024-06-03 16:23:13.892190500 +0800
+@@ -0,0 +1,37 @@
++#include <linux/genetlink.h>
++#include <netlink/socket.h>
++#include <netlink/cli/utils.h>
++#include <stdio.h>
++
++
++int main(int argc, char *argv[])
++{
++    struct nl_sock *sk;
++    struct nl_cache *family_cache;
++    struct nl_dump_params params = {
++        .dp_type = NL_DUMP_LINE,
++        .dp_fd = stdout,
++	};
++    int err = 0;
++
++    sk = nl_socket_alloc();
++    if ((err = genl_connect(sk)) < 0) {
++        printf("Unable create socket: %s\n", nl_geterror(err));
++        goto END;
++    }    
++    nl_socket_enable_auto_ack(sk);
++
++    if (nl_socket_get_fd(sk) < 0) {
++        printf("vaild socket\n");
++	err = -1;
++        goto END;
++    }
++    nl_socket_set_buffer_size(sk, 32655, 32655);
++    family_cache = nl_cli_alloc_cache(sk, "generic netlink family", genl_ctrl_alloc_cache);
++    nl_cache_dump(family_cache, &params);
++
++END:
++    nl_socket_free(sk);
++    nl_cache_put(family_cache);
++    return err;
++}
+diff -urN libnl-3.7.0/tests/test-link.c libnl-3.7.0_new/tests/test-link.c
+--- libnl-3.7.0/tests/test-link.c	1970-01-01 08:00:00.000000000 +0800
++++ libnl-3.7.0_new/tests/test-link.c	2024-06-03 18:34:22.314718700 +0800
+@@ -0,0 +1,68 @@
++#include <netlink/socket.h>
++#include <netlink/netlink.h>
++#include <netlink/cli/utils.h>
++#include <netlink/cli/link.h>
++#include <netlink/route/link.h>
++#include <unistd.h>
++
++
++static int self_def_cb = NL_CB_DEBUG;
++
++
++int main(int argc, char *argv[])
++{
++    struct nl_sock *sk;
++    struct nl_cache *link_cache;
++    struct rtnl_link *link;
++    struct nl_addr *addr;
++    struct nl_cb *cb;
++    int err = 0, ifindex, pid;
++    char *buf;
++
++    cb = nl_cb_alloc(self_def_cb);
++    pid = getpid();
++
++    if (!(sk = nl_socket_alloc_cb(cb))) {
++        nl_cli_fatal(ENOBUFS, "Unable to allocate netlink socket\n");
++    }
++    nl_cli_connect(sk, NETLINK_ROUTE);
++    nl_socket_disable_seq_check(sk);
++    nl_socket_disable_auto_ack(sk);
++    nl_socket_set_local_port(sk, pid);
++    nl_join_groups(sk, pid);
++    nl_socket_drop_membership(sk, pid);
++    nl_socket_set_peer_port(sk, 0);
++
++    link_cache = nl_cli_link_alloc_cache(sk);
++    link = nl_cli_link_alloc();
++
++    if (err = nl_socket_get_peer_port(sk)){
++        printf("peer_port %d\n", err);
++        goto END;
++    }    
++    if (err = nl_socket_use_seq(sk))
++        printf("sk->s_seq_next %d\n", err);
++    
++    if ((ifindex = rtnl_link_get_ifindex(link)) == 0){
++        printf("ifindex is not set, %d\n", ifindex);
++        rtnl_link_set_ifindex(link, 1);
++    };
++
++    if (rtnl_link_get(link_cache, 1)){
++        printf("now link is cached\n");
++    }else{
++        nl_cache_add(link_cache, (struct nl_object *)link);
++    };
++
++    if ((err = rtnl_link_add(sk, link, AF_INET)) < 0){
++        printf("Unable to add link %s\n", nl_geterror(err));
++        goto END;
++    }
++
++END:
++    nl_cb_put(cb);
++    nl_socket_free(sk);
++    nl_cache_put(link_cache);
++    rtnl_link_put(link);
++    return err;
++}

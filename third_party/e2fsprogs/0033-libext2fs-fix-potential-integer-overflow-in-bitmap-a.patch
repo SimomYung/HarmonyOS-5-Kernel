@@ -1,0 +1,53 @@
+From 27504bcf89193d47d7632cde922a65e0c051be01 Mon Sep 17 00:00:00 2001
+From: Theodore Ts'o <tytso@mit.edu>
+Date: Tue, 9 Aug 2022 11:16:47 -0400
+Subject: libext2fs: fix potential integer overflow in bitmap accessors
+
+bmap->cluster_bits has a maximum value of 19, but Coverity doesn't
+know that.  To make it happy, and just in case there is a bug where
+somehow the cluster size does get set to an invalid value and the rest
+of the library doesn't check it, use 1ULL instead of 1 to avoid the
+integer overflow.
+
+Addresses-Coverity-Bug: 1500759
+Addresses-Coverity-Bug: 1500764
+Addresses-Coverity-Bug: 1500771
+Signed-off-by: Theodore Ts'o <tytso@mit.edu>
+---
+ lib/ext2fs/gen_bitmap64.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/lib/ext2fs/gen_bitmap64.c b/lib/ext2fs/gen_bitmap64.c
+index d9809084..c860c10e 100644
+--- a/lib/ext2fs/gen_bitmap64.c
++++ b/lib/ext2fs/gen_bitmap64.c
+@@ -684,7 +684,7 @@ int ext2fs_test_block_bitmap_range2(ext2fs_block_bitmap gen_bmap,
+ 
+ 	/* convert to clusters if necessary */
+ 	block >>= bmap->cluster_bits;
+-	end += (1 << bmap->cluster_bits) - 1;
++	end += (1ULL << bmap->cluster_bits) - 1;
+ 	end >>= bmap->cluster_bits;
+ 	num = end - block;
+ 
+@@ -725,7 +725,7 @@ void ext2fs_mark_block_bitmap_range2(ext2fs_block_bitmap gen_bmap,
+ 
+ 	/* convert to clusters if necessary */
+ 	block >>= bmap->cluster_bits;
+-	end += (1 << bmap->cluster_bits) - 1;
++	end += (1ULL << bmap->cluster_bits) - 1;
+ 	end >>= bmap->cluster_bits;
+ 	num = end - block;
+ 
+@@ -766,7 +766,7 @@ void ext2fs_unmark_block_bitmap_range2(ext2fs_block_bitmap gen_bmap,
+ 
+ 	/* convert to clusters if necessary */
+ 	block >>= bmap->cluster_bits;
+-	end += (1 << bmap->cluster_bits) - 1;
++	end += (1ULL << bmap->cluster_bits) - 1;
+ 	end >>= bmap->cluster_bits;
+ 	num = end - block;
+ 
+-- 
+cgit 
+

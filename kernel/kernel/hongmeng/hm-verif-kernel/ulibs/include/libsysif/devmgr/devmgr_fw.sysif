@@ -1,0 +1,30 @@
+/*
+ * Copyright (C) Huawei Technologies Co., Ltd. 2020. All rights reserved.
+ * Description: devmgr firmware sysif APIs
+ * Author: Huawei OS Kernel Lab
+ * Create: Fri Feb 28 19:27:55 2020
+ */
+
+/*
+ * To support the mixed data model which means the client and the server
+ * may use different data model. See the document for limitation of data type
+ * used in the sysif interfaces in <Documentation/sysif_compat.md>.
+ */
+DEFINE_MANAGER(fw, 2,
+	DEFINE_METHOD(fw, acquire_contents,
+		      ARG(4,
+			  unsigned long, buf,
+			  unsigned int, size,
+			  unsigned long, name,
+			  unsigned int, namelen),
+		      RET(1, unsigned int, rsize),
+		      SLOWDATA_NO)
+	DEFINE_METHOD(fw, cms_verify,
+		      ARG(3,
+			  unsigned long long, shm_key,
+			  unsigned long, data_size,
+			  unsigned long, sig_size),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+)

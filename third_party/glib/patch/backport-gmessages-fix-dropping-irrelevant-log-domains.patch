@@ -1,0 +1,128 @@
+From 71f6d4c129fc729a5ead08637924d8c0973f2fe9 Mon Sep 17 00:00:00 2001
+From: Alexander Slobodeniuk <aslobodeniuk@fluendo.com>
+Date: Wed, 1 Nov 2023 10:32:27 +0100
+Subject: [PATCH 1/2] gmessages: fix dropping irrelevant log domains
+ 
+If the string of one log domain is contained in
+another, it was printing both.
+ 
+For example, if G_MESSAGES_DEBUG is "Gtkspecial",
+it would also keep the logs of the "Gtk" domain
+ 
+Conflict:NA
+Reference:https://gitlab.gnome.org/GNOME/glib/-/commit/71f6d4c129fc729a5ead08637924d8c0973f2fe9
+ 
+---
+ glib/gmessages.c | 22 +++++++++++++++++++++-
+ 1 file changed, 21 insertions(+), 1 deletion(-)
+ 
+diff --git a/glib/gmessages.c b/glib/gmessages.c
+index d0d38c925a..ebd3a5433e 100644
+--- a/glib/gmessages.c
++++ b/glib/gmessages.c
+@@ -2465,6 +2465,26 @@ log_is_old_api (const GLogField *fields,
+           g_strcmp0 (fields[0].value, "1") == 0);
+ }
+ 
++static gboolean
++domain_found (const gchar *domains,
++              const char  *log_domain)
++{
++  guint len;
++  const gchar *found;
++
++  len = strlen (log_domain);
++
++  for (found = strstr (domains, log_domain); found;
++       found = strstr (found + 1, log_domain))
++    {
++      if ((found == domains || found[-1] == ' ')
++          && (found[len] == 0 || found[len] == ' '))
++        return TRUE;
++    }
++
++  return FALSE;
++}
++
+ /*
+  * Internal version of g_log_writer_default_would_drop(), which can
+  * read from either a log_domain or an array of fields. This avoids
+@@ -2504,7 +2524,7 @@ should_drop_message (GLogLevelFlags   log_level,
+         }
+ 
+       if (strcmp (domains, "all") != 0 &&
+-          (log_domain == NULL || !strstr (domains, log_domain)))
++          (log_domain == NULL || !domain_found (domains, log_domain)))
+         return TRUE;
+     }
+ 
+-- 
+GitLab
+ 
+ 
+From 8eddbb9832b9a52a7495cc380e53715d920bb9ea Mon Sep 17 00:00:00 2001
+From: Alexander Slobodeniuk <aslobodeniuk@fluendo.com>
+Date: Wed, 1 Nov 2023 19:23:35 +0100
+Subject: [PATCH 2/2] glib/tests: extend logging test (dropping domains)
+ 
+ 
+Conflict:NA
+Reference:https://gitlab.gnome.org/GNOME/glib/-/commit/8eddbb9832b9a52a7495cc380e53715d920bb9ea
+ 
+---
+ glib/tests/logging.c | 40 ++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 40 insertions(+)
+ 
+diff --git a/glib/tests/logging.c b/glib/tests/logging.c
+index ea9dcb825e..f4c47e16c8 100644
+--- a/glib/tests/logging.c
++++ b/glib/tests/logging.c
+@@ -244,6 +244,46 @@ test_default_handler_would_drop (void)
+   g_assert_false (g_log_writer_default_would_drop (G_LOG_LEVEL_DEBUG, "foo"));
+   g_assert_false (g_log_writer_default_would_drop (1<<G_LOG_LEVEL_USER_SHIFT, "foo"));
+ 
++  g_setenv ("G_MESSAGES_DEBUG", "foobar", TRUE);
++
++  g_assert_true (g_log_writer_default_would_drop (G_LOG_LEVEL_DEBUG, "foo"));
++  g_assert_true (g_log_writer_default_would_drop (G_LOG_LEVEL_DEBUG, "bar"));
++
++  g_setenv ("G_MESSAGES_DEBUG", "foobar bar", TRUE);
++
++  g_assert_true (g_log_writer_default_would_drop (G_LOG_LEVEL_DEBUG, "foo"));
++  g_assert_false (g_log_writer_default_would_drop (G_LOG_LEVEL_DEBUG, "bar"));
++
++  g_setenv ("G_MESSAGES_DEBUG", "foobar bar barfoo", TRUE);
++
++  g_assert_true (g_log_writer_default_would_drop (G_LOG_LEVEL_DEBUG, "foo"));
++  g_assert_false (g_log_writer_default_would_drop (G_LOG_LEVEL_DEBUG, "bar"));
++
++  g_setenv ("G_MESSAGES_DEBUG", "foobar bar foo barfoo", TRUE);
++
++  g_assert_false (g_log_writer_default_would_drop (G_LOG_LEVEL_DEBUG, "foo"));
++  g_assert_false (g_log_writer_default_would_drop (G_LOG_LEVEL_DEBUG, "bar"));
++  g_assert_true (g_log_writer_default_would_drop (G_LOG_LEVEL_DEBUG, "baz"));
++
++  g_setenv ("G_MESSAGES_DEBUG", "foo bar baz", TRUE);
++
++  g_assert_false (g_log_writer_default_would_drop (G_LOG_LEVEL_DEBUG, "foo"));
++  g_assert_false (g_log_writer_default_would_drop (G_LOG_LEVEL_DEBUG, "bar"));
++  g_assert_false (g_log_writer_default_would_drop (G_LOG_LEVEL_DEBUG, "baz"));
++
++  g_setenv ("G_MESSAGES_DEBUG", "foo", TRUE);
++
++  g_assert_false (g_log_writer_default_would_drop (G_LOG_LEVEL_DEBUG, "foo"));
++  g_assert_true (g_log_writer_default_would_drop (G_LOG_LEVEL_DEBUG, "bar"));
++  g_assert_true (g_log_writer_default_would_drop (G_LOG_LEVEL_DEBUG, "foobarbaz"));
++  g_assert_true (g_log_writer_default_would_drop (G_LOG_LEVEL_DEBUG, "barfoobaz"));
++  g_assert_true (g_log_writer_default_would_drop (G_LOG_LEVEL_DEBUG, "barbazfoo"));
++
++  g_setenv ("G_MESSAGES_DEBUG", "   foo    bar  foobaz ", TRUE);
++  g_assert_false (g_log_writer_default_would_drop (G_LOG_LEVEL_DEBUG, "foo"));
++  g_assert_false (g_log_writer_default_would_drop (G_LOG_LEVEL_DEBUG, "bar"));
++  g_assert_true (g_log_writer_default_would_drop (G_LOG_LEVEL_DEBUG, "baz"));
++
+   exit (0);
+ }
+ 
+-- 
+GitLab

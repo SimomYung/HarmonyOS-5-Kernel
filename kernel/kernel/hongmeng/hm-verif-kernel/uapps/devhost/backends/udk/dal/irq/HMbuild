@@ -1,0 +1,9 @@
+# Copyright (c) Huawei Technologies Co., Ltd. 2022. All rights reserved.
+# Description: HMbuild for udk
+# Author: Huawei OS Kernel Lab
+# Create: Wed Feb 09 11:51:30 2022
+
+src-y: udk_irq.c
+src-y: udk_irq_of.c
+
+src-CONFIG_UDK_IRQ_EXT: udk_irq_ext.c

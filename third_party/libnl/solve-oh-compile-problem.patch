@@ -1,0 +1,73 @@
+diff -urN libnl-3.7.0/include/netlink-private/utils.h libnl-3.7.0-new/include/netlink-private/utils.h
+--- libnl-3.7.0/include/netlink-private/utils.h	2022-05-24 16:55:12.000000000 +0800
++++ libnl-3.7.0-new/include/netlink-private/utils.h	2024-01-13 18:22:20.218754000 +0800
+@@ -114,10 +114,8 @@
+
+ #define _nl_assert_addr_family(addr_family)                                    \
+ 	do {                                                                   \
+-		typeof(addr_family) _addr_family = (addr_family);              \
+-                                                                               \
+-		_nl_assert(_addr_family == AF_INET ||                          \
+-			   _addr_family == AF_INET6);                          \
++		_nl_assert(addr_family == AF_INET ||                          \
++			   addr_family == AF_INET6);                          \
+ 	} while (0)
+
+ /*****************************************************************************/
+diff -urN libnl-3.7.0/lib/route/link/vrf.c libnl-3.7.0-new/lib/route/link/vrf.c
+--- libnl-3.7.0/lib/route/link/vrf.c	2022-05-24 16:55:12.000000000 +0800
++++ libnl-3.7.0-new/lib/route/link/vrf.c	2024-01-15 17:14:53.121653400 +0800
+@@ -27,7 +27,6 @@
+ #include <netlink/route/link/vrf.h>
+
+ #include <linux/if_link.h>
+-#include <linux-private/linux/rtnetlink.h>
+
+ #define VRF_TABLE_ID_MAX  RT_TABLE_MAX
+
+diff -urN libnl-3.7.0/lib/route/mdb.c libnl-3.7.0-new/lib/route/mdb.c
+--- libnl-3.7.0/lib/route/mdb.c	2022-05-24 16:55:12.000000000 +0800
++++ libnl-3.7.0-new/lib/route/mdb.c	2024-01-13 18:23:23.811971400 +0800
+@@ -7,7 +7,7 @@
+ #include <netlink/netlink.h>
+ #include <netlink/route/mdb.h>
+ #include <netlink/utils.h>
+-#include <linux/if_bridge.h>
++#include <linux-private/linux/if_bridge.h>
+
+ /** @cond SKIP */
+ #define MDB_ATTR_IFINDEX         0x000001
+diff -urN libnl-3.7.0/lib/utils.c libnl-3.7.0-new/lib/utils.c
+--- libnl-3.7.0/lib/utils.c	2022-07-06 23:21:11.000000000 +0800
++++ libnl-3.7.0-new/lib/utils.c	2024-01-13 18:24:36.832909100 +0800
+@@ -219,8 +219,8 @@
+
+ int nl_rate2str(unsigned long long rate, int type, char *buf, size_t len)
+ {
+-	char *unit;
+-	double frac;
++	char *unit = NULL;
++	double frac = 0.0;
+
+ 	switch (type) {
+ 	case NL_BYTE_RATE:
+@@ -367,6 +367,7 @@
+ 	}
+
+ 	BUG();
++	return buf;
+ }
+
+ /**
+diff -urN libnl-3.7.0/src/lib/utils.c libnl-3.7.0-new/src/lib/utils.c
+--- libnl-3.7.0/src/lib/utils.c	2022-05-24 16:55:12.000000000 +0800
++++ libnl-3.7.0-new/src/lib/utils.c	2024-01-15 16:17:20.093386000 +0800
+@@ -24,6 +24,8 @@
+ #include <dlfcn.h>
+ #endif
+
++#define PKGLIBDIR "/usr/local/lib"
++
+ /**
+  * Parse a text based 32 bit unsigned integer argument
+  * @arg arg		Integer in text form.

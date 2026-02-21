@@ -1,0 +1,25 @@
+/*
+ * Copyright (c) Huawei Technologies Co., Ltd. 2023-2023. All rights reserved.
+ * Description: Devhost probe sysif APIs
+ * Author: Huawei OS Kernel Lab
+ * Create: Thu Aug 19 12:36:33 2023
+ */
+
+#ifdef SYSIF_EXPORT_API
+#include <hmkernel/types.h>
+#include <hmasm/ucontext.h>
+#endif
+
+DEFINE_MANAGER(probe, 2,
+	DEFINE_METHOD(probe, handle_brk,
+		      ARG(1,
+			  struct arch_uctx *, uctx),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_METHOD(probe, handle_ss_brk,
+		      ARG(1,
+			  struct arch_uctx *, uctx),
+		      RET_NO,
+		      SLOWDATA_NO)
+)

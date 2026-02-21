@@ -1,0 +1,70 @@
+# Copyright (c) 2024 Huawei Device Co., Ltd.
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+import("//build/ohos.gni")
+import("//vendor/open_source/strongswan/strongswan_config.gni")
+
+source_gen_dir = "${target_gen_dir}/../../../strongswan/src/pki"
+sources_list = [
+  "${source_gen_dir}/command.c",
+  "${source_gen_dir}/commands/acert.c",
+  "${source_gen_dir}/commands/dn.c",
+  "${source_gen_dir}/commands/est.c",
+  "${source_gen_dir}/commands/estca.c",
+  "${source_gen_dir}/commands/gen.c",
+  "${source_gen_dir}/commands/issue.c",
+  "${source_gen_dir}/commands/keyid.c",
+  "${source_gen_dir}/commands/pkcs12.c",
+  "${source_gen_dir}/commands/pkcs7.c",
+  "${source_gen_dir}/commands/print.c",
+  "${source_gen_dir}/commands/pub.c",
+  "${source_gen_dir}/commands/req.c",
+  "${source_gen_dir}/commands/scep.c",
+  "${source_gen_dir}/commands/scepca.c",
+  "${source_gen_dir}/commands/self.c",
+  "${source_gen_dir}/commands/signcrl.c",
+  "${source_gen_dir}/commands/verify.c",
+  "${source_gen_dir}/est/est_tls.c",
+  "${source_gen_dir}/pki.c",
+  "${source_gen_dir}/pki_cert.c",
+  "${source_gen_dir}/scep/scep.c",
+]
+action("pki_install_action") {
+  script = "//vendor/open_source/strongswan/empty.py"
+  outputs = sources_list
+  deps = [ "../../../:strongswan_install_action" ]
+}
+
+ohos_executable("pki") {
+  sources = sources_list
+  include_dirs = [
+    "${source_gen_dir}",
+    "${source_gen_dir}/../libstrongswan",
+    "${source_gen_dir}/../libtls",
+  ]
+
+  defines = [ "PLUGINS=\"pkcs11 aes des rc2 sha2 sha1 md5 random x509 revocation pubkey pkcs1 pkcs7 pkcs12 dnskey sshkey pem openssl pkcs8 af-alg curve25519 hmac kdf drbg\"" ]
+  defines += common_defines
+  cflags = common_cflags
+  cflags += [ "-pthread" ]
+  cflags_cc = common_cflags_cc
+
+  deps = [
+    ":pki_install_action",
+    "../libstrongswan:libstrongswan",
+    "../libtls:libtls",
+  ]
+  install_enable = true
+  part_name = "strongswan"
+  subsystem_name = "open_source"
+}

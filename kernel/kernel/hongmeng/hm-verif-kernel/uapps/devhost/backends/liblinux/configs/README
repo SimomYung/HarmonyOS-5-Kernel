@@ -1,0 +1,11 @@
+
+                    ==== DEFCONFIG SUMMARY ===
+
+					minimal	 default  full
+---- Feature Lists
+CONFIG_DEVHOST_NETLINK			   N        Y       Y
+CONFIG_DEVHOST_PM_PLUGIN		   N        Y       Y
+  CONFIG_PM_SUSPEND			   N        N       Y
+  CONFIG_PM_HIBERNATE			   N        N       Y
+  CONFIG_PM_WAKELOCK			   N        N       Y
+CONFIG_LNXBASE_MEMSTAT			   N        N       N

@@ -1,0 +1,32 @@
+From e900d40afdb731d2270a5110833ae49192974355 Mon Sep 17 00:00:00 2001
+From: Florian Westphal <fw@strlen.de>
+Date: Tue, 14 Mar 2023 22:36:50 +0100
+Subject: [PATCH] xtables-eb: fix crash when opts isn't reallocated
+
+opts may point to statically allocated memory.
+This fixes abort() from libc.
+
+Conflict: NA
+Reference: https://git.netfilter.org/iptables/commit?id=e900d40afdb731d2270a5110833ae49192974355
+
+Signed-off-by: Florian Westphal <fw@strlen.de>
+---
+ iptables/xtables-eb.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/iptables/xtables-eb.c b/iptables/xtables-eb.c
+index 3a73e797..068dffd2 100644
+--- a/iptables/xtables-eb.c
++++ b/iptables/xtables-eb.c
+@@ -675,7 +675,8 @@ void nft_fini_eb(struct nft_handle *h)
+ 		free(target->t);
+ 	}
+ 
+-	free(opts);
++	if (opts != ebt_original_options)
++		free(opts);
+ 
+ 	nft_fini(h);
+ 	xtables_fini();
+-- 
+2.23.0

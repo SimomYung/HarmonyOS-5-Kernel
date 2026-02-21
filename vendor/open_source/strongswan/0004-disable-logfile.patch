@@ -1,0 +1,78 @@
+From 500eb92a08e49cbe137a7a398a09fff82bd48b64 Mon Sep 17 00:00:00 2001
+From: w30063796 <w30063796@notesmail.huawei.com/>
+Date: Wed, 18 Dec 2024 16:32:28 +0800
+Subject: [PATCH] [Init] modify open source strongswan
+
+TicketNo:DTS2024121134413
+Description:add encrypt for swanct.conf
+Team:OTHERS
+Feature or Bugfix:Bugfix
+Binary Source:No
+PrivateCode(Yes/No):No
+
+Change-Id: I2d66adfb135ee2475f0fa4b39b9b2df3d3937ce3
+---
+ src/libcharon/daemon.c                             |  4 ++++
+ src/libstrongswan/netmanager/include/ipc_request.h |  1 +
+ src/swanctl/swanctl.c                              | 10 ++++++++++
+ 3 files changed, 15 insertions(+)
+
+diff --git a/src/libcharon/daemon.c b/src/libcharon/daemon.c
+index fca6648..04889a1 100644
+--- a/src/libcharon/daemon.c
++++ b/src/libcharon/daemon.c
+@@ -490,6 +490,10 @@ static void load_sys_logger(private_daemon_t *this, char *facility,
+ static void load_file_logger(private_daemon_t *this, char *section,
+ 							 linked_list_t *current_loggers)
+ {
++#ifndef SUPPORT_SYSVPN_DEBUG
++    return; // disable file logger
++#endif // SUPPORT_SYSVPN_DEBUG
++
+ 	file_logger_t *file_logger;
+ 	debug_t group;
+ 	level_t def;
+diff --git a/src/libstrongswan/netmanager/include/ipc_request.h b/src/libstrongswan/netmanager/include/ipc_request.h
+index da7df4c..8b6573d 100644
+--- a/src/libstrongswan/netmanager/include/ipc_request.h
++++ b/src/libstrongswan/netmanager/include/ipc_request.h
+@@ -26,6 +26,7 @@ enum IpsecVpnCertType : int32_t {
+     CA_CERT = 0,
+     USER_CERT,
+     SERVER_CERT,
++    SWAN_CTL_CONF,
+ };
+ 
+ int32_t NotifyConnectStage(char *stage, int32_t state);
+diff --git a/src/swanctl/swanctl.c b/src/swanctl/swanctl.c
+index a3bbc28..8205547 100644
+--- a/src/swanctl/swanctl.c
++++ b/src/swanctl/swanctl.c
+@@ -17,6 +17,8 @@
+ 
+ #include "swanctl.h"
+ #include "command.h"
++#include "net_manager_api.h"
++#include "securec.h"
+ 
+ #include <unistd.h>
+ 
+@@ -48,7 +50,15 @@ settings_t *load_swanctl_conf(char *file)
+ 				 DIRECTORY_SEPARATOR, SWANCTL_CONF);
+ 	}
+ 
++#ifdef SUPPORT_SYSVPN
++	uint8_t conf_buf[BUFSIZ];
++	memset_s(conf_buf, BUFSIZ, 0, BUFSIZ);
++	uint32_t uri_size = LoadVpnCertUri(SWAN_CTL_CONF, conf_buf, BUFSIZ);
++	cfg = settings_create_string(conf_buf);
++#else
+ 	cfg = settings_create(file);
++#endif // SUPPORT_SYSVPN
++
+ 	if (!cfg)
+ 	{
+ 		fprintf(stderr, "parsing '%s' failed\n", file);
+-- 
+2.7.4
+

@@ -1,0 +1,33 @@
+/*
+ * Copyright (C) Huawei Technologies Co., Ltd. 2019-2020. All rights reserved.
+ * Description: devhost internal rpc sysif APIs
+ * Author: Huawei OS Kernel Lab
+ * Create: Fri Apr 12 19:23:12 2019
+ */
+
+/*
+ * To support the mixed data model which means the client and the server
+ * may use different data model. See the document for limitation of data type
+ * used in the sysif interfaces in <Documentation/sysif_compat.md>.
+ */
+DEFINE_MANAGER(rpc, 4,
+	DEFINE_METHOD(rpc, export,
+		      ARG(2,
+			  int, devid,
+			  unsigned int, cnode_idx),
+		      RET(1,
+			  uref_t, uref),
+		      SLOWDATA_NO)
+
+	DEFINE_METHOD(rpc, invoke,
+		      ARG(6,
+			  int, devid,
+			  int, cmd,
+			  unsigned long, req_ubuf,
+			  unsigned long, req_size,
+			  unsigned long, resp_ubuf,
+			  unsigned long, resp_size),
+		      RET(1,
+			  unsigned long long, resp_size),
+		      SLOWDATA_NO)
+)

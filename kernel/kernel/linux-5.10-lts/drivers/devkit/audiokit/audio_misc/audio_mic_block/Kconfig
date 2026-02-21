@@ -1,0 +1,5 @@
+config AUDIO_MIC_BLOCK
+    bool "audio mic block driver"
+    default n
+    help
+    Say Y to enable audio mic block driver support

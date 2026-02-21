@@ -1,0 +1,9 @@
+#!/bin/sh
+
+LOCAL_IP="$4"
+if command -v ip >/dev/null 2>&1; then
+	ip rule delete from ${LOCAL_IP}/24 lookup 97
+	ip rule delete to ${LOCAL_IP}/24 lookup 97
+	ip route delete table 97 default dev ppp0
+fi
+exit 0

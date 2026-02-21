@@ -1,0 +1,39 @@
+/*
+ * Copyright (c) Huawei Technologies Co., Ltd. 2020-2021. All rights reserved.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 2 and
+ * only version 2 as published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ */
+
+#ifndef __DP_LINK_TRAINING_H__
+#define __DP_LINK_TRAINING_H__
+
+#include <linux/kernel.h>
+
+#define LINK_REPEAT 3
+
+struct dp_ctrl;
+
+/**
+ * Link training
+ */
+int dptx_link_training(struct dp_ctrl *dptx, uint8_t rate, uint8_t lanes);
+int dptx_link_check_status(struct dp_ctrl *dptx);
+int dptx_link_adjust_drive_settings(struct dp_ctrl *dptx, int *out_changed);
+int dptx_link_retraining(struct dp_ctrl *dptx, uint8_t rate, uint8_t lanes);
+int dptx_link_retraining_common(struct dp_ctrl *dptx, uint8_t rate, uint8_t lanes);
+void dptx_fast_link(struct dp_ctrl *dptx, bool open);
+int dptx_link_rate_index(struct dp_ctrl *dp_ctrl, uint8_t rate);
+int dptx_check_sink_error_status(struct dp_ctrl *dptx);
+int dptx_irq_hpd_link_recovery(struct dp_ctrl *dptx);
+void dptx_reset_hardware_notify(struct dp_ctrl *dptx);
+uint8_t dptx_get_sink_max_rate(struct dp_ctrl *dptx);
+uint8_t dptx_get_sink_max_lane(struct dp_ctrl *dptx);
+
+#endif /* DP_LINK_TRAINING_H */

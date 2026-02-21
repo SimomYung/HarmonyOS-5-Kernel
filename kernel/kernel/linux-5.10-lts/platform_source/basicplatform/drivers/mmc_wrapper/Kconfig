@@ -1,0 +1,6 @@
+config MMC_WRAPPER
+	bool "mmc wrapper"
+	depends on LIBLINUX
+	default n
+	help
+	  this select mmc wrapper for ldk & udk

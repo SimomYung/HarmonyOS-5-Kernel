@@ -1,0 +1,13 @@
+# Copyright (c) Huawei Technologies Co., Ltd. 2022-2022. All rights reserved.
+# Description: HMbuild
+# Author: Huawei OS Kernel Lab
+# Create: Thu May 26 21:18:46 2022
+
+src-y: elf.c
+src-y: elf32.c
+src-y: elf64.c
+src-y: elf_ex.c
+src-y: elf_load.c
+src-y: symbol.c
+src-y: vsymbol.c
+src-y: elf_phdr.c

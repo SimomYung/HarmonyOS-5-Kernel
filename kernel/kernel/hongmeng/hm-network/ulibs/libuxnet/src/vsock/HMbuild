@@ -1,0 +1,12 @@
+# Copyright (C) Huawei Technologies Co., Ltd. 2021. All rights reserved.
+# Description: HMbuild
+# Author: Huawei OS Kernel Lab
+# Create: Wed Nov 03 17:43:20 2021
+
+src-y: ux_vsock_trans.c
+src-y: ux_vsock_stream.c
+src-y: ux_vsock_socket.c
+src-y: ux_vsock_netdev.c
+src-y: ux_vsock_timer.c
+src-y: ux_vsock_actv_netdev.c
+src-CONFIG_VSOCK_HOST: ux_vsock_host.c

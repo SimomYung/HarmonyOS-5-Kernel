@@ -1,0 +1,1 @@
+obj-$(CONFIG_HUAWEI_SMARTCOM_MPFLOW) += smartcom_mpflow.o

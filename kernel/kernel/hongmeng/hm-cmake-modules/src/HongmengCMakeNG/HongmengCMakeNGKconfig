@@ -1,0 +1,224 @@
+# Copyright (C) Huawei Technologies Co., Ltd. 2021. All rights reserved.
+# Description: Kconfig options provided by HMbuild to solve common configuration
+# Author: Huawei OS Kernel Lab
+# Create: Wed Jun 30 09:55:19 2021
+
+menu "HMbuild options"
+
+# An indicator for HMbuild to ensure following options are provided.
+config HMBUILD_KCONFIG_INCLUDED
+  bool
+  default y
+
+config HMBUILD_FINDPATH_INCLUDE
+  string "Where to find inclue files (include32 in compat32 case)"
+  default "include"
+
+config HMBUILD_FINDPATH_LIB
+  string "Where to find inclue files (lib32 in compat32 case)"
+  default "lib"
+
+config HMBUILD_EXTRA_CFLAGS_BASE
+  string "Base extra cflags when building binary"
+  default ""
+
+config HMBUILD_EXTRA_CFLAGS
+  string "Extra cflags when building binary"
+  default ""
+
+config HMBUILD_EXTRA_LDFLAGS_BASE
+  string "Base extra ldflags when building binary"
+  default ""
+
+config HMBUILD_EXTRA_LDFLAGS
+  string "Extra ldflags when building binary"
+  default ""
+
+config HMBUILD_EXTRA_LIBS
+  string "Extra libs when building binary"
+  default ""
+
+config HMBUILD_OUTPUT_SUFFIX
+  string "Suffix to be used when output binary"
+  default ""
+
+config HMBUILD_DEPENDENCY_SUFFIX
+  string "Suffix of finding dependent libraries"
+  default ""
+
+config HMBUILD_STRIP_OPTION
+  string "Option passed to strip when building stripped binary"
+  default "--strip-debug"
+
+config HMBUILD_MAKE_BINARIES
+  bool "Create and install binaries"
+  default y
+
+config HMBUILD_MAKE_HEADERS
+  bool "Create and install headers and other support files (like FindXXX.cmake)"
+  default y
+
+config HMBUILD_HMFINDUTILS_CONF
+  string "Configure find module names"
+  default ""
+  help
+    When you want to find a hmvariant library, you first need to know which Findxxx.cmake
+    the library is located in. Then select the suffix of the library you want to find,
+    such as sysk/kasan/kasan_sysk,etc., and finally fill in the CONFIG_HMBUILD_HMFINDUTILS_CONF
+    in the form of xxx-suffix.
+
+    For example:
+        When
+
+        CONFIG_HMBUILD_HMFINDUTILS_CONF = ""
+
+        cmake execute find_package(PackageA), will bind PackageA::PackageA_static to /usr/lib/libpkga.a
+    and PackageA::PackageA_shared to /usr/lib/libpkga.so.
+        Similarly, when cmake execute find_package(PackageB), will bind PackageB::PackageB_static to
+    /usr/lib/libpkgb.a and PackageB::PackageB_shared to /usr/lib/libpkgb.so.
+
+        When
+
+        CONFIG_HMBUILD_HMFINDUTILS_CONF = "PackageA-sysk PackageB-kasan_hi1210"
+
+        cmake execute find_package(PackageA), will bind PackageA::PackageA_static to /usr/lib/libpkga_sysk.a and
+    PackageA::PackageA_shared to /usr/lib/libpkga_sysk.so.
+        Similarly, when cmake execute find_package(PackageB), will bind PackageB::PackageB_static to
+    /usr/lib/libpkgb_kasan_hi1210.a and PackageB::PackageB_shared to /usr/lib/libpkgb_kasan_hi1210.so.
+
+choice
+  prompt "Toolchain selection"
+  default HMBUILD_TOOLCHAIN_GNU
+  config HMBUILD_TOOLCHAIN_GNU
+    bool "Use GNU toolchain (toolchain.cmake) (default)"
+  config HMBUILD_TOOLCHAIN_ITRUSTEE
+    bool "Use iTrustee toolchain (itrustee-toolchain.cmake)"
+  config HMBUILD_TOOLCHAIN_LLVM
+    bool "Use LLVM toolchain"
+endchoice
+
+if HMBUILD_TOOLCHAIN_LLVM
+  choice
+    prompt "Sub toolchain selection"
+    default HMBUILD_TOOLCHAIN_BISHENG_MOBILE_CPU
+    config HMBUILD_TOOLCHAIN_BISHENG_MOBILE_CPU
+      bool "Use bisheng mobile cpu toolchain"
+    config HMBUILD_TOOLCHAIN_BISHENG_EMBEDDED_CPU
+      bool "Use bisheng embedded cpu toolchain"
+  endchoice
+endif
+
+choice
+  prompt "Return guard"
+  default HMBUILD_LLVM_RETURN_GUARD_DISABLE
+  config HMBUILD_LLVM_RETURN_GUARD
+    bool "Return guard strong (-fstack-protector-ret-strong)"
+    depends on HMBUILD_TOOLCHAIN_LLVM
+  config HMBUILD_LLVM_RETURN_GUARD_ALL
+    bool "Return guard all (-fstack-protector-ret-all)"
+    depends on HMBUILD_TOOLCHAIN_LLVM
+  config HMBUILD_LLVM_RETURN_GUARD_DISABLE
+    bool "None (-fstack-protector-strong)"
+endchoice
+
+config HMBUILD_LLVM_RETURN_GUARD_ENABLE
+  def_bool !HMBUILD_LLVM_RETURN_GUARD_DISABLE
+  depends on HMBUILD_TOOLCHAIN_LLVM
+
+config HMBUILD_LTO
+  bool "Enable LTO (Link Time Optimization) for Kernel and Services"
+  default y if HMBUILD_TOOLCHAIN_LLVM
+  default n
+
+choice
+  prompt "Profile"
+  default HMBUILD_PROFILE_RELEASE
+  config HMBUILD_PROFILE_RELEASE
+    bool "Release"
+  config HMBUILD_PROFILE_DEBUG
+    bool "Debug"
+endchoice
+
+menu "Install dirs (withOUT ending '/')"
+  config HMBUILD_INSTALL_DIR_BASE_BINDIR
+    string "HMBUILD_INSTALL_DIR_BASE_BINDIR"
+    default "/bin"
+
+  config HMBUILD_INSTALL_DIR_BASE_LIBDIR
+    string "HMBUILD_INSTALL_DIR_BASE_LIBDIR"
+    default "/lib"
+
+  config HMBUILD_INSTALL_DIR_BASE_SBINDIR
+    string "HMBUILD_INSTALL_DIR_BASE_SBINDIR"
+    default "/sbin"
+
+  config HMBUILD_INSTALL_DIR_BINDIR
+    string "HMBUILD_INSTALL_DIR_BINDIR"
+    default "/usr/bin"
+
+  config HMBUILD_INSTALL_DIR_DATADIR
+    string "HMBUILD_INSTALL_DIR_DATADIR"
+    default "/usr/share"
+
+  config HMBUILD_INSTALL_DIR_DOCDIR
+    string "HMBUILD_INSTALL_DIR_DOCDIR"
+    default "/usr/share/doc"
+
+  config HMBUILD_INSTALL_DIR_EXEC_PREFIX
+    string "HMBUILD_INSTALL_DIR_EXEC_PREFIX"
+    default "/usr"
+
+  config HMBUILD_INSTALL_DIR_INCLUDEDIR
+    string "HMBUILD_INSTALL_DIR_INCLUDEDIR"
+    default "/usr/include"
+
+  config HMBUILD_INSTALL_DIR_INFODIR
+    string "HMBUILD_INSTALL_DIR_INFODIR"
+    default "/usr/share/info"
+
+  config HMBUILD_INSTALL_DIR_LIBDIR
+    string "HMBUILD_INSTALL_DIR_LIBDIR"
+    default "/usr/lib"
+
+  config HMBUILD_INSTALL_DIR_LIBEXECDIR
+    string "HMBUILD_INSTALL_DIR_LIBEXECDIR"
+    default "/usr/libexec"
+
+  config HMBUILD_INSTALL_DIR_MANDIR
+    string "HMBUILD_INSTALL_DIR_MANDIR"
+    default "/usr/share/man"
+
+  config HMBUILD_INSTALL_DIR_NONARCH_BASE_LIBDIR
+    string "HMBUILD_INSTALL_DIR_NONARCH_BASE_LIBDIR"
+    default "/lib"
+
+  config HMBUILD_INSTALL_DIR_NONARCH_LIBDIR
+    string "HMBUILD_INSTALL_DIR_NONARCH_LIBDIR"
+    default "/usr/lib"
+
+  config HMBUILD_INSTALL_DIR_PREFIX
+    string "HMBUILD_INSTALL_DIR_PREFIX"
+    default "/usr"
+
+  config HMBUILD_INSTALL_DIR_SBINDIR
+    string "HMBUILD_INSTALL_DIR_SBINDIR"
+    default "/usr/sbin"
+
+  config HMBUILD_INSTALL_DIR_CONFDIR
+    string "HMBUILD_INSTALL_DIR_CONFDIR"
+    default "/etc"
+
+  config HMBUILD_INSTALL_DIR_BOOTDIR
+    string "HMBUILD_INSTALL_DIR_BOOTDIR"
+    default "/boot"
+endmenu
+
+endmenu
+
+menu "Security Description Option"
+config HMSD_PYTHON_PATH
+  string "Path of python binary"
+  default "/usr/bin/python3"
+endmenu
+
+# vim:ts=4:sw=4:expandtab

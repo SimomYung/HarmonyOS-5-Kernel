@@ -1,0 +1,79 @@
+# Copyright (c) Huawei Technologies Co., Ltd. 2022-2022. All rights reserved.
+# Author: Huawei OS Kernel Lab
+# Create: Tue Feb 08 16:24:29 2022
+
+lib-static-y: kernel_builtin
+
+subdir-y: include
+
+subdir-y: modules
+subdir-y: arch
+
+findpkg: HMUlibs
+findpkg: LibVSync
+
+inclib: LibVSync::LibVSync_include
+include-devicetree.c: ../klibs/include/lib/stdinc
+inclib-devicetree.c: LibVSync::LibVSync_include
+inclib-devicetree.c: HMUlibs::HMUlibs_sysif_sysmgr_include
+inclib-devicetree.c-isystem: HMBase::Sysroot
+
+# Jam now process '-include xx.h' will expand xx.h in each source file,
+# but generated/autoconf.h don't have MACRO protect,so we use ourselves header file
+excludecflags-.: '-include .*generated/autoconf.h'
+cflags-.-y: -include kconfig_kernel.h
+cflags-.-y: -nostdinc
+cflags-.-y: -D__KERNEL__
+cflags-.-y: -fvisibility=hidden
+cflags-.-y: -fno-strict-aliasing
+cflags-.-y: -fno-common
+cflags-.-y: -Wno-format-security
+cflags-.-y: -Wno-unused-parameter
+
+cflags-.-CONFIG_PIE: -fPIE
+cflags-.-CONFIG_KERNEL_UTSAN: -fsanitize=thread
+cflags-relocate.c: -fno-stack-protector
+cflags-.-CONFIG_FRAME_POINTER: -fno-omit-frame-pointer
+cflags-.-CONFIG_BIG_ENDIAN: -mbig-endian
+cflags-.-CONFIG_LITTLE_ENDIAN: -mlittle-endian
+cflags-.-CONFIG_DLIST_DEBUG: -DDLIST_DEBUG_ENABLE
+
+# Cflags for arm
+cflags-.-CONFIG_ARM: -fno-dwarf2-cfi-asm
+cflags-.-CONFIG_ARM: -mno-sched-prolog
+cflags-.-CONFIG_ARM: -mno-unaligned-access
+cflags-.-CONFIG_ARM: -msoft-float
+cflags-.-CONFIG_ARM: -Uarm
+cflags-.-CONFIG_ARM: -mno-thumb-interwork
+cflags-.-CONFIG_ARM: -mfpu=vfp
+cflags-.-CONFIG_ARM: -fno-asynchronous-unwind-tables
+cflags-.-CONFIG_ARM: -marm
+cflags-.-CONFIG_ARM_VIRT_EXTENSION: -D__HM_ARM_ARCH__=7
+cflags-.-CONFIG_ARM_VIRT_EXTENSION: -march=armv7ve
+cflags-.-CONFIG_ARM_VIRT_EXTENSION: -Wa,-march=armv7ve
+cflags-.-CONFIG_ARM_VIRT_EXTENSION: -mcpu=cortex-a15
+
+cflags-.-CONFIG_ARM_NO_VIRT_EXTENSION: -D__HM_ARM_ARCH__=7
+cflags-.-CONFIG_ARM_NO_VIRT_EXTENSION: -march=armv7-a
+cflags-.-CONFIG_ARM_NO_VIRT_EXTENSION: -Wa,-march=armv7-a
+cflags-.-CONFIG_ARM_NO_VIRT_EXTENSION: -mcpu=cortex-a9
+
+# Cflags for aarch64
+cflags-.-CONFIG_AARCH64_V8_1_NO_LSE: -march=armv8.1-a+nolse
+cflags-.-CONFIG_AARCH64_V8_2_NO_LSE: -march=armv8.2-a+nolse
+cflags-.-CONFIG_AARCH64_V8_1_LSE: -march=armv8.1-a
+cflags-.-CONFIG_AARCH64_V8_2_LSE: -march=armv8.2-a
+
+cflags-.-CONFIG_AARCH64: -mgeneral-regs-only
+cflags-.-CONFIG_AARCH64: -fno-asynchronous-unwind-tables
+
+cflags-.-CONFIG_ARCH64_CC_NOT_USE_CLANG: -mabi=lp64
+
+cflags-.-CONFIG_CC_STACKPROTECTOR_STRONG: -fstack-protector-strong
+cflags-.-CONFIG_CC_STACKPROTECTOR_REGULAR: -fstack-protector
+cflags-uaccess.c-y: -Wno-strict-prototypes -Wno-old-style-definition
+cflags-scheduler.c-y: -Wno-strict-prototypes -Wno-old-style-definition
+cflags-exception.c-y: -Wno-strict-prototypes -Wno-old-style-definition
+cflags-watchdog.c-y: -Wno-strict-prototypes -Wno-old-style-definition
+cflags-fastpath.c-y: -Wno-strict-prototypes -Wno-old-style-definition
+cflags-audit.c-y: -Wno-strict-prototypes -Wno-old-style-definition

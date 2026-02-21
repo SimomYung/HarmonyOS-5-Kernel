@@ -1,0 +1,5 @@
+config AUDIO_VENDORCOUNTRY_STATE
+    bool "vendorcountry state driver"
+    default n
+    help
+    Say Y to enable vendorcountry state driver support

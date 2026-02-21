@@ -1,0 +1,21 @@
+/*
+ * Copyright (c) Huawei Technologies Co., Ltd. 2020-2020. All rights reserved.
+ * Description: Generate hguard sysif apis using code generator
+ * Author: Huawei OS Kernel Lab
+ * Create: Mon 07 Dec 2020 07:39:11 PM CST
+ */
+
+DECLARE_DATATYPE_BEGIN
+#define HGUARD_SERVER_PATH		"hguard-actv"
+DECLARE_DATATYPE_END
+
+/* for pid_t */
+INCLUDE_C_HEADER(unistd.h)
+
+/* INCLUDE_SYSIF(libsysif/hguard/hguard.h) */
+USE_CALL_PREFIX(hgcall)
+USE_HANDLER_PREFIX(hghandler)
+USE_SERVER_NAME(hguard)
+
+INCLUDE_SUBSYSTEM(libsysif/hguard/hguard_procfs.sysif)
+INCLUDE_SUBSYSTEM(libsysif/hguard/hguard_service.sysif)

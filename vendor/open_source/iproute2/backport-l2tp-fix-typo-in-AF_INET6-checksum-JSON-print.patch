@@ -1,0 +1,35 @@
+From 2bb37e90177cae1b92284a943123b0575505141f Mon Sep 17 00:00:00 2001
+From: Andrea Claudi <aclaudi@redhat.com>
+Date: Tue, 21 Jun 2022 18:53:08 +0200
+Subject: [PATCH] l2tp: fix typo in AF_INET6 checksum JSON print
+
+In print_tunnel json output, a typo makes it impossible to know the
+value of udp6_csum_rx, printing instead udp6_csum_tx two times.
+
+Fixed getting rid of the typo.
+
+Fixes: 98453b65800f ("ip/l2tp: add JSON support")
+Signed-off-by: Andrea Claudi <aclaudi@redhat.com>
+Signed-off-by: Stephen Hemminger <stephen@networkplumber.org>
+Conflict: NA
+Reference: https://git.kernel.org/pub/scm/network/iproute2/iproute2.git/commit?id=2bb37e90177
+---
+ ip/ipl2tp.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/ip/ipl2tp.c b/ip/ipl2tp.c
+index 56972358..f1d574de 100644
+--- a/ip/ipl2tp.c
++++ b/ip/ipl2tp.c
+@@ -258,7 +258,7 @@ static void print_tunnel(const struct l2tp_data *data)
+ 					   NULL, p->udp6_csum_tx);
+ 
+ 				print_bool(PRINT_JSON, "checksum_rx",
+-					   NULL, p->udp6_csum_tx);
++					   NULL, p->udp6_csum_rx);
+ 			} else {
+ 				printf("  UDP checksum: %s%s%s%s\n",
+ 				       p->udp6_csum_tx && p->udp6_csum_rx
+-- 
+2.23.0
+

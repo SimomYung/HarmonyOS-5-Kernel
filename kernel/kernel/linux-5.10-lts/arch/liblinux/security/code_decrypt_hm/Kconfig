@@ -1,0 +1,6 @@
+# SPDX-License-Identifier: GPL-2.0-only
+config CODE_DECRYPT_HM
+	bool "App code decrypt support"
+	default n
+	help
+	  Say yes here to support the code decrypt

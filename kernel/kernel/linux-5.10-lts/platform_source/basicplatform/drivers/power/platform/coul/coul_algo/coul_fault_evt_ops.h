@@ -1,0 +1,49 @@
+/*
+ * Copyright (c) Huawei Technologies Co., Ltd. 2020-2020. All rights reserved.
+ * Description: fault event handler function for coul module
+ *
+ * This software is licensed under the terms of the GNU General Public
+ * License, as published by the Free Software Foundation, and
+ * may be copied, distributed, and modified under those terms.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ */
+
+#ifndef _COUL_ALGO_FAULT_EVT_OPS_H_
+#define _COUL_ALGO_FAULT_EVT_OPS_H_
+
+#include <platform_include/basicplatform/linux/power/platform/coul/coul_core.h>
+
+#define FIFO_LEN                8
+#define V_DROP_LEN              3
+#define V_DROP_INTERNAL_US      31250
+#define V_DROP_INTERNAL_MIN (V_DROP_INTERNAL_US - 250)
+#define V_DROP_INTERNAL_MAX (V_DROP_INTERNAL_US + 250)
+#define NSEC_TO_MSEC            1000000
+
+struct coul_drop_dsm {
+	int batt_index;
+	int charge_status;
+	int cycle;
+	int capfcc_mah;
+	struct timespec64 ts;
+	char batvendor[BATT_NAME_SIZE_MAX];
+	int vol_mv_drop[FIFO_LEN];
+	int vol_mv_fifo[FIFO_LEN];
+	int cur_ma_fifo[FIFO_LEN];
+	int soc;
+	int temp;
+	int drop_thresthold;
+};
+
+void coul_core_lock_init(struct smartstar_coul_device *di);
+void coul_core_lock_trash(struct smartstar_coul_device *di);
+void coul_core_fault_work(struct work_struct *work);
+
+void report_coul_drop_dsm_second_work(struct work_struct *work);
+
+#endif

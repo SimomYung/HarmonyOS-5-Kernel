@@ -1,0 +1,18 @@
+menu "audio Kernel Configuration"
+
+AUDIO_DRIVERS_SRC_PATH := $(if-success,[ "$(BUILD_CDC_RDA)" = "true" ],platform_source/audio/rda/ldk,platform_source/audio/drivers)
+
+menuconfig SND_SOC_PLATFORM
+	bool "Enable ASoC platform drivers"
+	depends on SND_SOC
+	default y
+	help
+	Say yes here to support ASoC platform drivers
+
+if SND_SOC_PLATFORM
+source "platform_source/audio/sound/Kconfig"
+endif
+
+source "$(AUDIO_DRIVERS_SRC_PATH)/Kconfig"
+
+endmenu

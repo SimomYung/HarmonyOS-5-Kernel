@@ -1,0 +1,12 @@
+menuconfig HW_SMARTCOM_NSTACK
+	bool "Huawei Smartcom Nstack"
+	depends on HUAWEI_SMARTCOM
+	default n
+
+if HW_SMARTCOM_NSTACK
+source "net/smartcom/nstack/fi/Kconfig"
+config HW_NSTACK_MINTP
+       tristate "Huawei NSTACK MinTP layer2 Reliable Transmission Protocol"
+       depends on HW_SMARTCOM_NSTACK
+       default n
+endif # if HW_SMARTCOM_NSTACK

@@ -1,0 +1,43 @@
+/*
+ * Copyright (C) Huawei Technologies Co., Ltd. 2020. All rights reserved.
+ * Description: Generate for hguard procfs sysif api
+ * Author: Huawei OS Kernel Lab
+ * Create: Thu Feb 18 10:39:33 2020
+ */
+#ifdef SYSIF_EXPORT_API
+#include <unistd.h>
+
+struct hguard_config_arg {
+	int id;
+	char *buf;
+	int size;
+};
+
+#endif
+/*
+ * To support the mixed data model which means the client and the server
+ * may use different data model. See the document for limitation of data type
+ * used in the sysif interfaces in <Documentation/sysif_compat.md>.
+ */
+DEFINE_MANAGER(procfs, 5,
+	DEFINE_METHOD(procfs, get_config,
+		      ARG_NO,
+		      RET_NO,
+		      SLOWDATA)
+	DEFINE_METHOD(procfs, set_config,
+		      ARG_NO,
+		      RET_NO,
+		      SLOWDATA)
+	DEFINE_METHOD(procfs, get_hungtask,
+		      ARG(1, struct hguard_config_arg, args),
+		      RET_NO,
+		      SLOWDATA_NO)
+	DEFINE_METHOD(procfs, set_hungtask,
+		      ARG(1, struct hguard_config_arg, args),
+		      RET_NO,
+		      SLOWDATA_NO)
+	DEFINE_METHOD(procfs, stop_watchdog_for_reboot,
+		      ARG(1, unsigned int, timeout_sec),
+		      RET_NO,
+		      SLOWDATA_NO)
+)

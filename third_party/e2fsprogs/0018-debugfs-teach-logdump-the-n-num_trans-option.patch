@@ -1,0 +1,165 @@
+From 6e4cc3d5eeb2dfaa055e652b5390beaa6c3d05da Mon Sep 17 00:00:00 2001
+From: "lihaoxiang (F)" <lihaoxiang9@huawei.com>
+Date: Thu, 14 Jul 2022 09:32:48 +0800
+Subject: [PATCH] debugfs: teach logdump the -n <num_trans> option
+
+The current version's debugfs possessed the function
+logdump. Executing with option -O could output the log history. But
+when it occurred the block which had no magic number in it's header,
+the program would exit.
+
+Sometimes we were locating problems, needed for more transactions that
+had replayed instead of the latest batch of transactions and we
+weren't hope to display all the history in the meanwhile. So we
+introduced the option -n used for controlling the print of history
+transactions.  Specially, this parameter was depending on the option
+-O otherwise it couldn't work.
+
+So in this modification, we used logdump with -O -n <num_trans>.  The
+-n options causes logdump to continue past a block with a missing
+magic nuber.  Instead, it will terminate only when the entire log has
+been printed or after <num_trans> transactions.
+
+Link: https://lore.kernel.org/r/608df030-593f-8c69-cb65-632a34729d23@huawei.com
+Signed-off-by: lihaoxiang <lihaoxiang9@huawei.com>
+Signed-off-by: Theodore Ts'o <tytso@mit.edu>
+---
+ debugfs/debugfs.8.in | 13 +++++++++++--
+ debugfs/logdump.c    | 32 ++++++++++++++++++++++++++++----
+ 2 files changed, 39 insertions(+), 6 deletions(-)
+
+diff --git a/debugfs/debugfs.8.in b/debugfs/debugfs.8.in
+index aa6128a..a3227a8 100644
+--- a/debugfs/debugfs.8.in
++++ b/debugfs/debugfs.8.in
+@@ -505,7 +505,7 @@ which is a hard link to
+ .IR filespec .
+ Note this does not adjust the inode reference counts.
+ .TP
+-.BI logdump " [-acsOS] [-b block] [-i filespec] [-f journal_file] [output_file]"
++.BI logdump " [-acsOS] [-b block] [-n num_trans ] [-i filespec] [-f journal_file] [output_file]"
+ Dump the contents of the ext3 journal.  By default, dump the journal inode as
+ specified in the superblock.  However, this can be overridden with the
+ .I \-i
+@@ -528,7 +528,7 @@ The
+ .I \-a
+ option causes the
+ .B logdump
+-program to print the contents of all of the descriptor blocks.
++to print the contents of all of the descriptor blocks.
+ The
+ .I \-b
+ option causes
+@@ -548,6 +548,15 @@ The
+ option causes logdump to display old (checkpointed) journal entries.
+ This can be used to try to track down journal problems even after the
+ journal has been replayed.
++.IP
++The
++.I \-n
++option causes
++.B logdump
++to continue past a journal block which is missing a magic number.
++Instead, it will stop only when the entire log is printed or after
++.I num_trans
++transactions.
+ .TP
+ .BI ls " [-l] [-c] [-d] [-p] [-r] filespec"
+ Print a listing of the files in the directory
+diff --git a/debugfs/logdump.c b/debugfs/logdump.c
+index 6b0133e..614414e 100644
+--- a/debugfs/logdump.c
++++ b/debugfs/logdump.c
+@@ -48,6 +48,7 @@ enum journal_location {JOURNAL_IS_INTERNAL, JOURNAL_IS_EXTERNAL};
+ #define ANY_BLOCK ((blk64_t) -1)
+ 
+ static int		dump_all, dump_super, dump_old, dump_contents, dump_descriptors;
++static int64_t		dump_counts;
+ static blk64_t		block_to_dump, bitmap_to_dump, inode_block_to_dump;
+ static unsigned int	group_to_dump, inode_offset_to_dump;
+ static ext2_ino_t	inode_to_dump;
+@@ -113,9 +114,10 @@ void do_logdump(int argc, char **argv, int sci_idx EXT2FS_ATTR((unused)),
+ 	bitmap_to_dump = -1;
+ 	inode_block_to_dump = ANY_BLOCK;
+ 	inode_to_dump = -1;
++	dump_counts = -1;
+ 
+ 	reset_getopt();
+-	while ((c = getopt (argc, argv, "ab:ci:f:OsS")) != EOF) {
++	while ((c = getopt (argc, argv, "ab:ci:f:OsSn:")) != EOF) {
+ 		switch (c) {
+ 		case 'a':
+ 			dump_all++;
+@@ -148,6 +150,14 @@ void do_logdump(int argc, char **argv, int sci_idx EXT2FS_ATTR((unused)),
+ 		case 'S':
+ 			dump_super++;
+ 			break;
++		case 'n':
++			dump_counts = strtol(optarg, &tmp, 10);
++			if (*tmp) {
++				com_err(argv[0], 0,
++					"Bad log counts number - %s", optarg);
++				return;
++			}
++			break;
+ 		default:
+ 			goto print_usage;
+ 		}
+@@ -289,7 +299,7 @@ cleanup:
+ 	return;
+ 
+ print_usage:
+-	fprintf(stderr, "%s: Usage: logdump [-acsOS] [-b<block>] [-i<filespec>]\n\t"
++	fprintf(stderr, "%s: Usage: logdump [-acsOS] [-n<num_trans>] [-b<block>] [-i<filespec>]\n\t"
+ 		"[-f<journal_file>] [output_file]\n", argv[0]);
+ }
+ 
+@@ -369,6 +379,8 @@ static void dump_journal(char *cmdname, FILE *out_file,
+ 	int			fc_done;
+ 	__u64			total_len;
+ 	__u32			maxlen;
++	int64_t			cur_counts = 0;
++	bool			exist_no_magic = false;
+ 
+ 	/* First, check to see if there's an ext2 superblock header */
+ 	retval = read_journal_block(cmdname, source, 0, buf, 2048);
+@@ -459,6 +471,9 @@ static void dump_journal(char *cmdname, FILE *out_file,
+ 	}
+ 
+ 	while (1) {
++		if (dump_old && (dump_counts != -1) && (cur_counts >= dump_counts))
++			break;
++
+ 		retval = read_journal_block(cmdname, source,
+ 				((ext2_loff_t) blocknr) * blocksize,
+ 				buf, blocksize);
+@@ -472,8 +487,16 @@ static void dump_journal(char *cmdname, FILE *out_file,
+ 		blocktype = be32_to_cpu(header->h_blocktype);
+ 
+ 		if (magic != JBD2_MAGIC_NUMBER) {
+-			fprintf (out_file, "No magic number at block %u: "
+-				 "end of journal.\n", blocknr);
++			if (exist_no_magic == false) {
++				exist_no_magic = true;
++				fprintf(out_file, "No magic number at block %u: "
++					"end of journal.\n", blocknr);
++			}
++			if (dump_old && (dump_counts != -1)) {
++				blocknr++;
++				WRAP(jsb, blocknr, maxlen);
++				continue;
++			}
+ 			break;
+ 		}
+ 
+@@ -500,6 +523,7 @@ static void dump_journal(char *cmdname, FILE *out_file,
+ 			continue;
+ 
+ 		case JBD2_COMMIT_BLOCK:
++			cur_counts++;
+ 			transaction++;
+ 			blocknr++;
+ 			WRAP(jsb, blocknr, maxlen);
+-- 
+1.8.3.1
+

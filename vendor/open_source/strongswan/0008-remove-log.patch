@@ -1,0 +1,26 @@
+From 55054fee932e88a27a310fd37e509582e801a8e6 Mon Sep 17 00:00:00 2001
+From: h30052898 <h30052898@notesmail.huawei.com/>
+Date: Wed, 26 Mar 2025 19:42:42 +0800
+Subject: [PATCH] remove log
+
+Change-Id: I1342db75abe44bf5c5760e7cfdcd3f34eeb36ea9
+Signed-off-by: h30052898 <h30052898@notesmail.huawei.com/>
+---
+ src/libstrongswan/netmanager/src/ipc_request.cpp | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/src/libstrongswan/netmanager/src/ipc_request.cpp b/src/libstrongswan/netmanager/src/ipc_request.cpp
+index c05d74dde..895f1d2e9 100644
+--- a/src/libstrongswan/netmanager/src/ipc_request.cpp
++++ b/src/libstrongswan/netmanager/src/ipc_request.cpp
+@@ -36,7 +36,6 @@ int32_t GetSysVpnCertUri(enum IpsecVpnCertType type, uint8_t *certUrl, uint32_t
+     }
+     uint32_t size = strlen(uri.c_str());
+     size = size < srcSize ? size : srcSize;
+-    NET_LOG_I("ret:%d type:%d uri: %s size:%d", ret, type, uri.c_str(), size);
+     (void)memset_s(certUrl, srcSize, 0, srcSize);
+     memcpy_s(certUrl, srcSize, (uint8_t *)(uri.c_str()), size);
+     return size;
+-- 
+2.34.1
+

@@ -1,0 +1,46 @@
+/*
+ * Copyright (c) Huawei Technologies Co., Ltd. 2023. All rights reserved.
+ * Description: Definition of sysmgr entropy
+ * Author: Huawei OS Kernel Lab
+ * Create: Mon Sep 18 15:27:57 2023
+ */
+
+#ifdef SYSIF_EXPORT_API
+#include <stdint.h>
+#endif
+
+DEFINE_MANAGER(hkip_sys, 16,
+	DEFINE_SIMPLE_METHOD(hkip_sys, protect,
+			     ARG(3, unsigned long, opcode, const void*, dst, size_t, size),
+			     RET_NO,
+			     SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(hkip_sys, protect_rox,
+			     ARG(2, const void*, dst, size_t, size),
+			     RET_NO,
+			     SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(hkip_sys, rowm_cpy,
+			     ARG(3, const void*, dst, const void*, src, size_t, size),
+			     RET_NO,
+			     SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(hkip_sys, rowm_set,
+			     ARG(3, const void*, dst, unsigned long, val, size_t, size),
+			     RET_NO,
+			     SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(hkip, get_status,
+			     ARG_NO,
+			     RET_NO,
+			     SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(hkip, protect_proc,
+			     ARG_NO,
+			     RET_NO,
+			     SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(sec_region, protect_services,
+			     ARG_NO,
+			     RET_NO,
+			     SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(sec_region, disable_forbidden,
+			     ARG_NO,
+			     RET_NO,
+			     SLOWDATA_NO)
+)

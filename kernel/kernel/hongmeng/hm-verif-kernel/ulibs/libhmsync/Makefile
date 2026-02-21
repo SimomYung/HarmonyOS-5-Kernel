@@ -1,0 +1,27 @@
+subdir-ccflags-y += -Wno-unused-value
+
+obj-y += thread.o
+obj-y += raw_thread_create.o
+CFLAGS_raw_thread_create.o += -D_GNU_SOURCE -Wno-strict-prototypes -Wno-unused-value
+obj-y += raw_thread_attr.o
+obj-y += raw_tls_internal.o
+obj-y += raw_tls.o
+obj-y += raw_thread_specific.o
+obj-y += raw_timedwait.o
+obj-y += current_tid.o
+obj-y += thread_tid2cref.o
+obj-y += thread_module_sched_ref.o
+obj-y += atomic.o
+obj-y += raw_mutex.o
+obj-y += raw_sem.o
+obj-y += raw_rwlock.o
+obj-y += raw_thread_cond.o
+obj-y += raw_prioqueue.o
+obj-y += raw_threadpool.o
+obj-y += raw_workqueue.o
+obj-y += raw_counter.o
+obj-y += raw_completion.o
+obj-y += raw_thread_unmapself.o
+obj-y += uspinlock.o
+obj-y += uev_helper.o
+obj-y += lockdep.o

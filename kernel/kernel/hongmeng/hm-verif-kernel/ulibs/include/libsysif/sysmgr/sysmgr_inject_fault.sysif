@@ -1,0 +1,76 @@
+/*
+ * Copyright (C) Huawei Technologies Co., Ltd. 2020. All rights reserved.
+ * Description: Inject fault into sysmgr
+ * Author: Huawei OS Kernel Lab
+ * Create: Tue Mar 24 18:59:03 CST 2020
+ */
+
+/*
+ * To support the mixed data model which means the client and the server
+ * may use different data model. See the document for limitation of data type
+ * used in the sysif interfaces in <Documentation/sysif_compat.md>.
+ */
+#ifdef SYSIF_EXPORT_API
+
+enum INJECT_FAULT_TYPE {
+	FAULT_CRASH = 0,
+	FAULT_MEM,
+	FAULT_SCHED,
+	FAULT_PAC,
+	FAULT_HKIP,
+	FAULT_UNKNOWN,
+};
+
+enum FAULT_CRASH_TYPE {
+	FAULT_CRASH_PANIC = 0,
+	FAULT_CRASH_BUGON,
+	FAULT_CRASH_DIVIDE_ZERO,
+	FAULT_CRASH_UNKNOWN,
+};
+
+enum FAULT_MEM_TYPE {
+	FAULT_MEM_OOM = 0,
+	FAULT_MEM_ACCESS_NULL,
+	FAULT_MEM_DOUBLE_FREE,
+	FAULT_MEM_BIG_ARRAY,
+	FAULT_MEM_UNKNOWN,
+	FAULT_SLAB_POISON_MALLOC,
+	FAULT_SLAB_POISON_FREE,
+};
+
+enum FAULT_SCHED_TYPE {
+	FAULT_SCHED_LOOP_DEAD = 0,
+	FAULT_SCHED_LOCK_DEAD,
+	FAULT_SCHED_UNKNOWN,
+};
+
+enum FAULT_PAC_TYPE {
+	FAULT_PAC_FWCFI = 0,
+	FAULT_PAC_BWCFI,
+	FAULT_PAC_DFI,
+	FAULT_PAC_DFI_IPC,
+	FAULT_PAC_DFI_CRED,
+	FAULT_PAC_DFI_PACDB,
+	FAULT_PAC_DFI_TASK,
+	FAULT_PAC_CFI_MODIFIER,
+	FAULT_PAC_CFI_FUNC_TABLE,
+	FAULT_PAC_FWCFI_TPPMGR,
+	FAULT_PAC_FWCFI_DEVMGR,
+	FAULT_PAC_FWCFI_HGUARD,
+	FAULT_PAC_FWCFI_CRYPTO,
+	FAULT_PAC_FWCFI_DEVHOST,
+	FAULT_PAC_UNKNOWN,
+};
+
+enum FAULT_HKIP_TYPE {
+	FAULT_HKIP_DATA_UNEXEC = 0,
+	FAULT_HKIP_UNKNOWN,
+};
+#endif
+
+DEFINE_MANAGER(inject, 2,
+	DEFINE_SIMPLE_METHOD(inject, fault,
+		      ARG(4, int, type, int, sub_type, const void *, args, unsigned int, length),
+		      RET_NO,
+		      SLOWDATA_NO)
+)

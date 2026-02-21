@@ -1,0 +1,79 @@
+# Copyright (c) Huawei Technologies Co., Ltd. 2023. All rights reserved.
+# Description: HMbuild for udk fusion mode
+# Author: Huawei OS Kernel Lab
+# Create: Fri May 19 09:51:30 2023
+
+# Empty static library wrapper for udk.o
+# Don't compile any c sources
+lib-static-y: udk
+install-udk-y: BASE_LIBDIR
+
+# UDK fusion mode
+exec-dynamic-y: udk.o
+
+findpkg: HMDevmgrLibs
+findpkg: HMDevmgrLibs_sysk
+findpkg: Libfdt_sysk
+findpkg: Libfdt
+
+include-.-y: .
+
+src-udk.o-y: fusion.c
+# device and driver management
+src-udk.o-y: device.c
+src-udk.o-y: of.c
+# sysif callback
+src-udk.o-y: fops_if.c
+src-udk.o-y: fops_core.c
+src-udk.o-y: udmi_if.c
+src-udk.o-y: block_if.c
+src-udk.o-y: rpc_if.c
+src-udk.o-y: pm_if.c
+src-udk.o-y: sysfs_if.c
+src-udk.o-y: file.c
+src-udk.o-y: irq.c
+src-udk.o-y: shrinker.c
+# override dl symbols
+src-udk.o-y: override/stub.c
+# override devhost symbols
+src-udk.o-y: override/device.c
+src-udk.o-y: override/mm.c
+src-udk.o-y: override/irq.c
+src-udk.o-y: override/rpc.c
+src-udk.o-y: override/pm.c
+src-udk.o-y: override/backend.c
+src-udk.o-y: override/libdh_sysfs_alloc.c
+# add null & zero devices
+src-udk.o-y: of/of_dev.c
+src-udk.o-y: of/spec_dev.c
+src-udk.o-y: of/of_proxy.c
+src-udk.o-y: of/of_fdt.c
+src-udk.o-y: sd/sd.proxy.udk.c
+
+# sysif table is compiled in libdh, add following cflags to avoid compiler error
+cflags-.-y: -D__sysif_server_devhost_no_compat32_handlers__
+cflags-.-y: -D__sysif_server_devhost_no_ilp32_handlers__
+cflags-.-y: -DUDK_FUSION
+cflags-.-y: -DUDK_MODULE
+
+linklib-udk.o-CONFIG_NO_TRACEMGR: -Wl,--gc-sections
+linklib-udk.o-y: -Wl,--entry=udk_fusion_entry
+linklib-udk.o-y: -Wl,--undefined=libdh_blk_submit_bio
+linklib-udk.o-y: -Wl,--undefined=libdh_blk_submit_cmd
+linklib-udk.o-y: -Wl,--undefined=libdh_blk_bio_polling
+linklib-udk.o-y: -nostdlib
+linklib-udk.o-y: -r
+# link whole udk static builtin library
+linklib-udk.o-y: -Wl,--whole-archive
+linklib-udk.o-y: builtin.dev
+linklib-udk.o-CONFIG_UDK_DEPEND_NO_SYSK: HMDevmgrLibs::Libdh_static
+linklib-udk.o-CONFIG_UDK_DEPEND_NO_SYSK: Libfdt::Libfdt_static
+linklib-udk.o-CONFIG_UDK_DEPEND_SYSK: HMDevmgrLibs::Libdh_sysk_static
+linklib-udk.o-CONFIG_UDK_DEPEND_SYSK: Libfdt::Libfdt_sysk_static
+linklib-udk.o-CONFIG_UDK_FUISON_DRIVERS: udkdrv_builtin
+linklib-udk.o-y: -Wl,--no-whole-archive
+
+inclib-sd/sd.proxy.udk.c: HISILibs::HISILibs_include
+findpkg: HISILibs
+
+inclib-device.c: HISILibs::HISILibs_include

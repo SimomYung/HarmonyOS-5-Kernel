@@ -1,0 +1,6 @@
+config HID_HDRC
+	tristate "HDRC HID devices"
+	depends on HID
+	default n
+	help
+	Support for HDRC devices.

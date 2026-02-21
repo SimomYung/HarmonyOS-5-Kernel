@@ -1,0 +1,69 @@
+From 8468fd4f7c85c21ab375402bc80d0188412b6cbf Mon Sep 17 00:00:00 2001
+From: Phil Sutter <phil@nwl.cc>
+Date: Wed, 4 May 2022 11:19:16 +0200
+Subject: nft: Fix EPERM handling for extensions without rev 0
+
+Treating revision 0 as compatible in EPERM case works fine as long as
+there is a revision 0 of that extension defined in DSO. Fix the code for
+others: Extend the EPERM handling to all revisions and keep the existing
+warning for revision 0.
+
+Conflict: NA
+Reference:
+https://git.netfilter.org/iptables/commit/?id=8468fd4f7c85c21ab375402bc80d0188412b6cbf
+Fixes: 17534cb18ed0a ("Improve error messages for unsupported
+extensions")
+Signed-off-by: Phil Sutter <phil@nwl.cc>
+---
+ iptables/nft.c                                        | 11 +++++++----
+ .../shell/testcases/iptables/0008-unprivileged_0      |  7 +++++++
+ 2 files changed, 14 insertions(+), 4 deletions(-)
+
+diff --git a/iptables/nft.c b/iptables/nft.c
+index 18bf21c..ebab3cc 100644
+--- a/iptables/nft.c
++++ b/iptables/nft.c
+@@ -3245,15 +3245,18 @@ int nft_compatible_revision(const char *name, uint8_t rev, int opt)
+ err:
+ 	mnl_socket_close(nl);
+ 
+-   /* pretend revision 0 is valid -
++    /* ignore EPERM and errors for revision 0 -
+     * this is required for printing extension help texts as user, also
+     * helps error messaging on unavailable kernel extension */
+-    if (ret < 0 && rev == 0) {
+-        if (errno != EPERM)
++    if (ret < 0) {
++        if (errno == EPERM)
++            return 1;
++        if (rev == 0) {
+             fprintf(stderr,
+                 "Warning: Extension %s revision 0 not supported, missing kernel module?\n",
+                 name);
+-        return 1;
++            return 1;
++        }
+     }
+ 	return ret < 0 ? 0 : 1;
+ }
+diff --git a/iptables/tests/shell/testcases/iptables/0008-unprivileged_0 b/iptables/tests/shell/testcases/iptables/0008-unprivileged_0
+index 0914c88..1f1d342 100644
+--- a/iptables/tests/shell/testcases/iptables/0008-unprivileged_0
++++ b/iptables/tests/shell/testcases/iptables/0008-unprivileged_0
+@@ -34,6 +34,13 @@ let "rc+=$?"
+ grep_or_rc "DNAT target options:" <<< "$out"
+ let "rc+=$?"
+ 
++# TEE has no revision 0
++out=$(run $XT_MULTI iptables -j TEE --help)
++let "rc+=$?"
++grep_or_rc "TEE target options:" <<< "$out"
++let "rc+=$?"
++
++
+ out=$(run $XT_MULTI iptables -p tcp -j DNAT --help)
+ let "rc+=$?"
+ grep_or_rc "tcp match options:" <<< "$out"
+-- 
+2.23.0
+

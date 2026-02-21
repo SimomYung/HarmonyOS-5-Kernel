@@ -1,0 +1,20 @@
+# Copyright (c) Huawei Technologies Co., Ltd. 2022-2022. All rights reserved.
+# Description: HMbuild
+# Author: Huawei OS Kernel Lab
+# Create: Thu May 26 16:26:59 2022
+
+src-y: ucap.c ucap_actv.c ucap_channel.c ucap_livepatch.c ucap_cpuctx.c ucap_dsuctx.c ucap_cnode_self.c
+src-y: ucap_ops.c
+src-y: kobjpool.c
+src-y: actv_kobjpool.c
+src-y: ucap_ec.c
+src-y: kobj_slot_alloc.c
+src-y: ucap_fdtable.c
+
+cflags-.-y: -Wno-missing-declarations
+cflags-ucap.c-y: -Wno-int-conversion
+cflags-ucap_actv.c-y: -Wno-int-conversion
+cflags-ucap_channel.c-y: -Wno-int-conversion
+cflags-ucap_livepatch.c-y: -Wno-int-conversion
+cflags-ucap_cpuctx.c-y: -Wno-int-conversion
+cflags-ucap_dsuctx.c-y: -Wno-int-conversion

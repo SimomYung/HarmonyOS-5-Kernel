@@ -1,0 +1,133 @@
+From 19ed63e8ed3c5dece47c83949b61815f661c9036 Mon Sep 17 00:00:00 2001
+From: Minhua Chen <chenminhua1@huawei.com>
+Date: Tue, 21 Jan 2020 00:19:13 +0800
+Subject: [PATCH] iproute2: change proc to ipnetnsproc which is private system
+proc is mounted shared, if use this, it will cause the list size of mnt_share
+become too large to loop, and will casue kernel softlockup.
+
+so we need a private mounted proc which is /ipnetnsproc to avoid
+the large list in kernel.
+
+use /etc/iproute_private.conf to switch on or off this patch.
+if file exist and file content equals use_ipnetnsproc=1 then
+switch on, or else switch off.
+
+Signed-off-by: Minhua Chen <chenminhua1@huawei.com>
+---
+ ip/ipnetns.c | 72 +++++++++++++++++++++++++++++++++++++++++++++++++++++-------
+ 1 file changed, 64 insertions(+), 8 deletions(-)
+
+diff --git a/ip/ipnetns.c b/ip/ipnetns.c
+index fc58a04..fedc3db 100644
+--- a/ip/ipnetns.c
++++ b/ip/ipnetns.c
+@@ -25,6 +25,62 @@
+ #include "namespace.h"
+ #include "json_print.h"
+ 
++const char *conf_file = "/etc/iproute2/iproute_private.conf";
++static int conf_file_parsed = 0;
++static int should_use_ipnetnsproc = 0;
++
++static void parse_config()
++{
++	FILE *fp = NULL;
++	char buffer[256] = {0};
++	char *str = NULL;
++	char *p = NULL;
++
++	fp = fopen(conf_file, "r");
++	if(fp){
++		while (fgets(buffer, sizeof(buffer), fp)) {
++			str = buffer;
++			/* skip the space */
++			while (isspace(*str))
++				str++;
++			/* skip the comment line */
++			if (strncmp(str, "#", 1) == 0)
++				continue;
++			/* skip line feed */
++			if((p = strchr(str, '\n')) != NULL)
++				*p = '\0';
++			if (strstr(str, "use_ipnetnsproc") != NULL && (p = strstr(str, "=")) != NULL){
++				str = p + 1;
++				/* skip the space */
++				while (isspace(*str))
++					str++;
++				if (strcmp(str, "1") == 0){
++					should_use_ipnetnsproc = 1;
++				}
++				break;
++			}
++		}
++		fclose(fp);
++		fp = NULL;
++	}
++	conf_file_parsed = 1;
++}
++static int get_should_use_ipnetnsproc()
++{
++	if (!conf_file_parsed)
++		parse_config();
++	return should_use_ipnetnsproc;
++}
++
++static char* get_proc_string()
++{
++	if(get_should_use_ipnetnsproc()){
++		return "/ipnetnsproc";
++	} else {
++		return "/proc";
++	}
++} 
++
+ static int usage(void)
+ {
+ 	fprintf(stderr,
+@@ -606,10 +663,9 @@ static int netns_pids(int argc, char **argv)
+ 			strerror(errno));
+ 		goto out;
+ 	}
+-	dir = opendir("/proc/");
++	dir = opendir(get_proc_string());
+ 	if (!dir) {
+-		fprintf(stderr, "Open of /proc failed: %s\n",
+-			strerror(errno));
++		fprintf(stderr, "Open of %s failed: %s\n", get_proc_string(), strerror(errno));
+ 		goto out;
+ 	}
+ 	while ((entry = readdir(dir))) {
+@@ -618,8 +674,7 @@ static int netns_pids(int argc, char **argv)
+ 
+ 		if (!is_pid(entry->d_name))
+ 			continue;
+-		snprintf(pid_net_path, sizeof(pid_net_path), "/proc/%s/ns/net",
+-			entry->d_name);
++		snprintf(pid_net_path, sizeof(pid_net_path), "/%s/%s/ns/net", get_proc_string(), entry->d_name);
+ 		if (stat(pid_net_path, &st) != 0)
+ 			continue;
+ 		if ((st.st_dev == netst.st_dev) &&
+@@ -646,7 +701,7 @@ int netns_identify_pid(const char *pidstr, char *name, int len)
+ 
+ 	name[0] = '\0';
+ 
+-	snprintf(net_path, sizeof(net_path), "/proc/%s/ns/net", pidstr);
++	snprintf(net_path, sizeof(net_path), "/%s/%s/ns/net", get_proc_string(), pidstr);
+ 	netns = open(net_path, O_RDONLY);
+ 	if (netns < 0) {
+ 		fprintf(stderr, "Cannot open network namespace: %s\n",
+@@ -911,9 +965,9 @@ static int netns_add(int argc, char **argv, bool create)
+ 			goto out_delete;
+ 		}
+ 
+-		strcpy(proc_path, "/proc/self/ns/net");
++		snprintf(proc_path, sizeof(proc_path), "/%s/self/ns/net", get_proc_string());
+ 	} else {
+-		snprintf(proc_path, sizeof(proc_path), "/proc/%d/ns/net", pid);
++		snprintf(proc_path, sizeof(proc_path), "/%s/%d/ns/net", get_proc_string(), pid);
+ 	}
+ 
+ 	/* Bind the netns last so I can watch for it */
+-- 
+1.8.3.1
+

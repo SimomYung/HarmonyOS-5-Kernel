@@ -1,0 +1,27 @@
+{
+    "template": "hook",
+    "server": "devhost",
+    "manager": "rpc",
+    "generation": {
+        "header": {
+            "embedded_code": {
+                "hook": ""
+            }
+        }
+    },
+    "hooks": {
+        "rpc_invoke": {
+            "scheme": "security check/inner constraint",
+            "arguments": [],
+            "credential": {
+                "transaction": true
+            },
+            "ac": {
+                "buckle": {
+                    "alias": "sec_chk_ability_rpc_invoke",
+                    "permission": "ab_devhost_rpc_invoke"
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,561 @@
+/*
+ * Copyright (c) @CompanyNameMagicTag 2021-2023. All rights reserved.
+ * 功能说明   : TX MSDU 描述符管理功能
+ * 作者       : wifi
+ * 创建日期   : 2020年02月12日
+ */
+
+/* 1 其他头文件包含 */
+#include "pcie_linux.h"
+#include "plat_pm_wlan.h"
+#include "hmac_tx_msdu_dscr.h"
+#ifndef _PRE_MULTI_CORE_DPE_OFFLOAD
+#include "wlan_chip.h"
+#include "hmac_mintp_log.h"
+#include "hmac_tx_data.h"
+#endif
+#include "dpe_tx_data.h"
+#include "hmac_tid_sche.h"
+#include "hmac_tx_switch.h"
+#include "hmac_tx_sche_switch_fsm.h"
+#include "dpe_tx_data.h"
+#include "host_hal_dma.h"
+
+#undef THIS_FILE_ID
+#define THIS_FILE_ID OAM_FILE_ID_DRIVER_HMAC_TX_MSDU_DSCR_C
+
+#define oal_make_word64(lsw, msw) ((((uint64_t)(msw) << 32) & 0xFFFFFFFF00000000) | (lsw))
+
+/* 4 函数实现 */
+/*
+ * 功能描述 : 更新ring的发送指针
+ * 1.日    期 : 2020年2月12日
+ *   作    者 : wifi
+ *   修改内容 : 新生成函数
+ * 2.日    期 : 2020年4月22日
+ *   作    者 : wifi
+ *   修改内容 : 重构函数
+ */
+void hmac_tx_msdu_ring_inc_write_ptr(hmac_msdu_info_ring_stru *tx_ring)
+{
+    un_rw_ptr write_ptr = { .rw_ptr = tx_ring->base_ring_info.write_index };
+
+    hmac_tx_rw_ptr_inc(&write_ptr, hal_host_tx_tid_ring_depth_get(tx_ring->base_ring_info.size));
+
+    tx_ring->base_ring_info.write_index = write_ptr.rw_ptr;
+}
+
+/*
+ * 功能描述 : hostva映射成devva, 供mac访问host ring内容
+ * 1.日    期 : 2020年4月22日
+ *   作    者 : wifi
+ *   修改内容 : 新生成函数
+ */
+uint32_t hmac_tx_hostva_to_devva(uint8_t *hostva, uint32_t alloc_size, uint64_t devva)
+{
+    dma_addr_t pcie_dma_addr;
+    if (hal_host_tx_dma_map_phyaddr(hostva, alloc_size, &pcie_dma_addr) != OAL_SUCC) {
+        return OAL_FAIL;
+    }
+
+    if (pcie_if_hostca_to_devva(HCC_EP_WIFI_DEV, (uint64_t)pcie_dma_addr, (uint64_t *)(uintptr_t)devva) != OAL_SUCC) {
+        hal_host_tx_dma_unmap_addr((uint8_t *)(uintptr_t)pcie_dma_addr, alloc_size);
+        return OAL_FAIL;
+    }
+
+    return OAL_SUCC;
+}
+
+/*
+ * 功能描述   : 同步ring更新信息设置
+ * 1.日    期   : 2020年4月22日
+ *   作    者   : wifi
+ *   修改内容   : 新生成函数
+ */
+OAL_STATIC uint32_t hmac_tx_ring_set_update_info(
+    hmac_tid_info_stru *tx_tid_info, tid_update_stru *tid_update_info, tid_cmd_enum_uint8 cmd)
+{
+    uint8_t msdu_ring_size = sizeof(msdu_info_ring_stru);
+    hmac_msdu_info_ring_stru *tx_ring = &tx_tid_info->tx_ring;
+
+    tid_update_info->cmd = cmd;
+    tid_update_info->user_id = tx_tid_info->user_index; /* 并行问题？ */
+    tid_update_info->tid_no = tx_tid_info->tid_no;
+    tid_update_info->update_wptr = !dpe_host_update_wptr_enabled();
+    memcpy_s(&tid_update_info->msdu_ring, msdu_ring_size, &tx_ring->base_ring_info, msdu_ring_size);
+
+    return OAL_SUCC;
+}
+
+/*
+ * 功能描述  : 申请Host Device调度事件内存
+ * 1.日    期  : 2020年9月11日
+ *   作    者  : wifi
+ *   修改内容  : 新生成函数
+ */
+OAL_STATIC uint32_t hmac_tx_sync_alloc_schedule_event(dpe_wlan_vap_stru *dpe_vap,
+    hmac_to_dmac_syn_type_enum_uint8 syn_type, hmac_to_dmac_cfg_msg_stru **syn_msg,
+    frw_event_mem_stru **event_mem, uint16_t us_len)
+{
+    frw_event_mem_stru *alloc_event_mem = NULL;
+    frw_event_stru *alloc_event = NULL;
+
+    alloc_event_mem = frw_event_alloc_m(us_len + sizeof(hmac_to_dmac_cfg_msg_stru) -
+        (sizeof(wlan_cfgid_enum_uint16) + sizeof(uint16_t)));
+    if (oal_unlikely(alloc_event_mem == NULL)) {
+        oam_error_log1(dpe_vap->uc_vap_id, OAM_SF_CFG,
+                       "{hmac_config_alloc_event::pst_event_mem null, us_len = %d }", us_len);
+        return OAL_ERR_CODE_ALLOC_MEM_FAIL;
+    }
+
+    alloc_event = frw_get_event_stru(alloc_event_mem);
+
+    /* 填充事件头 */
+    frw_event_hdr_init(&(alloc_event->st_event_hdr), FRW_EVENT_TYPE_HOST_DRX, syn_type,
+                       (us_len + sizeof(hmac_to_dmac_cfg_msg_stru) -
+                       (sizeof(wlan_cfgid_enum_uint16) + sizeof(uint16_t))),
+                       FRW_EVENT_PIPELINE_STAGE_1,
+                       dpe_vap->uc_chip_id,
+                       dpe_vap->uc_device_id,
+                       dpe_vap->uc_vap_id);
+
+    /* 出参赋值 */
+    *event_mem = alloc_event_mem;
+    *syn_msg = (hmac_to_dmac_cfg_msg_stru *)alloc_event->auc_event_data;
+
+    return OAL_SUCC;
+}
+
+/*
+ * 功能描述  : 触发Host to Device调度事件
+ * 1.日    期  : 2020年9月11日
+ *   作    者  : wifi
+ *   修改内容  : 新生成函数
+ */
+OAL_STATIC uint32_t hmac_tx_sync_h2d_scedule_event(uint8_t vap_idx, wlan_cfgid_enum_uint16 cfg_id, uint16_t us_len,
+    uint8_t *payload)
+{
+    uint32_t ret;
+    frw_event_mem_stru *event_mem = NULL;
+    hmac_to_dmac_cfg_msg_stru *syn_msg = NULL;
+    dpe_wlan_vap_stru *dpe_vap = dpe_wlan_vap_get(vap_idx);
+
+    if (dpe_vap == NULL) {
+        return OAL_ERR_CODE_PTR_NULL;
+    }
+    if (wlan_chip_h2d_cmd_need_filter(cfg_id) == OAL_TRUE) {
+        return OAL_SUCC;
+    }
+
+    ret = hmac_tx_sync_alloc_schedule_event(dpe_vap, HMAC_TX_DMAC_SCH, &syn_msg, &event_mem, us_len);
+    if (oal_unlikely(ret != OAL_SUCC)) {
+        oam_warning_log1(vap_idx, OAM_SF_CFG,
+            "{hmac_tx_sync_h2d_scedule_event::hmac_config_alloc_event failed[%d].}", ret);
+        return ret;
+    }
+
+    syn_msg->en_syn_id = cfg_id;
+    syn_msg->us_len = us_len;
+    /* 填写配置同步消息内容 */
+    if ((payload != NULL) && (us_len)) {
+        if (memcpy_s(syn_msg->auc_msg_body, (uint32_t)us_len, payload, (uint32_t)us_len) != EOK) {
+            oam_error_log0(0, OAM_SF_CFG, "hmac_tx_sync_h2d_scedule_event::memcpy fail!");
+            frw_event_free_m(event_mem);
+            return OAL_FAIL;
+        }
+    }
+
+    /* 抛出事件 */
+    ret = frw_event_dispatch_event(event_mem);
+    if (oal_unlikely(ret != OAL_SUCC)) {
+        oam_warning_log1(vap_idx, OAM_SF_CFG,
+            "{hmac_tx_sync_h2d_scedule_event::frw_event_dispatch_event failed[%d].}", ret);
+        frw_event_free_m(event_mem);
+        return ret;
+    }
+
+    frw_event_free_m(event_mem);
+
+    return OAL_SUCC;
+}
+
+/*
+ * 功能描述 : 同步ring信息至device
+ * 1.日    期 : 2020年4月22日
+ *   作    者 : wifi
+ *   修改内容 : 新生成函数
+ */
+uint32_t hmac_tx_sync_ring_info(hmac_tid_info_stru *tx_tid_info, tid_cmd_enum_uint8 cmd)
+{
+    tid_update_stru tid_update_info = { 0 };
+
+    if (hmac_tx_ring_set_update_info(tx_tid_info, &tid_update_info, cmd) != OAL_SUCC) {
+        return OAL_FAIL;
+    }
+
+    return hmac_tx_sync_h2d_scedule_event(0, WLAN_CFGID_TX_TID_UPDATE,
+                                          sizeof(tid_update_stru), (uint8_t *)&tid_update_info);
+}
+
+/*
+ * 功能描述 : 释放msdu占用的dma内存地址
+ * 1.日    期 : 2020年4月22日
+ *   作    者 : wifi
+ *   修改内容 : 新生成函数
+ */
+uint32_t hmac_tx_unmap_msdu_dma_addr(
+    hmac_msdu_info_ring_stru *tx_ring, msdu_info_stru *msdu_info, uint32_t netbuf_len)
+{
+    uint64_t netbuf_iova = 0;
+    int32_t ret;
+
+    ret = (int32_t)pcie_if_devva_to_hostca(HCC_EP_WIFI_DEV,
+        oal_make_word64(msdu_info->msdu_addr_lsb, msdu_info->msdu_addr_msb), &netbuf_iova);
+    if (ret != OAL_SUCC) {
+        oam_error_log1(0, OAM_SF_TX, "{hmac_tx_unmap_msdu_dma_addr::hostca to devva fail[%d]", ret);
+        return (uint32_t)ret;
+    }
+
+    return hal_host_tx_dma_unmap_addr((uint8_t *)(uintptr_t)netbuf_iova, netbuf_len + hal_host_tx_get_msdu_dscr_len());
+}
+
+/*
+ * 功能描述 : 发送完成释放描述符内存和报文内存
+ * 1.日    期 : 2020年2月12日
+ *   作    者 : wifi
+ *   修改内容 : 新生成函数
+ */
+void hmac_tx_msdu_update_free_cnt(hmac_msdu_info_ring_stru *tx_ring)
+{
+    oal_atomic_dec(&tx_ring->msdu_cnt);
+    oal_atomic_dec(&g_tid_schedule_list.ring_mpdu_num);
+}
+
+void hmac_tx_ring_unmap_netbuf(hmac_msdu_info_ring_stru *tx_ring, oal_netbuf_stru *netbuf, uint16_t release_index)
+{
+    msdu_info_stru msdu_info = { 0 };
+
+    if (hal_host_tx_get_msdu_ring(&tx_ring->ring_buf, &msdu_info, release_index) != OAL_SUCC) {
+        oam_error_log0(0, 0, "{hmac_tx_ring_unmap_netbuf::unmap failed!}");
+        return;
+    }
+
+    hmac_tx_unmap_msdu_dma_addr(tx_ring, &msdu_info, netbuf->len);
+}
+
+void hmac_tx_ring_release_netbuf_info(
+    hmac_msdu_info_ring_stru *tx_ring, uint16_t release_index)
+{
+    if (oal_unlikely(tx_ring == NULL)) {
+        return;
+    }
+    tx_ring->netbuf_list[release_index] = NULL;
+    oal_smp_mb();
+
+    hmac_tx_msdu_update_free_cnt(tx_ring);
+}
+
+/*
+ * 功能描述 : 释放ring中msdu对应的netbuf
+ * 1.日    期 : 2020年4月22日
+ *   作    者 : wifi
+ *   修改内容 : 新生成函数
+ */
+void hmac_tx_ring_release_netbuf(
+    hmac_msdu_info_ring_stru *tx_ring, oal_netbuf_stru *netbuf, uint16_t release_index)
+{
+    hmac_tx_ring_release_netbuf_info(tx_ring, release_index);
+    oal_netbuf_free(netbuf);
+}
+
+/*
+ * 功能描述 : 保证netbuf headroom有足够的空间供硬件填写MSDU描述符
+ * 1.日    期 : 2020年4月22日
+ *   作    者 : wifi
+ *   修改内容 : 新生成函数
+ */
+uint32_t hmac_tx_netbuf_expand_headroom(oal_netbuf_stru *netbuf, mac_tx_ctl_stru *tx_ctl)
+{
+    int32_t ret;
+    uint8_t mac_hdr[MAX_MAC_HEAD_LEN];
+    if (oal_unlikely(netbuf == NULL)) {
+        return OAL_FAIL;
+    }
+
+    if (oal_netbuf_headroom(netbuf) > hal_host_tx_get_msdu_dscr_len()) {
+        return OAL_SUCC;
+    }
+
+    oam_warning_log1(0, OAM_SF_TX, "{hmac_tx_netbuf_expand_headroom::headroom %d not enough}",
+        oal_netbuf_headroom(netbuf));
+
+    if (memcpy_s(mac_hdr, MAX_MAC_HEAD_LEN, (uint8_t *)(uintptr_t)oal_netbuf_data(netbuf), MAX_MAC_HEAD_LEN) != EOK) {
+        return OAL_FAIL;
+    }
+
+    ret = oal_netbuf_expand_head(netbuf, hal_host_tx_get_msdu_dscr_len(), 0, GFP_ATOMIC);
+    if (ret != OAL_SUCC) {
+        oam_error_log0(0, OAM_SF_ANY, "{hmac_tx_netbuf_expand_headroom::expand headroom failed}");
+        return OAL_ERR_CODE_ALLOC_MEM_FAIL;
+    }
+
+    if (memcpy_s(oal_netbuf_data(netbuf), MAX_MAC_HEAD_LEN, mac_hdr, MAX_MAC_HEAD_LEN) != EOK) {
+        return OAL_FAIL;
+    }
+    return OAL_SUCC;
+}
+
+#if (_PRE_OS_VERSION_LINUX == _PRE_OS_VERSION)
+
+/*
+ * 功能描述  : 设置msdu csum硬化信息
+ * 1.日    期 : 2020.5.13
+ *   作    者 : wifi
+ *   修改内容: 新生成函数
+ */
+OAL_STATIC void hmac_tx_set_msdu_csum_info(msdu_info_stru *msdu_info, oal_netbuf_stru *netbuf)
+{
+    mac_ether_header_stru *ether_header = (mac_ether_header_stru *)oal_netbuf_data(netbuf);
+    if (ether_header == NULL) {
+        return;
+    }
+    if (ether_header->us_ether_type == oal_host2net_short(ETHER_TYPE_IP)) {
+        struct iphdr *iph = (struct iphdr *)(netbuf->head + netbuf->network_header);
+        if (iph->protocol == OAL_IPPROTO_TCP) {
+            msdu_info->csum_type = CSUM_TYPE_IPV4_TCP;
+        } else if (iph->protocol == OAL_IPPROTO_UDP) {
+            msdu_info->csum_type = CSUM_TYPE_IPV4_UDP;
+        }
+    } else if (ether_header->us_ether_type == oal_host2net_short(ETHER_TYPE_IPV6)) {
+        struct ipv6hdr *ipv6h = (struct ipv6hdr *)(netbuf->head + netbuf->network_header);
+        if (ipv6h->nexthdr == OAL_IPPROTO_TCP) {
+            msdu_info->csum_type = CSUM_TYPE_IPV6_TCP;
+        } else if (ipv6h->nexthdr == OAL_IPPROTO_UDP) {
+            msdu_info->csum_type = CSUM_TYPE_IPV6_UDP;
+        }
+    }
+}
+#else
+OAL_STATIC void hmac_tx_set_msdu_csum_info(msdu_info_stru *msdu_info, oal_netbuf_stru *netbuf)
+{
+}
+#endif
+
+/*
+ * 功能描述 : 设置msdu info信息
+ * 1.日    期 : 2020年4月22日
+ *   作    者 : wifi
+ *   修改内容 : 新生成函数
+ */
+OAL_STATIC void hmac_tx_set_msdu_info_from_netbuf(dpe_wlan_vap_stru *dpe_vap, msdu_info_stru *msdu_info,
+    oal_netbuf_stru *netbuf, mac_tx_ctl_stru *tx_ctl, uintptr_t devva)
+{
+#ifdef _PRE_WLAN_CHBA_MGMT
+    hmac_vap_stru *hmac_vap = NULL;
+#endif
+    if (tx_ctl == NULL) {
+        oam_error_log0(0, OAM_SF_ANY, "{hmac_tx_set_msdu_info_from_netbuf::tx_ctl null}");
+        return;
+    }
+    msdu_info->msdu_addr_lsb = get_low_32_bits(devva);
+    msdu_info->msdu_addr_msb = get_high_32_bits(devva);
+    msdu_info->msdu_len = oal_netbuf_len(netbuf);
+    msdu_info->data_type = mac_get_cb_data_type(tx_ctl);
+
+    msdu_info->csum_type = 0;
+
+    if (netbuf->ip_summed == CHECKSUM_PARTIAL) {
+        hmac_tx_set_msdu_csum_info(msdu_info, netbuf);
+    }
+
+    if (mac_get_cb_data_type(tx_ctl) == DATA_TYPE_80211) {
+        msdu_info->more_frag = tx_ctl->st_expand_cb.bit_more_frag;
+        msdu_info->frag_num = tx_ctl->st_expand_cb.bit_frag_num;
+    }
+
+    if (dpe_vap->en_vap_mode == WLAN_VAP_MODE_BSS_AP && !mac_get_cb_is_4address(tx_ctl)) {
+        msdu_info->from_ds = 1;
+        msdu_info->to_ds = 0;
+    } else if (dpe_vap->en_vap_mode == WLAN_VAP_MODE_BSS_STA && !mac_get_cb_is_4address(tx_ctl)) {
+        msdu_info->from_ds = 0;
+        msdu_info->to_ds = 1;
+    } else {
+        msdu_info->from_ds = 1;
+        msdu_info->to_ds = 1;
+    }
+#ifdef _PRE_WLAN_CHBA_MGMT
+    hmac_vap = mac_res_get_hmac_vap(dpe_vap->uc_vap_id);
+    /* 对于CHBA相关的管理帧不走状态机接口 */
+    if (hmac_chba_vap_start_check(hmac_vap)) {
+        msdu_info->from_ds = 0;
+        msdu_info->to_ds = 0;
+    }
+#endif
+}
+
+/*
+ * 功能描述 : 设置msdu info信息
+ * 1.日    期 : 2020年2月12日
+ *   作    者 : wifi
+ *   修改内容 : 新生成函数
+ * 2.日    期 : 2020年4月22日
+ *   作    者 : wifi
+ *   修改内容 : 重构函数
+ */
+uint32_t hmac_tx_set_msdu_info(dpe_wlan_vap_stru *dpe_vap, hmac_msdu_info_ring_stru *tx_ring, oal_netbuf_stru *netbuf)
+{
+    uint32_t ret;
+    uint64_t devva = 0;
+    mac_tx_ctl_stru *tx_ctl = (mac_tx_ctl_stru *)oal_netbuf_cb(netbuf);
+    un_rw_ptr write_ptr = { .rw_ptr = tx_ring->base_ring_info.write_index };
+    msdu_info_stru msdu_info = { 0 };
+
+    ret = hal_host_tx_get_devva(netbuf, &devva);
+    if (ret != OAL_SUCC) {
+        oam_error_log1(0, OAM_SF_TX, "{hmac_tx_set_msdu_info::hostva to devva failed[%d]}", ret);
+        return ret;
+    }
+
+    hmac_tx_set_msdu_info_from_netbuf(dpe_vap, &msdu_info, netbuf, tx_ctl, (uintptr_t)devva);
+    hal_host_tx_set_msdu_ring(&tx_ring->ring_buf, &msdu_info, write_ptr.st_rw_ptr.bit_rw_ptr);
+
+    return OAL_SUCC;
+}
+
+/*
+ * 功能描述 : 记录入ring的netbuf地址, 用于后续释放
+ * 1.日    期 : 2020年4月13日
+ *   作    者 : wifi
+ *   修改内容 : 新生成函数
+ */
+OAL_STATIC OAL_INLINE void hmac_record_netbuf_addr(hmac_msdu_info_ring_stru *tx_msdu_ring, oal_netbuf_stru *netbuf)
+{
+    un_rw_ptr write_ptr = { .rw_ptr = tx_msdu_ring->base_ring_info.write_index };
+
+    tx_msdu_ring->netbuf_list[write_ptr.st_rw_ptr.bit_rw_ptr] = netbuf;
+}
+
+/*
+ * 功能描述 : 将msdu info设置到ring的对应位置上
+ * 1.日    期 : 2020年2月12日
+ *   作    者 : wifi
+ *   修改内容 : 新生成函数
+ * 2.日    期 : 2020年4月22日
+ *   作    者 : wifi
+ *   修改内容 : 重构函数
+ */
+static uint32_t hmac_tx_set_msdu_info_to_ring(
+    dpe_wlan_vap_stru *dpe_vap, hmac_msdu_info_ring_stru *tx_msdu_ring, oal_netbuf_stru *netbuf)
+{
+    if (oal_unlikely(hmac_tid_ring_full(tx_msdu_ring))) {
+        return OAL_FAIL;
+    }
+
+    if (oal_unlikely(hmac_tx_set_msdu_info(dpe_vap, tx_msdu_ring, netbuf) != OAL_SUCC)) {
+        return OAL_ERR_CODE_PTR_NULL;
+    }
+
+    hmac_record_netbuf_addr(tx_msdu_ring, netbuf);
+    hmac_tx_msdu_ring_inc_write_ptr(tx_msdu_ring);
+
+    return OAL_SUCC;
+}
+
+/*
+ * 功能描述 : 入ring成功, 更新tid级别统计信息
+ * 1.日    期 : 2020年6月11日
+ *   作    者 : wifi
+ *   修改内容 : 新生成函数
+ */
+static inline void hmac_tx_update_statistics(hmac_msdu_info_ring_stru *tx_msdu_ring)
+{
+    oal_atomic_inc(&tx_msdu_ring->msdu_cnt);
+    oal_atomic_inc(&tx_msdu_ring->last_period_tx_msdu);
+    oal_atomic_inc(&g_tid_schedule_list.ring_mpdu_num);
+    tx_msdu_ring->tx_msdu_cnt++;
+}
+
+static inline void hmac_tx_ring_push_msdu_post_proc(hmac_msdu_info_ring_stru *tx_ring, oal_netbuf_stru *netbuf)
+{
+    hmac_mintp_log((uint8_t *)netbuf, MINTP_LOG_LVL_2, MINTP_LOG_DATATYPE_SKB, MINTP_LOG_TYPE_PUSH_RING);
+    hmac_tx_update_statistics(tx_ring);
+}
+
+/*
+ * 功能描述 : 挂msdu到发送RING上
+ * 1.日    期 : 2020年2月12日
+ *   作    者 : wifi
+ *   修改内容 : 新生成函数
+ * 2.日    期 : 2020年4月13日
+ *   作    者 : wifi
+ *   修改内容 : 重构函数
+ */
+uint32_t hmac_tx_ring_push_msdu(dpe_wlan_vap_stru *dpe_vap, hmac_msdu_info_ring_stru *tx_ring, oal_netbuf_stru *netbuf)
+{
+    if (hmac_tx_set_msdu_info_to_ring(dpe_vap, tx_ring, netbuf) != OAL_SUCC) {
+        return OAL_FAIL;
+    }
+
+    hmac_tx_ring_push_msdu_post_proc(tx_ring, netbuf);
+
+    return OAL_SUCC;
+}
+
+/*
+ * 功能描述 : 获取host tid、ring和host rx状态
+ * 1.日    期 : 2022.1.17
+ *   作    者 : wifi
+ *   修改内容 : 新生成函数
+ */
+uint32_t hmac_get_host_ring_state(frw_event_mem_stru *event_mem)
+{
+    struct wlan_pm_s *wlan_pm_info = wlan_pm_get_drv();
+    if ((!dpe_host_ring_tx_enabled()) || (wlan_pm_info == NULL)) {
+        return OAL_SUCC;
+    }
+
+    hmac_dump_tid_info();
+    /*  协助定位长时间无法进入深睡问题 */
+    oam_warning_log4(0, OAM_SF_PWR,
+        "hmac_get_host_ring_state::tid empty[%d] (1:empty) ring mpdu[%d] m ddr rx[%d] s ddr rx[%d]",
+        hmac_is_tid_empty(), oal_atomic_read(&g_tid_schedule_list.ring_mpdu_num),
+        hal_master_is_in_ddr_rx(), hal_slave_is_in_ddr_rx());
+    oam_warning_log1(0, OAM_SF_PWR, "hmac_get_host_ring_state::host forbid sleep[%d]",
+        oal_atomic_read(&wlan_pm_info->forbid_sleep));
+
+    return OAL_SUCC;
+}
+
+static uint32_t hmac_tx_trig_device_softirq(dpe_wlan_vap_stru *dpe_vap)
+{
+    hal_host_device_stru *hal_device = hal_get_host_device(dpe_vap->hal_dev_id);
+
+    if (hal_device == NULL) {
+        return OAL_FAIL;
+    }
+    hal_pm_try_wakeup_forbid_sleep(HAL_PM_FORBIDE_SLEEP_TX_TRIG_DEVICE_SOFTIRQ);
+    if (hal_pm_try_wakeup_dev_lock() != OAL_SUCC) {
+        hal_pm_try_wakeup_allow_sleep(HAL_PM_FORBIDE_SLEEP_TX_TRIG_DEVICE_SOFTIRQ);
+        return OAL_FAIL;
+    }
+
+    hal_host_writel(1, hal_device->soc_regs.w_soft_int_set_aon_reg);
+    hal_pm_try_wakeup_allow_sleep(HAL_PM_FORBIDE_SLEEP_TX_TRIG_DEVICE_SOFTIRQ);
+    return OAL_SUCC;
+}
+
+void hmac_tx_sched_trigger(uint8_t vap_idx, hmac_tid_info_stru *tid_info)
+{
+    dpe_wlan_vap_stru *dpe_vap = dpe_wlan_vap_get(vap_idx);
+
+    if (dpe_vap == NULL) {
+        return;
+    }
+
+    /* WCPU软中断调度 */
+    if (dpe_tx_ring_soft_irq_sched_enabled() && hmac_tx_trig_device_softirq(dpe_vap) == OAL_SUCC) {
+        return;
+    }
+    /* 下发事件调度 */
+    hmac_tx_sync_ring_info(tid_info, TID_CMDID_ENQUE);
+}

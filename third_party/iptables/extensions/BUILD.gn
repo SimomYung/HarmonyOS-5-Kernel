@@ -1,0 +1,254 @@
+# Copyright (c) 2022 Huawei Device Co., Ltd.
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+import("//build/ohos.gni")
+LIBEXT_COMMON_PATH = "//out/gen"
+config("ext_config") {
+  cflags = [
+    "-D_LARGEFILE_SOURCE=1",
+    "-D_LARGE_FILES",
+    "-D_FILE_OFFSET_BITS=64",
+    "-D_REENTRANT",
+    "-DENABLE_IPV4",
+    "-DENABLE_IPV6",
+    "-Wall",
+    "-Wno-error",
+    "-Wno-pointer-arith",
+    "-Wno-sign-compare",
+    "-Wno-unused-parameter",
+    "-DNO_SHARED_LIBS=1",
+    "-DXTABLES_INTERNAL",
+    "-Wno-format",
+    "-Wno-missing-field-initializers",
+    "-Wno-pointer-bool-conversion",
+    "-Wno-tautological-pointer-compare",
+  ]
+}
+
+args_libext = [
+  "libxt_",
+  "[libxt_cgroup.c,libxt_ipvs.c,libxt_TCPOPTSTRIP.c,libxt_connlabel.c,libxt_dccp.c]",
+  "initext.c",
+  "extensions",
+]
+
+exec_script("genInit.py", args_libext)
+
+ohos_static_library("libext") {
+  sources = [
+    "$LIBEXT_COMMON_PATH/initext.c",
+    "$LIBEXT_COMMON_PATH/libxt_AUDIT.c",
+    "$LIBEXT_COMMON_PATH/libxt_CHECKSUM.c",
+    "$LIBEXT_COMMON_PATH/libxt_CLASSIFY.c",
+    "$LIBEXT_COMMON_PATH/libxt_CONNMARK.c",
+    "$LIBEXT_COMMON_PATH/libxt_CONNSECMARK.c",
+    "$LIBEXT_COMMON_PATH/libxt_CT.c",
+    "$LIBEXT_COMMON_PATH/libxt_DSCP.c",
+    "$LIBEXT_COMMON_PATH/libxt_HMARK.c",
+    "$LIBEXT_COMMON_PATH/libxt_IDLETIMER.c",
+    "$LIBEXT_COMMON_PATH/libxt_LED.c",
+    "$LIBEXT_COMMON_PATH/libxt_MARK.c",
+    "$LIBEXT_COMMON_PATH/libxt_NFLOG.c",
+    "$LIBEXT_COMMON_PATH/libxt_NFQUEUE.c",
+    "$LIBEXT_COMMON_PATH/libxt_RATEEST.c",
+    "$LIBEXT_COMMON_PATH/libxt_SECMARK.c",
+    "$LIBEXT_COMMON_PATH/libxt_SET.c",
+    "$LIBEXT_COMMON_PATH/libxt_SYNPROXY.c",
+    "$LIBEXT_COMMON_PATH/libxt_TCPMSS.c",
+    "$LIBEXT_COMMON_PATH/libxt_TEE.c",
+    "$LIBEXT_COMMON_PATH/libxt_TOS.c",
+    "$LIBEXT_COMMON_PATH/libxt_TPROXY.c",
+    "$LIBEXT_COMMON_PATH/libxt_TRACE.c",
+    "$LIBEXT_COMMON_PATH/libxt_addrtype.c",
+    "$LIBEXT_COMMON_PATH/libxt_bpf.c",
+    "$LIBEXT_COMMON_PATH/libxt_cluster.c",
+    "$LIBEXT_COMMON_PATH/libxt_comment.c",
+    "$LIBEXT_COMMON_PATH/libxt_connbytes.c",
+    "$LIBEXT_COMMON_PATH/libxt_connlimit.c",
+    "$LIBEXT_COMMON_PATH/libxt_connmark.c",
+    "$LIBEXT_COMMON_PATH/libxt_conntrack.c",
+    "$LIBEXT_COMMON_PATH/libxt_cpu.c",
+    "$LIBEXT_COMMON_PATH/libxt_devgroup.c",
+    "$LIBEXT_COMMON_PATH/libxt_dscp.c",
+    "$LIBEXT_COMMON_PATH/libxt_ecn.c",
+    "$LIBEXT_COMMON_PATH/libxt_esp.c",
+    "$LIBEXT_COMMON_PATH/libxt_hashlimit.c",
+    "$LIBEXT_COMMON_PATH/libxt_helper.c",
+    "$LIBEXT_COMMON_PATH/libxt_ipcomp.c",
+    "$LIBEXT_COMMON_PATH/libxt_iprange.c",
+    "$LIBEXT_COMMON_PATH/libxt_length.c",
+    "$LIBEXT_COMMON_PATH/libxt_limit.c",
+    "$LIBEXT_COMMON_PATH/libxt_mac.c",
+    "$LIBEXT_COMMON_PATH/libxt_mark.c",
+    "$LIBEXT_COMMON_PATH/libxt_multiport.c",
+    "$LIBEXT_COMMON_PATH/libxt_nfacct.c",
+    "$LIBEXT_COMMON_PATH/libxt_osf.c",
+    "$LIBEXT_COMMON_PATH/libxt_owner.c",
+    "$LIBEXT_COMMON_PATH/libxt_physdev.c",
+    "$LIBEXT_COMMON_PATH/libxt_pkttype.c",
+    "$LIBEXT_COMMON_PATH/libxt_policy.c",
+    "$LIBEXT_COMMON_PATH/libxt_quota.c",
+    "$LIBEXT_COMMON_PATH/libxt_quota2.c",
+    "$LIBEXT_COMMON_PATH/libxt_rateest.c",
+    "$LIBEXT_COMMON_PATH/libxt_recent.c",
+    "$LIBEXT_COMMON_PATH/libxt_rpfilter.c",
+    "$LIBEXT_COMMON_PATH/libxt_sctp.c",
+    "$LIBEXT_COMMON_PATH/libxt_set.c",
+    "$LIBEXT_COMMON_PATH/libxt_socket.c",
+    "$LIBEXT_COMMON_PATH/libxt_standard.c",
+    "$LIBEXT_COMMON_PATH/libxt_statistic.c",
+    "$LIBEXT_COMMON_PATH/libxt_string.c",
+    "$LIBEXT_COMMON_PATH/libxt_tcp.c",
+    "$LIBEXT_COMMON_PATH/libxt_tcpmss.c",
+    "$LIBEXT_COMMON_PATH/libxt_time.c",
+    "$LIBEXT_COMMON_PATH/libxt_tos.c",
+    "$LIBEXT_COMMON_PATH/libxt_u32.c",
+    "$LIBEXT_COMMON_PATH/libxt_udp.c",
+  ]
+  include_dirs = [
+    "//third_party/iptables",
+    "//third_party/iptables/extensions",
+    "//third_party/iptables/include",
+    "//third_party/iptables/iptables",
+    "//third_party/iptables/libiptc",
+  ]
+  configs = [ ":ext_config" ]
+  deps = []
+  part_name = "iptables"
+  subsystem_name = "thirdparty"
+}
+
+args_libext4 = [
+  "libipt",
+  "[]",
+  "initext4.c",
+  "extensions4",
+]
+
+exec_script("genInit.py", args_libext4)
+
+ohos_static_library("libext4") {
+  sources = [
+    "$LIBEXT_COMMON_PATH/initext4.c",
+    "$LIBEXT_COMMON_PATH/libipt_CLUSTERIP.c",
+    "$LIBEXT_COMMON_PATH/libipt_DNAT.c",
+    "$LIBEXT_COMMON_PATH/libipt_ECN.c",
+    "$LIBEXT_COMMON_PATH/libipt_LOG.c",
+    "$LIBEXT_COMMON_PATH/libipt_MASQUERADE.c",
+    "$LIBEXT_COMMON_PATH/libipt_NETMAP.c",
+    "$LIBEXT_COMMON_PATH/libipt_REDIRECT.c",
+    "$LIBEXT_COMMON_PATH/libipt_REJECT.c",
+    "$LIBEXT_COMMON_PATH/libipt_SNAT.c",
+    "$LIBEXT_COMMON_PATH/libipt_TTL.c",
+    "$LIBEXT_COMMON_PATH/libipt_ULOG.c",
+    "$LIBEXT_COMMON_PATH/libipt_ah.c",
+    "$LIBEXT_COMMON_PATH/libipt_icmp.c",
+    "$LIBEXT_COMMON_PATH/libipt_realm.c",
+    "$LIBEXT_COMMON_PATH/libipt_ttl.c",
+  ]
+  include_dirs = [
+    "//third_party/iptables",
+    "//third_party/iptables/extensions",
+    "//third_party/iptables/include",
+    "//third_party/iptables/iptables",
+    "//third_party/iptables/libiptc",
+  ]
+  cflags = [
+    "-D_LARGEFILE_SOURCE=1",
+    "-D_LARGE_FILES",
+    "-D_FILE_OFFSET_BITS=64",
+    "-D_REENTRANT",
+    "-DENABLE_IPV4",
+    "-DENABLE_IPV6",
+    "-Wall",
+    "-Werror",
+    "-Wno-pointer-arith",
+    "-Wno-sign-compare",
+    "-Wno-unused-parameter",
+    "-DNO_SHARED_LIBS=1",
+    "-DXTABLES_INTERNAL",
+    "-Wno-format",
+    "-Wno-missing-field-initializers",
+    "-Wno-pointer-bool-conversion",
+    "-Wno-tautological-pointer-compare",
+  ]
+  deps = []
+  part_name = "iptables"
+  subsystem_name = "thirdparty"
+}
+
+args_libext6 = [
+  "libip6t_",
+  "[]",
+  "initext6.c",
+  "extensions6",
+]
+
+exec_script("genInit.py", args_libext6)
+
+ohos_static_library("libext6") {
+  sources = [
+    "$LIBEXT_COMMON_PATH/initext6.c",
+    "$LIBEXT_COMMON_PATH/libip6t_DNAT.c",
+    "$LIBEXT_COMMON_PATH/libip6t_DNPT.c",
+    "$LIBEXT_COMMON_PATH/libip6t_HL.c",
+    "$LIBEXT_COMMON_PATH/libip6t_LOG.c",
+    "$LIBEXT_COMMON_PATH/libip6t_MASQUERADE.c",
+    "$LIBEXT_COMMON_PATH/libip6t_NETMAP.c",
+    "$LIBEXT_COMMON_PATH/libip6t_REDIRECT.c",
+    "$LIBEXT_COMMON_PATH/libip6t_REJECT.c",
+    "$LIBEXT_COMMON_PATH/libip6t_SNAT.c",
+    "$LIBEXT_COMMON_PATH/libip6t_SNPT.c",
+    "$LIBEXT_COMMON_PATH/libip6t_ah.c",
+    "$LIBEXT_COMMON_PATH/libip6t_dst.c",
+    "$LIBEXT_COMMON_PATH/libip6t_eui64.c",
+    "$LIBEXT_COMMON_PATH/libip6t_frag.c",
+    "$LIBEXT_COMMON_PATH/libip6t_hbh.c",
+    "$LIBEXT_COMMON_PATH/libip6t_hl.c",
+    "$LIBEXT_COMMON_PATH/libip6t_icmp6.c",
+    "$LIBEXT_COMMON_PATH/libip6t_ipv6header.c",
+    "$LIBEXT_COMMON_PATH/libip6t_mh.c",
+    "$LIBEXT_COMMON_PATH/libip6t_rt.c",
+    "$LIBEXT_COMMON_PATH/libip6t_srh.c",
+  ]
+  include_dirs = [
+    "//third_party/iptables",
+    "//third_party/iptables/extensions",
+    "//third_party/iptables/include",
+    "//third_party/iptables/iptables",
+    "//third_party/iptables/libiptc",
+  ]
+  license_file = "//third_party/iptables/COPYING"
+  cflags = [
+    "-D_LARGEFILE_SOURCE=1",
+    "-D_LARGE_FILES",
+    "-D_FILE_OFFSET_BITS=64",
+    "-D_REENTRANT",
+    "-DENABLE_IPV4",
+    "-DENABLE_IPV6",
+    "-Wall",
+    "-Werror",
+    "-Wno-pointer-arith",
+    "-Wno-sign-compare",
+    "-Wno-unused-parameter",
+    "-DNO_SHARED_LIBS=1",
+    "-DXTABLES_INTERNAL",
+    "-Wno-format",
+    "-Wno-missing-field-initializers",
+    "-Wno-pointer-bool-conversion",
+    "-Wno-tautological-pointer-compare",
+  ]
+  deps = []
+  part_name = "iptables"
+  subsystem_name = "thirdparty"
+}

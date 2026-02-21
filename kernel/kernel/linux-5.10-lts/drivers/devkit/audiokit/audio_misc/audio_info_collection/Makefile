@@ -1,0 +1,1 @@
+obj-$(CONFIG_AUDIO_INFO_COLLECTION) += audio_info_collection.o

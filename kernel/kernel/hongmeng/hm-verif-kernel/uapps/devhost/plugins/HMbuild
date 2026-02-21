@@ -1,0 +1,12 @@
+# Copyright (c) Huawei Technologies Co., Ltd. 2021. All rights reserved.
+# Description: HMbuild for devhost
+# Author: Huawei OS Kernel Lab
+# Create: Fri Nov 19 11:26:07 2021
+
+src-y: base.c
+src-y: plugin.c
+src-y: sysif_ep.c
+src-y: event_ep.c
+src-y: advice_ep.c
+
+subdir-y: builtin

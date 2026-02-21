@@ -1,0 +1,60 @@
+From 79a7b5e1f387caf907ec88460cdb39b8364bfb0b Mon Sep 17 00:00:00 2001
+From: Theodore Ts'o <tytso@mit.edu>
+Date: Thu, 16 Mar 2023 22:57:10 -0400
+Subject: e2fsck: fix bad htree checksums in preen mode
+
+We attempt to fix directories which have a bad/corrupted htree index
+node by completely rebuilding the directory htree nodes.  Since this
+is a very safe thing to do and has no risk of losing directory
+entries, we've enabled this for preen mode.  Unfortunately, subsequent
+index nodes look like empty directory entries that fill the entire
+block --- without a checksum at the end of the directory.  So these
+nodes will be treated as a completely corrupted directory block, and
+this will *not* be fixed while in preen mode.
+
+So add code to treat an empty directory entry which covers the entire
+block as valid if the directory is already on the list of inodes to be
+rebuilt.
+
+Addresses-Gooogle-Bug: 178607853
+Signed-off-by: Theodore Ts'o <tytso@mit.edu>
+---
+ e2fsck/pass2.c | 16 ++++++++++++++--
+ 1 file changed, 14 insertions(+), 2 deletions(-)
+
+diff --git a/e2fsck/pass2.c b/e2fsck/pass2.c
+index 287360943..2700e3409 100644
+--- a/e2fsck/pass2.c
++++ b/e2fsck/pass2.c
+@@ -1341,7 +1341,18 @@ skip_checksum:
+ 			    (rec_len < min_dir_len) ||
+ 			    ((rec_len % 4) != 0) ||
+ 			    ((ext2fs_dir_rec_len(ext2fs_dirent_name_len(dirent),
+-						 extended)) > rec_len)) {
++						 extended)) > rec_len))
++				problem = PR_2_DIR_CORRUPTED;
++			if (problem) {
++				if ((offset == 0) &&
++				    (rec_len == fs->blocksize) &&
++				    (dirent->inode == 0) &&
++				    e2fsck_dir_will_be_rehashed(ctx, ino)) {
++					problem = 0;
++					max_block_size = fs->blocksize;
++				}
++			}
++			if (problem) {
+ 				if (fix_problem(ctx, PR_2_DIR_CORRUPTED,
+ 						&cd->pctx)) {
+ #ifdef WORDS_BIGENDIAN
+@@ -1573,7 +1584,8 @@ skip_checksum:
+ 		 */
+ 		if (!(ctx->flags & E2F_FLAG_RESTART_LATER) &&
+ 		    !(ext2fs_test_inode_bitmap2(ctx->inode_used_map,
+-						dirent->inode)))
++						dirent->inode))
++			)
+ 			problem = PR_2_UNUSED_INODE;
+ 
+ 		if (problem) {
+-- 
+cgit 

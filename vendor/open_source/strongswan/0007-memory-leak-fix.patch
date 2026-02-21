@@ -1,0 +1,48 @@
+From 3059d1c5b66de39550d64a34fc21ff3f949d8085 Mon Sep 17 00:00:00 2001
+From: h30052898 <h30052898@notesmail.huawei.com/>
+Date: Tue, 25 Mar 2025 20:05:05 +0800
+Subject: [PATCH] TicketNo:DTS2025030723223 Description:fix vulnerability
+ Team:PDU_PTL Feature or Bugfix:Bugfix Binary Source:No PrivateCode(Yes/No):No
+
+Change-Id: I50f75abe235f0e1b1b1a7b1983354a6bb944f2be
+---
+ src/libstrongswan/plugins/pkcs11/pkcs11_library.c | 2 ++
+ src/swanctl/commands/load_creds.c                 | 2 ++
+ 2 files changed, 4 insertions(+)
+
+diff --git a/src/libstrongswan/plugins/pkcs11/pkcs11_library.c b/src/libstrongswan/plugins/pkcs11/pkcs11_library.c
+index 95dbd1792..43da98f4f 100644
+--- a/src/libstrongswan/plugins/pkcs11/pkcs11_library.c
++++ b/src/libstrongswan/plugins/pkcs11/pkcs11_library.c
+@@ -1170,6 +1170,7 @@ pkcs11_library_t *pkcs11_library_create(char *name, char *file, bool os_locking)
+ 	if (!this->handle)
+ 	{
+ 		DBG1(DBG_CFG, "opening PKCS#11 library failed: %s", dlerror());
++		free(this->name);
+ 		free(this);
+ 		return NULL;
+ 	}
+@@ -1177,6 +1178,7 @@ pkcs11_library_t *pkcs11_library_create(char *name, char *file, bool os_locking)
+ 	if (!initialize(this, name, file, os_locking))
+ 	{
+ 		dlclose(this->handle);
++		free(this->name);
+ 		free(this);
+ 		return NULL;
+ 	}
+diff --git a/src/swanctl/commands/load_creds.c b/src/swanctl/commands/load_creds.c
+index afb07eebb..05da4b73b 100644
+--- a/src/swanctl/commands/load_creds.c
++++ b/src/swanctl/commands/load_creds.c
+@@ -905,6 +905,8 @@ int load_creds_cfg(vici_conn_t *conn, command_format_options_t format,
+ 	{
+ 		if (!clear_creds(conn, format))
+ 		{
++			ctx.keys->destroy_function(ctx.keys, (void*)free);
++			ctx.shared->destroy_function(ctx.shared, (void*)free);
+ 			return ECONNREFUSED;
+ 		}
+ 	}
+-- 
+2.34.1
+

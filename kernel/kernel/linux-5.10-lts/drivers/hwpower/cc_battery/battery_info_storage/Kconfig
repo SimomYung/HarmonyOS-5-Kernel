@@ -1,0 +1,12 @@
+# SPDX-License-Identifier: GPL-2.0
+#
+# huawei battery info storage driver
+#
+
+config HUAWEI_BATTERY_INFO_STORAGE
+	bool "huawei battery info storage driver"
+	default n
+	help
+	  Say Y here to enable battery info storage driver.
+	  This driver provides a unified interface to
+	  get battery info.

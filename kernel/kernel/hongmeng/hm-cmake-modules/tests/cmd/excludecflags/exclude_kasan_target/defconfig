@@ -1,0 +1,2 @@
+
+CONFIG_HMBUILD_EXTRA_CFLAGS_BASE="-fsanitize=kernel-address -fasan-shadow-offset=0x66666000 --param asan-stack=1 --param asan-globals=1"

@@ -1,0 +1,85 @@
+#
+# Copyright (c) Hisilicon Technologies Co., Ltd. 2021-2021. All rights reserved.
+#
+
+# Driver version string which is returned to userspace via an ioctl
+HVGR_RELEASE_NAME ?= "B280"
+
+src:=$(if $(patsubst /%,,$(src)),$(srctree)/$(src),$(src))
+
+ifndef HVGR_PATH
+	HVGR_PATH = $(src)
+	DEFINES = -D
+endif
+
+# Set up our defines, which will be passed to gcc
+DEFINES += -DHVGR_RELEASE_NAME=\"$(HVGR_RELEASE_NAME)\"
+
+ifndef HVGR_ROOT
+	HVGR_ROOT=.
+endif
+
+ifeq ($(TARGET_VERSION_MODE),factory)
+	DEFINES += -DHVGR_FACTORY_MODE=1
+endif
+
+ifeq ($(CONFIG_HVGR_PROTECT_MODE), y)
+	HVGR_FEATURE_PROTECT_MODE ?= 1
+	DEFINES += -DHVGR_FEATURE_PROTECT_MODE=$(HVGR_FEATURE_PROTECT_MODE)
+endif
+
+# hvgr feature define
+HVGR_FE_FFTS = 0
+
+HVGR_VERSION_CODE := $(CONFIG_HVGR_VER_NUM)
+DEFINES += -DHVGR_VERSION_CODE=$(HVGR_VERSION_CODE)
+CHIP_VER_DIR=hvgr_v$(CONFIG_HVGR_VER_NUM)
+
+HVGR_PLATFORM_NAME := $(shell echo $(CONFIG_HVGR_PLATFORM_NAME))
+# for menu config
+ifeq ($(HVGR_PLATFORM_NAME),)
+	HVGR_PLATFORM_NAME := p0000000
+endif
+
+INCLUDE_DIR += \
+	-I$(HVGR_PATH)/apicmd \
+	-I$(HVGR_PATH)/apicmd/$(CHIP_VER_DIR) \
+	-I$(HVGR_PATH)/apicmd/$(CHIP_VER_DIR)/apicmd \
+	-I$(HVGR_PATH)/include \
+	-I$(HVGR_PATH)/include/chip/ \
+	-I$(HVGR_PATH)/include/chip/$(CHIP_VER_DIR) \
+	-I$(HVGR_PATH)
+
+ifeq ($(CONFIG_LIBLINUX),y)
+SRC :=
+SRC_ARB :=
+SRC_FE :=
+endif
+
+-include $(HVGR_PATH)/test/Kbuild
+-include $(HVGR_PATH)/build/hvgr_v$(CONFIG_HVGR_VER_NUM)/Kbuild
+include $(HVGR_PATH)/dm/Kbuild
+include $(HVGR_PATH)/pm/Kbuild
+include $(HVGR_PATH)/mem/Kbuild
+-include $(HVGR_PATH)/ldk/Kbuild
+include $(HVGR_PATH)/sch/Kbuild
+include $(HVGR_PATH)/utils/Kbuild
+include $(HVGR_PATH)/datan/Kbuild
+include $(HVGR_PATH)/platform/Kbuild
+include $(HVGR_PATH)/external/Kbuild
+-include $(HVGR_PATH)/ffrt/Kbuild
+-include $(HVGR_PATH)/virtual/arb/Kbuild
+-include $(HVGR_PATH)/virtual/frontend/Kbuild
+
+# ccflags-y += $(INCLUDE_DIR) -I$(DEFINES)
+subdir-ccflags-y += $(INCLUDE_DIR) -I$(DEFINES)
+
+# Tell the Linux build system from which .o file to create the kernel module
+obj-$(CONFIG_HVGR_VIRTUAL_HOST) += hvgr_arb$(HVGR_VER).o
+obj-$(CONFIG_HVGR_VIRTUAL) += hvgr_fe$(HVGR_VER).o
+obj-$(CONFIG_HISI_GPU) += hvgr_kmd$(HVGR_VER).o
+
+# Tell the Linux build system to enable building of our .c files
+hvgr_arb$(HVGR_VER)-$(CONFIG_HVGR_VIRTUAL_HOST) := $(SRC_ARB:.c=.o)
+hvgr_fe$(HVGR_VER)-$(CONFIG_HVGR_VIRTUAL) := $(SRC_FE:.c=.o)
+hvgr_kmd$(HVGR_VER)-y := $(SRC:.c=.o)

@@ -1,0 +1,12 @@
+# Copyright (c) Huawei Technologies Co., Ltd. 2022. All rights reserved.
+# Description: HMbuild for udk memory manager
+# Author: Huawei OS Kernel Lab
+# Create: Wed Feb 09 11:51:30 2022
+
+src-y: udk_mm.c
+src-y: udk_dma.c
+src-y: udk_mmap.c
+src-y: udk_shm.c
+src-y: udk_mcache.c
+src-CONFIG_UDK_FUSION: udk_mm_fusion.c
+cflags-udk_mmap.c-y: -Wno-strict-prototypes -Wno-old-style-definition

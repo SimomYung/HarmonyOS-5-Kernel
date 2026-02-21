@@ -1,0 +1,19 @@
+# Copyright (c) Huawei Technologies Co., Ltd. 2021. All rights reserved.
+# Description: Kconfig for devhsot
+# Author: Huawei OS Kernel Lab
+# Create: Fri Nov 19 11:26:07 2021
+
+comment "Common Settings for both devhost and backends"
+
+config DEVHOST_PLUGIN_DEMO
+	bool "devhost plugin demo"
+	default n
+
+config DEVHOST_PM_PLUGIN
+	bool "devhost pm plugin"
+	depends on TPPMGR
+	default y
+
+config DEVHOST_NETLINK
+	bool "devhost netlink support"
+	default n

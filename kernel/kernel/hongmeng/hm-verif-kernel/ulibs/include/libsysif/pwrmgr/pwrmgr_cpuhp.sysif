@@ -1,0 +1,40 @@
+/*
+ * Copyright (c) Huawei Technologies Co., Ltd. 2021-2021. All rights reserved.
+ * Description: Definition for pwrmgr cpu hotplug sysif
+ * Author: Huawei OS Kernel Lab
+ * Create: Sat Nov 20 09:52:05 2021
+ */
+
+/*
+ * To support the mixed data model which means the client and the server
+ * may use different data model. See the document for limitation of data type
+ * used in the sysif interfaces in <Documentation/sysif_compat.md>.
+ */
+#ifdef SYSIF_EXPORT_API
+
+#include <libhmnotifier/hm_notifier.h>
+
+#define CPUHP_ADD_EVENT		(1U)
+#define CPUHP_REMOVE_EVENT	(2U)
+
+#endif
+
+DEFINE_MANAGER(cpuhp, 8,
+	DEFINE_METHOD(cpuhp, add_notifier,
+		      ARG_NO,
+		      RET_NO,
+		      SLOWDATA)
+	DEFINE_METHOD(cpuhp, remove_notifier,
+		      ARG_NO,
+		      RET_NO,
+		      SLOWDATA)
+	DEFINE_METHOD(cpuhp, action,
+		      ARG(2, unsigned int, cpu, unsigned int, event),
+		      RET_NO,
+		      SLOWDATA_NO)
+	DEFINE_METHOD(cpuhp, revoke_listener,
+		      ARG(1, unsigned int, cnode_idx),
+		      RET_NO,
+		      SLOWDATA)
+
+)

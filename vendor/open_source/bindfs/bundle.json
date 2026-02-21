@@ -1,0 +1,37 @@
+{
+    "name": "@ohos/oh_bindfs",
+    "description": "BINDFS is a small, header-only C++ library that provides a simple interface for reading and generating files in ELF binary format.",
+    "version": "open_source_3.10.5",
+    "license": "The MIT License",
+    "publishAs": "code-segment",
+    "segment": {
+        "destPath": "vendor/open_source/bindfs"
+    },
+    "dirs": {},
+    "scripts": {},
+    "licensePath": "COPYING",
+    "component": {
+        "name": "bindfs",
+        "subsystem": "virt_service",
+        "syscap": [],
+        "features": [],
+        "adapted_system_type": [
+            "standard"
+        ],
+        "rom": "",
+        "ram": "",
+        "deps": {
+            "components": [
+                "libfuse",
+                "e2fsprogs",
+                "selinux",
+                "c_utils"
+            ]
+        },
+        "build": {
+            "sub_component": ["//vendor/open_source/bindfs:bindfs"],
+            "inner_kits": [],
+            "test": []
+        }
+    }
+}

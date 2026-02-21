@@ -1,0 +1,8 @@
+# SPDX-License-Identifier: GPL-2.0
+
+config I2C_RTC_RX8900
+	depends on RTC_CLASS
+	bool "i2c support rtc 8900"
+	default n
+	help
+	 i2c support rtc 8900 or not.

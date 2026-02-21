@@ -1,0 +1,36 @@
+/*
+ * Copyright (c) Huawei Technologies Co., Ltd. 2022-2022. All rights reserved.
+ * Description: Page table attribute for urodata
+ * Author: Huawei OS Kernel Lab
+ * Created: Tue Jan 25 2022
+ */
+
+#ifndef AARCH64_MAPI_ASM_PGTBL_PGTBLATTR_URODATA_H
+#define AARCH64_MAPI_ASM_PGTBL_PGTBLATTR_URODATA_H
+
+#include <uapi/hmasm/pgtbl/pgtblattr/urodata.h>
+
+#define A64_PGATTR_URODATA_MAPPING A64_PGTBLATTR ( \
+	__PGTBLHDLR_HLATTR_A64_SETTING_USER, \
+	__PGTBLATTR_DEFAULT_A64TTBRREG, \
+	__PGTBLATTR_DEFAULT_A64TBL512G, \
+	__PGTBLATTR_DEFAULT_A64TBL1G, \
+	__PGTBLATTR_DEFAULT_A64TBL2M, \
+	__A64_PGTBLATTR_URODATA_BLK1G, \
+	__A64_PGTBLATTR_URODATA_BLK2M, \
+	__A64_PGTBLATTR_URODATA_PAGE4K)
+
+#define PGATTR_URODATA_MAPPING { \
+	.a = A64_PGATTR_URODATA_MAPPING \
+}
+
+#endif
+
+#include <uapi/hmasm/pgtbl/pgtblattr/urodata.h>
+
+#ifndef __PGTBLATTR_MODEL_PROPERTY
+#define __PGTBLATTR_MODEL_PROPERTY(name, stage2, kread, kwrite, kexec, uread, uwrite, uexec, device)
+#endif
+
+/* property format: (model, stage2, kread, kwrite, kexec, uread, uwrite, uexec, device) */
+__PGTBLATTR_MODEL_PROPERTY(URODATA, false, true, false, false, true, false, false, false)

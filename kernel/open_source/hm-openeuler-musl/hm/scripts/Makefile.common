@@ -1,0 +1,90 @@
+# exports private headers here
+PRIVATE_HEADERS += src/internal/futex.h
+PRIVATE_HEADERS += src/internal/libc.h
+PRIVATE_HEADERS += src/internal/pthread_impl.h
+PRIVATE_HEADERS += src/internal/syscall.h
+PRIVATE_HEADERS += src/include/features.h
+PRIVATE_HEADERS += arch/$(ARCH)/syscall_arch.h
+PRIVATE_HEADERS += arch/$(ARCH)/pthread_arch.h
+
+SRC_DIR = src/* crt ldso arch memtrace
+# MUSL src file
+MUSL_SRC_DIRS = $(addprefix $(srcdir)/,$(SRC_DIR))
+MUSL_BASE_GLOBS = $(addsuffix /*.c,$(MUSL_SRC_DIRS))
+MUSL_ARCH_GLOBS = $(addsuffix /$(ARCH)/*.[csS],$(MUSL_SRC_DIRS))
+MUSL_BASE_SRCS = $(sort $(wildcard $(MUSL_BASE_GLOBS)))
+MUSL_ARCH_SRCS = $(sort $(wildcard $(MUSL_ARCH_GLOBS)))
+MUSL_BASE_OBJS = $(patsubst $(srcdir)/%,%.o,$(basename $(MUSL_BASE_SRCS)))
+MUSL_ARCH_OBJ = $(patsubst $(srcdir)/%,%.o,$(basename $(MUSL_ARCH_SRCS)))
+MUSL_ARCH_OBJS = $(filter-out %/__unmapself.o, $(MUSL_ARCH_OBJ))
+MUSL_REPLACED_OBJS = $(sort $(subst /$(ARCH)/,/,$(MUSL_ARCH_OBJS)))
+MUSL_OBJS_ORG = $(addprefix $(objdir)/, $(filter-out $(MUSL_REPLACED_OBJS), $(sort $(MUSL_BASE_OBJS) $(MUSL_ARCH_OBJS))))
+
+# hm src file
+HM_SRC_DIRS = $(addprefix $(srcdir)/hm/, $(SRC_DIR))
+HM_BASE_GLOBS = $(addsuffix /*.c,$(HM_SRC_DIRS))
+HM_ARCH_GLOBS = $(addsuffix /$(ARCH)/*.[csS],$(HM_SRC_DIRS))
+HM_BASE_SRCS = $(sort $(wildcard $(HM_BASE_GLOBS)))
+HM_ARCH_SRCS = $(sort $(wildcard $(HM_ARCH_GLOBS)))
+HM_BASE_OBJS = $(patsubst $(srcdir)/%,%.o,$(basename $(HM_BASE_SRCS)))
+HM_ARCH_OBJS = $(patsubst $(srcdir)/%,%.o,$(basename $(HM_ARCH_SRCS)))
+HM_REPLACED_OBJS = $(sort $(subst /$(ARCH)/,/,$(HM_ARCH_OBJS)))
+HM_OBJS = $(addprefix $(objdir)/, $(filter-out $(HM_REPLACED_OBJS), $(sort $(HM_BASE_OBJS) $(HM_ARCH_OBJS))))
+
+ifeq ($(SHADOW_STACK), yes)
+MUSL_OBJS_ORG := $(filter-out $(objdir)/src/setjmp/$(ARCH)/setjmp.o, $(MUSL_OBJS_ORG))
+MUSL_OBJS_ORG := $(filter-out $(objdir)/src/setjmp/$(ARCH)/longjmp.o, $(MUSL_OBJS_ORG))
+else
+MUSL_OBJS_ORG := $(filter-out $(objdir)/src/setjmp/$(ARCH)/setjmp_shadow_stack.o, $(MUSL_OBJS_ORG))
+MUSL_OBJS_ORG := $(filter-out $(objdir)/src/setjmp/$(ARCH)/longjmp_shadow_stack.o, $(MUSL_OBJS_ORG))
+endif
+# filter out shadow_stack from hm
+HM_OBJS := $(filter-out $(objdir)/hm/src/shadow_stack/offsets.o, $(HM_OBJS))
+
+# select malloc between musl malloc and heapmgr
+ifeq ($(DEFAULT_MALLOC), heapmgr)
+  MUSL_OBJS_ORG := $(filter-out $(objdir)/src/malloc/%.o $(objdir)/src/legacy/valloc.o, $(MUSL_OBJS_ORG))
+  HM_OBJS := $(filter-out $(objdir)/hm/src/malloc/mallopt.o, $(HM_OBJS))
+  HM_OBJS := $(filter-out $(objdir)/hm/src/himalloc/%.o, $(HM_OBJS))
+else ifeq ($(DEFAULT_MALLOC), musl)
+  HM_OBJS := $(filter-out $(objdir)/hm/src/malloc/alloc_fast.o, $(HM_OBJS))
+  HM_OBJS := $(filter-out $(objdir)/hm/src/malloc/alloc_slow.o, $(HM_OBJS))
+  HM_OBJS := $(filter-out $(objdir)/hm/src/malloc/backend_musl.o, $(HM_OBJS))
+  HM_OBJS := $(filter-out $(objdir)/hm/src/malloc/mallinfo.o, $(HM_OBJS))
+  HM_OBJS := $(filter-out $(objdir)/hm/src/himalloc/%.o, $(HM_OBJS))
+else #himalloc
+  MUSL_OBJS_ORG := $(filter-out $(objdir)/src/malloc/%.o $(objdir)/src/legacy/valloc.o, $(MUSL_OBJS_ORG))
+  HM_OBJS := $(filter-out $(objdir)/hm/src/malloc/%.o, $(HM_OBJS))
+  HM_OBJS += $(objdir)/hm/src/malloc/memtrace.o
+endif
+
+# select bactrace between fp and unwind
+ifeq ($(BACKTRACE_MODE), fp)
+  HM_OBJS := $(filter-out $(objdir)/hm/src/debug/backtrace.o, $(HM_OBJS))
+else #unwind
+  HM_OBJS := $(filter-out $(objdir)/hm/src/debug/$(ARCH)/backtrace_fp.o, $(HM_OBJS))
+endif
+
+# filter out those obj exist in hm from musl
+FILTER_OBJS = $(patsubst $(objdir)/hm/%, $(objdir)/%, $(HM_OBJS) $(addprefix $(objdir)/, $(HM_REPLACED_OBJS)))
+MUSL_OBJS = $(filter-out $(FILTER_OBJS), $(MUSL_OBJS_ORG))
+
+AOBJ = $(MUSL_OBJS) $(HM_OBJS)
+AOBJS = $(filter $(objdir)/src/%, $(AOBJ))
+AOBJS += $(filter $(objdir)/hm/src/%, $(AOBJ))
+AOBJS += $(filter %/crt1.o, $(AOBJ))
+
+LOBJS = $(filter-out %/crt1.lo, $(AOBJS:%.o=%.lo))
+LDSO_OBJS = $(filter $(objdir)/ldso/%, $(AOBJ:%.o=%.lo))
+
+MEMTRACE_AOBJS = $(filter $(objdir)/hm/memtrace/%, $(AOBJ))
+MEMTRACE_OBJS = $(filter $(objdir)/hm/memtrace/%, $(AOBJ:%.o=%.lo))
+
+HIMALLOC_AOBJS = $(filter $(objdir)/hm/src/himalloc/%, $(AOBJ))
+HIMALLOC_OBJS = $(filter $(objdir)/hm/src/himalloc/%, $(AOBJ:%.o=%.lo))
+
+# crt object
+# TODO: puts all crt objects to $(objdir)/lib/ to differ from static linked crt1.o for libhmc.a.
+#       when crt1.o is compatible for both static and dynamic libc, remove this.
+CRT_OBJ = $(filter $(objdir)/crt/%, $(AOBJ))
+CRT_OBJS = $(patsubst $(objdir)/%, $(objdir)/lib/%, $(CRT_OBJ))

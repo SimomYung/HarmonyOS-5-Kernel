@@ -1,0 +1,13 @@
+# SPDX-License-Identifier: GPL-2.0
+
+config GPIO_LED
+	bool "GPIO_LED"
+	default n
+	help
+	  Say Y to enable support for gpio led.
+
+config LAMP_EFFECT
+	bool "LAMP_EFFECT"
+	default n
+	help
+	  Say Y to enable support for lamp effect.

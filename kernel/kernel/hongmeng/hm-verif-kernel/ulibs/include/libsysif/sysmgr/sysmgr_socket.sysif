@@ -1,0 +1,15 @@
+/*
+ * Copyright (C) Huawei Technologies Co., Ltd. 2024-2024. All rights reserved.
+ * Description: Sysmgr socket function declaration
+ * Author: Huawei OS Kernel Lab
+ * Create: Sat May 11 11:03:37 2024
+ */
+
+DEFINE_MANAGER(socket, 8,
+	DEFINE_LSYSCALL_METHOD(sendmmsg, SYS_sendmmsg,
+			     ARG(4, long long, socket, void *, msgvec,
+				 unsigned int, vlen, int, flags))
+	DEFINE_LSYSCALL_METHOD(recvmmsg, SYS_recvmmsg,
+			     ARG(5, long long, socket, void *, msgvec,
+				 unsigned int, vlen, int, flags, void *, timeout))
+)

@@ -1,0 +1,7 @@
+# Copyright (C) Huawei Technologies Co., Ltd. 2021. All rights reserved.
+# Description: HMbuild
+# Author: Huawei OS Kernel Lab
+# Create: Wed Nov 03 15:25:21 2021
+
+src-y: ux_bpf_exec.c
+src-y: ux_bpf_filter.c

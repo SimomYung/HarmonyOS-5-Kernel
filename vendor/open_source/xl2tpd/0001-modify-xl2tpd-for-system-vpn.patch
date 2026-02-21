@@ -1,0 +1,346 @@
+From 97b66ecc6d84fccafcc93a50bcc66cfe351cf9ed Mon Sep 17 00:00:00 2001
+From: g00650597 <g00650597@notesmail.huawei.com/>
+Date: Wed, 4 Sep 2024 21:09:59 +0800
+Subject: [PATCH] modify xl2tpd for system vpn
+
+Change-Id: I70098e27fe9eb6f3fb1c4eb354fe63802cf5fff6
+Signed-off-by: g00650597 <g00650597@notesmail.huawei.com/>
+---
+ file.h           |   8 ++++
+ ipc_load_sa.cpp  |  21 ++++++++++
+ ipc_load_sa.h    |  36 +++++++++++++++++
+ ipc_request.cpp  | 103 +++++++++++++++++++++++++++++++++++++++++++++++
+ ipc_request.h    |  31 ++++++++++++++
+ l2tp.h           |   9 ++++-
+ xl2tpd-control.c |   4 ++
+ xl2tpd.c         |  17 ++++++++
+ 8 files changed, 228 insertions(+), 1 deletion(-)
+ create mode 100644 ipc_load_sa.cpp
+ create mode 100644 ipc_load_sa.h
+ create mode 100644 ipc_request.cpp
+ create mode 100644 ipc_request.h
+
+diff --git a/file.h b/file.h
+index a2707c2..a608497 100644
+--- a/file.h
++++ b/file.h
+@@ -53,11 +53,19 @@ struct host
+ #define DEFAULT_AUTH_FILE "/etc/xl2tpd/l2tp-secrets"
+ #endif
+ #ifndef DEFAULT_CONFIG_FILE
++#ifdef SUPPORT_SYSVPN
++#define DEFAULT_CONFIG_FILE IPSEC_PIDDIR "/xl2tpd.conf"
++#else
+ #define DEFAULT_CONFIG_FILE "/etc/xl2tpd/xl2tpd.conf"
++#endif // SUPPORT_SYSVPN
+ #endif
+ #define ALT_DEFAULT_AUTH_FILE "/etc/l2tpd/l2tp-secrets"
+ #define ALT_DEFAULT_CONFIG_FILE "/etc/l2tp/l2tpd.conf"
++#ifdef SUPPORT_SYSVPN
++#define DEFAULT_PID_FILE IPSEC_PIDDIR "/xl2tpd.pid"
++#else
+ #define DEFAULT_PID_FILE "/var/run/xl2tpd.pid"
++#endif // SUPPORT_SYSVPN
+ 
+ /* Definition of an LNS */
+ struct lns
+diff --git a/ipc_load_sa.cpp b/ipc_load_sa.cpp
+new file mode 100644
+index 0000000..4bddc29
+--- /dev/null
++++ b/ipc_load_sa.cpp
+@@ -0,0 +1,21 @@
++/*
++ * Copyright (c) 2024 Huawei Device Co., Ltd.
++ * Licensed under the Apache License, Version 2.0 (the "License");
++ * you may not use this file except in compliance with the License.
++ * You may obtain a copy of the License at
++ *
++ *    http://www.apache.org/licenses/LICENSE-2.0
++ *
++ * Unless required by applicable law or agreed to in writing, software
++ * distributed under the License is distributed on an "AS IS" BASIS,
++ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
++ * See the License for the specific language governing permissions and
++ * limitations under the License.
++ */
++#include "ipc_load_sa.h"
++
++using namespace std;
++
++OnDemandLoadCertManagerCallback::OnDemandLoadCertManagerCallback(string servers) : servers(servers)
++{
++}
+diff --git a/ipc_load_sa.h b/ipc_load_sa.h
+new file mode 100644
+index 0000000..4590ea8
+--- /dev/null
++++ b/ipc_load_sa.h
+@@ -0,0 +1,36 @@
++/*
++ * Copyright (c) 2024 Huawei Device Co., Ltd.
++ * Licensed under the Apache License, Version 2.0 (the "License");
++ * you may not use this file except in compliance with the License.
++ * You may obtain a copy of the License at
++ *
++ *    http://www.apache.org/licenses/LICENSE-2.0
++ *
++ * Unless required by applicable law or agreed to in writing, software
++ * distributed under the License is distributed on an "AS IS" BASIS,
++ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
++ * See the License for the specific language governing permissions and
++ * limitations under the License.
++ */
++
++#ifndef IPC_LOAD_SA_H
++#define IPC_LOAD_SA_H
++
++#include <future>
++#include <string>
++#include "iremote_object.h"
++#include "system_ability_load_callback_stub.h"
++
++class OnDemandLoadCertManagerCallback : public OHOS::SystemAbilityLoadCallbackStub {
++public:
++    OnDemandLoadCertManagerCallback(std::string servers);
++    void OnLoadSystemAbilitySuccess(int32_t systemAbilityId,
++        const OHOS::sptr<IRemoteObject>& remoteObject) override;
++    void OnLoadSystemAbilityFail(int32_t systemAbilityId) override;
++    OHOS::sptr<IRemoteObject> Promise(void);
++private:
++    std::string servers;
++    std::promise<OHOS::sptr<IRemoteObject>> promise_;
++};
++
++#endif /* IPC_LOAD_SA_H */
+\ No newline at end of file
+diff --git a/ipc_request.cpp b/ipc_request.cpp
+new file mode 100644
+index 0000000..4c97b57
+--- /dev/null
++++ b/ipc_request.cpp
+@@ -0,0 +1,103 @@
++/*
++ * Copyright (c) 2024 Huawei Device Co., Ltd.
++ * Licensed under the Apache License, Version 2.0 (the "License");
++ * you may not use this file except in compliance with the License.
++ * You may obtain a copy of the License at
++ *
++ *    http://www.apache.org/licenses/LICENSE-2.0
++ *
++ * Unless required by applicable law or agreed to in writing, software
++ * distributed under the License is distributed on an "AS IS" BASIS,
++ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
++ * See the License for the specific language governing permissions and
++ * limitations under the License.
++ */
++
++#include "ipc_request.h"
++
++#include <chrono>
++#include <string>
++#include <thread>
++
++#include "securec.h"
++#include "ipc_load_sa.h"
++#include "iservice_registry.h"
++#include "system_ability_definition.h"
++
++using namespace std;
++using namespace OHOS;
++
++namespace {
++    constexpr int SA_ID_VPN_SERVICE = COMM_VPN_MANAGER_SYS_ABILITY_ID;
++    constexpr int CMD_NOTIFY_CONNECT_STAGE = 14;
++    constexpr uint32_t MAX_SA_BOOT_DELAY_TIME = 30;
++    const std::u16string SA_VPN_SERVICE_DESCRIPTOR = u"OHOS.NetManagerStandard.INetworkVpnService";
++}
++
++static sptr<IRemoteObject> ProcessLoadSystemAbility(void)
++{
++    auto saManager = SystemAbilityManagerClient::GetInstance().GetSystemAbilityManager();
++    if (saManager == nullptr) {
++        return {};
++    }
++
++    auto object = saManager->CheckSystemAbility(SA_ID_VPN_SERVICE);
++    if (object != nullptr) {
++        return object;
++    }
++
++    string servers = "NetManager";
++    sptr<OnDemandLoadCertManagerCallback> loadCallBack = new (std::nothrow)OnDemandLoadCertManagerCallback(servers);
++    if (loadCallBack == nullptr) {
++        return {};
++    }
++
++    int32_t ret = saManager->LoadSystemAbility(SA_ID_VPN_SERVICE, loadCallBack);
++    if (ret != ERR_OK) {
++        return {};
++    }
++
++    return loadCallBack->Promise();
++}
++
++int32_t SendRequest(char *stage, int32_t state)
++{
++    uint32_t i = 0;
++    sptr<IRemoteObject> targetProxy = ProcessLoadSystemAbility();
++    while ((targetProxy == nullptr) && i < MAX_SA_BOOT_DELAY_TIME) {
++        std::this_thread::sleep_for(std::chrono::milliseconds(100)); /* 100 is time */
++        i++;
++    }
++
++    targetProxy = ProcessLoadSystemAbility();
++    if (targetProxy == nullptr) {
++        return -1;
++    }
++
++    MessageParcel data;
++    MessageParcel reply;
++    MessageOption option = MessageOption::TF_SYNC;
++
++    data.WriteInterfaceToken(SA_VPN_SERVICE_DESCRIPTOR);
++    data.WriteString(stage);
++    data.WriteInt32(state);
++
++    int error = targetProxy->SendRequest(static_cast<uint32_t>(CMD_NOTIFY_CONNECT_STAGE), data, reply, option);
++    return error;
++}
++
++void OnDemandLoadCertManagerCallback::OnLoadSystemAbilitySuccess(int32_t systemAbilityId,
++    const sptr<IRemoteObject> &remoteObject)
++{
++    promise_.set_value(remoteObject);
++}
++
++void OnDemandLoadCertManagerCallback::OnLoadSystemAbilityFail(int32_t systemAbilityId)
++{
++    promise_.set_value(nullptr);
++}
++
++sptr<IRemoteObject> OnDemandLoadCertManagerCallback::Promise(void)
++{
++    return promise_.get_future().get();
++}
+diff --git a/ipc_request.h b/ipc_request.h
+new file mode 100644
+index 0000000..b25dc22
+--- /dev/null
++++ b/ipc_request.h
+@@ -0,0 +1,31 @@
++/*
++ * Copyright (c) 2024 Huawei Device Co., Ltd.
++ * Licensed under the Apache License, Version 2.0 (the "License");
++ * you may not use this file except in compliance with the License.
++ * You may obtain a copy of the License at
++ *
++ *    http://www.apache.org/licenses/LICENSE-2.0
++ *
++ * Unless required by applicable law or agreed to in writing, software
++ * distributed under the License is distributed on an "AS IS" BASIS,
++ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
++ * See the License for the specific language governing permissions and
++ * limitations under the License.
++ */
++
++#ifndef IPC_REQUEST_H
++#define IPC_REQUEST_H
++
++#include <stdint.h>
++
++#ifdef __cplusplus
++extern "C" {
++#endif
++
++int32_t SendRequest(char *stage, int32_t state);
++
++#ifdef __cplusplus
++}
++#endif
++
++#endif /* IPC_REQUEST_H */
+\ No newline at end of file
+diff --git a/l2tp.h b/l2tp.h
+index 2a630be..cdb806e 100644
+--- a/l2tp.h
++++ b/l2tp.h
+@@ -38,8 +38,11 @@ typedef unsigned long long _u64;
+ #include "aaa.h"
+ #include "common.h"
+ #include "ipsecmast.h"
+-
++#ifdef SUPPORT_SYSVPN
++#define CONTROL_PIPE IPSEC_PIDDIR "/l2tp-control"
++#else
+ #define CONTROL_PIPE "/var/run/xl2tpd/l2tp-control"
++#endif // SUPPORT_SYSVPN
+ #define CONTROL_PIPE_MESSAGE_SIZE 1024
+ #define UNUSED(x) (void)(x)
+ 
+@@ -62,7 +65,11 @@ typedef unsigned long long _u64;
+ #define SERVER_VERSION "xl2tpd-1.3.18"
+ #define VENDOR_NAME "xelerance.com"
+ #ifndef PPPD
++#ifdef SUPPORT_SYSVPN
++#define PPPD		"/system/bin/pppd"
++#else
+ #define PPPD		"/usr/sbin/pppd"
++#endif // SUPPORT_SYSVPN
+ #endif
+ #define CALL_PPP_OPTS "defaultroute"
+ #define FIRMWARE_REV	0x0690  /* Revision of our firmware (software, in this case) */
+diff --git a/xl2tpd-control.c b/xl2tpd-control.c
+index a2dcfc3..2d2852c 100644
+--- a/xl2tpd-control.c
++++ b/xl2tpd-control.c
+@@ -39,7 +39,11 @@
+  * xl2tpd-control capture the output, instead of creating tmp files?
+  */
+ /* result filename format including absolute path and formatting %i for pid */
++#ifdef SUPPORT_SYSVPN
++#define RESULT_FILENAME_FORMAT IPSEC_PIDDIR "/xl2tpd-control-%i.out"
++#else
+ #define RESULT_FILENAME_FORMAT "/var/run/xl2tpd/xl2tpd-control-%i.out"
++#endif // SUPPORT_SYSVPN
+ 
+ #define ERROR_LEVEL 1
+ #define DEBUG_LEVEL 2
+diff --git a/xl2tpd.c b/xl2tpd.c
+index 791d5a4..cbdc32d 100644
+--- a/xl2tpd.c
++++ b/xl2tpd.c
+@@ -42,6 +42,20 @@
+ #include <netinet/in.h>
+ #include <arpa/inet.h>
+ #include "l2tp.h"
++#ifdef SUPPORT_SYSVPN
++#include <sys/socket.h>
++#include <sys/un.h>
++#include <string.h>
++#include "ipc_request.h"
++#endif // SUPPORT_SYSVPN
++
++#ifdef SUPPORT_SYSVPN
++void WriteStageAndStatus(char *stage, int32_t status)
++{
++  int32_t ret = SendRequest(stage, status);
++  l2tp_log(LOG_INFO, "SendRequest %d", ret);
++}
++#endif // SUPPORT_SYSVPN
+ 
+ struct tunnel_list tunnels;
+ int rand_source;
+@@ -1905,6 +1919,9 @@ static void init (int argc,char *argv[])
+     listenaddr.s_addr = gconfig.listenaddr;
+     l2tp_log (LOG_INFO, "Listening on IP address %s, port %d\n",
+             inet_ntoa(listenaddr), gconfig.port);
++#ifdef SUPPORT_SYSVPN
++    WriteStageAndStatus("xl2tpdstart", 100);
++#endif // SUPPORT_SYSVPN
+     lac = laclist;
+     while (lac)
+     {
+-- 
+2.34.1
+

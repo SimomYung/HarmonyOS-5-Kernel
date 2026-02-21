@@ -1,0 +1,32 @@
+/*
+ * Copyright (C) Huawei Technologies Co., Ltd. 2019-2020. All rights reserved.
+ * Author: Huawei OS Kernel Lab
+ * Create: Thu Nov 14 15:49:41 2019
+ */
+
+/*
+ * To support the mixed data model which means the client and the server
+ * may use different data model. See the document for limitation of data type
+ * used in the sysif interfaces in <Documentation/sysif_compat.md>.
+ */
+#ifdef SYSIF_EXPORT_API
+#include <hmkernel/module_ops.h>
+#include <hmkernel/capability.h>
+
+struct module_grant_arg {
+	char mod_name[CAP_MODULE_NAME_LEN];
+	rref_t mod_rref;
+};
+
+#endif
+
+DEFINE_MANAGER(module, 3,
+	DEFINE_SIMPLE_METHOD(module, grant_ctrl,
+			     ARG(1, struct module_grant_arg, arg),
+			     RET_NO,
+			     SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(module, sched_require,
+				 ARG_NO,
+				 RET(1, rref_t, rref),
+				 SLOWDATA_NO)
+)

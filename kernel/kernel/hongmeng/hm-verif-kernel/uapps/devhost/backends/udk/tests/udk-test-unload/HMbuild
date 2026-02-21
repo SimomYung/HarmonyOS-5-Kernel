@@ -1,0 +1,25 @@
+# Copyright (c) Huawei Technologies Co., Ltd. 2022. All rights reserved.
+# Description: HMbuild for udk
+# Author: Huawei OS Kernel Lab
+# Create: Wed Mar 02 11:51:30 2022
+
+findpkg: HMDevmgrLibs
+findpkg: HMDTLibs
+findpkg: HMNetLibs
+
+exec-dynamic-y: udk_test_unload
+output-udk_test_unload: udk-test-unload.elf
+
+include-udk_test_unload-y: .
+
+src-udk_test_unload-y: main.c
+src-udk_test_unload-y: udktest_unload.c
+
+linklib-udk_test_unload-CONFIG_HMBUILD_TOOLCHAIN_LLVM: HMUlibs::HMUlibs_shared
+linklib-udk_test_unload-CONFIG_HMBUILD_TOOLCHAIN_LLVM: HMFSLibs::HMFSLib_shared
+linklib-udk_test_unload-CONFIG_HMBUILD_TOOLCHAIN_LLVM: HMNetLibs::HMNetLib_shared
+linklib-udk_test_unload-CONFIG_HMBUILD_TOOLCHAIN_LLVM: HWSecureC::HWSecureC_shared
+linklib-udk_test_unload-y: HMDevmgrLibs::Libhmsrv_io_shared
+linklib-udk_test_unload-y: HMDTLibs::HMDTLib_shared
+
+install-udk_test_unload-y: BINDIR

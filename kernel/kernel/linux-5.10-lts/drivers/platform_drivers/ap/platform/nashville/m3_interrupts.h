@@ -1,0 +1,458 @@
+/*
+ * Copyright (c) Huawei Technologies Co., Ltd. 2020-2022. All rights reserved.
+ * Description: This file is converted from irq_map
+ * Create: 2020-04-20
+ * SPDX-License-Identifier: BSD-3-Clause
+ */
+#ifndef LPMCU_INTERRUPTS_H
+#define LPMCU_INTERRUPTS_H
+
+#define IRQ_ASPIPC                                     0
+#define IRQ_VAD                                        1
+#define IRQ_MAD                                        2
+#define IRQ_IOMCU_WDOG                                 3
+#define IRQ_WAKEUP_SWING_ENTER_REQ                     4
+#define IRQ_WAKEUP_SWING_EXIT_REQ                      5
+#define IRQ_WAKEUP_IOM3                                6
+#define IRQ_HISEE_WDOG                                 7
+#define IRQ_HISEE_IPC_LPMCU0                           8
+#define IRQ_HISEE_IPC_LPMCU1                           9
+#define IRQ_LPMCU2LPMCU_SWI_DDR                       10
+#define IRQ_LPMCU2LPMCU_SWI_PERI                      11
+#define IRQ_WAKEUP_SCTRL2M3_STAT                      12
+#define IRQ_ASP_POWERUP                               13
+#define IRQ_ASP_POWERDN                               14
+#define IRQ_LFC_MODE_QUIT_TO_SCTRL_AND_LPMCU          15
+#define IRQ_RTC0                                      16
+#define IRQ_RTC1                                      17
+#define IRQ_AO_WD                                     18
+#define IRQ_AO_WD1                                    19
+#define IRQ_REPAIR_ERR_0                              20
+#define IRQ_REPAIR_ERR_1                              21
+#define IRQ_HISIMC0                                   22
+#define IRQ_HISIMC1                                   23
+#define IRQ_GPIO1_SE_LPMCU                            24
+#define IRQ_AO_RSV0                                   25
+#define IRQ_TIMER70                                   26
+#define IRQ_TIMER71                                   27
+#define IRQ_LPMCU_FROM_L2_0_AO                        28
+#define IRQ_LPMCU_FROM_L2_1_AO                        29
+#define IRQ_LPMCU_FROM_L2_2_AO                        30
+#define IRQ_LPMCU_FROM_L2_3_AO                        31
+#define IRQ_LPMCU_FROM_L2_4_AO                        32
+#define IRQ_LPMCU_FROM_L2_5_AO                        33
+#define IRQ_LPMCU_FROM_L2_6_AO                        34
+#define IRQ_LPMCU_FROM_L2_7_AO                        35
+#define IRQ_GPU_IRQGPU_S_GIC_LPMCU                    36
+#define IRQ_GPU_IRQJOB_NS_GIC_LPMCU                   37
+#define IRQ_LPMCU_FROM_L2_0_NPU                       38
+#define IRQ_LPMCU_FROM_L2_1_HSDT1                     39
+#define IRQ_DFA_POWER_OFF_INT_GIC_LPMCU               40
+#define IRQ_DDRXCTRL_TO_LPMCU0                        41
+#define IRQ_DDRXCTRL_TO_LPMCU1                        42
+#define IRQ_DDRXCTRL_TO_LPMCU2                        43
+#define IRQ_HIEPS_ALARM_GIC_LPMCU                     44
+#define IRQ_LPMCU_FROM_L2_0_HSDT0                     48
+#define IRQ_LPMCU_FROM_L2_1_HSDT0                     49
+#define IRQ_LPMCU_FROM_L2_2_HSDT0                     50
+#define IRQ_LPMCU_FROM_L2_3_HSDT0                     51
+#define IRQ_USB3_SYS_ERROR_TO_AO_WAKEUP               55
+#define IRQ_LPMCU_FROM_L2_0_HSDT1                     56
+#define IRQ_COMB_QICE_WRAP_FC_NS_GIC_LPMCU            57
+#define IRQ_COMB_QICE_WRAP_ABNORMAL_NS_GIC_LPMCU      58
+#define IRQ_COMB_QICE_WRAP_ABNORMAL_S_GIC_LPMCU       59
+#define IRQ_DSS_NS_DFS_OK_TO_LPMCU                    60
+#define IRQ_DSS_S_MDP_TO_LPMCU                        61
+#define IRQ_LPMCU_FROM_L2_0_M1                        62
+#define IRQ_LPMCU_FROM_L2_1_M1                        63
+#define IRQ_LPMCU_FROM_L2_2_M1                        64
+#define IRQ_MSPC_TIMER0_LPMCU                         65
+#define IRQ_MSPC_TIMER1_LPMCU                         66
+#define IRQ_GPU_IRQSCS_ERR_GIC_LPMCU                  67
+#define IRQ_MBX_ISP_TO_LPMCU0                         68
+#define IRQ_MBX_ISP_TO_LPMCU1                         69
+#define IRQ_IPC_ISP_TO_LPMCU                          70
+#define IRQ_I2C6                                      74
+#define IRQ_CPU_BIG_PWR_LPMCU                         75
+#define IRQ_CPU_LITTLE_PWR_LPMCU                      76
+#define IRQ_CPU_MIDDLE_PWR_LPMCU                      77
+#define IRQ_COMB_QICE_WRAP_DLOCK_GIC_LPMCU            78
+#define IRQ_CPU_LP_CTRL_TO_LPMCU0                     79
+#define IRQ_CPU_LP_CTRL_TO_LPMCU1                     80
+#define IRQ_CPU_LP_CTRL_TO_LPMCU2                     81
+#define IRQ_COMB_QICE_WRAP_PMON_GIC_LPMCU             82
+#define IRQ_PCR_CPUB_TO_LPMCU                         83
+#define IRQ_SOCP2                                     84
+#define IRQ_DMA2                                      85
+#define IRQ_DMA_NS2                                   86
+#define IRQ_FREQUENCY_VOTE                            87
+#define IRQ_LPMCU_PCTRL_TIMEOUT                       89
+#define IRQ_WATCHDOG                                  90
+#define IRQ_MCU_DSI0                                  91
+#define IRQ_NOCBUS_NONIDLE_PEND                       93
+#define IRQ_PERI_DVS_STAT_PMC2LPM3                    95
+#define IRQ_PLL_FSM                                   96
+#define IRQ_PLL_UNLOCK_LPMCU                          97
+#define IRQ_POWER_STAT_GIC_LPMCU                      98
+#define IRQ_PROBHIT                                   99
+#define IRQ_TSEN                                     101
+#define IRQ_UART0                                    102
+#define IRQ_UART6                                    103
+#define IRQ_APWDOG                                   104
+#define IRQ_WD1                                      105
+#define IRQ_ATGC                                     106
+#define IRQ_GPIO0_SE_LPMCU                           107
+#define IRQ_IPC_MBX46                                108
+#define IRQ_IPC_MBX47                                109
+#define IRQ_IPC_MBX48                                110
+#define IRQ_IPC_MBX49                                111
+#define IRQ_IPC_MBX50                                112
+#define IRQ_IPC_MBX51                                113
+#define IRQ_IPC_MBX52                                114
+#define IRQ_IPC_MBX53                                115
+#define IRQ_QICE_WRAP_SC_ABNORMAL_NS_INT_COMB        116
+#define IRQ_QICE_WRAP_SC_SYNCBUF_S_INT_COMB          117
+#define IRQ_SOCP0                                    118
+#define IRQ_EICC_INT0                                119
+#define IRQ_EICC_INT8                                120
+#define IRQ_EICC_INT10                               121
+#define IRQ_EICC_INT12                               122
+#define IRQ_EICC_INT14                               123
+#define IRQ_SPE_A                                    124
+#define IRQ_TSP0_WAKEUP_INTR                         125
+#define IRQ_PDEA_WAKEUP_0                            126
+#define IRQ_PDEA_WAKEUP_1                            127
+#define IRQ_EICC_INT28                               129
+#define IRQ_MAA_0                                    130
+#define IRQ_NVIC131_MDM2AP_LPMCU_IF                  131
+#define IRQ_NVIC132_MDM2AP_LPMCU_IF                  132
+#define IRQ_NVIC133_MDM2AP_LPMCU_IF                  133
+#define IRQ_NVIC134_MDM2AP_LPMCU_IF                  134
+#define IRQ_MDM2AP_LPMCU_IF                          135
+#define IRQ_INT_FVT_BIG_PERIOD_FINISH                136
+#define IRQ_INT_FVT_MID0_PERIOD_FINISH               137
+#define IRQ_INT_FVT_MID1_PERIOD_FINISH               138
+#define IRQ_INT_FVT_LIT_PERIOD_FINISH                139
+#define IRQ_DDRC_FATAL_GIC_LPMCU0                    140
+#define IRQ_DDRC0_NORMAL_GIC_LPMCU                   141
+#define IRQ_DDRC0_ERR_GIC_LPMCU                      142
+#define IRQ_DDRCA0_RESET_LPMCU                       143
+#define IRQ_DDRPHY_GIC_LPMCU0                        144
+#define IRQ_EICC_INT30                               145
+#define IRQ_EXMBIST_AC                               146
+#define IRQ_EXMBIST_RST_AC                           147
+#define IRQ_UCE0_IPC_LPMCU                           148
+#define IRQ_UCE0_IPC_MBX_LPMCU                       149
+#define IRQ_UCE1_IPC_LPMCU                           150
+#define IRQ_UCE1_IPC_MBX_LPMCU                       151
+#define IRQ_UCE2_IPC_LPMCU                           152
+#define IRQ_UCE2_IPC_MBX_LPMCU                       153
+#define IRQ_UCE3_IPC_LPMCU                           154
+#define IRQ_UCE3_IPC_MBX_LPMCU                       155
+#define IRQ_UCE0_RTACTIVE_LPMCU                      156
+#define IRQ_UCE0_WDOG_GIC_LPMCU                      157
+#define IRQ_DSI2_MCU_INT_GIC_LPMCU                   160
+#define IRQ_SLEEP_IDLE_DSI_LPM3                      161
+#define IRQ_GPU_LP_CTRL_TO_LPMCU0                    162
+#define IRQ_GPU_LP_CTRL_TO_LPMCU1                    163
+#define IRQ_GPU_LP_CTRL_TO_LPMCU2                    164
+#define IRQ_IPC0                                     166
+#define IRQ_COMB_IOM3_IPC                            167
+#define IRQ_IPC_S_AO3                                168
+#define IRQ_IPC_MBX21                                169
+#define IRQ_IPC2                                     170
+#define IRQ_IPC_MBX13                                171
+#define IRQ_IPC_MBX14                                172
+#define IRQ_IPC_MBX15                                173
+#define IRQ_IPC_MBX16                                174
+#define IRQ_IPC_MBX17                                175
+#define IRQ_IPC_MBX18                                176
+#define IRQ_IPC_MBX19                                177
+#define IRQ_IPC_MBX43                                179
+#define IRQ_IPC_MBX44                                180
+#define IRQ_IPC_MBX45                                181
+#define IRQ_IPC_NS2                                  182
+#define IRQ_IPC_NS_MBX25                             183
+#define IRQ_IPC_NS_MBX26                             184
+#define IRQ_IPC_NS_MBX27                             185
+#define IRQ_IPC_NS_MBX28                             186
+#define IRQ_IPC_NS_MBX29                             187
+#define IRQ_IPC_NS_MBX30                             188
+#define IRQ_IPC_NS_MBX31                             189
+#define IRQ_IPC_NS_MBX63                             190
+#define IRQ_IPC_NS_MBX64                             191
+#define IRQ_IPC_S_AO1                                192
+#define IRQ_AO_IPC_S_MBX4                            193
+#define IRQ_IPC_S_MBX_AO5                            194
+#define IRQ_PERI_IOC_TO_ACPU0_0                      195
+	#define IRQ195_PERI_IOC_TO_ACPU0_0                      0
+	#define IRQ195_PERI_IOC_TO_ACPU0_1                      1
+	#define IRQ195_PERI_IOC_TO_ACPU1_0                      2
+	#define IRQ195_PERI_IOC_TO_ACPU1_1                      3
+	#define IRQ195_PERI_DSI_IOC_TO_ACPU0                    4
+	#define IRQ195_PERI_DSI_IOC_TO_ACPU1                    5
+	#define IRQ195_AO_IOC_TO_ACPU0_0                        6
+	#define IRQ195_AO_IOC_TO_ACPU0_1                        7
+	#define IRQ195_AO_IOC_TO_ACPU0_2                        8
+	#define IRQ195_AO_IOC_TO_ACPU0_3                        9
+	#define IRQ195_AO_IOC_TO_ACPU1_0                        10
+	#define IRQ195_AO_IOC_TO_ACPU1_1                        11
+	#define IRQ195_AO_IOC_TO_ACPU1_2                        12
+	#define IRQ195_AO_IOC_TO_ACPU1_3                        13
+	#define IRQ195_HSDT0_IOC_TO_ACPU0                       14
+	#define IRQ195_HSDT0_IOC_TO_ACPU1                       15
+	#define IRQ195_HSDT1_IOC_TO_ACPU0                       16
+	#define IRQ195_HSDT1_IOC_TO_ACPU1                       17
+	#define IRQ195_HSDT1_IOC_TO_ACPU0_1                     18
+	#define IRQ195_HSDT1_IOC_TO_ACPU1_1                     19
+#define IRQ_PERI_IOC_TO_IOMCU_0                      196
+	#define IRQ196_PERI_IOC_TO_IOMCU_0                      0
+	#define IRQ196_PERI_IOC_TO_IOMCU_1                      1
+	#define IRQ196_PERI_DSI_IOC_TO_IOMCU                    2
+	#define IRQ196_AO_IOC_TO_IOMCU_0                        3
+	#define IRQ196_AO_IOC_TO_IOMCU_1                        4
+	#define IRQ196_AO_IOC_TO_IOMCU_2                        5
+	#define IRQ196_AO_IOC_TO_IOMCU_3                        6
+	#define IRQ196_HSDT0_IOC_TO_IOMCU                       7
+	#define IRQ196_HSDT1_IOC_TO_IOMCU                       8
+	#define IRQ196_HSDT1_IOC_TO_IOMCU_1                     9
+#define IRQ_PERI_IOC_TO_MDM_0                        197
+	#define IRQ197_PERI_IOC_TO_MDM_0                        0
+	#define IRQ197_PERI_IOC_TO_MDM_1                        1
+	#define IRQ197_PERI_DSI_IOC_TO_MDM                      2
+	#define IRQ197_AO_IOC_TO_MDM_0                          3
+	#define IRQ197_AO_IOC_TO_MDM_1                          4
+	#define IRQ197_AO_IOC_TO_MDM_2                          5
+	#define IRQ197_AO_IOC_TO_MDM_3                          6
+	#define IRQ197_HSDT0_IOC_TO_MDM                         7
+	#define IRQ197_HSDT1_IOC_TO_MDM                         8
+	#define IRQ197_HSDT1_IOC_TO_MDM_1                       9
+#define IRQ_PERI_DSI_IOC_TO_LPMCU                    198
+	#define IRQ198_PERI_DSI_IOC_TO_LPMCU                    0
+	#define IRQ198_AO_IOC_TO_LPMCU_0                        1
+	#define IRQ198_AO_IOC_TO_LPMCU_1                        2
+	#define IRQ198_AO_IOC_TO_LPMCU_2                        3
+	#define IRQ198_AO_IOC_TO_LPMCU_3                        4
+	#define IRQ198_HSDT0_IOC_TO_LPMCU                       5
+	#define IRQ198_HSDT1_IOC_TO_LPMCU                       6
+	#define IRQ198_PERI_IOC_TO_LPMCU_0                      7
+	#define IRQ198_PERI_IOC_TO_LPMCU_1                      8
+	#define IRQ198_HSDT1_IOC_TO_LPMCU_1                     9
+#define IRQ_GIC_WAKE_REQUEST_GIC_LPMCU0              201
+	#define IRQ201_GIC_WAKE_REQUEST_GIC_LPMCU0              0
+	#define IRQ201_GIC_WAKE_REQUEST_GIC_LPMCU1              1
+	#define IRQ201_GIC_WAKE_REQUEST_GIC_LPMCU2              2
+	#define IRQ201_GIC_WAKE_REQUEST_GIC_LPMCU3              3
+	#define IRQ201_GIC_WAKE_REQUEST_GIC_LPMCU4              4
+	#define IRQ201_GIC_WAKE_REQUEST_GIC_LPMCU5              5
+	#define IRQ201_GIC_WAKE_REQUEST_GIC_LPMCU6              6
+	#define IRQ201_GIC_WAKE_REQUEST_GIC_LPMCU7              7
+	#define IRQ201_GIC_WAKE_REQUEST_GIC_LPMCU8              8
+	#define IRQ201_GIC_WAKE_REQUEST_GIC_LPMCU9              9
+	#define IRQ201_GIC_WAKE_REQUEST_GIC_LPMCU10             10
+	#define IRQ201_GIC_WAKE_REQUEST_GIC_LPMCU11             11
+#define IRQ_NVIC203_BBPON2CM3_IF                     203
+	#define IRQ203_LTE2_DRX_ARM_TIMES_INT                   0
+	#define IRQ203_INT_SDRX_WAKEUP                          1
+	#define IRQ203_W_CPU_INT03                              2
+	#define IRQ203_W_CPU_INT02                              3
+	#define IRQ203_W_CPU_INT03_2                            4
+	#define IRQ203_W_CPU_INT02_2                            5
+	#define IRQ203_LTE2_DRX_ARM_WAKEUP_INT                  6
+	#define IRQ203_G3_INT_GBBP_TO_CPU_ON                    7
+	#define IRQ203_G2_INT_GBBP_TO_CPU_ON                    8
+	#define IRQ203_G1_INT_GBBP_TO_CPU_ON                    9
+	#define IRQ203_NRV_DRX_ARM_TIMES_INT                   10
+	#define IRQ203_NRV_DRX_ARM_WAKEUP_INT                   11
+	#define IRQ203_LTE_DRX_ARM_WAKEUP_INT                   12
+	#define IRQ203_LTE_DRX_ARM_TIMES_INT                    13
+	#define IRQ203_LTEV_DRX_ARM_WAKEUP_INT                  14
+	#define IRQ203_LTEV_DRX_ARM_TIMES_INT                   15
+	#define IRQ203_NR_DRX_ARM_WAKEUP_INT                    16
+	#define IRQ203_NR_DRX_ARM_TIMES_INT                     17
+	#define IRQ203_NR2_DRX_ARM_WAKEUP_INT                   18
+	#define IRQ203_NR2_DRX_ARM_TIMES_INT                    19
+	#define IRQ203_SEG_DRX_ARM_WAKEUP_INT                   20
+	#define IRQ203_SEG_DRX_ARM_TIMES_INT                    21
+#define IRQ_NVIC204_BBPON2CM3_IF                     204
+	#define IRQ204_LTE2_DRX_ARM_TIMES_INT                   0
+	#define IRQ204_INT_SDRX_WAKEUP                          1
+	#define IRQ204_W_CPU_INT03                              2
+	#define IRQ204_W_CPU_INT02                              3
+	#define IRQ204_W_CPU_INT03_2                            4
+	#define IRQ204_W_CPU_INT02_2                            5
+	#define IRQ204_LTE2_DRX_ARM_WAKEUP_INT                  6
+	#define IRQ204_G3_INT_GBBP_TO_CPU_ON                    7
+	#define IRQ204_G2_INT_GBBP_TO_CPU_ON                    8
+	#define IRQ204_G1_INT_GBBP_TO_CPU_ON                    9
+	#define IRQ204_NRV_DRX_ARM_TIMES_INT                    10
+	#define IRQ204_NRV_DRX_ARM_WAKEUP_INT                   11
+	#define IRQ204_LTE_DRX_ARM_WAKEUP_INT                   12
+	#define IRQ204_LTE_DRX_ARM_TIMES_INT                    13
+	#define IRQ204_LTEV_DRX_ARM_WAKEUP_INT                  14
+	#define IRQ204_LTEV_DRX_ARM_TIMES_INT                   15
+	#define IRQ204_NR_DRX_ARM_WAKEUP_INT                    16
+	#define IRQ204_NR_DRX_ARM_TIMES_INT                     17
+	#define IRQ204_NR2_DRX_ARM_WAKEUP_INT                   18
+	#define IRQ204_NR2_DRX_ARM_TIMES_INT                    19
+	#define IRQ204_SEG_DRX_ARM_WAKEUP_INT                   20
+	#define IRQ204_SEG_DRX_ARM_TIMES_INT                    21
+#define IRQ_CPU_RTM0                                 205
+	#define IRQ205_CPU_RTM0                                 0
+	#define IRQ205_CPU_RTM1                                 1
+#define IRQ_SOCP1                                    207
+#define IRQ_IPC8                                     208
+	#define IRQ208_IPC8                                     0
+	#define IRQ208_IPC_MBX27                                1
+	#define IRQ208_IPC_MBX28                                2
+	#define IRQ208_IPC_MBX31                                3
+	#define IRQ208_IPC_NS_MBX56                             4
+	#define IRQ208_IPC_NS8                                  5
+#define IRQ_RTOS_IPC_NS0                             209
+	#define IRQ209_RTOS_IPC_NS0                             0
+	#define IRQ209_RTOS_IPC_NS1                             1
+	#define IRQ209_RTOS_IPC_NS2                             2
+	#define IRQ209_RTOS_IPC_NS3                             3
+	#define IRQ209_RTOS_IPC_NS5                             4
+	#define IRQ209_RTOS_IPC_NS7                             5
+	#define IRQ209_RTOS_IPC_NS9                             6
+	#define IRQ209_RTOS_IPC_NS10                            7
+	#define IRQ209_RTOS_IPC_NS11                            8
+	#define IRQ209_RTOS_IPC_NS12                            9
+	#define IRQ209_RTOS_IPC_NS_MBX22                        10
+	#define IRQ209_RTOS_IPC_NS_MBX23                        11
+	#define IRQ209_RTOS_IPC_NS_MBX24                        12
+	#define IRQ209_RTOS_IPC_NS_MBX25                        13
+	#define IRQ209_RTOS_IPC_NS_MBX26                        14
+	#define IRQ209_RTOS_IPC_NS_MBX27                        15
+	#define IRQ209_RTOS_IPC_NS_MBX28                        16
+	#define IRQ209_RTOS_IPC_NS_MBX29                        17
+	#define IRQ209_RTOS_IPC_NS_MBX30                        18
+	#define IRQ209_RTOS_IPC_NS_MBX31                        19
+	#define IRQ209_RTOS_IPC_NS_MBX32                        20
+	#define IRQ209_RTOS_IPC_NS_MBX50                        21
+	#define IRQ209_RTOS_IPC_NS_MBX51                        22
+	#define IRQ209_RTOS_IPC_NS_MBX54                        23
+	#define IRQ209_RTOS_IPC_NS_MBX55                        24
+	#define IRQ209_RTOS_IPC_NS_MBX57                        25
+	#define IRQ209_RTOS_IPC_NS_MBX58                        26
+	#define IRQ209_RTOS_IPC_NS_MBX59                        27
+	#define IRQ209_RTOS_IPC_NS_MBX60                        28
+	#define IRQ209_RTOS_IPC_NS_MBX61                        29
+	#define IRQ209_RTOS_IPC_NS_MBX62                        30
+#define IRQ_IPC11                                    210
+	#define IRQ210_IPC11                                    0
+	#define IRQ210_IPC12                                    1
+	#define IRQ210_IPC7                                     2
+	#define IRQ210_IPC_NS_MBX54                             3
+	#define IRQ210_IPC_NS11                                 4
+	#define IRQ210_IPC_NS12                                 5
+	#define IRQ210_IPC_NS7                                  6
+	#define IRQ210_IPC_NS_MBX55                             7
+	#define IRQ210_IPC_MBX29                                8
+	#define IRQ210_IPC_MBX30                                9
+	#define IRQ210_IPC_MBX25                                10
+	#define IRQ210_IPC_MBX26                                11
+	#define IRQ210_IPC_NS_MBX50                             12
+	#define IRQ210_IPC_MBX33                                13
+	#define IRQ210_IPC5                                     14
+	#define IRQ210_IPC_MBX34                                15
+	#define IRQ210_IPC_NS_AO2                               16
+	#define IRQ210_IPC9                                     17
+	#define IRQ210_IPC_MBX35                                18
+	#define IRQ210_IPC_MBX36                                19
+	#define IRQ210_IPC_NS5                                  20
+	#define IRQ210_IPC_MBX37                                21
+	#define IRQ210_IPC_NS9                                  22
+	#define IRQ210_I3C4                                     23
+	#define IRQ210_I2C2                                     24
+	#define IRQ210_IPC_NS10                                 25
+	#define IRQ210_IPC10                                    26
+#define IRQ_IPF0                                     211
+	#define IRQ211_IPF0                                     0
+	#define IRQ211_IPF2                                     1
+	#define IRQ211_IPF1                                     2
+	#define IRQ211_PCR_GPU_GIC_LPMCU                        3
+	#define IRQ211_IPC_NS_MBX_AO2                           4
+	#define IRQ211_IPC_S_AO5                                5
+	#define IRQ211_IPC_NS_MBX58                             6
+	#define IRQ211_IPC_NS_MBX59                             7
+	#define IRQ211_IPC_NS_MBX60                             8
+	#define IRQ211_IPC_NS_MBX61                             9
+	#define IRQ211_IPC_NS_MBX62                             10
+	#define IRQ211_SPMI0                                    11
+	#define IRQ211_SPMI10                                   12
+	#define IRQ211_IPC_S_MBX_AO6                            13
+	#define IRQ211_UART5                                    14
+	#define IRQ211_SPE_C                                    15
+	#define IRQ211_PERF_STAT                                16
+	#define IRQ211_VBAT_DROP_PROTECT_DB                     17
+#define IRQ_QIC_GPU_DATABUS_COMB_LPMCU_ACPU          212
+	#define IRQ212_QIC_GPU_DATABUS_COMB_LPMCU_ACPU          0
+	#define IRQ212_QIC_M1_COMB_LPMCU_ACPU                   1
+	#define IRQ212_QIC_M2_COMB_LPMCU_ACPU                   2
+	#define IRQ212_QIC_NPU_COMB_LPMCU_ACPU                  3
+	#define IRQ212_QIC_AO_COMB_LPMCU_ACPU                   4
+	#define IRQ212_QIC_CFG_COMB_LPMCU_ACPU                  5
+	#define IRQ212_QIC_CPU_COMB_LPMCU_ACPU                  6
+	#define IRQ212_QIC_GPUCFG_COMB_LPMCU_ACPU               7
+	#define IRQ212_QIC_HSDT0_COMB_LPMCU_ACPU                8
+	#define IRQ212_QIC_HSDT1_COMB_LPMCU_ACPU                9
+	#define IRQ212_QIC_CC_COMB_LPMCU_ACPU                   10
+	#define IRQ212_QIC_MDM_PERI_COMB_LPMCU_ACPU             11
+	#define IRQ212_QIC_NPUTS_COMB_LPMCU_ACPU                12
+#define IRQ_RTOS_IPC_NS_MBX0                         213
+	#define IRQ213_RTOS_IPC_NS_MBX0                         0
+	#define IRQ213_RTOS_IPC_NS_MBX1                         1
+	#define IRQ213_RTOS_IPC_NS_MBX2                         2
+	#define IRQ213_RTOS_IPC_NS_MBX3                         3
+	#define IRQ213_RTOS_IPC_NS_MBX4                         4
+	#define IRQ213_RTOS_IPC_NS_MBX5                         5
+	#define IRQ213_RTOS_IPC_NS_MBX6                         6
+	#define IRQ213_RTOS_IPC_NS_MBX7                         7
+	#define IRQ213_RTOS_IPC_NS_MBX8                         8
+	#define IRQ213_RTOS_IPC_NS_MBX9                         9
+	#define IRQ213_RTOS_IPC_NS_MBX10                        10
+	#define IRQ213_RTOS_IPC_NS_MBX11                        11
+	#define IRQ213_RTOS_IPC_NS_MBX12                        12
+	#define IRQ213_RTOS_IPC_NS_MBX13                        13
+	#define IRQ213_RTOS_IPC_NS_MBX14                        14
+	#define IRQ213_RTOS_IPC_NS_MBX15                        15
+	#define IRQ213_RTOS_IPC_NS_MBX16                        16
+	#define IRQ213_RTOS_IPC_NS_MBX17                        17
+	#define IRQ213_RTOS_IPC_NS_MBX18                        18
+	#define IRQ213_RTOS_IPC_NS_MBX19                        19
+	#define IRQ213_RTOS_IPC_NS_MBX20                        20
+	#define IRQ213_RTOS_IPC_NS_MBX21                        21
+	#define IRQ213_RTOS_IPC_NS_MBX63                        22
+	#define IRQ213_RTOS_IPC_NS_MBX64                        23
+#define IRQ_RTOS_IPC_NS_MBX33                        214
+	#define IRQ214_RTOS_IPC_NS_MBX33                        0
+	#define IRQ214_RTOS_IPC_NS_MBX34                        1
+	#define IRQ214_RTOS_IPC_NS_MBX35                        2
+	#define IRQ214_RTOS_IPC_NS_MBX36                        3
+	#define IRQ214_RTOS_IPC_NS_MBX37                        4
+	#define IRQ214_RTOS_IPC_NS_MBX38                        5
+	#define IRQ214_RTOS_IPC_NS_MBX41                        6
+	#define IRQ214_RTOS_IPC_NS_MBX39                        7
+	#define IRQ214_RTOS_IPC_NS_MBX42                        8
+	#define IRQ214_RTOS_IPC_NS_MBX40                        9
+	#define IRQ214_RTOS_IPC_NS_MBX43                        10
+	#define IRQ214_RTOS_IPC_NS_MBX44                        11
+	#define IRQ214_RTOS_IPC_NS_MBX45                        12
+	#define IRQ214_RTOS_IPC_NS_MBX46                        13
+	#define IRQ214_RTOS_IPC_NS_MBX47                        14
+	#define IRQ214_RTOS_IPC_NS_MBX48                        15
+	#define IRQ214_RTOS_IPC_NS_MBX49                        16
+	#define IRQ214_RTOS_IPC_NS4                             17
+#define IRQ_HECA_CPUB_LPMCU                          215
+	#define IRQ215_HECA_CPUB_LPMCU                          0
+	#define IRQ215_HECA_CPUM_LPMCU                          1
+	#define IRQ215_HECA_CPUL_LPMCU                          2
+	#define IRQ215_HECA_GPU_LPMCU                           3
+#define IRQ_TIMINT1                                  227
+#define IRQ_TIMINT2                                  228
+#define IRQ_RXEV                                     229
+#define IRQ_MAX                                      230
+
+#endif /* end of m3_interrupts.h */

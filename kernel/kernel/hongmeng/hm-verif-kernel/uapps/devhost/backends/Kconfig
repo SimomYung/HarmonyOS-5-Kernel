@@ -1,0 +1,212 @@
+menu "DEVHOST Backend Settings"
+
+comment "default backend settings"
+choice
+	prompt "Default backend"
+	default DEVHOST_DEFAULT_LIBLINUX
+	config DEVHOST_DEFAULT_LIBLINUX
+		bool "liblinux" if DEVHOST_LIBLINUX=y
+	config DEVHOST_DEFAULT_UDK
+		bool "udk" if DEVHOST_UDK=y
+	config DEVHOST_DEFAULT_NONE
+		bool "none"
+endchoice
+
+config DEVHOST_DEFAULT_BACKEND
+	string
+	default "libdh-udk.so.0" if DEVHOST_DEFAULT_UDK
+	default "libdh-linux.so.4.4" if DEVHOST_DEFAULT_LIBLINUX && DEVHOST_LIBLINUX_DEFAULT_4_4
+	default "libdh-linux.so.5.10" if DEVHOST_DEFAULT_LIBLINUX && DEVHOST_LIBLINUX_DEFAULT_5_10
+	default "libdh-linux.so.5.10-oh" if DEVHOST_DEFAULT_LIBLINUX && DEVHOST_LIBLINUX_DEFAULT_5_10_OH
+	default "libdh-linux.so.5.10-sd5151t" if DEVHOST_DEFAULT_LIBLINUX && DEVHOST_LIBLINUX_DEFAULT_5_10_SD5151T
+	default "libdh-linux.so.5.10-ipq6028" if DEVHOST_DEFAULT_LIBLINUX && DEVHOST_LIBLINUX_DEFAULT_5_10_IPQ6028
+	default "libdh-linux.so.5.10-1620osp" if DEVHOST_DEFAULT_LIBLINUX && DEVHOST_LIBLINUX_DEFAULT_5_10_1620OSP
+	default "libdh-linux.so.4.4-hi3516" if DEVHOST_DEFAULT_LIBLINUX && DEVHOST_LIBLINUX_DEFAULT_4_4_HI3516
+	default "libdh-linux.so.4.4-stm32mp1" if DEVHOST_DEFAULT_LIBLINUX && DEVHOST_LIBLINUX_DEFAULT_4_4_STM32MP1
+	default "libdh-linux.so.4.4-sd5151t" if DEVHOST_DEFAULT_LIBLINUX && DEVHOST_LIBLINUX_DEFAULT_4_4_SD5151T
+	default "libdh-linux.so.5.10-m536a" if DEVHOST_DEFAULT_LIBLINUX && DEVHOST_LIBLINUX_DEFAULT_5_10_M536A
+	default "libdh-linux.so.5.10-cpro" if DEVHOST_DEFAULT_LIBLINUX && DEVHOST_LIBLINUX_DEFAULT_5_10_CPRO
+	default "libdh-linux.so.5.10-hi1156" if DEVHOST_DEFAULT_LIBLINUX && DEVHOST_LIBLINUX_DEFAULT_5_10_HI1156
+
+config DEVHOST_DEFAULT_ROOT_DRIVER
+	string
+	default "of_udk.udk" if DEVHOST_DEFAULT_UDK
+	default "of.ko" if DEVHOST_DEFAULT_LIBLINUX
+
+comment "enable backends"
+
+config DEVHOST_UDK
+	bool "UDK backend"
+	default n
+
+config DEVHOST_LIBLINUX
+	bool
+
+config DEVHOST_LIBLINUX_4_4
+	bool "liblinux-4.4 backend"
+	select DEVHOST_LIBLINUX
+	default n
+
+config DEVHOST_LIBLINUX_5_10
+	bool "liblinux-5.10 backend"
+	select DEVHOST_LIBLINUX
+	default n
+
+config DEVHOST_LIBLINUX_5_10_OH
+	bool "liblinux-5.10-oh backend"
+	select DEVHOST_LIBLINUX
+	default n
+
+config DEVHOST_LIBLINUX_5_10_SD5151T
+	bool "liblinux-5.10-sd5151t backend"
+	select DEVHOST_LIBLINUX
+	default n
+
+config DEVHOST_LIBLINUX_5_10_IPQ6028
+	bool "liblinux-5.10-ipq6028 backend"
+	select DEVHOST_LIBLINUX
+	default n
+
+config DEVHOST_LIBLINUX_5_10_M536A
+	bool "liblinux-5.10-m536a backend"
+	select DEVHOST_LIBLINUX
+	default n
+
+config DEVHOST_LIBLINUX_5_10_CPRO
+	bool "liblinux-5.10-cpro backend"
+	select DEVHOST_LIBLINUX
+	default n
+
+config DEVHOST_LIBLINUX_4_4_HI3516
+	bool "liblinux-4.4-hi3516 backend"
+	select DEVHOST_LIBLINUX
+	default n
+
+config DEVHOST_LIBLINUX_4_4_STM32MP1
+	bool "liblinux-4.4-stm32mp1 backend"
+	select DEVHOST_LIBLINUX
+	default n
+
+config DEVHOST_LIBLINUX_4_4_SD5151T
+	bool "liblinux-4.4-sd5151t backend"
+	select DEVHOST_LIBLINUX
+	default n
+
+config DEVHOST_LIBLINUX_5_10_1620OSP
+	bool "liblinux-5.10-1620osp backend"
+	select DEVHOST_LIBLINUX
+	default n
+
+config DEVHOST_LIBLINUX_5_10_HI1156
+	bool "liblinux-5.10-hi1156 backend"
+	select DEVHOST_LIBLINUX
+	default n
+
+if DEVHOST_LIBLINUX
+comment "liblinux backend settings"
+choice
+	prompt "Default liblinux version"
+	default DEVHOST_LIBLINUX_DEFAULT_4_4
+	config DEVHOST_LIBLINUX_DEFAULT_4_4
+		bool "liblinux-4.4" if DEVHOST_LIBLINUX_4_4
+	config DEVHOST_LIBLINUX_DEFAULT_5_10
+		bool "liblinux-5.10" if DEVHOST_LIBLINUX_5_10
+	config DEVHOST_LIBLINUX_DEFAULT_5_10_OH
+		bool "liblinux-5.10-oh" if DEVHOST_LIBLINUX_5_10_OH
+	config DEVHOST_LIBLINUX_DEFAULT_5_10_SD5151T
+		bool "liblinux-5.10-sd5151t" if DEVHOST_LIBLINUX_5_10_SD5151T
+	config DEVHOST_LIBLINUX_DEFAULT_5_10_IPQ6028
+		bool "liblinux-5.10-ipq6028" if DEVHOST_LIBLINUX_5_10_IPQ6028
+	config DEVHOST_LIBLINUX_DEFAULT_5_10_1620OSP
+		bool "liblinux-5.10-1620osp" if DEVHOST_LIBLINUX_5_10_1620OSP
+	config DEVHOST_LIBLINUX_DEFAULT_5_10_M536A
+		bool "liblinux-5.10-m536a" if DEVHOST_LIBLINUX_5_10_M536A
+	config DEVHOST_LIBLINUX_DEFAULT_5_10_CPRO
+		bool "liblinux-5.10-cpro" if DEVHOST_LIBLINUX_5_10_CPRO
+	config DEVHOST_LIBLINUX_DEFAULT_4_4_HI3516
+		bool "liblinux-4.4-hi3516" if DEVHOST_LIBLINUX_4_4_HI3516
+	config DEVHOST_LIBLINUX_DEFAULT_4_4_STM32MP1
+		bool "liblinux-4.4-stm32mp1" if DEVHOST_LIBLINUX_4_4_STM32MP1
+	config DEVHOST_LIBLINUX_DEFAULT_4_4_SD5151T
+		bool "liblinux-4.4-sd5151t" if DEVHOST_LIBLINUX_4_4_SD5151T
+	config DEVHOST_LIBLINUX_DEFAULT_5_10_HI1156
+		bool "liblinux-5.10-hi1156" if DEVHOST_LIBLINUX_5_10_HI1156
+
+endchoice
+
+config LIBLINUX_VERSION
+	string
+	default "linux-4.4.162" if DEVHOST_LIBLINUX_DEFAULT_4_4
+	default "linux-5.10.0" if DEVHOST_LIBLINUX_DEFAULT_5_10
+	default "linux-5.10.97-oh" if DEVHOST_LIBLINUX_DEFAULT_5_10_OH
+	default "linux-5.10.0-sd5151t" if DEVHOST_LIBLINUX_DEFAULT_5_10_SD5151T
+	default "linux-5.10.0-ipq6028" if DEVHOST_LIBLINUX_DEFAULT_5_10_IPQ6028
+	default "linux-5.10.0-1620osp" if DEVHOST_LIBLINUX_DEFAULT_5_10_1620OSP
+	default "linux-4.4.162-hi3516" if DEVHOST_LIBLINUX_DEFAULT_4_4_HI3516
+	default "linux-4.4.162-stm32mp1" if DEVHOST_LIBLINUX_DEFAULT_4_4_STM32MP1
+	default "linux-4.4.162-sd5151t" if DEVHOST_LIBLINUX_DEFAULT_4_4_SD5151T
+	default "linux-5.10.0-m536a" if DEVHOST_LIBLINUX_DEFAULT_5_10_M536A
+	default "linux-5.10.0-cpro" if DEVHOST_LIBLINUX_DEFAULT_5_10_CPRO
+	default "linux-5.10.0-hi1156" if DEVHOST_LIBLINUX_DEFAULT_5_10_HI1156
+
+config LIBLINUX_EXTRA_LIBS
+	string "extra libraries for liblinux"
+	default ""
+
+config DEVHOST_BACKEND_LIBLINUX_4_4
+	string
+	default "libdh-linux.so.4.4"
+
+config DEVHOST_BACKEND_LIBLINUX_5_10
+	string
+	default "libdh-linux.so.5.10"
+
+config DEVHOST_BACKEND_LIBLINUX_5_10_OH
+	string
+	default "libdh-linux.so.5.10-oh"
+
+config DEVHOST_BACKEND_LIBLINUX_5_10_SD5151T
+	string
+	default "libdh-linux.so.5.10-sd5151t"
+
+config DEVHOST_BACKEND_LIBLINUX_5_10_IPQ6028
+	string
+	default "libdh-linux.so.5.10-ipq6028"
+
+config DEVHOST_BACKEND_LIBLINUX_4_4_HI3516
+	string
+	default "libdh-linux.so.4.4-hi3516"
+
+config DEVHOST_BACKEND_LIBLINUX_4_4_STM32MP1
+	string
+	default "libdh-linux.so.4.4-stm32mp1"
+
+config DEVHOST_BACKEND_LIBLINUX_4_4_SD5151T
+	string
+	default "libdh-linux.so.4.4-sd5151t"
+
+config DEVHOST_BACKEND_LIBLINUX_5_10_M536A
+	string
+	default "libdh-linux.so.5.10-m536a"
+
+config DEVHOST_BACKEND_LIBLINUX_5_10_CPRO
+	string
+	default "libdh-linux.so.5.10-cpro"
+
+config DEVHOST_BACKEND_LIBLINUX_5_10_HI1156
+	string
+	default "libdh-linux.so.5.10-hi1156"
+
+endif	# DEVHOST_LIBLINUX
+
+# udk configs
+if DEVHOST_UDK
+source "uapps/devhost/backends/udk/Kconfig.legacy"
+endif	# DEVHOST_UDK
+
+# ldk configs
+if DEVHOST_LIBLINUX
+source "uapps/devhost/backends/liblinux/Kconfig.legacy"
+endif	# DEVHOST_LIBLINUX
+
+endmenu

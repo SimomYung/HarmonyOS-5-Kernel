@@ -1,0 +1,1 @@
+../../../klibs/klibc/strncpy.c

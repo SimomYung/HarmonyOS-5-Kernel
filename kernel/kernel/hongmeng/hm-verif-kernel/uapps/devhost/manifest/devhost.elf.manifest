@@ -1,0 +1,10 @@
+system_service:bool:true
+sync_reclaimable:bool:false
+coredump:bool:false
+unkillable:bool:true
+livepatchable:bool:true
+dpa_mode:uint32:13
+res_controllable:bool:false
+getset_affinity:bool:true
+support_hkip:bool:true
+devhost_service:bool:true

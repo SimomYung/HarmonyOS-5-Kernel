@@ -1,0 +1,6 @@
+# Copyright (c) Huawei Technologies Co., Ltd. 2022-2022. All rights reserved.
+# Description: HMbuild
+# Author: Huawei OS Kernel Lab
+# Create: Fri May 27 14:26:46 2022
+
+subdir-CONFIG_FUNCTION_GRAPH: ftrace

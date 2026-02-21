@@ -1,0 +1,23 @@
+# Copyright (c) Huawei Technologies Co., Ltd. 2021-2021. All rights reserved.
+# Description: Liblinux kconfig
+# Author: Huawei OS Kernel Lab
+# Create: Wed Sep 15 09:53:02 2021
+comment "LDK Backend Settings"
+
+config DEVHOST_VPIPE
+        bool "devhost vpipe extension"
+        default n
+
+config WPA_SUPPLICANT
+	bool "install wpa_supplicant for wifi"
+	depends on HMNETWORK
+	depends on DEVHOST_NETLINK
+	default n
+
+config DEVHOST_FS_TRANSFS
+	bool "trans layer support"
+	default n
+
+config UBIFS_CTRL
+	bool "ubifs ctrl support"
+	default n

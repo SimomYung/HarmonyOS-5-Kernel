@@ -1,0 +1,8 @@
+# Copyright (c) Huawei Technologies Co., Ltd. 2024. All rights reserved.
+# Description: HMbuild for devhost
+# Author: Huawei OS Kernel Lab
+# Create: Fri Aug 9 19:30:00 2024
+
+cflags-y: -D_DH_PLUGIN_NAME=posix_syscall
+
+src-y: posix_if.c

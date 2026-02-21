@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright (c) 2022 Huawei Device Co., Ltd.
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+          http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+
+    This is the configuration file template for OpenHarmony OSS Audit Tool, please copy it to your project root dir and modify it refer to OpenHarmony/tools_oat/README.
+    All configurations in this file will be merged to OAT-Default.xml, if you have any questions or concerns, please create issue in OpenHarmony/tools_oat and @jalenchen or chenyaxun.
+
+    licensefile:
+    1.If the project don't have "LICENSE" in root dir, please define all the license files in this project in , OAT will check license files according to this rule.
+
+    policylist:
+    1. policy: If the OAT-Default.xml policies do not meet your requirements, please add policies here.
+    2. policyitem: The fields type, name, path, desc is required, and the fields rule, group, filefilter is optional,the default value is:
+    <policyitem type="" name="" path="" desc="" rule="may" group="defaultGroup" filefilter="defaultPolicyFilter"/>
+    3. policyitem type:
+        "compatibility" is used to check license compatibility in the specified path;
+        "license" is used to check source license header in the specified path;
+        "copyright" is used to check source copyright header in the specified path;
+        "import" is used to check source dependency in the specified path, such as import ... ,include ...
+        "filetype" is used to check file type in the specified path, supported file types: archive, binary
+        "filename" is used to check whether the specified file exists in the specified path(projectroot means the root dir of the project), supported file names: LICENSE, README, README.OpenSource
+    4. policyitem name: This field is used for define the license, copyright, "*" means match all, the "!" prefix means could not match this value. For example, "!GPL" means can not use GPL license.
+    5. policyitem path: This field is used for define the source file scope to apply this policyitem, the "!" prefix means exclude the files. For example, "!.*/lib/.*" means files in lib dir will be exclude while process this policyitem.
+    6. policyitem rule and group: These two fields are used together to merge policy results. "may" policyitems in the same group means any one in this group passed, the result will be passed.
+    7. policyitem filefilter: Used to bind filefilter which define filter rules.
+    7. policyitem desc: Used to describe the reason of this policy item, committers will check this while merging the code.
+    8. filefilter: Filter rules, the type filename is used to filter file name, the type filepath is used to filter file path.
+
+    Note:If the text contains special characters, please escape them according to the following rules:
+    " == &gt;
+    & == &gt;
+    ' == &gt;
+    < == &gt;
+    > == &gt;
+-->
+
+<configuration>
+    <oatconfig>
+        <licensefile>
+            COPYING
+        </licensefile>
+        <licensematcherlist>
+            <licensematcher name="Mike Frantzen" desc="">
+                <licensetext name='#  Permission to use, copy, modify, and distribute this software for any
+#  purpose with or without fee is hereby granted, provided that the above
+#  copyright notice and this permission notice appear in all copies.' desc=""/>
+            </licensematcher>
+            <licensematcher name="GPL" desc="">
+                <licensetext name='This program is distributed under the terms of GNU GPL' desc=""/>
+            </licensematcher>
+            <licensematcher name="GPLv2" desc="">
+                <licensetext name='GPLv2 and Artistic Licence 2.0 and ISC' desc=""/>
+            </licensematcher>
+            <licensematcher name="libipt_CLUSTERIP.man" desc="">
+                <licensetext name='This module allows you to configure a simple cluster of nodes that share
+a certain IP and MAC address without an explicit load balancer in front of
+them.  Connections are statically distributed between the nodes in this
+cluster.' desc=""/>
+            </licensematcher>
+        </licensematcherlist>
+        <policylist>
+            <policy name="defaultPolicy" desc="">
+                <policyitem type="compatibility" name="GPL-2.0+" path="include/libipq/libipq.h" rule="may" group="defaultGroup" filefilter="defaultPolicyFilter" desc=""/>
+                <policyitem type="compatibility" name="GPL-2.0+" path="iptables/nft-cmd.c" rule="may" group="defaultGroup" filefilter="defaultPolicyFilter" desc=""/>
+                <policyitem type="compatibility" name="GPL-2.0+" path="libipq/libipq.c" rule="may" group="defaultGroup" filefilter="defaultPolicyFilter" desc=""/>
+                <policyitem type="compatibility" name="GPL-2.0+" path="iptables/xtables-monitor.c" rule="may" group="defaultGroup" filefilter="defaultPolicyFilter" desc=""/>
+                <policyitem type="compatibility" name="GPL-2.0+" path="iptables/nft-ipv4.c" rule="may" group="defaultGroup" filefilter="defaultPolicyFilter" desc=""/>
+                <policyitem type="compatibility" name="GPL-2.0+" path="iptables/nft-ipv6.c" rule="may" group="defaultGroup" filefilter="defaultPolicyFilter" desc=""/>
+                <policyitem type="compatibility" name="GPL-2.0+" path="iptables/iptables-standalone.c" rule="may" group="defaultGroup" filefilter="defaultPolicyFilter" desc=""/>
+                <policyitem type="compatibility" name="GPL-2.0+" path="iptables/nft-shared.c" rule="may" group="defaultGroup" filefilter="defaultPolicyFilter" desc=""/>
+                <policyitem type="compatibility" name="GPL-2.0+" path="include/linux/netfilter/xt_connmark.h" rule="may" group="defaultGroup" filefilter="defaultPolicyFilter" desc=""/>
+                <policyitem type="compatibility" name="GPL-2.0+" path="iptables/arptables-nft-restore.8" rule="may" group="defaultGroup" filefilter="defaultPolicyFilter" desc=""/>
+                <policyitem type="compatibility" name="GPL-2.0+" path="libipq/ipq_create_handle.3" rule="may" group="defaultGroup" filefilter="defaultPolicyFilter" desc=""/>
+                <policyitem type="compatibility" name="GPL-2.0+" path="iptables/arptables-nft-save.8" rule="may" group="defaultGroup" filefilter="defaultPolicyFilter" desc=""/>
+                <policyitem type="compatibility" name="GPL-2.0+" path="iptables/iptables.c" rule="may" group="defaultGroup" filefilter="defaultPolicyFilter" desc=""/>
+                <policyitem type="compatibility" name="GPL-2.0+" path="iptables/nft.c" rule="may" group="defaultGroup" filefilter="defaultPolicyFilter" desc=""/>
+                <policyitem type="compatibility" name="GPL-2.0+" path="iptables/arptables-nft.8" rule="may" group="defaultGroup" filefilter="defaultPolicyFilter" desc=""/>
+                <policyitem type="compatibility" name="GPL-2.0+" path="iptables/xtables-standalone.c" rule="may" group="defaultGroup" filefilter="defaultPolicyFilter" desc=""/>
+                <policyitem type="compatibility" name="GPL-2.0+" path="libipq/ipq_errstr.3" rule="may" group="defaultGroup" filefilter="defaultPolicyFilter" desc=""/>
+                <policyitem type="compatibility" name="GPL-2.0+" path="iptables/ebtables-nft.8" rule="may" group="defaultGroup" filefilter="defaultPolicyFilter" desc=""/>
+                <policyitem type="compatibility" name="GPL-2.0+" path="iptables/nft-arp.c" rule="may" group="defaultGroup" filefilter="defaultPolicyFilter" desc=""/>
+                <policyitem type="compatibility" name="GPL-2.0+" path="iptables/xtables-translate.c" rule="may" group="defaultGroup" filefilter="defaultPolicyFilter" desc=""/>
+                <policyitem type="compatibility" name="GPL-2.0+" path="iptables-test.py" rule="may" group="defaultGroup" filefilter="defaultPolicyFilter" desc=""/>
+                <policyitem type="compatibility" name="GPL-2.0+" path="iptables/nft-bridge.c" rule="may" group="defaultGroup" filefilter="defaultPolicyFilter" desc=""/>
+                <policyitem type="compatibility" name="GPL-2.0+" path="iptables/xtables-arp-standalone.c" rule="may" group="defaultGroup" filefilter="defaultPolicyFilter" desc=""/>
+                <policyitem type="compatibility" name="GPL-2.0+" path="iptables/xtables.c" rule="may" group="defaultGroup" filefilter="defaultPolicyFilter" desc=""/>
+                <policyitem type="compatibility" name="GPL-2.0+" path="libipq/ipq_message_type.3" rule="may" group="defaultGroup" filefilter="defaultPolicyFilter" desc=""/>
+                <policyitem type="compatibility" name="GPL-2.0+" path="iptables/xtables-arp.c" rule="may" group="defaultGroup" filefilter="defaultPolicyFilter" desc=""/>
+                <policyitem type="compatibility" name="GPL-2.0+" path="iptables/nft-cache.c" rule="may" group="defaultGroup" filefilter="defaultPolicyFilter" desc=""/>
+                <policyitem type="compatibility" name="GPL-2.0+" path="iptables/xtables-eb-standalone.c" rule="may" group="defaultGroup" filefilter="defaultPolicyFilter" desc=""/>
+                <policyitem type="compatibility" name="GPL-2.0+" path="libipq/ipq_read.3" rule="may" group="defaultGroup" filefilter="defaultPolicyFilter" desc=""/>
+                <policyitem type="compatibility" name="GPL-2.0+" path="libxtables/getethertype.c" rule="may" group="defaultGroup" filefilter="defaultPolicyFilter" desc=""/>
+                <policyitem type="compatibility" name="GPL-2.0+" path="iptables/ip6tables-standalone.c" rule="may" group="defaultGroup" filefilter="defaultPolicyFilter" desc=""/>
+                <policyitem type="compatibility" name="GPL-2.0+" path="libipq/ipq_set_mode.3" rule="may" group="defaultGroup" filefilter="defaultPolicyFilter" desc=""/>
+                <policyitem type="compatibility" name="GPL-2.0+" path="iptables/nft-chain.c" rule="may" group="defaultGroup" filefilter="defaultPolicyFilter" desc=""/>
+                <policyitem type="compatibility" name="GPL-2.0+" path="iptables/xtables-eb.c" rule="may" group="defaultGroup" filefilter="defaultPolicyFilter" desc=""/>
+                <policyitem type="compatibility" name="GPL-2.0+" path="libipq/ipq_set_verdict.3" rule="may" group="defaultGroup" filefilter="defaultPolicyFilter" desc=""/>
+                <policyitem type="compatibility" name="GPL-2.0+" path="libxtables/xtoptions.c" rule="may" group="defaultGroup" filefilter="defaultPolicyFilter" desc=""/>
+                <policyitem type="compatibility" name="GPL-2.0+" path="iptables/ip6tables.c" rule="may" group="defaultGroup" filefilter="defaultPolicyFilter" desc=""/>
+                <policyitem type="compatibility" name="GPL-2.0+" path="libipq/libipq.3" rule="may" group="defaultGroup" filefilter="defaultPolicyFilter" desc=""/>
+
+                <policyitem type="compatibility" name="GPLStyleLicense" path="extensions/libip6t_mh.c" rule="may" group="defaultGroup" filefilter="defaultPolicyFilter" desc=""/>
+                <policyitem type="compatibility" name="GPLStyleLicense" path="extensions/libxt_set.c" rule="may" group="defaultGroup" filefilter="defaultPolicyFilter" desc=""/>
+                <policyitem type="compatibility" name="GPLStyleLicense" path="extensions/libxt_u32.c" rule="may" group="defaultGroup" filefilter="defaultPolicyFilter" desc=""/>
+                <policyitem type="compatibility" name="GPLStyleLicense" path="include/linux/netfilter_ipv6.h" rule="may" group="defaultGroup" filefilter="defaultPolicyFilter" desc=""/>
+                <policyitem type="compatibility" name="GPLStyleLicense" path="iptables/xtables-legacy.8" rule="may" group="defaultGroup" filefilter="defaultPolicyFilter" desc=""/>
+                <policyitem type="compatibility" name="GPLStyleLicense" path="extensions/libipt_ECN.c" rule="may" group="defaultGroup" filefilter="defaultPolicyFilter" desc=""/>
+                <policyitem type="compatibility" name="GPLStyleLicense" path="extensions/libxt_DSCP.c" rule="may" group="defaultGroup" filefilter="defaultPolicyFilter" desc=""/>
+                <policyitem type="compatibility" name="GPLStyleLicense" path="include/linux/netfilter/xt_IDLETIMER.h" rule="may" group="defaultGroup" filefilter="defaultPolicyFilter" desc=""/>
+                <policyitem type="compatibility" name="GPLStyleLicense" path="iptables/iptables-restore.c" rule="may" group="defaultGroup" filefilter="defaultPolicyFilter" desc=""/>
+                <policyitem type="compatibility" name="GPLStyleLicense" path="utils/nfbpf_compile.c" rule="may" group="defaultGroup" filefilter="defaultPolicyFilter" desc=""/>
+                <policyitem type="compatibility" name="GPLStyleLicense" path="iptables/iptables-save.c" rule="may" group="defaultGroup" filefilter="defaultPolicyFilter" desc=""/>
+                <policyitem type="compatibility" name="GPLStyleLicense" path="extensions/libxt_addrtype.c" rule="may" group="defaultGroup" filefilter="defaultPolicyFilter" desc=""/>
+                <policyitem type="compatibility" name="GPLStyleLicense" path="iptables/xtables-nft.8" rule="may" group="defaultGroup" filefilter="defaultPolicyFilter" desc=""/>
+                <policyitem type="compatibility" name="GPLStyleLicense" path="libiptc/libip4tc.c" rule="may" group="defaultGroup" filefilter="defaultPolicyFilter" desc=""/>
+                <policyitem type="compatibility" name="GPLStyleLicense" path="utils/nfsynproxy.c" rule="may" group="defaultGroup" filefilter="defaultPolicyFilter" desc=""/>
+                <policyitem type="compatibility" name="GPLStyleLicense" path="extensions/libxt_HMARK.c" rule="may" group="defaultGroup" filefilter="defaultPolicyFilter" desc=""/>
+                <policyitem type="compatibility" name="GPLStyleLicense" path="extensions/libxt_TEE.c" rule="may" group="defaultGroup" filefilter="defaultPolicyFilter" desc=""/>
+                <policyitem type="compatibility" name="GPLStyleLicense" path="extensions/libxt_dscp.c" rule="may" group="defaultGroup" filefilter="defaultPolicyFilter" desc=""/>
+                <policyitem type="compatibility" name="GPLStyleLicense" path="include/linux/netfilter/xt_NFQUEUE.h" rule="may" group="defaultGroup" filefilter="defaultPolicyFilter" desc=""/>
+                <policyitem type="compatibility" name="GPLStyleLicense" path="iptables/iptables-xml.c" rule="may" group="defaultGroup" filefilter="defaultPolicyFilter" desc=""/>
+                <policyitem type="compatibility" name="GPLStyleLicense" path="iptables/xtables-restore.c" rule="may" group="defaultGroup" filefilter="defaultPolicyFilter" desc=""/>
+                <policyitem type="compatibility" name="GPLStyleLicense" path="libiptc/libip6tc.c" rule="may" group="defaultGroup" filefilter="defaultPolicyFilter" desc=""/>
+                <policyitem type="compatibility" name="GPLStyleLicense" path="extensions/libxt_SET.c" rule="may" group="defaultGroup" filefilter="defaultPolicyFilter" desc=""/>
+                <policyitem type="compatibility" name="GPLStyleLicense" path="include/linux/netfilter/xt_conntrack.h" rule="may" group="defaultGroup" filefilter="defaultPolicyFilter" desc=""/>
+                <policyitem type="compatibility" name="GPLStyleLicense" path="iptables/xtables-save.c" rule="may" group="defaultGroup" filefilter="defaultPolicyFilter" desc=""/>
+                <policyitem type="compatibility" name="GPLStyleLicense" path="libiptc/libiptc.c" rule="may" group="defaultGroup" filefilter="defaultPolicyFilter" desc=""/>
+                <policyitem type="compatibility" name="GPLStyleLicense" path="extensions/libipt_ttl.c" rule="may" group="defaultGroup" filefilter="defaultPolicyFilter" desc=""/>
+                <policyitem type="compatibility" name="GPLStyleLicense" path="include/linux/netfilter_ipv4/ip_queue.h" rule="may" group="defaultGroup" filefilter="defaultPolicyFilter" desc=""/>
+                <policyitem type="compatibility" name="GPLStyleLicense" path="iptables/iptables.xslt" rule="may" group="defaultGroup" filefilter="defaultPolicyFilter" desc=""/>
+                <policyitem type="compatibility" name="GPLStyleLicense" path="extensions/libxt_IDLETIMER.c" rule="may" group="defaultGroup" filefilter="defaultPolicyFilter" desc=""/>
+                <policyitem type="compatibility" name="GPLStyleLicense" path="extensions/libxt_bpf.c" rule="may" group="defaultGroup" filefilter="defaultPolicyFilter" desc=""/>
+                <policyitem type="compatibility" name="GPLStyleLicense" path="iptables/xtables-translate.8" rule="may" group="defaultGroup" filefilter="defaultPolicyFilter" desc=""/>
+                <policyitem type="compatibility" name="GPLStyleLicense" path="extensions/libxt_NFQUEUE.c" rule="may" group="defaultGroup" filefilter="defaultPolicyFilter" desc=""/>
+                <policyitem type="compatibility" name="GPLStyleLicense" path="extensions/libxt_ecn.c" rule="may" group="defaultGroup" filefilter="defaultPolicyFilter" desc=""/>
+                <policyitem type="compatibility" name="GPLStyleLicense" path="extensions/libxt_nfacct.c" rule="may" group="defaultGroup" filefilter="defaultPolicyFilter" desc=""/>
+                <policyitem type="compatibility" name="GPLStyleLicense" path="extensions/libxt_time.c" rule="may" group="defaultGroup" filefilter="defaultPolicyFilter" desc=""/>
+                <policyitem type="compatibility" name="GPLStyleLicense" path="include/linux/netfilter/xt_AUDIT.h" rule="may" group="defaultGroup" filefilter="defaultPolicyFilter" desc=""/>
+                <policyitem type="compatibility" name="GPLStyleLicense" path="extensions/libxt_SYNPROXY.c" rule="may" group="defaultGroup" filefilter="defaultPolicyFilter" desc=""/>
+                <policyitem type="compatibility" name="GPLStyleLicense" path="include/linux/netfilter/xt_CHECKSUM.h" rule="may" group="defaultGroup" filefilter="defaultPolicyFilter" desc=""/>
+                <policyitem type="compatibility" name="GPLStyleLicense" path="include/linux/netfilter/xt_dscp.h" rule="may" group="defaultGroup" filefilter="defaultPolicyFilter" desc=""/>
+                <policyitem type="compatibility" name="GPLStyleLicense" path="include/linux/netfilter_ipv4/ipt_ECN.h" rule="may" group="defaultGroup" filefilter="defaultPolicyFilter" desc=""/>
+                <policyitem type="compatibility" name="GPLStyleLicense" path="extensions/libebt_log.c" rule="may" group="defaultGroup" filefilter="defaultPolicyFilter" desc=""/>
+                <policyitem type="compatibility" name="GPLStyleLicense" path="extensions/libxt_AUDIT.c" rule="may" group="defaultGroup" filefilter="defaultPolicyFilter" desc=""/>
+                <policyitem type="compatibility" name="GPLStyleLicense" path="extensions/libxt_LED.c" rule="may" group="defaultGroup" filefilter="defaultPolicyFilter" desc=""/>
+                <policyitem type="compatibility" name="GPLStyleLicense" path="include/linux/netfilter/xt_ecn.h" rule="may" group="defaultGroup" filefilter="defaultPolicyFilter" desc=""/>
+                <policyitem type="compatibility" name="GPLStyleLicense" path="extensions/libxt_sctp.c" rule="may" group="defaultGroup" filefilter="defaultPolicyFilter" desc=""/>
+                <policyitem type="compatibility" name="GPLStyleLicense" path="include/linux/netfilter/ipset/ip_set.h" rule="may" group="defaultGroup" filefilter="defaultPolicyFilter" desc=""/>
+                <policyitem type="compatibility" name="GPLStyleLicense" path="include/linux/netfilter_arp.h" rule="may" group="defaultGroup" filefilter="defaultPolicyFilter" desc=""/>
+                <policyitem type="compatibility" name="GPLStyleLicense" path="extensions/libxt_dccp.c" rule="may" group="defaultGroup" filefilter="defaultPolicyFilter" desc=""/>
+                <policyitem type="compatibility" name="GPLStyleLicense" path="include/linux/netfilter_ipv4/ipt_ULOG.h" rule="may" group="defaultGroup" filefilter="defaultPolicyFilter" desc=""/>
+                <policyitem type="compatibility" name="GPLStyleLicense" path="extensions/dscp_helper.c" rule="may" group="defaultGroup" filefilter="defaultPolicyFilter" desc=""/>
+                <policyitem type="compatibility" name="GPLStyleLicense" path="extensions/libxt_CHECKSUM.c" rule="may" group="defaultGroup" filefilter="defaultPolicyFilter" desc=""/>
+                <policyitem type="compatibility" name="GPLStyleLicense" path="extensions/libxt_cluster.c" rule="may" group="defaultGroup" filefilter="defaultPolicyFilter" desc=""/>
+                <policyitem type="compatibility" name="GPLStyleLicense" path="include/linux/netfilter_ipv4.h" rule="may" group="defaultGroup" filefilter="defaultPolicyFilter" desc=""/>
+                <policyitem type="compatibility" name="GPLStyleLicense" path="include/linux/netfilter/xt_DSCP.h" rule="may" group="defaultGroup" filefilter="defaultPolicyFilter" desc=""/>
+
+                <policyitem type="compatibility" name="GPL-2.0-or-later" path="COPYING" rule="may" group="defaultGroup" filefilter="defaultPolicyFilter" desc=""/>
+                <policyitem type="compatibility" name="GPL-2.0-or-later" path="extensions/libxt_connmark.c" rule="may" group="defaultGroup" filefilter="defaultPolicyFilter" desc=""/>
+                <policyitem type="compatibility" name="GPL-2.0-or-later" path="utils/nfnl_osf.c" rule="may" group="defaultGroup" filefilter="defaultPolicyFilter" desc=""/>
+                <policyitem type="compatibility" name="GPL-2.0-or-later" path="extensions/libxt_CONNMARK.c" rule="may" group="defaultGroup" filefilter="defaultPolicyFilter" desc=""/>
+                <policyitem type="compatibility" name="GPL-2.0-or-later" path="include/linux/netfilter/xt_osf.h" rule="may" group="defaultGroup" filefilter="defaultPolicyFilter" desc=""/>
+                <policyitem type="compatibility" name="GPL-2.0-or-later" path="extensions/libxt_osf.c" rule="may" group="defaultGroup" filefilter="defaultPolicyFilter" desc=""/>
+                <policyitem type="compatibility" name="GPL-2.0-or-later" path="libxtables/xtables.c" rule="may" group="defaultGroup" filefilter="defaultPolicyFilter" desc=""/>
+
+                <policyitem type="compatibility" name="SPDX:GPL-2.0 WITH Linux-syscall-note" path="include/linux/netfilter/nf_tables.h" rule="may" group="defaultGroup" filefilter="defaultPolicyFilter" desc=""/>
+                <policyitem type="compatibility" name="SPDX:GPL-2.0 WITH Linux-syscall-note" path="include/linux/netfilter/xt_cgroup.h" rule="may" group="defaultGroup" filefilter="defaultPolicyFilter" desc=""/>
+
+                <policyitem type="compatibility" name="Mike Frantzen" path="utils/pf.os" rule="may" group="defaultGroup" filefilter="defaultPolicyFilter" desc="use iptables by independent process"/>
+                <policyitem type="compatibility" name="GPL" path="extensions/libipt_TTL.c" rule="may" group="defaultGroup" filefilter="defaultPolicyFilter" desc="use iptables by independent process"/>
+                <policyitem type="compatibility" name="GPL" path="extensions/libip6t_HL.c" rule="may" group="defaultGroup" filefilter="defaultPolicyFilter" desc="use iptables by independent process"/>
+                <policyitem type="compatibility" name="libipt_CLUSTERIP.man" path="extensions/libipt_CLUSTERIP.man" rule="may" group="defaultGroup" filefilter="defaultPolicyFilter" desc="use iptables by independent process"/>
+                <policyitem type="compatibility" name="GPLv2" path="iptables.spec" rule="may" group="defaultGroup" filefilter="defaultPolicyFilter" desc="use iptables by independent process"/>
+                <policyitem type="license" name="*" path=".*" rule="may" group="defaultGroup" filefilter="defaultPolicyFilter" desc=""/>
+                <policyitem type="copyright" name="*" path=".*" rule="may" group="defaultGroup" filefilter="copyrightPolicyFilter" desc=""/>
+            </policy>
+        </policylist>
+
+        <filefilterlist>
+            <filefilter name="binaryFileTypePolicyFilter" desc="Filters for binary file policies">
+                <filteritem type="filename" name="iptables-1.8.7.tar.bz2"/>
+            </filefilter>
+        </filefilterlist>
+    </oatconfig>
+</configuration>
+

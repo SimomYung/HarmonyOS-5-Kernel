@@ -1,0 +1,32 @@
+/*
+ * Copyright (C) Huawei Technologies Co., Ltd. 2019-2020. All rights reserved.
+ * Description: Definition of sysmgr entropy
+ * Author: Huawei OS Kernel Lab
+ * Create: Thu Nov 21 19:36:04 2019
+ */
+
+/*
+ * To support the mixed data model which means the client and the server
+ * may use different data model. See the document for limitation of data type
+ * used in the sysif interfaces in <Documentation/sysif_compat.md>.
+ */
+#ifdef SYSIF_EXPORT_API
+
+#define SYSMGR_ENTROPY_DATA_MAX_LEN	64
+struct sysmgr_entropy_data {
+	unsigned char buf[SYSMGR_ENTROPY_DATA_MAX_LEN];
+	unsigned int len;
+	/* health test fail count */
+	unsigned int fail_count;
+};
+
+#endif
+
+DEFINE_MANAGER(entropy, 2,
+	DEFINE_SIMPLE_METHOD(entropy, read,
+			     ARG(1,
+				 unsigned int, num),
+			     RET(1,
+				 struct sysmgr_entropy_data, data),
+			     SLOWDATA_NO)
+)

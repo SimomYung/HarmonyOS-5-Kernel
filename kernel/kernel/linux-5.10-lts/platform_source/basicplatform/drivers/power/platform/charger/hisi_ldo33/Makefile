@@ -1,0 +1,1 @@
+obj-y += hisi_ldo33_ctrl.o

@@ -1,0 +1,24 @@
+{
+    "template": "hook",
+    "server": "devhost",
+    "manager": "entropy",
+    "generation": {
+        "header": {
+            "embedded_code": {
+                "hook": ""
+            }
+        }
+    },
+    "hooks": {
+        "entropy_read": {
+            "scheme": "security check/inner constraint",
+            "arguments": [],
+            "ac": {
+                "buckle": {
+                    "alias": "sec_chk_ability_entropy_read",
+                    "permission": "ab_as_crypto"
+                }
+            }
+        }
+    }
+}

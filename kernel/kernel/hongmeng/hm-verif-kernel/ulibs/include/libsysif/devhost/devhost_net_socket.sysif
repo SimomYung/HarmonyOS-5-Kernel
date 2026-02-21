@@ -1,0 +1,240 @@
+/*
+ * Copyright (C) Huawei Technologies Co., Ltd. 2022-2022. All rights reserved.
+ * Description: LDK net socket operation sysif APIs
+ * Author: Huawei OS Kernel Lab
+ * Create: Mon May 16 11:39:12 2022
+ */
+
+/*
+ * To support the mixed data model which means the client and the server
+ * may use different data model. See the comment for limitation of data type
+ * used in the sysif interfaces in <libsysif/base/api.h>.
+ */
+#ifdef SYSIF_EXPORT_API
+
+#include <sys/socket.h>
+
+#endif
+
+DEFINE_MANAGER(net_socket, 32,
+	DEFINE_SIMPLE_METHOD(net_socket, register,
+		      ARG_NO,
+		      RET_NO,
+		      SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(net_socket, close,
+		      ARG(1,
+			  int, sockfd),
+		      RET_NO,
+		      SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(net_socket, connect,
+		      ARG(3,
+			  long, sockfd,
+			  const struct sockaddr *, addr,
+			  unsigned, addrlen),
+		      RET_NO,
+		      SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(net_socket, bind,
+		      ARG(3,
+			  long, sockfd,
+			  const struct sockaddr *, addr,
+			  unsigned, addrlen),
+		      RET_NO,
+		      SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(net_socket, listen,
+		      ARG(2,
+			  long, sockfd,
+			  int, backlog),
+		      RET_NO,
+		      SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(net_socket, accept,
+		      ARG(5,
+			  long, sockfd,
+			  struct sockaddr *, addr,
+			  unsigned *, addrlen,
+			  int, flags,
+			  unsigned long, ino),
+		      RET(3, unsigned long long, filp,
+		             unsigned long long, kshm_key,
+		             unsigned long, kobj_offset),
+		      SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(net_socket, shutdown,
+		      ARG(2,
+			  long, sockfd,
+			  int, how),
+		      RET_NO,
+		      SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(net_socket, ioctl,
+		      ARG(3,
+			  long, sockfd,
+			  int, cmd,
+			  void *, arg_buf),
+		      RET_NO,
+		      SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(net_socket, dev_ioctl,
+		      ARG(2,
+			  int, cmd,
+			  void *, arg_buf),
+		      RET_NO,
+		      SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(net_socket, fcntl,
+		      ARG(3,
+			  long, sockfd,
+			  int, cmd,
+			  int, arg),
+		      RET_NO,
+		      SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(net_socket, send,
+		      ARG(4,
+			  long, sockfd,
+			  const void *, buf,
+			  size_t, len,
+			  int, flags),
+		      RET_NO,
+		      SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(net_socket, recv,
+		      ARG(4,
+			  long, sockfd,
+			  void *, buf,
+			  size_t, len,
+			  int, flags),
+		      RET_NO,
+		      SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(net_socket, sendmmsg,
+		      ARG(4,
+			  long, sockfd,
+			  const void *, msgvec,
+			  size_t, vlen,
+			  int, flags),
+			  RET_NO,
+			  SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(net_socket, recvmmsg,
+		      ARG(5,
+			  long, sockfd,
+			  const void *, msgvec,
+			  size_t, vlen,
+			  int, flags,
+			  void *, timeout),
+			  RET_NO,
+			  SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(net_socket, sendmsg,
+		      ARG(3,
+			  long, sockfd,
+			  const struct msghdr *, msg,
+			  int, flags),
+		      RET_NO,
+		      SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(net_socket, recvmsg,
+		      ARG(3,
+			  long, sockfd,
+			  struct msghdr *, msg,
+			  int, flags),
+		      RET_NO,
+		      SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(net_socket, sendto,
+		      ARG(6,
+			  long, sockfd,
+			  const void *, buf,
+			  size_t, len,
+			  int, flags,
+			  const struct sockaddr *, daddr,
+			  unsigned, addrlen),
+		      RET_NO,
+		      SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(net_socket, recvfrom,
+		      ARG(6,
+			  long, sockfd,
+			  void *, buf,
+			  size_t, len,
+			  int, flags,
+			  struct sockaddr *, daddr,
+			  unsigned *, addrlen),
+		      RET_NO,
+		      SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(net_socket, readv,
+		      ARG(3,
+			  long, sockfd,
+			  const struct iovec *, iov,
+			  int, iovcnt),
+		      RET_NO,
+		      SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(net_socket, writev,
+		      ARG(4,
+			  long, sockfd,
+			  const struct iovec *, iov,
+			  int, iovcnt,
+			  int, flags),
+		      RET_NO,
+		      SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(net_socket, getsockopt,
+		      ARG(5,
+			  long, sockfd,
+			  int, level,
+			  int, optname,
+			  void *, optval,
+			  unsigned *, optlen),
+		      RET_NO,
+		      SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(net_socket, setsockopt,
+		      ARG(5,
+			  long, sockfd,
+			  int, level,
+			  int, optname,
+			  const void *, optval,
+			  unsigned , optlen),
+		      RET_NO,
+		      SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(net_socket, getsockname,
+		      ARG(3,
+			  long, sockfd,
+			  struct sockaddr *, addr,
+			  unsigned *, addrlen),
+		      RET_NO,
+		      SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(net_socket, getpeername,
+		      ARG(3,
+			  long, sockfd,
+			  struct sockaddr *, addr,
+			  unsigned *, addrlen),
+		      RET_NO,
+		      SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(net_socket, fchown,
+		      ARG(3,
+			  long, sockfd,
+			  unsigned , uid,
+			  unsigned , gid),
+		      RET_NO,
+		      SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(net_socket, fstat,
+                      ARG(2,
+                          long, sockfd,
+                          uid_t * , uid),
+                      RET_NO,
+                      SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(net_socket, socket,
+		      ARG(4,
+			  int, domain,
+			  int, type,
+			  int, protocol,
+			  unsigned long, ino),
+		      RET(3, unsigned long long, filp,
+		             unsigned long long, kshm_key,
+		             unsigned long, kobj_offset),
+		      SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(net_socket, alloc_new_ns,
+		      ARG(1,
+			  int, nsid),
+		      RET_NO,
+		      SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(net_socket, destroy_ns,
+		      ARG(1,
+			  int, nsid),
+		      RET_NO,
+		      SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(net_socket, bpf,
+		      ARG(3,
+			  int, cmd,
+			  void *, attr,
+			  unsigned , size),
+		      RET_NO,
+		      SLOWDATA_NO)
+)

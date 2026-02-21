@@ -1,0 +1,46 @@
+diff --git a/contrib/android/block_range.c b/contrib/android/block_range.c
+index 0a068826c98c8ba3d5b490b9188202c261d4988b..5a45bca094c43b8fe9c1fb3817ae373c15b22387 100644
+--- a/contrib/android/block_range.c
++++ b/contrib/android/block_range.c
+@@ -1,4 +1,6 @@
++#ifndef _GNU_SOURCE
+ #define _GNU_SOURCE
++#endif
+ 
+ #include "block_range.h"
+ #include <stdio.h>
+diff --git a/contrib/android/e2fsdroid.c b/contrib/android/e2fsdroid.c
+index 1beb1e25bee8f1d4d33f1bf1b0e36064c567d544..622ad570f2eabc201e0e69cae4dc4ca86221dbd6 100644
+--- a/contrib/android/e2fsdroid.c
++++ b/contrib/android/e2fsdroid.c
+@@ -1,4 +1,6 @@
++#ifndef _GNU_SOURCE
+ #define _GNU_SOURCE
++#endif
+ 
+ #include <stdio.h>
+ #include <getopt.h>
+diff --git a/contrib/android/perms.c b/contrib/android/perms.c
+index 680d348e38e9374c2352dc66633132b95fe867fd..bfe06ca365682d4a508dd1634860a9abcf2c6c4b 100644
+--- a/contrib/android/perms.c
++++ b/contrib/android/perms.c
+@@ -3,6 +3,7 @@
+ #endif
+ #include "perms.h"
+ #include "support/nls-enable.h"
++#include <linux/capability.h>
+ #include <time.h>
+ #include <sys/stat.h>
+ 
+diff --git a/misc/blkid.c b/misc/blkid.c
+index 472f0179ee99ba28c51c2ce48561394482da753b..e46efc707daaf5867bea6cd415b9637e6c5bba61 100644
+--- a/misc/blkid.c
++++ b/misc/blkid.c
+@@ -17,6 +17,7 @@
+ #ifdef HAVE_TERMIOS_H
+ #include <termios.h>
+ #endif
++#undef HAVE_TERMIO_H
+ #ifdef HAVE_TERMIO_H
+ #include <termio.h>
+ #endif

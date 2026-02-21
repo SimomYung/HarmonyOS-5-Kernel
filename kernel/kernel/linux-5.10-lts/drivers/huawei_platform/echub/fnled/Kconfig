@@ -1,0 +1,17 @@
+#
+# Sends commands to the EC through the I2C.
+#
+
+config ARMPC_ECHUB_FNLED
+	bool "Keyboard fn led"
+	depends on ARMPC_ECHUB
+	default n
+	help
+	  This driver supports the fn indicator to return to the restarted state.
+
+config ARMPC_ECHUB_SMART_LED
+	bool "Keyboard smart led"
+	depends on ARMPC_ECHUB
+	default n
+	help
+	  This driver supports the smart led to return to the led state.

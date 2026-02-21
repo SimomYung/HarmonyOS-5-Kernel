@@ -1,0 +1,178 @@
+# Copyright (c) 2021 Huawei Device Co., Ltd.
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+import("//build/config/arm.gni")
+import("//build/ohos.gni")
+import("./7zip.gni")
+
+config("7zip_config_common") {
+  include_dirs = [ 
+    "C",
+    "CPP",
+    "CPP/7zip",
+    "CPP/Common",
+    "CPP/Windows"
+  ]
+cflags = [
+    "-DZ7_AFFINITY_DISABLE",
+    "-Os",
+    "-Wextra",
+    "-Wall",
+    "-Werror",
+    "-DNDEBUG",
+    "-D_REENTRANT",
+    "-D_FILE_OFFSET_BITS=64",
+    "-D_LARGEFILE_SOURCE",
+    "-fPIC",
+    "-fexceptions",
+    "-fstack-protector-all",
+  ]
+
+  cflags_cc = [
+    "-DZ7_AFFINITY_DISABLE",
+    "-Os",
+    "-Werror",
+    "-Wall",
+    "-Wextra",
+    "-DNDEBUG",
+    "-D_REENTRANT",
+    "-D_FILE_OFFSET_BITS=64",
+    "-D_LARGEFILE_SOURCE",
+    "-fPIC",
+    "-fexceptions",
+    "-fstack-protector-all",
+    "-Wno-unused-but-set-variable",
+    "-Wno-unused-but-set-parameter",
+  ]
+  ldflags = [
+      "-Wl,-Bsymbolic",
+      "-lpthread",
+      "-ldl",
+      "-Wl,-z,relro",
+      "-Wl,-z,now",
+      "-Wl,-z,noexecstack",
+    ]
+
+
+  visibility = [ ":*" ]
+}
+
+config("7zip_config_host") {
+  defines = []
+  defines += [ "target_cpu=${target_cpu}" ]
+  defines += [ "host_toolchain=${host_toolchain}" ]
+  defines += [ "current_toolchain=${current_toolchain}" ]
+  defines += [ "default_toolchain=${default_toolchain}" ]
+}
+
+# on device
+ohos_source_set("7zip_source_arm") {
+  configs = [ ":7zip_config_common" ]
+  public_configs = [ ":7zip_config_common" ]
+
+  include_dirs = [ "Asm/arm" ]
+  cflags = [ "-march=armv7-a" ]
+
+  sources = common_c_source
+  sources += common_cpp_source
+}
+
+# on device
+ohos_source_set("7zip_source_arm64") {
+  configs = [ ":7zip_config_common" ]
+  public_configs = [ ":7zip_config_common" ]
+
+  include_dirs = [ "Asm/arm64" ]
+  cflags = [ "-march=armv8-a+crc" ]
+
+  sources = common_c_source
+  sources += arm64_asm_source
+  sources += common_cpp_source
+}
+
+# on host
+ohos_source_set("7zip_source_x86_host") {
+  configs = [
+    ":7zip_config_common",
+    ":7zip_config_host",
+  ]
+  public_configs = [
+    ":7zip_config_common",
+    ":7zip_config_host",
+  ]
+
+  include_dirs = [ "Asm/x86" ]
+
+  sources = common_c_source
+  sources += common_cpp_source
+}
+
+#on host
+ohos_source_set("7zip_source_arm64_host") {
+  configs = [
+    ":7zip_config_common",
+    ":7zip_config_host",
+  ]
+  public_configs = [
+    ":7zip_config_common",
+    ":7zip_config_host",
+  ]
+
+  include_dirs = [ "Asm/arm64" ]
+
+  sources = common_c_source
+  sources += arm64_asm_source
+  sources += common_cpp_source
+}
+
+# on device
+ohos_shared_library("7zip_shared") {
+  public_configs = [ ":7zip_config_common" ]
+
+  if (target_cpu == "arm") {
+    deps = [ ":7zip_source_arm" ]
+  } else if (target_cpu == "arm64") {
+    deps = [ ":7zip_source_arm64" ]
+  }
+
+  output_name = "7zip"
+  install_images = [
+    "system",
+    "updater",
+  ]
+  part_name = "7zip"
+  subsystem_name = "open_source"
+}
+
+#on host
+ohos_static_library("7zip_static") {
+  public_configs = [
+    ":7zip_config_common",
+    ":7zip_config_host",
+  ]
+
+  if (current_cpu == "arm64") {
+    deps = [ ":7zip_source_arm64_host" ]
+  } else if (current_cpu == "x86_64" || current_cpu == "x64") {
+    deps = [ ":7zip_source_x86_host" ]
+  }
+
+  part_name = "7zip"
+  subsystem_name = "open_source"
+}
+
+group("7zip") {
+  deps = [
+    ":7zip_shared",
+    ":7zip_static",
+  ]
+}

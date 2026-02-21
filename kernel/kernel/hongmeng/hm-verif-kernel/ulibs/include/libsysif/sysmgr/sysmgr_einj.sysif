@@ -1,0 +1,32 @@
+/*
+ * Copyright (C) Huawei Technologies Co., Ltd. 2023. All rights reserved.
+ * Description: einj sysif API in sysmgr
+ * Author: Huawei OS Kernel Lab
+ * Create: Tue Sep 12 11:00:00 2023
+ */
+#ifdef SYSIF_EXPORT_API
+#include <libeinj/einj.h>
+#endif
+
+DEFINE_MANAGER(einj_sysmgr, 4,
+	DEFINE_SIMPLE_METHOD(einj_sysmgr, func_call,
+		ARG(4, struct einj_funcall_input_s*, func_input,
+		struct __einj_func_ret_s *, func_ret,
+		unsigned long, delaytime_in_ms, unsigned long, execute_count),
+		RET_NO,
+		SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(einj_sysmgr, lookup_symbol,
+		ARG(2, const struct __einj_symbol_info_s *, symbol_info, __uptr_t *, symbol_addr),
+		RET_NO,
+		SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(einj_sysmgr, mem_read,
+		ARG(4, const struct __einj_symbol_info_s *, symbol_info, pid_t, target_pid,
+		void *, data, unsigned int, data_len),
+		RET_NO,
+		SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(einj_sysmgr, mem_write,
+		ARG(4, const struct __einj_symbol_info_s *, symbol_info, pid_t, target_pid,
+		const void *, data, unsigned int, data_len),
+		RET_NO,
+		SLOWDATA_NO)
+)

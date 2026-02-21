@@ -1,0 +1,6 @@
+# Copyright (c) Huawei Technologies Co., Ltd. 2022. All rights reserved.
+# Description: HMbuild for udk spi
+# Author: Huawei OS Kernel Lab
+# Create: Wed Oct 19 10:20:30 2022
+
+src-y: udk_spi.c

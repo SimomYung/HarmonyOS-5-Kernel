@@ -1,0 +1,158 @@
+/*
+ * Copyright (C) Huawei Technologies Co., Ltd. 2018-2020. All rights reserved.
+ * Description: Interfaces of raw_mutex
+ * Author: Huawei OS Kernel Lab
+ * Create: Sat Oct 27 15:11:53 2018
+ */
+#ifndef LIBHMSYNC_RAW_MUTEX_H
+#define LIBHMSYNC_RAW_MUTEX_H
+
+#include <vsync/atomic.h>
+#include <hongmeng/types.h>
+#include <libhmsync/lockdep.h>
+
+/* keep sizeof(attr) is equals to sizeof(unsigned int). */
+typedef union {
+	vatomic32_t v;
+	struct {
+		volatile unsigned int waiters  : 20;
+		volatile unsigned int counters : 8;
+		volatile unsigned int shared   : 1;
+		volatile unsigned int type     : 3;
+	} __v;
+} raw_mutex_attr_t;
+
+/* owner of mutex is tls, whose low bits can be used to store extra state. */
+#define MUTEX_HAS_WAITERS	0x01
+#define MUTEX_DIRECT_OWNER	0x02
+#define MUTEX_FLAGS		0x07
+
+#define RAW_MUTEX_IMPL_WITH_LOCKID 1
+#define RAW_MUTEX_IMPL_NO_LOCKID 2
+#define RAW_MUTEX_IMPL @RAW_MUTEX_IMPL@
+
+#define RAW_MUTEX_WITH_LOCKTRACE 1
+#define RAW_MUTEX_NO_LOCKTRACE 2
+#define RAW_MUTEX_LOCKTRACE @RAW_MUTEX_LOCKTRACE@
+/*
+ * raw_mutex:
+ *  lock: => futex
+ *  attr: -> mutex attributes:
+ *      waiters(20bits): numbers of waiters.
+ *      counters(8bits): recursive mutex counters.
+ *      shared(1bit):
+ *          a.  0   => private mutex.
+ *          b.  1   => shared mutex.
+ *      type(3bits):
+ *          a.  000 => normal mutex.
+ *          b.  001 => recursive mutex.
+ *          c.  010 => pi mutex.
+ */
+struct raw_mutex {
+	vatomic32_t lock;
+	raw_mutex_attr_t attr;
+#if RAW_MUTEX_IMPL == RAW_MUTEX_IMPL_WITH_LOCKID
+	vatomic32_t lock_id;
+	struct lockdep_map_s dep_map;
+#endif
+};
+
+struct raw_mutex_attr {
+	unsigned int attr;
+};
+
+/* for recursive muetx */
+#define RAW_MUTEX_RECURSIVE  0x1U
+/* for priority inheritance mutex */
+#define RAW_MUTEX_PI         0x2U
+/* for lockdep debug mutex */
+#define RAW_MUTEX_LOCKDEP    0x4U
+#define RAW_MUTEX_TYPE_MASK  0x7U
+#define RAW_MUTEX_SHARED_MASK 0x8U
+
+#define RAW_MUTEX_COUNTERS_MAX ((1U<<8)-1U)
+#define RAW_MUTEX_WAITERS_MAX  ((1U<<20)-1U)
+
+#define RAW_MUTEX_LOCK_MASK  0x7fffffffUL
+
+#if RAW_MUTEX_IMPL == RAW_MUTEX_IMPL_WITH_LOCKID
+#define RAW_MUTEX_INITIALIZER { \
+			       .lock = VATOMIC_INIT(0), \
+			       .attr = {.v = VATOMIC_INIT(0)}, .lock_id = VATOMIC_INIT(0), .dep_map = {0}}
+#define RAW_MUTEX_INITIALIZER_PI { \
+				  .lock = VATOMIC_INIT(0), \
+				  .attr = {.__v.waiters = 0U, .__v.counters = 0U, .__v.type = RAW_MUTEX_PI}, \
+				  .lock_id = VATOMIC_INIT(0), .dep_map = {0}}
+#define RAW_MUTEX_INITIALIZER_RECURSIVE { \
+					 .lock = VATOMIC_INIT(0), \
+					 .attr = {.__v.waiters = 0U, .__v.counters = 0U, .__v.type = RAW_MUTEX_RECURSIVE}, \
+					 .lock_id = VATOMIC_INIT(0), .dep_map = {0}}
+#define RAW_MUTEX_INITIALIZER_NOTRACE { \
+				       .lock = VATOMIC_INIT(0), \
+				       .attr = {.v = VATOMIC_INIT(0)}, .lock_id = VATOMIC_INIT(~0U), .dep_map = {0}}
+#define RAW_MUTEX_INITIALIZER_RECURSIVE_NOTRACE { \
+						 .lock = VATOMIC_INIT(0), .lock_id = VATOMIC_INIT(~0U), .dep_map = {0}, \
+						 .attr = {.__v.waiters = 0U, .__v.counters = 0U, .__v.type = RAW_MUTEX_RECURSIVE}}
+#else /* RAW_MUTEX_IMPL == RAW_MUTEX_IMPL_WITH_LOCKID */
+#define RAW_MUTEX_INITIALIZER { \
+			       .lock = VATOMIC_INIT(0), \
+			       .attr = {.v = VATOMIC_INIT(0)}}
+#define RAW_MUTEX_INITIALIZER_PI { \
+				  .lock = VATOMIC_INIT(0), \
+				  .attr = {.__v.waiters = 0U, .__v.counters = 0U, .__v.type = RAW_MUTEX_PI}}
+#define RAW_MUTEX_INITIALIZER_RECURSIVE { \
+					 .lock = VATOMIC_INIT(0), \
+					 .attr = {.__v.waiters = 0U, .__v.counters = 0U, .__v.type = RAW_MUTEX_RECURSIVE}}
+#define RAW_MUTEX_INITIALIZER_NOTRACE RAW_MUTEX_INITIALIZER
+#define RAW_MUTEX_INITIALIZER_RECURSIVE_NOTRACE RAW_MUTEX_INITIALIZER_RECURSIVE
+#endif /* RAW_MUTEX_IMPL == RAW_MUTEX_IMPL_WITH_LOCKID */
+
+#undef RAW_MUTEX_IMPL
+
+static inline unsigned int __raw_mutex_owner(struct raw_mutex *mutex)
+{
+	return vatomic32_read_rlx(&mutex->lock) & ~MUTEX_FLAGS;
+}
+
+static inline int raw_mutex_is_locked(struct raw_mutex *mutex)
+{
+	uint32_t val = vatomic32_read_rlx(&mutex->lock);
+	return (int)(unsigned int)(val & RAW_MUTEX_LOCK_MASK);
+}
+
+#define raw_mutex_init_with_lockdep(mutex)		\
+do {							\
+	static struct lockdep_lock_class_key_s _key;	\
+	raw_mutex_init_lockdep((mutex), #mutex, &_key);	\
+} while(0)						\
+
+void raw_mutex_init_lockdep(struct raw_mutex *mutex, const char *name,
+			    struct lockdep_lock_class_key_s *key);
+
+void raw_mutex_init(struct raw_mutex *mutex);
+void raw_mutex_init_recursive(struct raw_mutex *mutex);
+void raw_mutex_init_shared(struct raw_mutex *mutex);
+void raw_mutex_init_pi(struct raw_mutex *mutex);
+void raw_mutex_init_with_attr(struct raw_mutex *mutex, const struct raw_mutex_attr *attr);
+void raw_mutex_destroy(struct raw_mutex *mutex);
+
+void raw_mutex_attr_init(struct raw_mutex_attr *attr);
+void raw_mutex_attr_settype(struct raw_mutex_attr* attr, unsigned int type);
+void raw_mutex_attr_setshared(struct raw_mutex_attr *attr, int shared);
+
+void raw_mutex_inc_waiters(struct raw_mutex *mutex);
+void raw_mutex_dec_waiters(struct raw_mutex *mutex);
+
+int raw_mutex_trylock(struct raw_mutex* mutex);
+void raw_mutex_lock(struct raw_mutex *mutex);
+void raw_mutex_unlock(struct raw_mutex* mutex);
+int raw_mutex_lock_pair(struct raw_mutex *mutex_a, struct raw_mutex *mutex_b);
+int raw_mutex_unlock_pair(struct raw_mutex *mutex_a, struct raw_mutex *mutex_b);
+
+void disable_raw_mutex(void);
+void enable_raw_mutex(void);
+_Bool is_raw_mutex_disabled(void);
+
+void raw_mutex_lock_yield(struct raw_mutex *mutex, int waiters);
+
+#endif

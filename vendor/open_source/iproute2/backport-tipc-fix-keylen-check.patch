@@ -1,0 +1,44 @@
+From 4429a6c9b484bc02dfab1e020a9b6f9f77370331 Mon Sep 17 00:00:00 2001
+From: Andrea Claudi <aclaudi@redhat.com>
+Date: Fri, 13 May 2022 11:52:30 +0200
+Subject: [PATCH] tipc: fix keylen check
+
+Key length check in str2key() is wrong for hex. Fix this using the
+proper hex key length.
+
+Fixes: 28ee49e5153b ("tipc: bail out if key is abnormally long")
+Suggested-by: Xin Long <lucien.xin@gmail.com>
+Signed-off-by: Andrea Claudi <aclaudi@redhat.com>
+Signed-off-by: Stephen Hemminger <stephen@networkplumber.org>
+Conflict: NA
+Reference: https://git.kernel.org/pub/scm/network/iproute2/iproute2.git/commit?id=4429a6c9b48
+---
+ tipc/misc.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
+
+diff --git a/tipc/misc.c b/tipc/misc.c
+index 909975d8..6175bf07 100644
+--- a/tipc/misc.c
++++ b/tipc/misc.c
+@@ -113,16 +113,15 @@ int str2key(char *str, struct tipc_aead_key *key)
+ 	    }
+ 	}
+ 
+-	if (len > TIPC_AEAD_KEYLEN_MAX)
++	key->keylen = ishex ? (len + 1) / 2 : len;
++	if (key->keylen > TIPC_AEAD_KEYLEN_MAX)
+ 		return -1;
+ 
+ 	/* Obtain key: */
+ 	if (!ishex) {
+-		key->keylen = len;
+ 		memcpy(key->key, str, len);
+ 	} else {
+ 		/* Convert hex string to key */
+-		key->keylen = (len + 1) / 2;
+ 		for (i = 0; i < key->keylen; i++) {
+ 			if (i == 0 && len % 2 != 0) {
+ 				if (sscanf(str, "%1hhx", &key->key[0]) != 1)
+-- 
+2.23.0
+

@@ -1,0 +1,31 @@
+From 8178197e6c39b2a08c90bcd3685d694115ce9254 Mon Sep 17 00:00:00 2001
+From: Zhiqiang Liu <liuzhiqiang26@huawei.com>
+Date: Tue, 1 Mar 2022 21:46:55 +0800
+Subject: [PATCH] e2mmpstatus.8.in: detele filesystem can be UUID or LABEL in
+ manpage
+
+Signed-off-by: zhanchengbin <zhanchengbin1@huawei.com>
+---
+ misc/e2mmpstatus.8.in | 6 +-----
+ 1 file changed, 1 insertion(+), 5 deletions(-)
+
+diff --git a/misc/e2mmpstatus.8.in b/misc/e2mmpstatus.8.in
+index c7ed929..07a28ec 100644
+--- a/misc/e2mmpstatus.8.in
++++ b/misc/e2mmpstatus.8.in
+@@ -19,11 +19,7 @@ file system with the
+ feature enabled.  The specified
+ .I file system
+ can be a device name (e.g.
+-.IR /dev/hdc1 ", " /dev/sdb2 ),
+-or an ext4 file system label or UUID, for example
+-.B UUID=8868abf6-88c5-4a83-98b8-bfc24057f7bd
+-or
+-.BR LABEL=root .
++.IR /dev/hdc1 ", " /dev/sdb2 ).
+ By default, the
+ .B e2mmpstatus
+ program checks whether it is safe to mount the file system without taking
+-- 
+1.8.3.1
+

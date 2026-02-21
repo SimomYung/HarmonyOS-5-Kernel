@@ -1,0 +1,40 @@
+{
+    "name": "@ohos/xl2tpd",
+    "description": "xl2tpd for systemVpn",
+    "version": "4.0",
+    "license": "Apache License 2.0",
+    "publishAs": "code-segment",
+    "segment": {
+        "destPath": "vendor/open_source/xl2tpd/"
+    },
+    "dirs": {},
+    "scripts": {},
+    "readmePath": {
+        "en": "README"
+    },
+    "component": {
+        "name": "xl2tpd",
+        "subsystem": "open_source",
+        "syscap": [],
+        "features": [],
+        "adapted_system_type": [
+            "standard"
+        ],
+        "rom": "",
+        "ram": "",
+        "deps": {
+            "components": [
+                "ipc",
+                "netmanager_ext"
+            ],
+            "third_party": []
+        },
+        "build": {
+            "sub_component": [
+                "//vendor/open_source/xl2tpd:build_xl2tpd"
+            ],
+            "inner_kits": [],
+            "test": []
+        }
+    }
+}

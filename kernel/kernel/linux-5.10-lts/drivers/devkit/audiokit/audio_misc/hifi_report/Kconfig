@@ -1,0 +1,5 @@
+config AUDIO_HIFI_REPORT
+    bool "hifi report driver"
+    default n
+    help
+    Say Y to enable hifi report driver support

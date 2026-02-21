@@ -1,0 +1,1 @@
+{"server_name": "freqmgr", "methods": ["freqmgr_dfc_freq_stat", "freqmgr_dfc_cpu_freq_limit", "freqmgr_dfc_cpu_freq_query", "freqmgr_dfc_rsvd_1"]}

@@ -1,0 +1,60 @@
+# Copyright (c) 2021 Huawei Device Co., Ltd.
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License version 2 as
+# published by the Free Software Foundation.
+
+import("//build/ohos.gni")
+import("//out/products_ext/hmos_ext_var.gni")
+
+config("f2fs-defaults") {
+  cflags = [
+    "-Wall",
+    "-Werror",
+    "-Wno-incompatible-pointer-types",
+    "-Wno-unused-function",
+    "-Wno-unused-parameter",
+    "-Wno-format",
+  ]
+  if (component_type != "system" || current_toolchain == host_toolchain) {
+    cflags += ["-DCONF_TARGET_HOST"]
+  }
+}
+config("libf2fs-headers") {
+  include_dirs = [
+    ".",
+    "//third_party/f2fs-tools",
+    "//third_party/f2fs-tools/include",
+  ]
+}
+
+ohos_shared_library("libf2fs") {
+  sources = [
+    "libf2fs.c",
+    "libf2fs_io.c",
+    "libf2fs_zoned.c",
+    "nls_utf8.c",
+    "libf2fs_log.c",
+    "libf2fs_dmd.c"
+  ]
+
+  include_dirs = [ "." ]
+
+  deps = [
+    "//third_party/bounds_checking_function:libsec_static",
+  ]
+
+  configs = [
+    ":f2fs-defaults",
+    ":libf2fs-headers",
+  ]
+
+  defines = [ "HAVE_CONFIG_H" ]
+  install_enable = true
+  subsystem_name = "thirdparty"
+  part_name = "f2fs-tools"
+  install_images = [
+    "system",
+    "updater",
+  ]
+}

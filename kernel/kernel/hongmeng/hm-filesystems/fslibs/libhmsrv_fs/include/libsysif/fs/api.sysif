@@ -1,0 +1,25 @@
+/*
+ * Copyright (c) Huawei Technologies Co., Ltd. 2021-2021. All rights reserved.
+ * Description: Implementation of api for dsl code generator
+ * Author: Huawei OS Kernel Lab
+ * Create: Fri May 21 10:49:15 2021
+ */
+
+USE_CALL_PREFIX(fscall)
+USE_HANDLER_PREFIX(fshandler)
+USE_SERVER_NAME(fs)
+GEN_WEAK_HDLR
+GROUP(2)
+
+INCLUDE_C_HEADER(fs/version.h)
+
+INCLUDE_SUBSYSTEM(libsysif/fs/fs_procfs.sysif)
+INCLUDE_SUBSYSTEM(libsysif/fs/fs_sysfs.sysif)
+INCLUDE_SUBSYSTEM(libsysif/fs/fs_clock.sysif)
+INCLUDE_SUBSYSTEM(libsysif/fs/fs_inotify.sysif)
+INCLUDE_SUBSYSTEM(libsysif/fs/fs_fanotify.sysif)
+INCLUDE_SUBSYSTEM(libsysif/fs/fs_endio.sysif)
+INCLUDE_SUBSYSTEM(libsysif/fs/fs_sec.sysif)
+INCLUDE_SUBSYSTEM(libsysif/fs/fs_vfs.sysif)
+INCLUDE_SUBSYSTEM(libsysif/fs/fs_ksys.sysif)
+INCLUDE_SUBSYSTEM(libsysif/fs/fs_socket.sysif)

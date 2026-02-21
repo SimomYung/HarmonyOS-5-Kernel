@@ -1,0 +1,17 @@
+#
+# For a description of the syntax of this configuration file,
+# see docs/Kconfig-language.txt.
+#
+
+menu "Miscellaneous Utilities"
+
+INSERT
+
+config FEATURE_OFFSET_READAHEAD
+	bool "Support READAHEAD(byte-level specified reading)"
+	default n
+	help
+    Specifies a range of the file for prefetching.
+	Invoking command: readahead <file_name> offset [length].
+
+endmenu

@@ -1,0 +1,137 @@
+# Copyright (c) 2021 Huawei Device Co., Ltd.
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to
+# deal in the Software without restriction, including without limitation the
+# rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
+# sell copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in
+# all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+# FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
+# IN THE SOFTWARE.
+
+import("//build/ohos.gni")
+
+LIBUSB_DIR = rebase_path("//third_party/libusb")
+ 
+action("libusb_action") {
+  script = "//third_party/libusb/install.sh"
+  outputs = [
+    "${target_gen_dir}/libusb-1.0.26/libusb/core.c",
+    "${target_gen_dir}/libusb-1.0.26/libusb/descriptor.c",
+    "${target_gen_dir}/libusb-1.0.26/libusb/hotplug.c",
+    "${target_gen_dir}/libusb-1.0.26/libusb/io.c",
+    "${target_gen_dir}/libusb-1.0.26/libusb/sync.c",
+    "${target_gen_dir}/libusb-1.0.26/libusb/strerror.c",
+  ]
+ 
+  if (is_mac) {
+    outputs += [
+      "${target_gen_dir}/libusb-1.0.26/libusb/os/darwin_usb.c",
+      "${target_gen_dir}/libusb-1.0.26/libusb/os/events_posix.c",
+      "${target_gen_dir}/libusb-1.0.26/libusb/os/threads_posix.c",
+    ]
+  } else if (is_mingw || is_win) {
+    outputs += [
+      "${target_gen_dir}/libusb-1.0.26/libusb/os/events_windows.c",
+      "${target_gen_dir}/libusb-1.0.26/libusb/os/threads_windows.c",
+      "${target_gen_dir}/libusb-1.0.26/libusb/os/windows_common.c",
+      "${target_gen_dir}/libusb-1.0.26/libusb/os/windows_usbdk.c",
+      "${target_gen_dir}/libusb-1.0.26/libusb/os/windows_winusb.c",
+    ]
+  } else if (is_linux || is_ohos) {
+    outputs += [
+      "${target_gen_dir}/libusb-1.0.26/libusb/os/events_posix.c",
+      "${target_gen_dir}/libusb-1.0.26/libusb/os/linux_netlink.c",
+      "${target_gen_dir}/libusb-1.0.26/libusb/os/linux_usbfs.c",
+      "${target_gen_dir}/libusb-1.0.26/libusb/os/threads_posix.c",
+    ]
+  }
+ 
+  inputs = [ "//third_party/libusb/libusb-1.0.26.tar.bz2" ]
+ 
+  libusb_path = rebase_path("${target_gen_dir}", root_build_dir)
+  libusb_source_path = rebase_path("//third_party/libusb", root_build_dir)
+  args = [
+    "$libusb_path",
+    "$libusb_source_path",
+  ]
+}
+ 
+# Configuration for libusb itself.
+config("libusb_config") {
+  include_dirs = [
+    get_label_info(":libusb_action", "target_gen_dir") +
+        "/libusb-1.0.26/libusb",
+    get_label_info(":libusb_action", "target_gen_dir") +
+        "/libusb-1.0.26/libusb/os",
+  ]
+  cflags = [
+    "-U__ANDROID__",
+    "-UUSE_UDEV",
+    "-Wno-#warnings",
+    "-Wno-error=sign-compare",
+    "-Wno-error=switch",
+    "-Wno-error=pragma-pack",
+  ]
+  if (is_linux || is_ohos) {
+    include_dirs += [ "${LIBUSB_DIR}/linux" ]
+    cflags += [ "-DPLATFORM_POSIX" ]
+  } else if (is_mingw || is_win) {
+    cflags += [
+      "-Werror",
+      "-Wno-unused-function",
+      "-Wno-unused-parameter",
+      "-DPLATFORM_WINDOWS",
+    ]
+    include_dirs += [ "${LIBUSB_DIR}/windows" ]
+  } else if (is_mac) {
+    cflags += [
+      "-Wno-unused-parameter",
+      "-Wno-deprecated-declarations",
+      "-DPLATFORM_POSIX",
+    ]
+    include_dirs += [ "${LIBUSB_DIR}/darwin" ]
+    frameworks = [
+      "CoreFoundation.framework",
+      "IOKit.framework",
+      "Security.framework",
+    ]
+    libs = [ "objc" ]
+  }
+}
+
+ohos_source_set("libusb_source") {
+  configs = [ ":libusb_config" ]
+  sources = get_target_outputs(":libusb_action")
+  deps = [ ":libusb_action" ]
+
+  subsystem_name = "thirdparty"
+  part_name = "libusb"
+}
+
+config("libusb_public_config") {
+  include_dirs = [
+    get_label_info(":libusb_action", "target_gen_dir") + "/libusb-1.0.26",
+    get_label_info(":libusb_action", "target_gen_dir") +
+        "/libusb-1.0.26/libusb",
+  ]
+}
+
+ohos_shared_library("libusb") {
+  deps = [ ":libusb_source" ]
+  public_configs = [ ":libusb_public_config" ]
+  output_name = "libusb_shared"
+  install_images = [ "system" ]
+  subsystem_name = "thirdparty"
+  part_name = "libusb"
+  innerapi_tags = [ "chipsetsdk" ]
+}

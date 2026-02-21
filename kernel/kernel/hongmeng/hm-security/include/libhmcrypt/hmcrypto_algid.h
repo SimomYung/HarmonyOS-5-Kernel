@@ -1,0 +1,39 @@
+/*
+ * Copyright (c) Huawei Technologies Co., Ltd. 2022-2023. All rights reserved.
+ * Description: Add the algorithm id that support by libhmcrypt.
+ * Author: Huawei OS Kernel Lab
+ * Create: Mon Nov 28 17:10:24 2022
+ */
+#ifndef ULIBS_HMCRYPTO_ALGID_H
+#define ULIBS_HMCRYPTO_ALGID_H
+
+typedef enum {
+	HMCRYPTO_SKCIPHER_AES128_ECB,
+	HMCRYPTO_SKCIPHER_AES128_CBC,
+	HMCRYPTO_SKCIPHER_AES256_XTS,
+	HMCRYPTO_SKCIPHER_AES128_CTS,
+	HMCRYPTO_SKCIPHER_AES256_CTS,
+	HMCRYPTO_SKCIPHER_AES256_GCM,
+	HMCRYPTO_SKCIPHER_AES256_CTR,
+} hmcrypto_skcipher_id;
+
+typedef enum {
+	HMCRYPTO_HMAC_SHA2_256,
+	HMCRYPTO_HMAC_SHA2_512,
+	HMCRYPTO_SIPHASH_2_4_8,
+} hmcrypto_mac_id;
+
+typedef enum {
+	HMCRYPTO_RSAES_PKCS1_V1_5,
+	HMCRYPTO_RSAES_PKCS1_OAEP_MGF1_SHA256,
+	HMCRYPTO_RSAES_PKCS1_OAEP_MGF1_SHA384,
+	HMCRYPTO_RSAES_PKCS1_OAEP_MGF1_SHA512,
+	HMCRYPTO_RSA_NO_PADDING,
+} hmcrypto_rsacipher_id;
+
+typedef enum {
+	HMCRYPTO_DIGEST_SHA256,
+	HMCRYPTO_DIGEST_SHA384,
+	HMCRYPTO_DIGEST_SHA512,
+} hmcrypto_rsa_oeap_mgf1_id;
+#endif

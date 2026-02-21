@@ -1,0 +1,27 @@
+#
+# Copyright (c) Huawei Technologies Co., Ltd. 2022-2022. All rights reserved.
+# Description: device threat detection kernel config
+#
+
+menu "kernel DTD"
+
+config DEVICE_THREAT_DETECTION
+	bool "enables device threat detection feature"
+	default n
+	help
+	  This option enables feature for device threat detection in kernel
+	  space. The device threat detection report device security status by
+	  check the content of the kcode/syscall/rootprocs/syscall/sehooks
+	  is tampered or not.
+
+config DEVICE_THREAT_DETECTION_DEBUG
+	bool "device threat detection debug mode"
+	depends on DEVICE_THREAT_DETECTION
+	default n
+	help
+	  This option should only be enabled for engineering mode & debug test.
+	  In engineering or debug test mode, tester can enable the config and
+	  use supported interface debug test interface.
+
+endmenu
+# a blank line must be existed

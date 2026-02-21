@@ -1,0 +1,5 @@
+# SPDX-License-Identifier: GPL-2.0-only
+generic-y += bug.h
+generic-y += dma.h
+generic-y += percpu.h
+generic-y += topology.h

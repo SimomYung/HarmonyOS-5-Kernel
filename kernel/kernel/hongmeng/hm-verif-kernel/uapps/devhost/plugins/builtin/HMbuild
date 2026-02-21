@@ -1,0 +1,32 @@
+# Copyright (c) Huawei Technologies Co., Ltd. 2021. All rights reserved.
+# Description: HMbuild for devhost
+# Author: Huawei OS Kernel Lab
+# Create: Fri Nov 19 11:26:07 2021
+
+# plugins should have private namespace by default
+cflags-.-y: -fvisibility=hidden
+
+# all builtin plugins
+subdir-y: rpc
+subdir-y: crypto
+subdir-y: security
+subdir-y: clock
+subdir-y: udmi
+subdir-y: procfs
+subdir-y: posix_fops
+subdir-CONFIG_DEVHOST_NETLINK: netlink
+subdir-y: epoll
+subdir-y: net
+subdir-CONFIG_DEVHOST_PM_PLUGIN: pm
+subdir-y: sysfs
+subdir-CONFIG_SYSIF_TRACE: uev_trace
+subdir-CONFIG_SHMEC: shmec
+subdir-y: shrinker
+subdir-y: process
+subdir-y: posix_syscall
+
+src-CONFIG_DEVHOST_PLUGIN_DEMO: simple.c
+cflags-simple.c-CONFIG_DEVHOST_PLUGIN_DEMO: -D_DH_PLUGIN_NAME=simple_ext
+src-CONFIG_DEVHOST_PLUGIN_DEMO: simple_ep.c
+cflags-simple_ep.c-CONFIG_DEVHOST_PLUGIN_DEMO: -D_DH_PLUGIN_NAME=simple_ep
+cflags-simple.c-y: -Wno-strict-prototypes

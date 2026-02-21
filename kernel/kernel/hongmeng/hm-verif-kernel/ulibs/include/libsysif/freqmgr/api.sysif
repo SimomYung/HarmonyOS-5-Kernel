@@ -1,0 +1,20 @@
+/*
+ * Copyright (c) Huawei Technologies Co., Ltd. 2020-2020. All rights reserved.
+ * Description: Generate freqmgr sysif apis using code generator
+ * Author: Huawei OS Kernel Lab
+ * Create: Mon 07 Dec 2020 07:38:37 PM CST
+ */
+
+INCLUDE_C_HEADER(libbunch/bunch_ipc.h)
+INCLUDE_C_HEADER(libhmpm/dfc.h)
+
+USE_CALL_PREFIX(fmcall)
+USE_HANDLER_PREFIX(fmhandler)
+USE_SERVER_NAME(freqmgr)
+
+/* freqmgr path */
+DECLARE_DATATYPE_BEGIN
+#define FREQMGR_PATH	"freqmgr_actv"
+DECLARE_DATATYPE_END
+
+INCLUDE_SUBSYSTEM(libsysif/freqmgr/freqmgr_dfc.sysif)

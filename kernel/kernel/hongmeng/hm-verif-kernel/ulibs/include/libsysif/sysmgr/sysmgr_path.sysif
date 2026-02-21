@@ -1,0 +1,62 @@
+/*
+ * Copyright (C) Huawei Technologies Co., Ltd. 2018-2020. All rights reserved.
+ * Description: Generate pathmgr sysif client interface
+ * Author: Huawei OS Kernel Lab
+ * Create: Fri Nov 16 10:27:57 2018
+ */
+
+/*
+ * To support the mixed data model which means the client and the server
+ * may use different data model. See the document for limitation of data type
+ * used in the sysif interfaces in <Documentation/sysif_compat.md>.
+ */
+#ifdef SYSIF_EXPORT_API
+#include <sys/stat.h>
+
+#define PATHMGR_PATH_NAME_MAX 64
+struct pathmgr_name {
+	char path[PATHMGR_PATH_NAME_MAX];
+};
+
+#endif
+
+DEFINE_MANAGER(path, 8,
+	DEFINE_SIMPLE_METHOD(path, add_path,
+			     ARG(4,
+				 cref_t, cref,
+				 unsigned long, grant_info,
+				 struct pathmgr_name, name,
+				 mode_t, mode),
+			     RET_NO,
+			     SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(path, grant_path,
+			     ARG(1,
+				 struct pathmgr_name, name),
+			     RET_NO,
+			     SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(path, del_path,
+			     ARG(1, struct pathmgr_name, name),
+			     RET_NO,
+			     SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(path, acquire_path,
+			     ARG(1, struct pathmgr_name, name),
+			     RET(1, rref_t, rref),
+			     SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(path, release_path,
+			     ARG(2,
+				 struct pathmgr_name, name,
+				 rref_t, rref),
+			     RET_NO,
+			     SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(path, stat,
+			     ARG(2,
+				 struct pathmgr_name, name,
+				 struct bunch_ipc_attr, attr),
+			     RET_NO,
+			     SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(path, chmod,
+			     ARG(2, struct pathmgr_name, name,
+				 mode_t, mode),
+			     RET_NO,
+			     SLOWDATA_NO)
+)

@@ -1,0 +1,52 @@
+# Copyright (c) 2024 Huawei Device Co., Ltd.
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+import("//build/ohos.gni")
+import("//vendor/open_source/strongswan/strongswan_config.gni")
+
+source_gen_dir = "${target_gen_dir}/../../../strongswan/src/libipsec"
+sources_list = [
+  "${source_gen_dir}/esp_context.c",
+  "${source_gen_dir}/esp_packet.c",
+  "${source_gen_dir}/ip_packet.c",
+  "${source_gen_dir}/ipsec.c",
+  "${source_gen_dir}/ipsec_event_relay.c",
+  "${source_gen_dir}/ipsec_policy.c",
+  "${source_gen_dir}/ipsec_policy_mgr.c",
+  "${source_gen_dir}/ipsec_processor.c",
+  "${source_gen_dir}/ipsec_sa.c",
+  "${source_gen_dir}/ipsec_sa_mgr.c",
+]
+action("libipsec_install_action") {
+  script = "//vendor/open_source/strongswan/empty.py"
+  outputs = sources_list
+  deps = [ "../../../:strongswan_install_action" ]
+}
+
+ohos_shared_library("libipsec") {
+  sources = get_target_outputs(":libipsec_install_action")
+  deps = [
+    ":libipsec_install_action",
+    "../libstrongswan:libstrongswan",
+  ]
+
+  include_dirs = [
+    "${source_gen_dir}",
+    "${source_gen_dir}/../libstrongswan",
+  ]
+  cflags = common_cflags
+  cflags_cc = common_cflags_cc
+  defines = common_defines
+  part_name = "strongswan"
+  subsystem_name = "open_source"
+}

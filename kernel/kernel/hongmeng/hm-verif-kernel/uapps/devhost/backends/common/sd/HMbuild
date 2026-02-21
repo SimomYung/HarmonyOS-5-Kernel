@@ -1,0 +1,22 @@
+# Copyright (c) Huawei Technologies Co., Ltd. 2023. All rights reserved.
+# Description: HMbuild for sd.proxy.udk
+# Author: Huawei OS Kernel Lab
+# Create: Tue Jun 6 11:51:30 2023
+
+lib-dynamic-y: sd.proxy
+
+include-sd.proxy-y: ./include
+
+cflags-sd.proxy-y: -DUDK_MODULE
+
+src-sd.proxy-y: sd.proxy.udk.c
+
+subdir-y: exts/hisi
+
+linklib-sd.proxy-y: -Wl,--exclude-libs=ALL
+linklib-sd.proxy-y: -Wl,--gc-sections
+
+installinc-libdevhost/protocol/sd: include/
+
+findpkg: HISILibs
+inclib-sd.proxy.udk.c: HISILibs::HISILibs_include

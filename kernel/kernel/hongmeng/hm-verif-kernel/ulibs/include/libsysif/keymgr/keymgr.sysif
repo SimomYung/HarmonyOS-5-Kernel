@@ -1,0 +1,80 @@
+/*
+ * Copyright (c) Huawei Technologies Co., Ltd. 2021-2021. All rights reserved.
+ * Description: Keymgr sysif api
+ * Author: Huawei OS Kernel Lab
+ * Create: Tue Mar 09 16:42:41 2021
+ */
+#ifdef SYSIF_EXPORT_API
+#include <sys/types.h>
+#include <libhmsrv_key/key.h>
+#endif
+
+/*
+ * To support the mixed data model which means the client and the server
+ * may use different data model. See the document for limitation of data type
+ * used in the sysif interfaces in <Documentation/sysif_compat.md>.
+ */
+DEFINE_MANAGER(keymgr, 9,
+	DEFINE_LSYSCALL_METHOD(add_key, NATIVE, SYS_add_key,
+			ARG(5,
+			const char *, type,
+			const char *, description,
+			const void *, payload,
+			size_t, plen,
+			int, keyring))
+
+	DEFINE_LSYSCALL_METHOD(request_key, NATIVE, SYS_request_key,
+			ARG(4,
+			const char *, type,
+			const char *, description,
+			const char *, callout_info,
+			int, keyring))
+
+	DEFINE_LSYSCALL_METHOD(keyctl, NATIVE, SYS_keyctl,
+			ARG(5,
+			int, operation,
+			unsigned long, arg2,
+			unsigned long, arg3,
+			unsigned long, arg4,
+			unsigned long, arg5))
+
+	DEFINE_SIMPLE_METHOD(keymgr, fscrypt_ctrl,
+		  ARG(3,
+		      int, operation,
+		      unsigned long, arg_addr,
+		      unsigned long, arg_size),
+		  RET_NO,
+		  SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(keymgr, fsverity_ctrl,
+		  ARG(3,
+		      int, operation,
+		      unsigned long, arg_addr,
+		      unsigned long, arg_size),
+		  RET_NO,
+		  SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(keymgr, procfs_read,
+		  ARG(3,
+		      int, file_id,
+		      char *, ubuf,
+		      unsigned long, len),
+		  RET_NO,
+		  SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(keymgr, procfs_write,
+		  ARG(3,
+		      int, file_id,
+		      const char *, ubuf,
+		      unsigned long, len),
+		  RET_NO,
+		  SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(keymgr, krctl,
+		  ARG(3,
+		      int, operation,
+		      void *, keyring,
+		      unsigned long, arg),
+		  RET_NO,
+		  SLOWDATA_NO)
+)

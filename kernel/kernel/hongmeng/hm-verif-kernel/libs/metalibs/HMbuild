@@ -1,0 +1,29 @@
+# Copyright (c) Huawei Technologies Co., Ltd. 2022-2022. All rights reserved.
+# Description: HMbuild for meta
+# Author: Huawei OS Kernel Lab
+# Create: Mon May 23 16:07:49 2022
+
+subdir-CONFIG_AARCH64: arch/aarch64
+subdir-CONFIG_ARM: arch/arm
+
+subdir-y: libalgo
+subdir-y: include
+
+lib-static-y: metalibs_static
+output-metalibs_static: metalibs
+install-metalibs_static-y: LIBDIR
+
+lib-static-y: metalibs_fpic_static
+output-metalibs_fpic_static: metalibs_fpic
+install-metalibs_fpic_static-y: LIBDIR
+cflags-metalibs_fpic_static-y: -fPIC
+
+cflags-.-CONFIG_AARCH64: -funwind-tables
+cflags-.-CONFIG_AARCH64: -mgeneral-regs-only
+cflags-.-CONFIG_DLIST_DEBUG: -DDLIST_DEBUG_ENABLE
+
+cflags-.-y: -D_XOPEN_SOURCE=700
+cflags-.-y: -ffreestanding
+cflags-.-y: -fno-strict-aliasing
+cflags-.-y: -fno-common
+cflags-.-y: -Wold-style-definition

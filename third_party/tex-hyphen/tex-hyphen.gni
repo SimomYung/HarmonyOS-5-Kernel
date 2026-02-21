@@ -1,0 +1,243 @@
+# Copyright (c) 2024 Huawei Device Co., Ltd.
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+hyphen_root = "//third_party/tex-hyphen"
+hyphen_tex_root = "${hyphen_root}/hyph-utf8/tex/generic/hyph-utf8/patterns/tex"
+hyphen_build_json = "${hyphen_root}/ohos/build/build-tex.json"
+
+tex_source_config = [
+  {
+    language = "hyph-as"
+    file_path = "${hyphen_tex_root}/hyph-as.tex"
+  },
+  {
+    language = "hyph-be"
+    file_path = "${hyphen_tex_root}/hyph-be.tex"
+  },
+  {
+    language = "hyph-bg"
+    file_path = "${hyphen_tex_root}/hyph-bg.tex"
+  },
+  {
+    language = "hyph-bn"
+    file_path = "${hyphen_tex_root}/hyph-bn.tex"
+  },
+  {
+    language = "hyph-cs"
+    file_path = "${hyphen_tex_root}/hyph-cs.tex"
+  },
+  {
+    language = "hyph-cy"
+    file_path = "${hyphen_tex_root}/hyph-cy.tex"
+  },
+  {
+    language = "hyph-da"
+    file_path = "${hyphen_tex_root}/hyph-da.tex"
+  },
+  {
+    language = "hyph-de-1996"
+    file_path = "${hyphen_tex_root}/hyph-de-1996.tex"
+  },
+  {
+    language = "hyph-de-1901"
+    file_path = "${hyphen_tex_root}/hyph-de-1901.tex"
+  },
+  {
+    language = "hyph-de-ch-1901"
+    file_path = "${hyphen_tex_root}/hyph-de-ch-1901.tex"
+  },
+  {
+    language = "hyph-el-monoton"
+    file_path = "${hyphen_tex_root}/hyph-el-monoton.tex"
+  },
+  {
+    language = "hyph-el-polyton"
+    file_path = "${hyphen_tex_root}/hyph-el-polyton.tex"
+  },
+  {
+    language = "hyph-en-gb"
+    file_path = "${hyphen_tex_root}/hyph-en-gb.tex"
+  },
+  {
+    language = "hyph-en-us"
+    file_path = "${hyphen_tex_root}/hyph-en-us.tex"
+  },
+  {
+    language = "hyph-es"
+    file_path = "${hyphen_tex_root}/hyph-es.tex"
+  },
+  {
+    language = "hyph-et"
+    file_path = "${hyphen_tex_root}/hyph-et.tex"
+  },
+  {
+    language = "hyph-fr"
+    file_path = "${hyphen_tex_root}/hyph-fr.tex"
+  },
+  {
+    language = "hyph-ga"
+    file_path = "${hyphen_tex_root}/hyph-ga.tex"
+  },
+  {
+    language = "hyph-gl"
+    file_path = "${hyphen_tex_root}/hyph-gl.tex"
+  },
+  {
+    language = "hyph-gu"
+    file_path = "${hyphen_tex_root}/hyph-gu.tex"
+  },
+  {
+    language = "hyph-hi"
+    file_path = "${hyphen_tex_root}/hyph-hi.tex"
+  },
+  {
+    language = "hyph-hr"
+    file_path = "${hyphen_tex_root}/hyph-hr.tex"
+  },
+  {
+    language = "hyph-hu"
+    file_path = "${hyphen_tex_root}/hyph-hu.tex"
+  },
+  {
+    language = "hyph-id"
+    file_path = "${hyphen_tex_root}/hyph-id.tex"
+  },
+  {
+    language = "hyph-is"
+    file_path = "${hyphen_tex_root}/hyph-is.tex"
+  },
+  {
+    language = "hyph-it"
+    file_path = "${hyphen_tex_root}/hyph-it.tex"
+  },
+  {
+    language = "hyph-ka"
+    file_path = "${hyphen_tex_root}/hyph-ka.tex"
+  },
+  {
+    language = "hyph-kn"
+    file_path = "${hyphen_tex_root}/hyph-kn.tex"
+  },
+  {
+    language = "hyph-la"
+    file_path = "${hyphen_tex_root}/hyph-la.tex"
+  },
+  {
+    language = "hyph-lt"
+    file_path = "${hyphen_tex_root}/hyph-lt.tex"
+  },
+  {
+    language = "hyph-lv"
+    file_path = "${hyphen_tex_root}/hyph-lv.tex"
+  },
+  {
+    language = "hyph-mk"
+    file_path = "${hyphen_tex_root}/hyph-mk.tex"
+  },
+  {
+    language = "hyph-ml"
+    file_path = "${hyphen_tex_root}/hyph-ml.tex"
+  },
+  {
+    language = "hyph-mn-cyrl"
+    file_path = "${hyphen_tex_root}/hyph-mn-cyrl.tex"
+  },
+  {
+    language = "hyph-mr"
+    file_path = "${hyphen_tex_root}/hyph-mr.tex"
+  },
+  {
+    language = "hyph-mul-ethi"
+    file_path = "${hyphen_tex_root}/hyph-mul-ethi.tex"
+  },
+  {
+    language = "hyph-nl"
+    file_path = "${hyphen_tex_root}/hyph-nl.tex"
+  },
+  {
+    language = "hyph-or"
+    file_path = "${hyphen_tex_root}/hyph-or.tex"
+  },
+  {
+    language = "hyph-pa"
+    file_path = "${hyphen_tex_root}/hyph-pa.tex"
+  },
+  {
+    language = "hyph-pl"
+    file_path = "${hyphen_tex_root}/hyph-pl.tex"
+  },
+  {
+    language = "hyph-pt"
+    file_path = "${hyphen_tex_root}/hyph-pt.tex"
+  },
+  {
+    language = "hyph-rm"
+    file_path = "${hyphen_tex_root}/hyph-rm.tex"
+  },
+  {
+    language = "hyph-ru"
+    file_path = "${hyphen_tex_root}/hyph-ru.tex"
+  },
+  {
+    language = "hyph-sh-cyrl"
+    file_path = "${hyphen_tex_root}/hyph-sh-cyrl.tex"
+  },
+  {
+    language = "hyph-sh-latn"
+    file_path = "${hyphen_tex_root}/hyph-sh-latn.tex"
+  },
+  {
+    language = "hyph-sk"
+    file_path = "${hyphen_tex_root}/hyph-sk.tex"
+  },
+  {
+    language = "hyph-sl"
+    file_path = "${hyphen_tex_root}/hyph-sl.tex"
+  },
+  {
+    language = "hyph-sr-cyrl"
+    file_path = "${hyphen_tex_root}/hyph-sr-cyrl.tex"
+  },
+  {
+    language = "hyph-sv"
+    file_path = "${hyphen_tex_root}/hyph-sv.tex"
+  },
+  {
+    language = "hyph-ta"
+    file_path = "${hyphen_tex_root}/hyph-ta.tex"
+  },
+  {
+    language = "hyph-te"
+    file_path = "${hyphen_tex_root}/hyph-te.tex"
+  },
+  {
+    language = "hyph-th"
+    file_path = "${hyphen_tex_root}/hyph-th.tex"
+  },
+  {
+    language = "hyph-tk"
+    file_path = "${hyphen_tex_root}/hyph-tk.tex"
+  },
+  {
+    language = "hyph-tr"
+    file_path = "${hyphen_tex_root}/hyph-tr.tex"
+  },
+  {
+    language = "hyph-uk"
+    file_path = "${hyphen_tex_root}/hyph-uk.tex"
+  },
+  {
+    language = "hyph-zh-latn-pinyin"
+    file_path = "${hyphen_tex_root}/hyph-zh-latn-pinyin.tex"
+  },
+]

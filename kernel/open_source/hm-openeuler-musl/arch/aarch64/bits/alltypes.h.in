@@ -1,0 +1,36 @@
+#define _Addr long
+
+#ifdef __ILP32__
+#define _Int64 long long
+#define _Reg long long
+#else
+#define _Int64 long
+#define _Reg long
+#endif
+
+#define _REDIR_TIME64 0
+
+#ifdef __AARCH64EB__
+#define __BYTE_ORDER 4321
+#else
+#define __BYTE_ORDER 1234
+#endif
+
+#ifdef __ILP32__
+#define __LONG_MAX 0x7fffffffL
+#else
+#define __LONG_MAX 0x7fffffffffffffffL
+#endif
+
+#ifndef __cplusplus
+TYPEDEF unsigned wchar_t;
+#endif
+TYPEDEF unsigned wint_t;
+
+TYPEDEF int blksize_t;
+TYPEDEF unsigned int nlink_t;
+
+TYPEDEF float float_t;
+TYPEDEF double double_t;
+
+TYPEDEF struct { long long __ll; long double __ld; } max_align_t;

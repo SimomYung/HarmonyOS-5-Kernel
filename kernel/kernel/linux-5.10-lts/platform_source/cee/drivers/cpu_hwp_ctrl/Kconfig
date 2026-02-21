@@ -1,0 +1,15 @@
+menu "cpu hwp ctrl"
+config CPU_HWP_CTRL
+	bool "cpu hwp ctrl"
+	default n
+	help
+	 support cpu hwp ctrl
+
+config CPU_HWP_CTRL_DEBUG
+	bool "cpu hwp ctrl debug"
+	depends on CPU_HWP_CTRL
+	default n
+	help
+	 support cpu hwp ctrl for debug
+
+endmenu

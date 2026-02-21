@@ -1,0 +1,10 @@
+# Copyright (c) Huawei Technologies Co., Ltd. 2023-2024. All rights reserved.
+# Description: HMbuild
+# Author: Huawei OS Kernel Lab
+# Create: Thu Dec 28 21:13:17 2023
+
+src-y: kcov.c
+src-CONFIG_KCOV: actv_thread_kcov.c
+cflags-.-y: -fno-stack-protector                                                                                           
+excludecflags-.-y: -fsanitize-coverage=trace-pc                                                                            
+excludecflags-.-y: -fsanitize-coverage=trace-cmp

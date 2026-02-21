@@ -1,0 +1,15 @@
+#
+# huawei file guard support in kernel
+#
+
+config FILEGUARD_NETWORK
+	bool "enable file_guard network"
+	default n
+	help
+		If you say yes here you get support for huawei file guard network.
+
+config FILEGUARD_IPCWORK
+	bool "enable file_guard ipcwork"
+	default n
+	help
+		If you say yes here you get support for huawei file guard ipcwork.

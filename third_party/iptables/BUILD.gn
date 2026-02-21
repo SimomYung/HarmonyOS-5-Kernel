@@ -1,0 +1,153 @@
+# Copyright (c) 2022 Huawei Device Co., Ltd.
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+import("//build/ohos.gni")
+
+iptables_path = rebase_path("//third_party/iptables")
+exec_script("install.sh", [ "$iptables_path" ])
+
+config("iptables_config") {
+  cflags = [
+    "-D_LARGEFILE_SOURCE=1",
+    "-D_LARGE_FILES",
+    "-D_FILE_OFFSET_BITS=64",
+    "-D_REENTRANT",
+    "-DENABLE_IPV4",
+    "-DENABLE_IPV6",
+    "-Wall",
+    "-Wno-error",
+    "-Wno-pointer-arith",
+    "-Wno-sign-compare",
+    "-Wno-unused-parameter",
+    "-Wno-missing-field-initializers",
+    "-Wno-parentheses-equality",
+    "-DNO_SHARED_LIBS=1",
+    "-DALL_INCLUSIVE",
+    "-DXTABLES_INTERNAL",
+  ]
+}
+
+ohos_executable("iptables") {
+  sources = [
+    "//third_party/iptables/iptables/ip6tables-standalone.c",
+    "//third_party/iptables/iptables/ip6tables.c",
+    "//third_party/iptables/iptables/iptables-restore.c",
+    "//third_party/iptables/iptables/iptables-save.c",
+    "//third_party/iptables/iptables/iptables-standalone.c",
+    "//third_party/iptables/iptables/iptables-xml.c",
+    "//third_party/iptables/iptables/iptables.c",
+    "//third_party/iptables/iptables/xshared.c",
+    "//third_party/iptables/iptables/xtables-legacy-multi.c",
+  ]
+
+  include_dirs = [
+    "//third_party/iptables",
+    "//third_party/iptables/extensions",
+    "//third_party/iptables/include",
+    "//third_party/iptables/iptables",
+    "//third_party/iptables/libiptc",
+  ]
+  license_file = "//third_party/iptables/COPYING"
+  configs = [ ":iptables_config" ]
+
+  install_enable = true
+
+  deps = [
+    "//third_party/iptables/extensions:libext",
+    "//third_party/iptables/extensions:libext4",
+    "//third_party/iptables/extensions:libext6",
+    "//third_party/iptables/libiptc:libip4tc",
+    "//third_party/iptables/libiptc:libip6tc",
+    "//third_party/iptables/libxtables:libxtables",
+  ]
+
+  symlink_target_name = [ "ip6tables" ]
+  part_name = "iptables"
+  subsystem_name = "thirdparty"
+}
+
+ohos_executable("iptables-save") {
+  sources = [
+    "//third_party/iptables/iptables/ip6tables-standalone.c",
+    "//third_party/iptables/iptables/ip6tables.c",
+    "//third_party/iptables/iptables/iptables-restore.c",
+    "//third_party/iptables/iptables/iptables-save.c",
+    "//third_party/iptables/iptables/iptables-standalone.c",
+    "//third_party/iptables/iptables/iptables-xml.c",
+    "//third_party/iptables/iptables/iptables.c",
+    "//third_party/iptables/iptables/xshared.c",
+    "//third_party/iptables/iptables/xtables-legacy-multi.c",
+  ]
+
+  include_dirs = [
+    "//third_party/iptables",
+    "//third_party/iptables/extensions",
+    "//third_party/iptables/include",
+    "//third_party/iptables/iptables",
+    "//third_party/iptables/libiptc",
+  ]
+  configs = [ ":iptables_config" ]
+
+  install_enable = true
+
+  deps = [
+    "//third_party/iptables/extensions:libext",
+    "//third_party/iptables/extensions:libext4",
+    "//third_party/iptables/extensions:libext6",
+    "//third_party/iptables/libiptc:libip4tc",
+    "//third_party/iptables/libiptc:libip6tc",
+    "//third_party/iptables/libxtables:libxtables",
+  ]
+
+  symlink_target_name = [ "ip6tables-save" ]
+  part_name = "iptables"
+  subsystem_name = "thirdparty"
+}
+
+ohos_executable("iptables-restore") {
+  sources = [
+    "//third_party/iptables/iptables/ip6tables-standalone.c",
+    "//third_party/iptables/iptables/ip6tables.c",
+    "//third_party/iptables/iptables/iptables-restore.c",
+    "//third_party/iptables/iptables/iptables-save.c",
+    "//third_party/iptables/iptables/iptables-standalone.c",
+    "//third_party/iptables/iptables/iptables-xml.c",
+    "//third_party/iptables/iptables/iptables.c",
+    "//third_party/iptables/iptables/xshared.c",
+    "//third_party/iptables/iptables/xtables-legacy-multi.c",
+  ]
+
+  include_dirs = [
+    "//third_party/iptables",
+    "//third_party/iptables/extensions",
+    "//third_party/iptables/include",
+    "//third_party/iptables/iptables",
+    "//third_party/iptables/libiptc",
+  ]
+  configs = [ ":iptables_config" ]
+
+  install_enable = true
+
+  deps = [
+    "//third_party/iptables/extensions:libext",
+    "//third_party/iptables/extensions:libext4",
+    "//third_party/iptables/extensions:libext6",
+    "//third_party/iptables/libiptc:libip4tc",
+    "//third_party/iptables/libiptc:libip6tc",
+    "//third_party/iptables/libxtables:libxtables",
+  ]
+
+  symlink_target_name = [ "ip6tables-restore" ]
+  part_name = "iptables"
+  subsystem_name = "thirdparty"
+}

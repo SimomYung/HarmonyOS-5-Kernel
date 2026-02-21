@@ -1,0 +1,13 @@
+/*
+ * Copyright (c) Huawei Technologies Co., Ltd. 2023-2023. All rights reserved.
+ * Description: todo
+ * Author: Huawei OS Kernel Lab
+ * Create: Fri Mar 24 16:43:49 2023
+ */
+
+INCLUDE_C_HEADER(libhwsecurec/securec.h)
+
+INCLUDE_SUBSYSTEM(libsysif/eventcb/eventcb.sysif)
+USE_CALL_PREFIX(eventcbcall)
+USE_HANDLER_PREFIX(eventcbhandler)
+USE_SERVER_NAME(eventcb)

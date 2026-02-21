@@ -1,0 +1,63 @@
+/*
+ * Copyright (C) Huawei Technologies Co., Ltd. 2019-2020. All rights reserved.
+ * Description: Define manager of guard
+ * Author: Huawei OS Kernel Lab
+ * Create: Sat Jul 20 11:59:29 2019
+ */
+
+/*
+ * To support the mixed data model which means the client and the server
+ * may use different data model. See the document for limitation of data type
+ * used in the sysif interfaces in <Documentation/sysif_compat.md>.
+ */
+#ifdef SYSIF_EXPORT_API
+#include <libhmsrv_sys/hm_guard.h>
+
+#define guard_mask(id)		(1U << (id))
+
+enum guard_task_type {
+	TYPE_RUNNING = 0,
+	TYPE_READY,
+	TYPE_BLOCKED,
+	TYPE_LOCKED,
+	TYPE_MEM,
+	TYPE_ZOMBIE,
+	NR_GUARD_TYPE,
+};
+
+#define GUARD_TYPE_MEM     0x1
+#define GUARD_TYPE_READY   0x2
+#define GUARD_TYPE_BLOCK   0x4
+#define GUARD_TYPE_ZOMBIE  0x8
+
+enum guard_config_cmd {
+	GUARD_CONFIG_MONITOR_LIST,
+	GUARD_CONFIG_USER_LIST,
+	GUARD_QUERY_USER_LIST,
+};
+
+enum guard_action_cmd {
+	GUARD_ACTION_QUERY,
+	GUARD_ACTION_DUMP,
+};
+
+#endif
+
+DEFINE_MANAGER(guard, 4,
+	DEFINE_SIMPLE_METHOD(guard, config,
+		ARG(2, unsigned int, cmd, union guard_config_args, args),
+		RET_NO,
+		SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(guard, action,
+		      ARG(2, unsigned int, cmd, union guard_action_args, args),
+		      RET(1, struct guard_stat, stat),
+		      SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(guard, sysrq,
+		      ARG(2, int, key, int, lock_free),
+		      RET_NO,
+		      SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(guard, alive,
+		      ARG(1, pid_t, pid),
+		      RET_NO,
+		      SLOWDATA_NO)
+)

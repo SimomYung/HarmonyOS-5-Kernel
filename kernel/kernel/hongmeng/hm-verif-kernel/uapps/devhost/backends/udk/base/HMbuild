@@ -1,0 +1,11 @@
+# Copyright (c) Huawei Technologies Co., Ltd. 2022. All rights reserved.
+# Description: HMbuild for udk
+# Author: Huawei OS Kernel Lab
+# Create: Wed Feb 09 11:51:30 2022
+
+src-y: udk_compat.c
+src-y: udk_device.c
+src-y: udk_file.c
+src-y: udk_module.c
+src-y: udk_sym.c
+src-y: udk_extension.c

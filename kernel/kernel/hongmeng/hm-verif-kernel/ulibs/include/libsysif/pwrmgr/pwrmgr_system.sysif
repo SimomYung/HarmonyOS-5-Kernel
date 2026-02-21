@@ -1,0 +1,18 @@
+/*
+ * Copyright (C) Huawei Technologies Co., Ltd. 2023. All rights reserved.
+ * Description: The DSL for generating activation interface of pwrmgr
+ * Author: Huawei OS Kernel Lab
+ * Create: Sat Sep 23 15:18:00 UTC 2023
+ */
+
+/*
+ * To support the mixed data model which means the client and the server
+ * may use different data model. See the document for limitation of data type
+ * used in the sysif interfaces in <Documentation/sysif_compat.md>.
+ */
+DEFINE_MANAGER(pwrmgr, 1,
+	DEFINE_METHOD(pwrmgr, system_state,
+		      ARG_NO,
+		      RET(1, enum hm_system_state, state),
+		      SLOWDATA_NO)
+)

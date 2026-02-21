@@ -1,0 +1,289 @@
+/*
+ * Copyright (C) Huawei Technologies Co., Ltd. 2018-2020. All rights reserved.
+ * Description: Sysmgr thread function declaration
+ * Author: Huawei OS Kernel Lab
+ * Create: Mon Nov 26 17:19:19 2018
+ */
+#ifdef SYSIF_EXPORT_API
+#include <libhmsrv_sys/hm_thread.h>
+#include <libhmsrv_sys/hm_futex.h>
+
+struct threadmgr_thread_name {
+	char name[HMCAP_THREAD_NAME_SIZE];
+};
+
+#define PATH_NAME_MAX 64
+struct path_name {
+	char path[PATH_NAME_MAX];
+};
+
+#endif
+
+/*
+ * To support the mixed data model which means the client and the server
+ * may use different data model. See the document for limitation of data type
+ * used in the sysif interfaces in <Documentation/sysif_compat.md>.
+ */
+DEFINE_MANAGER(thread, 56,
+	DEFINE_LSYSCALL_METHOD(exit, NATIVE, SYS_exit,
+			       ARG(1, int, exitval))
+
+	DEFINE_SIMPLE_METHOD(thread, exit_vsyscall,
+			     ARG(1, int, exitval),
+			     RET_NO,
+			     SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(thread, kill,
+			     ARG(1, int, tid),
+			     RET_NO,
+			     SLOWDATA_NO)
+
+	DEFINE_LSYSCALL_METHOD(gettid, NATIVE, SELFCALL, SYS_gettid,
+		ARG_NO)
+
+	DEFINE_SIMPLE_METHOD(thread, main_thread_name_of_cnode_idx,
+		      ARG(2, unsigned int, cnode_idx, struct threadmgr_thread_name *, name),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(thread, get_name_by_root_ns_tid,
+		      ARG(2, int, root_ns_tid, struct threadmgr_thread_name *, name),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(thread, tid2cref,
+		      ARG(1, int, tid),
+		      RET(1, cref_t, tcb_cref),
+		      SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(thread, cref2tid,
+		      ARG(1, cref_t, cref),
+		      RET(1, pid_t, tid),
+		      SLOWDATA_NO)
+
+	DEFINE_LSYSCALL_METHOD_LONG(set_tid_address, NATIVE, SYS_set_tid_address,
+		ARG(1, int *, tid_addr))
+
+	DEFINE_SIMPLE_METHOD(thread, set_privs,
+		      ARG_NO,
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(thread, get_privs,
+		      ARG_NO,
+		      RET(1, bool, no_new_privs),
+		      SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(thread, setname,
+			     ARG(2, cref_t, tcb_cref,
+				 struct threadmgr_thread_name, th_name),
+			     RET_NO,
+			     SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(thread, nstid_of_root,
+			     ARG(3, int, root_tid, int *, tid_array, int, len),
+			     RET_NO,
+			     SLOWDATA_NO)
+
+	DEFINE_LSYSCALL_METHOD_LONG(set_robust_list, NATIVE, SELFCALL, SYS_set_robust_list,
+		ARG(2, unsigned long, head_ptr, unsigned long, len))
+
+	DEFINE_LSYSCALL_METHOD(get_robust_list, SYS_get_robust_list,
+		ARG(3, int, tid, unsigned long, head_ptr, unsigned long, len))
+
+	DEFINE_SIMPLE_METHOD(thread, freeze,
+			ARG(2, int, tid, int, flag),
+			RET_NO,
+			SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(thread, thaw,
+			ARG(1, int, tid),
+			RET_NO,
+			SLOWDATA_NO)
+
+	DEFINE_LSYSCALL_METHOD(personality,
+		      SYS_personality,
+		      ARG(1, unsigned int, persona))
+
+	DEFINE_SIMPLE_METHOD(thread, bind_info,
+			     ARG(1, struct path_name, name),
+			     RET(2, uref_t, nobuf_uref, uref_t, buf_uref),
+			     SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(thread, set_tickless,
+			     ARG(2, int, tid, bool, tickless),
+			     RET_NO,
+			     SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(thread, set_runqueue,
+			     ARG(2, int, tid, unsigned int, newrq),
+			     RET_NO,
+			     SLOWDATA_NO)
+
+	DEFINE_LSYSCALL_METHOD(sched_setparam,
+			       NATIVE,
+			       SYS_sched_setparam,
+			       ARG(2, int, tid, void *, param_user))
+
+	DEFINE_LSYSCALL_METHOD(sched_getparam,
+			       NATIVE,
+			       SYS_sched_getparam,
+			       ARG(2, int, tid, void *, param_user))
+
+	DEFINE_LSYSCALL_METHOD(sched_setscheduler,
+			       NATIVE, SELFCALL,
+			       SYS_sched_setscheduler,
+			       ARG(3, int, tid, int, policy, void *, param_user))
+
+	DEFINE_LSYSCALL_METHOD(sched_getscheduler,
+			       NATIVE,
+			       SYS_sched_getscheduler,
+			       ARG(1, int, tid))
+
+	DEFINE_SIMPLE_METHOD(thread, getseq,
+		      ARG(1, int, tid),
+		      RET(1, unsigned long long, seq),
+		      SLOWDATA_NO)
+
+	DEFINE_LSYSCALL_METHOD(setpriority,
+			       NATIVE,
+			       SYS_setpriority,
+			       ARG(3, int, which, int, tid, int, nice))
+
+	DEFINE_LSYSCALL_METHOD(getpriority,
+			       NATIVE,
+			       SYS_getpriority,
+			       ARG(2, int, which, int, tid))
+
+	DEFINE_LSYSCALL_METHOD(sched_get_avail_prio_max,
+			      SYS_sched_get_avail_prio_max,
+			      ARG_NO)
+
+	DEFINE_LSYSCALL_METHOD(sched_setattr, NATIVE, SYS_sched_setattr,
+			     ARG(3, int, tid, void *, uattr, unsigned int, flags))
+
+	DEFINE_LSYSCALL_METHOD(sched_getattr, NATIVE, SYS_sched_getattr,
+			     ARG(4, int, tid, void *, uattr, unsigned int, size, unsigned int, flags))
+
+	DEFINE_SIMPLE_METHOD(thread, sched_set_max_util,
+			     ARG(2, int, tid, unsigned int, max_util),
+			     RET_NO,
+			     SLOWDATA_NO)
+
+	DEFINE_LSYSCALL_METHOD(sched_setaffinity,
+			       NATIVE, SELFCALL,
+			       SYS_sched_setaffinity,
+			       ARG(3, int, tid, size_t, size, void *, cpuset))
+
+	DEFINE_SIMPLE_METHOD(thread, sched_setaffinity_direct,
+                             ARG(3, int, tid, size_t, size, void *, cpuset),
+                             RET_NO,
+                             SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(thread, sched_setattr_native,
+			     ARG(3, int, tid, struct sched_attr, attr, unsigned int, flags),
+			     RET_NO,
+			     SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(thread, sched_getattr_native,
+			     ARG(3, int, tid, unsigned int, size, unsigned int, flags),
+			     RET(1, struct sched_attr, attr),
+			     SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(thread, sched_trans,
+			     ARG(3, cref_t, src_cref, cref_t, dst_cref, bool, restore),
+			     RET_NO,
+			     SLOWDATA_NO)
+
+	DEFINE_LSYSCALL_METHOD(sched_getaffinity,
+			       NATIVE, SELFCALL,
+			       SYS_sched_getaffinity,
+			       ARG(3, int, tid, size_t, size, void *, cpuset))
+	
+	DEFINE_SIMPLE_METHOD(thread, sched_getaffinity_direct,
+                             ARG(3, int, tid, size_t, size, void *, cpuset),
+                             RET_NO,
+                             SLOWDATA_NO)
+
+	DEFINE_LSYSCALL_METHOD(sched_get_priority_max,
+			       NATIVE,
+			       SYS_sched_get_priority_max,
+			       ARG(1, int, policy))
+
+	DEFINE_LSYSCALL_METHOD(sched_get_priority_min,
+			       NATIVE,
+			       SYS_sched_get_priority_min,
+			       ARG(1, int, policy))
+
+	DEFINE_LSYSCALL_METHOD(sched_rr_get_interval,
+			       NATIVE,
+			       SYS_sched_rr_get_interval,
+			       ARG(2, int, pid, void *, ts_user))
+
+	DEFINE_SIMPLE_METHOD(thread, update_vnotify_futex,
+			     ARG(2, unsigned int, chn, const int *, futex),
+			     RET_NO,
+			     SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(thread, futex_wait,
+			     ARG(1, struct thread_futex_wait_args, args),
+			     RET_NO,
+			     SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(thread, futex_wake,
+			     ARG(1, struct thread_futex_wake_args, args),
+			     RET_NO,
+			     SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(thread, futex_requeue,
+			     ARG(1, struct thread_futex_requeue_args, args),
+			     RET_NO,
+			     SLOWDATA_NO)
+
+	DEFINE_LSYSCALL_METHOD(futex,
+			       NATIVE,
+			       SELFCALL,
+			       SYS_futex,
+			       ARG(6, int *, uaddr, int, futex_op,
+			           int, val, unsigned long, ts_or_val2,
+			           int *, uaddr2, int, val3))
+
+	DEFINE_SIMPLE_METHOD(thread, get_token,
+			     ARG(2, cref_t, cref, unsigned long long *, tokens),
+			     RET_NO,
+			     SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(thread, set_token,
+			     ARG(2, int, is_ftoken, unsigned long long, token),
+			     RET_NO,
+			     SLOWDATA_NO)
+
+	DEFINE_SIMPLE_METHOD(thread, kexec_load_files,
+			     ARG(1, struct softreboot_info, files),
+			     RET_NO,
+			     SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(thread, perf_ctrl_ioctl,
+			     ARG(2, unsigned int, cmd, unsigned long, arg),
+			     RET(1, unsigned int, ret),
+			     SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(thread, set_vip_prio,
+			     ARG(2,int, tid, int, prio),
+			     RET_NO,
+			     SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(thread, set_lt_group,
+				 ARG(2, pid_t, tid, int, group),
+				 RET_NO,
+				 SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(thread, set_lt_boost,
+				 ARG(2, pid_t, tid, int, boost),
+				 RET_NO,
+				 SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(thread, freezer_count,
+			     ARG(2, pid_t, tid, bool, count),
+			     RET_NO,
+			     SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(thread, set_exitsignal,
+			     ARG(1, int, tid),
+			     RET_NO,
+			     SLOWDATA_NO)
+)

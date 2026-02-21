@@ -1,0 +1,185 @@
+% engine=luatex
+
+\input test-patterns
+
+% \mainlanguage[sl]
+
+% \righthyphenmin=2% Note quite sure what I'm doing (default is 3)
+\righthyphenmin=1% Even better :-)
+
+\definefont[charis][CharisSILR]
+
+\ctxlua{hyphenations = hyphenations or { }}
+
+\ctxlua{nbwords = 0}
+
+\def\collecthyphenatedwords{%
+  \startluacode
+  local tag = languages.tag
+
+  for _, h in pairs(hyphens) do
+    local w = h:gsub("-", "")
+    if w == "zglob" then
+      texio.write_nl("term and log", "Found zglob")
+    end
+    texio.write_nl("term and log", "w: " .. tostring(w) .. ", h: " .. tostring(h))
+    if hyphenations[w] then
+      hyphenations[w][tag] = h
+    else
+      nbwords = nbwords + 1
+      texio.write_nl("term and log", "Adding word n° " .. nbwords .. ": " .. w .. " (tag = " .. tag .. ")")
+      hyphenations[w] = { [tag] = h }
+    end
+  end
+  \stopluacode
+}
+
+\starttext
+
+\charis
+
+\lefthyphenmin=1
+
+\define\samplewords{%
+Alek-sandra
+bolan
+član-stvo
+go-spod
+gospodar-ski
+Gradniš-nik
+indu-strijski
+ipav-ski
+istovrsten
+jas-no
+jav-nosti
+kakrš-nikoli
+kak-šen
+kas-neje
+ka-znjenec
+konjski
+krč-mar
+krš-kemu
+kveč-jemu
+la-stnik
+liker-ja
+mo-stov
+mož-gani
+na-mreč
+naprav-ljene
+nem-ški
+ne-sreča
+neum-nosti
+ne-zgod
+peš-nemu
+plod-nih
+pod-uke
+pogum-no
+polje
+polobla
+pooblastilo
+posest-nica
+po-slanstvo
+po-vsem
+pov-sod
+po-vzpeti
+praz-nih
+pred-lagala
+pre-iskovali
+preko-smate
+prerdeč
+pre-strašil
+pre-usmeriti
+pre-vzeti
+proiz-vodnje
+pro-store
+pro-storček
+pu-sta
+raz-red
+razum-ljiv
+razum-nim
+repub-likanski
+res-nica
+revir-jev
+samoupraven
+sestra
+smr-dljiv
+soljo
+so-udeležen
+sov-raštvu
+srbski
+srbščina
+stadion
+stanje
+steb-lica
+strež-nik
+teksta
+tekstilen
+ures-ničeval
+ustvar-jeno
+vero-znanstvo
+vot-ljina
+vzklik-niti
+zapu-stivši
+zarip-li
+za-slišali
+zem-lja
+žanrski
+želez-nica
+živ-ljenje
+mrtav mrtev superior
+zglob
+% Added 2010-08-23, manually
+brezplačen
+potrt
+}
+
+\loadpatterns{sl}
+\comparehyphenation\samplewords
+
+\collecthyphenatedwords
+
+\loadpatterns{hr}
+\comparehyphenation\samplewords
+\collecthyphenatedwords
+
+\loadpatterns{sr-latn}
+\comparehyphenation\samplewords
+\collecthyphenatedwords
+
+\startluacode
+  texio.write_nl("term and log", "hyphenations has " .. table.nentries(hyphenations) .. " elements")
+  texio.write_nl("term and log", table.serialize(hyphenations, "hyphenations"))
+\stopluacode
+
+\setupTABLE[split=yes]
+\bTABLE
+\bTR \bTD sl \eTD \bTD hr \eTD \bTD sr-latn \eTD \eTR
+\startluacode
+  -- for word, hyphs in pairs(hyphenations) do
+  for _, word in ipairs(table.sortedkeys(hyphenations)) do
+    local hyphs = hyphenations[word]
+    tex.print"\\bTR "
+    tex.print"\\bTD " ; tex.print(tostring(hyphs.sl)) ; tex.print"\\eTD "
+    tex.print"\\bTD " ; tex.print(tostring(hyphs.hr)) ; tex.print"\\eTD "
+    tex.print"\\bTD " ; tex.print(tostring(hyphs["sr-latn"])) ; tex.print"\\eTD "
+    tex.print"\\eTR "
+  end
+\stopluacode
+\eTABLE
+
+\loadpatterns{sl}
+
+\collecthyphens{\input krst.tex}
+
+\loadpatterns{cs}
+
+% ne-smy-sl
+% ubrouskem!  Even with lhm = rhm = 1
+\collecthyphens{\input RUR.tex}
+
+\collecthyphens{ubrouskem ubrousek ubrousky ubrúskem obrúsok obrúskem}
+
+\loadpatterns{sk}
+\collecthyphens{ubrouskem ubrousek ubrousky ubrúskem obrúsok obrúskem}
+
+\stoptext

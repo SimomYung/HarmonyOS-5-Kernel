@@ -1,0 +1,10 @@
+# Copyright (c) Huawei Technologies Co., Ltd. 2022. All rights reserved.
+# Description: HMbuild for subdir_multilayer_test
+# Author: Huawei OS Kernel Lab
+# Create: Mon Mar 21 11:08:34 2022
+
+exec-dynamic-y: test.elf
+src-test.elf-y: main.c
+subdir-y: subdir_a/subdir_b
+
+# vim:ts=4:sw=4:expandtab

@@ -1,0 +1,6 @@
+# Copyright (c) Huawei Technologies Co., Ltd. 2022. All rights reserved.
+# Description: Kconfig for subdir_base_test
+# Author: Huawei OS Kernel Lab
+# Create: Mon Mar 21 10:23:46 2022
+
+source "$(HMCMAKENG_KCONFIG)"

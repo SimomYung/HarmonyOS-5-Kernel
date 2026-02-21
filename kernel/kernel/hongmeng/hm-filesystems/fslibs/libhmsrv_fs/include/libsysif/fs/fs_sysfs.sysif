@@ -1,0 +1,102 @@
+/*
+ * Copyright (C) Huawei Technologies Co., Ltd. 2019-2020. All rights reserved.
+ * Description: Sysfs manager header file
+ * Author: Huawei OS Kernel Lab
+ * Create: Wed Mar 13 12:47:04 2019
+ */
+#ifdef SYSIF_EXPORT_API
+
+#define SYSFS_PATH_NAME_MAX 256
+#define SVP_NAME_MAX 32
+#define SYSFS_CREATE_BATCH_MAX 1000
+
+typedef struct ldk_sysfs_entry {
+	char path[SYSFS_PATH_NAME_MAX];
+	char linkpath[SYSFS_PATH_NAME_MAX];
+	unsigned int mode;
+	int type;
+	unsigned long long size;
+	int id;
+	unsigned int nsid;
+} ldk_sysfs_entry_t;
+
+enum kernfs_node_type {
+	KERNFS_DIR		= 0x0001,
+	KERNFS_FILE		= 0x0002,
+	KERNFS_LINK		= 0x0004,
+};
+
+struct sysfs_ops_cb {
+	char svpname[SVP_NAME_MAX];
+	unsigned int open_method_id;
+	unsigned int close_method_id;
+	unsigned int read_method_id;
+	unsigned int write_method_id;
+	unsigned int poll_method_id;
+	int tagid;
+	unsigned long long ctx;
+	unsigned int need_rcache;
+};
+#endif
+
+/*
+ * To support the mixed data model which means the client and the server
+ * may use different data model. See the comment for limitation of data type
+ * used in the sysif interfaces in <libsysif/base/api.h>.
+ */
+DEFINE_MANAGER(sysfs, 8,
+	DEFINE_SIMPLE_METHOD(sysfs, create_file,
+		      ARG(6,
+			  const char *, pathname,
+			  size_t, name_len,
+			  unsigned int, mode,
+			  struct sysfs_ops_cb, ops,
+			  unsigned long, size,
+			  unsigned int, nsid),
+		      RET_NO,
+		      SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(sysfs, create_dir,
+		      ARG(4,
+			  const char *, pathname,
+			  size_t, name_len,
+			  unsigned int, mode,
+			  unsigned int, nsid),
+		      RET_NO,
+		      SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(sysfs, create_symlink,
+		      ARG(4,
+			  const char *, pathname,
+			  size_t, name_len,
+			  unsigned int, mode,
+			  unsigned int, nsid),
+		      RET_NO,
+		      SLOWDATA)
+	DEFINE_SIMPLE_METHOD(sysfs, create_batch,
+		      ARG(3,
+			  void *, ldk_entry,
+			  struct sysfs_ops_cb *, ops_arr,
+			  int, cnt),
+		      RET_NO,
+		      SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(sysfs, delete,
+		      ARG(3,
+			  const char *, pathname,
+			  size_t, name_len,
+			  unsigned int, nsid),
+		      RET(1, int, tagid),
+		      SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(sysfs, rename_link,
+		      ARG(6,
+			  const char *, old_pathname,
+			  size_t, old_name_len,
+			  const char *, new_pathname,
+			  size_t, new_name_len,
+			  unsigned int, old_nsid,
+			  unsigned int, new_nsid),
+		      RET_NO,
+		      SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(sysfs, notify,
+		      ARG_NO,
+		      RET_NO,
+		      SLOWDATA)
+	)

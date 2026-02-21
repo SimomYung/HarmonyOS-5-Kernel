@@ -1,0 +1,10 @@
+#
+# echub pogopin moudule
+#
+
+config ARMPC_ECHUB_POGOPIN
+        bool "echub pogopin"
+        depends on ARMPC_ECHUB
+        default n
+        help
+          This driver provides support for ec pogopin

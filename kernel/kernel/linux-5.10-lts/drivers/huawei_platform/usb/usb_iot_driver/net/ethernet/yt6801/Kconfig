@@ -1,0 +1,6 @@
+config PCIE_NETCARD_YT6801
+	bool "support pcie netcard yt6801"
+	default n
+	depends on PCI
+	help
+		support pcie netcard yt6801

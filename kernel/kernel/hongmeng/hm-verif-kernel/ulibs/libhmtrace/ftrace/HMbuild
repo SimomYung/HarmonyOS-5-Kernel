@@ -1,0 +1,8 @@
+# Copyright (c) Huawei Technologies Co., Ltd. 2022-2022. All rights reserved.
+# Description: HMbuild
+# Author: Huawei OS Kernel Lab
+# Create: Thu May 26 21:10:04 2022
+
+src-y: function_trace.c
+src-y: function_graph.c
+src-y: function_graph_api.c

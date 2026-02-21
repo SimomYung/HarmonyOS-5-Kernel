@@ -1,0 +1,8 @@
+# SPDX-License-Identifier: GPL-2.0-only
+#
+# SPI driver configuration
+#
+menuconfig UWB_NRT82885
+	tristate "NRT82885 UWB SPI driver"
+	help
+	  This supports NRT82885 UWB device.

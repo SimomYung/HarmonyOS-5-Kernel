@@ -1,0 +1,7 @@
+add_hm_library(actv_id.c)
+add_hm_library(actv.c)
+add_hm_library(actv_pure.c)
+add_hm_library(actv_threadpool.c)
+add_hm_library(actv_setup.c)
+add_hm_library(actv_assist.c)
+add_hm_library(actv_local_area.c)

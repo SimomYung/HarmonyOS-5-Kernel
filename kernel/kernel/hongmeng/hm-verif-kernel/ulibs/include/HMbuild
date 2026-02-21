@@ -1,0 +1,58 @@
+# Copyright (c) Huawei Technologies Co., Ltd. 2022-2022. All rights reserved.
+# Description: HMbuild
+# Author: Huawei OS Kernel Lab
+# Create: Tue May 24 09:32:14 2022
+
+installinc: hongmeng
+installinc: libhmactv
+installinc: libhmirq
+installinc: libhmshmalloc
+installinc: libhmsync
+installinc: libhwsecurec
+installinc: libmem
+installinc: libsched
+installinc: libsysif
+installinc: libvsyscall
+installinc: libalgo
+installinc: libhmcert
+installinc: libhmsrv_audit
+installinc: libhmtrace
+installinc: libhmtrace_ng
+installinc: libkbox
+installinc: libhmfaultevt
+installinc: libsysevent
+installinc: libperf
+installinc: libsecure
+installinc: libtest
+installinc: libbunch
+installinc: libhmebr
+installinc: libhmlog
+installinc: libhmsrv_crypt
+installinc: libhmucap
+installinc: libkev
+installinc: libpreempt
+installinc: libself_rel
+installinc: libtty
+installinc: libcrt
+installinc: libhmelf
+installinc: libhmnotifier
+installinc: libhmsrv_key
+installinc: libhmuev
+installinc: libkevdump
+installinc: libprocfs
+installinc: libvhost_user
+installinc: libhguard
+installinc: libhmiov
+installinc: libhmpm
+installinc: libhmsrv_sys
+installinc: libhmutils
+installinc: librb
+installinc: libstrict
+installinc: libvpipe
+installinc: libfdtable
+installinc: libeinj
+installinc: libhmpsf
+installinc: libhmprobe
+installinc: libkcov
+installinc: libpcpinfo
+installinc: libtrack_info

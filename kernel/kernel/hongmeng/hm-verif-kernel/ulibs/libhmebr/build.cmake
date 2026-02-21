@@ -1,0 +1,6 @@
+add_hm_library(ebr.c)
+add_hm_library(ebr_defer.c)
+add_hm_library(ebr_singleton.c)
+add_hm_library(ebr_radix_tree.c)
+add_hm_library(ebr_rbtree.c)
+add_hm_library(ebr_rb_htable.c)

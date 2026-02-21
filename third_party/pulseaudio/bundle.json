@@ -1,0 +1,88 @@
+{
+    "name": "@ohos/pulseaudio",
+    "description": "Pulseaudio is a Sound server system, which is used by multimedia audio subsystem as audio server. It provides playback, record and audio management functionalities.",
+    "version": "3.1",
+    "license": "LGPL V2.1/BSD-Style/Sun License",
+    "publishAs": "code-segment",
+    "segment": {
+        "destPath": "third_party/pulseaudio"
+    },
+    "dirs": {},
+    "scripts": {},
+    "readmePath": {
+        "en": "README"
+    },
+    "component": {
+        "name": "pulseaudio",
+        "subsystem": "thirdparty",
+        "syscap": [],
+        "features": [],
+        "adapted_system_type": [
+            "standard"
+        ],
+        "rom": "",
+        "ram": "",
+        "deps": {
+            "components": [
+                "hilog",
+                "hitrace",
+                "init",
+                "libsnd"
+            ],
+            "third_party": []
+        },
+        "build": {
+            "sub_component": [],
+            "inner_kits": [
+                {
+                    "header": {
+                        "header_base": "//third_party/pulseaudio/ohosbuild/src/daemon",
+                        "header_files": []
+                    },
+                    "name": "//third_party/pulseaudio/ohosbuild/src/daemon:pulseaudio"
+                },
+                {
+                    "header": {
+                        "header_base": "//third_party/pulseaudio/ohosbuild/src/pulse",
+                        "header_files": []
+                    },
+                    "name": "//third_party/pulseaudio/ohosbuild/src/pulse:pulse"
+                },
+                {
+                    "header": {
+                        "header_base": "//third_party/pulseaudio/ohosbuild/src/pulsecore",
+                        "header_files": []
+                    },
+                    "name": "//third_party/pulseaudio/ohosbuild/src/pulsecore:pulsecore"
+                },
+                {
+                    "header": {
+                        "header_base": "//third_party/pulseaudio/ohosbuild/src",
+                        "header_files": []
+                    },
+                    "name": "//third_party/pulseaudio/ohosbuild/src:pulsecommon"
+                },
+                {
+                    "header": {
+                        "header_base": "//third_party/pulseaudio/sonic",
+                        "header_files": [
+                            "sonic.h",
+                            "wave.h"
+                        ]
+                    },
+                    "name": "//third_party/pulseaudio/sonic:sonic"
+                },
+                {
+                    "header": {
+                        "header_base": "//third_party/pulseaudio/speex/include/speex",
+                        "header_files": [
+                            "speex_resampler.h"
+                        ]
+                    },
+                    "name": "//third_party/pulseaudio/speex:speexresampler"
+                }
+            ],
+            "test": []
+        }
+    }
+}

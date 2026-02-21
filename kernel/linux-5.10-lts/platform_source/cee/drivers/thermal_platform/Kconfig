@@ -1,0 +1,291 @@
+config IPA_THERMAL
+	tristate "Temperature sensor on ARM SoC based on THERMAL_TSENSOR interface"
+	depends on THERMAL_TSENSOR
+	depends on CPU_FREQ
+	depends on OF
+	select THERMAL_POWER_ACTOR_CPU
+	help
+	  Support for the thermal sensor driver in the Linux thermal
+	  framework.
+
+config THERMAL_TSENSOR
+	tristate "Thermal sensor driver"
+	default n
+	help
+	  Enable this to plug the thermal sensor driver into the Linux
+	  thermal framework
+
+config LDK_THERMAL
+	tristate "LDK thermal driver"
+	depends on IPA_THERMAL
+	default n
+	help
+	  Enable this to use LDK thermal driver
+	  thermal framework
+
+config FREQ_LIMIT_THERMAL
+	tristate "Ipa cluster0 freq limit"
+	depends on IPA_THERMAL
+	default n
+	help
+	  Enable this to limit cluster0 freq
+	  thermal framework
+
+config THERMAL_TSENSOR_GET_TEMP
+	tristate "Thermal sensor driver"
+	default n
+	help
+	  Enable this to plug the thermal sensor driver into the Linux
+	  thermal framework which get temperature directly
+ 
+config THERMAL_SUPPORT_FFA
+	tristate "Thermal sensor driver support ffa"
+	depends on THERMAL_TSENSOR
+	depends on PLATDRV_SUPPORT_FFA
+	default n
+	help
+	  Enable this to support ffa interface
+
+config THERMAL_PERIPHERAL
+	tristate "Peripheral thermal driver"
+	default n
+	help
+	  Enable this to plug the peripheral thermal sensor driver into the Linux
+	  thermal framework
+
+config THERMAL_PERIPHERAL_HIGHRESTEMP
+	bool "High resolution thermal format for peripheral thermal driver"
+	depends on THERMAL_PERIPHERAL
+	default n
+	help
+	  Enable this to use hi-resolution temperature format for PERIPHERAL thermal.
+
+config THERMAL_CONTEXTHUB
+	bool "Contexthub thermal driver"
+	default n
+	help
+	  Enable Contexthub Thermal
+
+config THERMAL_SPM
+	bool "Sustainable performance mode"
+	depends on IPA_THERMAL
+	default n
+	help
+	  Enable sustainable performance mode
+
+config GPU_IPA_THERMAL
+	bool "Gpu ipa thermal support"
+	depends on IPA_THERMAL
+	default n
+	help
+		Enable gpu ipa thermal
+
+config THERMAL_HOTPLUG
+	bool "Thermal hotplug support"
+	depends on HOTPLUG_CPU
+	default n
+	help
+	  Enable thermal hotplug
+
+config THERMAL_GPU_HOTPLUG
+	bool "Thermal gpu hotplug support"
+	depends on THERMAL_HOTPLUG
+	default n
+	help
+	  Enable gpu thermal hotplug
+
+config THERMAL_NPU_HOTPLUG
+	bool "Thermal npu hotplug support"
+	depends on THERMAL_HOTPLUG
+	default n
+	help
+	  Enable npu thermal hotplug
+
+config THERMAL_ISP_HOTPLUG
+	bool "Thermal isp hotplug support"
+	depends on THERMAL_HOTPLUG
+	default n
+	help
+	  Enable isp thermal hotplug
+
+config HOTPLUG_EMULATION
+	bool "Thermal hotplug emulation support"
+	depends on THERMAL_HOTPLUG
+	default n
+	help
+	  Enable thermal hotplug emulation
+
+config THERMAL_TRIP
+	bool "Trip point for thermal zone"
+	depends on THERMAL_TSENSOR
+	depends on THERMAL_PERIPHERAL
+
+	default n
+	help
+	  Enable trip point for thermal zone
+
+config THERMAL_SHELL
+	bool "Shell temp calculation"
+	depends on THERMAL_PERIPHERAL
+	default n
+	help
+	  Enable shell temp calculation
+
+config SHELL_TEMP_DEBUG
+	bool "Shell temp debug configuration"
+	depends on THERMAL_SHELL
+	default n
+	help
+	  Enable debug node for shell temp calculation
+
+config THERMAL_AMBIENT
+	bool "Ambient temp calculation"
+	depends on THERMAL_PERIPHERAL
+	depends on COUL_DRV
+	default n
+	help
+	  Enable ambient temp calculation
+
+config THERMAL_NPU
+	bool "Npu thermal contral"
+	depends on THERMAL_GOV_STEP_WISE
+	depends on THERMAL_TSENSOR
+	default n
+	help
+		Enable npu thermal contral
+
+config THERMAL_GOV_INTERVAL_CTRL
+	bool "interval_ctrl thermal governor"
+	help
+	  Enable this to manage platform thermals using temperature intervals
+
+config THERMAL_GOV_DYNAMIC_INTERVAL_CTRL
+	bool "dynamic interval_ctrl thermal governor"
+	depends on THERMAL_GOV_INTERVAL_CTRL
+	depends on THERMAL_SHELL
+	default n
+	help
+	  Enable this to manage platform thermals using temperature intervals
+
+config THERMAL_NPU_V2
+	bool "Npu thermal contral by interval governor"
+	depends on THERMAL_GOV_INTERVAL_CTRL
+	depends on THERMAL_TSENSOR
+	default n
+	help
+	  Enable npu thermal contral
+
+config HKADC_MODEM
+	bool "Hkadc modem temp"
+	default n
+	help
+	  Enable hkadc modem temp
+
+config ITS
+	bool "ITS driver"
+	default n
+	help
+	  Enable this to enable ITS driver
+
+config ITS_DEBUG
+	bool "ITS driver debug message"
+	depends on ITS
+	default n
+	help
+	  Enable this to print debug power message for ITS driver
+
+config ITS_IPA
+	bool "IPA using ITS/DPM power data"
+	depends on IPA_THERMAL
+	depends on ITS
+	depends on DPM_HWMON
+	default n
+	help
+	  Use ITS/DPM power during IPA calculate power.
+
+config IPA_MNTN_INFO
+	bool "ipa maintain info"
+	depends on IPA_THERMAL
+	default n
+	help
+	  Enable Ipa maintain info record
+
+config THERMAL_MNTN_DMD
+	bool "thermal maintain info dmd"
+	depends on IPA_THERMAL
+	default n
+	help
+	  Enable Thermal maintain info dmd record
+
+config IPA_LIMIT_RESET
+	bool "ipa limit reset"
+	depends on IPA_THERMAL
+	default n
+	help
+	  Enable Ipa limit reset
+
+config IPA_CPU_EM_PWR
+	bool "ipa use em pwr"
+	depends on IPA_THERMAL
+	default n
+	help
+	  Enable Ipa em power
+
+config TSENS_TEMP_SAPPHIRE
+	bool "sapphire temp calu"
+	depends on THERMAL_TSENSOR
+	default n
+	help
+	  Enable temp calu for sapphire
+
+config THERMAL_ISOLATE
+	bool "Thermal isolate support"
+	depends on THERMAL_HOTPLUG
+	default n
+	help
+	  Enable thermal isolate
+
+config THERMAL_WEIGHT
+	bool "Update thermal ipa weight"
+	depends on IPA_THERMAL
+	default n
+	help
+	  Enable thermal weight Update mode
+
+config THERMAL_SOC_SHELL
+	bool "enable soc-shell thermal joint optimization"
+	depends on IPA_THERMAL
+	depends on THERMAL_SHELL
+	default n
+	help
+	  Enable soc-shell thermal joint optimization
+
+config OPT_IPA_THERMAL
+	bool "enable optimal ipa thermal"
+	depends on IPA_THERMAL
+	default n
+	help
+	  Enable optimal ipa thermal
+
+config OHOS_THERMAL
+	bool "optimal ohos thermal sysfs node"
+	depends on IPA_THERMAL
+	default n
+
+config LDK_THERMAL_INTELLIGENT
+	bool "ldk thermal intelligent freq ctrl"
+	depends on LIBLINUX
+	depends on IPA_THERMAL
+	default n
+	help
+	  Enable shell_frame thermal intelligent freq ctrl	help
+	  Enable thermal zone sysfs optimal
+
+config SLOW_FREQ_LIMIT
+	bool "enable slow freq limit"
+	depends on IPA_THERMAL
+	default n
+	help
+	  Enable slow freq limit
+
+source "platform_source/cee/drivers/thermal_platform/hw_dpm/Kconfig"

@@ -1,0 +1,24 @@
+# Copyright (C) Huawei Technologies Co., Ltd. 2021. All rights reserved.
+# Description: HMbuild
+# Author: Huawei OS Kernel Lab
+# Create: Wed Nov 03 14:10:58 2021
+
+src-y: ux_rsvport.c
+src-y: sec_chk_def.c
+src-CONFIG_SEHARMONY: seharmony.c
+src-CONFIG_SEHARMONY: sel_port.c
+src-CONFIG_SEHARMONY: sel_node.c
+src-y: security.c
+src-y: ability_reserved_port_range.c
+src-y: ability_raw_socket.c
+src-y: ability_net_admin.c
+src-y: ability_net_bind.c
+src-y: ability_net_dev.c
+src-y: ability_net_fs.c
+src-y: ability_vsock.c
+src-y: ability_net_stack_init.c
+src-y: ability_as_devhost.c
+src-y: ability_as_netd.c
+src-y: sec_reserved_ports.c
+src-y: net_posix_cap.c
+src-y: sec_hook.c

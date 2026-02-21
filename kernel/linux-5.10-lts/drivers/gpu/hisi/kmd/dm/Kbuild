@@ -1,0 +1,42 @@
+#
+# Copyright (c) Hisilicon Technologies Co., Ltd. 2021-2021. All rights reserved.
+#
+
+-include $(HVGR_PATH)/dm/fcp/driver/$(CHIP_VER_DIR)/Kbuild
+
+INCLUDE_DIR += \
+	-I$(HVGR_PATH)/dm \
+	-I$(HVGR_PATH)/dm/driver \
+	-I$(HVGR_PATH)/dm/driver/$(CHIP_VER_DIR) \
+	-I$(HVGR_PATH)/dm/fcp \
+	-I$(HVGR_PATH)/dm/fcp/driver/$(CHIP_VER_DIR) \
+	-I$(HVGR_PATH)/dm/dmd
+
+SRC += \
+	$(HVGR_ROOT)/dm/hvgr_dm.c \
+	$(HVGR_ROOT)/dm/hvgr_dm_ioctl.c \
+	$(HVGR_ROOT)/dm/hvgr_dm_ctx.c \
+	$(HVGR_ROOT)/dm/hvgr_dm_dfx.c \
+	$(HVGR_ROOT)/dm/driver/hvgr_dm_driver_base.c \
+	$(HVGR_ROOT)/dm/driver/$(CHIP_VER_DIR)/hvgr_dm_driver_adapt.c \
+	$(HVGR_ROOT)/dm/fcp/hvgr_fcp.c \
+	$(HVGR_ROOT)/dm/fcp/driver/$(CHIP_VER_DIR)/hvgr_fcp_driver_adapt.c \
+	$(HVGR_ROOT)/dm/dmd/hvgr_dmd.c
+
+ifeq ($(CONFIG_HVGR_DFX_SH), y)
+	SRC += $(HVGR_ROOT)/dm/dmd/hvgr_dmd_dfx.c
+endif
+
+ifdef MALEOON_2D_MCU_FEATURE
+	SRC += $(HVGR_ROOT)/dm/fcp/hvgr_2d_mcu.c
+endif
+
+ifeq ($(HVGR_STATE_BUNDLE2), 1)
+	SRC += $(HVGR_ROOT)/dm/fcp/driver/hvgr_v500/hvgr_mcu_common.c
+endif
+
+ifeq ($(HVGR_USE_PCIE), 1)
+	SRC += $(HVGR_ROOT)/dm/driver/hvgr_pcie.c
+else
+	SRC += $(HVGR_ROOT)/dm/driver/hvgr_soc.c
+endif

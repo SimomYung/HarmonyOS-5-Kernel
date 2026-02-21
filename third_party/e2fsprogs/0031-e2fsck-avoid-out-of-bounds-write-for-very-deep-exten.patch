@@ -1,0 +1,71 @@
+From 8d66e7e9316002ca9f9d558069bd56ccba9cece8 Mon Sep 17 00:00:00 2001
+From: Theodore Ts'o <tytso@mit.edu>
+Date: Mon, 6 Jun 2022 22:44:35 -0400
+Subject: e2fsck: avoid out-of-bounds write for very deep extent trees
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+The kernel doesn't support extent trees deeper than 5
+(EXT4_MAX_EXTENT_DEPTH).  For this reason we only maintain the extent
+tree statistics for 5 levels.  Avoid out-of-bounds writes and reads if
+the extent tree is deeper than this.
+
+We keep these statistics to determine whether we should rebuild the
+extent tree.  If the extent tree is too deep, we don't need the
+statistics because we should always rebuild the it.
+
+Reported-by: Nils Bars <nils.bars@rub.de>
+Reported-by: Moritz Schlögel <moritz.schloegel@rub.de>
+Reported-by: Nico Schiller <nico.schiller@rub.de>
+Signed-off-by: Theodore Ts'o <tytso@mit.edu>
+---
+ e2fsck/extents.c | 10 +++++++++-
+ e2fsck/pass1.c   |  3 ++-
+ 2 files changed, 11 insertions(+), 2 deletions(-)
+
+diff --git a/e2fsck/extents.c b/e2fsck/extents.c
+index 01879f56..86fe00e7 100644
+--- a/e2fsck/extents.c
++++ b/e2fsck/extents.c
+@@ -526,7 +526,8 @@ errcode_t e2fsck_check_rebuild_extents(e2fsck_t ctx, ext2_ino_t ino,
+ 		 */
+ 		if (info.curr_entry == 1 &&
+ 		    !(extent.e_flags & EXT2_EXTENT_FLAGS_SECOND_VISIT) &&
+-		    !eti.force_rebuild) {
++		    !eti.force_rebuild &&
++		    info.curr_level < MAX_EXTENT_DEPTH_COUNT) {
+ 			struct extent_tree_level *etl;
+ 
+ 			etl = eti.ext_info + info.curr_level;
+@@ -580,6 +581,13 @@ errcode_t e2fsck_should_rebuild_extents(e2fsck_t ctx,
+ 	extents_per_block = (ctx->fs->blocksize -
+ 			     sizeof(struct ext3_extent_header)) /
+ 			    sizeof(struct ext3_extent);
++
++	/* If the extent tree is too deep, then rebuild it. */
++	if (info->max_depth > MAX_EXTENT_DEPTH_COUNT) {
++		pctx->blk = info->max_depth;
++		op = PR_1E_CAN_COLLAPSE_EXTENT_TREE;
++		goto rebuild;
++	}
+ 	/*
+ 	 * If we can consolidate a level or shorten the tree, schedule the
+ 	 * extent tree to be rebuilt.
+diff --git a/e2fsck/pass1.c b/e2fsck/pass1.c
+index 11d7ce93..43972e7c 100644
+--- a/e2fsck/pass1.c
++++ b/e2fsck/pass1.c
+@@ -2842,7 +2842,8 @@ static void scan_extent_node(e2fsck_t ctx, struct problem_context *pctx,
+ 	if (pctx->errcode)
+ 		return;
+ 	if (!(ctx->options & E2F_OPT_FIXES_ONLY) &&
+-	    !pb->eti.force_rebuild) {
++	    !pb->eti.force_rebuild &&
++	    info.curr_level < MAX_EXTENT_DEPTH_COUNT) {
+ 		struct extent_tree_level *etl;
+ 
+ 		etl = pb->eti.ext_info + info.curr_level;
+-- 
+cgit 
+

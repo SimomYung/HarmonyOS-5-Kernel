@@ -1,0 +1,201 @@
+{
+    "template": "hook",
+    "server": "devhost",
+    "manager": "devhost",
+    "generation": {
+        "header": {
+            "embedded_code": {
+                "hook": "struct filp_node;\n"
+            }
+        }
+    },
+    "hooks": {
+        "devhost_file_alloc": {
+            "scheme": "security context/initialization",
+            "arguments": [
+                {
+                    "name": "node",
+                    "type": "struct filp_node *"
+                }
+            ],
+            "object": {
+                "type": "node"
+            },
+            "rollback": "",
+            "ac": {
+                "dac": {
+                    "enabled": false
+                },
+                "mac": {
+                    "enabled": false
+                },
+                "seharmony": {
+                    "alias": "seharmony_devhost_file_alloc",
+                    "description": "Initializes the dh_file_sec in filp_node."
+                }
+            }
+        },
+        "devhost_file_opened": {
+            "scheme": "security check/object access",
+            "arguments": [
+                {
+                    "name": "node",
+                    "type": "struct filp_node *"
+                }
+            ],
+            "object": {
+                "type": "node"
+            },
+            "ac": {
+                "dac": {
+                    "enabled": false
+                },
+                "mac": {
+                    "enabled": false
+                },
+                "seharmony": {
+                    "alias": "seharmony_devhost_file_opened",
+                    "permission": [
+                        "FILE__OPEN",
+                        "FILE__READ",
+                        "FILE__WRITE",
+                        "FILE__APPEND",
+                        "FILE__IOCTL"
+                    ]
+                }
+            }
+        },
+        "devhost_ioctl": {
+            "scheme": "security check/object access",
+            "arguments": [
+                {
+                    "name": "node",
+                    "type": "struct filp_node *"
+                },
+                {
+                    "name": "cmd",
+                    "type": "unsigned int"
+                },
+                {
+                    "name": "arg",
+                    "type": "unsigned long"
+                }
+            ],
+            "object": {
+                "type": "node"
+            },
+            "ac": {
+                "dac": {
+                    "enabled": false
+                },
+                "mac": {
+                    "enabled": false
+                },
+                "seharmony": {
+                    "alias": "seharmony_devhost_check_ioctl",
+                    "permission": [
+                        "FD__USE",
+                        "FILE__SETATTR",
+                        "FILE__GETATTR",
+                        "FILE__IOCTL"
+                    ]
+                }
+            }
+        },
+        "devhost_fcntl": {
+            "scheme": "security check/object access",
+            "arguments": [
+                {
+                    "name": "node",
+                    "type": "struct filp_node *"
+                },
+                {
+                    "name": "cmd",
+                    "type": "int"
+                },
+                {
+                    "name": "arg",
+                    "type": "unsigned long"
+                }
+            ],
+            "object": {
+                "type": "node"
+            },
+            "ac": {
+                "dac": {
+                    "enabled": false
+                },
+                "mac": {
+                    "enabled": false
+                },
+                "seharmony": {
+                    "alias": "seharmony_devhost_check_fcntl",
+                    "permission": [
+                        "FD__USE",
+                        "FILE__LINK",
+                        "FILE__WRITE"
+                    ]
+                }
+            }
+        },
+        "devhost_fread": {
+            "scheme": "security check/object access",
+            "credential": {
+                "active": true
+            },
+            "arguments": [
+                {
+                    "name": "node",
+                    "type": "struct filp_node *"
+                }
+            ],
+            "object": {
+                "type": "node"
+            },
+            "ac": {
+                "dac": {
+                    "enabled": false
+                },
+                "mac": {
+                    "enabled": false
+                },
+                "seharmony": {
+                    "alias": "seharmony_devhost_check_fread",
+                    "permission": [
+                        "FILE__READ"
+                    ]
+                }
+            }
+        },
+        "devhost_fwrite": {
+            "scheme": "security check/object access",
+            "credential": {
+                "active": true
+            },
+            "arguments": [
+                {
+                    "name": "node",
+                    "type": "struct filp_node *"
+                }
+            ],
+            "object": {
+                "type": "node"
+            },
+            "ac": {
+                "dac": {
+                    "enabled": false
+                },
+                "mac": {
+                    "enabled": false
+                },
+                "seharmony": {
+                    "alias": "seharmony_devhost_check_fwrite",
+                    "permission": [
+                        "FILE__APPEND",
+                        "FILE__WRITE"
+                    ]
+                }
+            }
+        }
+    }
+}

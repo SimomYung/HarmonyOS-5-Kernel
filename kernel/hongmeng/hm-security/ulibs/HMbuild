@@ -1,0 +1,14 @@
+# Copyright (c) Huawei Technologies Co., Ltd. 2021-2022. All rights reserved.
+# Description: HMbuild for hm-security-libs
+# Author: Huawei OS Kernel Lab
+# Create: Mon Oct 11 20:32:13 2021
+
+subdir-y: libhmcrypt
+subdir-CONFIG_CMS_SIG_VERIF: libhmsig
+subdir-CONFIG_DM_SIG_VERITY: libhmdmverity
+subdir-y: libhmsrv_sec
+subdir-CONFIG_LIBKEYMGR: libkeymgr
+subdir-CONFIG_SEHARMONY: libhmseharmony
+subdir-CONFIG_LOG_ENCRYPT: libhmelog
+
+# vim:ts=4:sw=4:expandtab

@@ -1,0 +1,5 @@
+config HEATING_CALIBRATION
+	tristate "support heating calibration"
+	default n
+	help
+	  modem heating_cal driver

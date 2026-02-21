@@ -1,0 +1,21 @@
+/*
+ * Copyright (c) Huawei Technologies Co., Ltd. 2021-2021. All rights reserved.
+ * Description: Provide path and checksum verify interface
+ * Author: Huawei OS Kernel Lab
+ * Create: Mon Jun 21 10:10:20 2021
+ */
+#ifdef SYSIF_EXPORT_API
+#include <stdint.h>
+#endif
+
+/*
+ * To support the mixed data model which means the client and the server
+ * may use different data model. See the document for limitation of data type
+ * used in the sysif interfaces in <Documentation/sysif_compat.md>.
+ */
+DEFINE_MANAGER(cert, 4,
+	DEFINE_SIMPLE_METHOD(cert, verify_path_and_chksum,
+			     ARG(2, const char *, path_and_chksum, size_t, size),
+			     RET_NO,
+			     SLOWDATA_NO)
+)

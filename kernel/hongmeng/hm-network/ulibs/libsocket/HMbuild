@@ -1,0 +1,23 @@
+# Copyright (C) Huawei Technologies Co., Ltd. 2021. All rights reserved.
+# Description: HMbuild
+# Author: Huawei OS Kernel Lab
+# Create: Tue Nov 02 16:57:31 2021
+
+subdir-y: src
+
+cflags-.-y: -D_GNU_SOURCE=1
+cflags-.-y: -fno-asynchronous-unwind-tables
+
+installinc-hmnet: ./include/hm_socket.h
+installinc-hmnet: ./include/hmnet_devices.h
+installinc-hmnet: ./include/hm_netlink.h
+installinc-hmnet: ./include/hm_genetlink.h
+installinc-hmnet: ./include/hm_neighbour.h
+installinc-hmnet: ./include/hm_if_bonding.h
+installinc-hmnet: ./include/hm_ethtool.h
+installinc-hmnet: ./include/hm_if_tun.h
+installinc-hmnet: ./include/hm_vsock.h
+installinc-hmnet: ./include/hmnet_procfs.h
+installinc-hmnet: ./include/hmnet_config.h
+installinc-hmnet: ./include/hmnet_ldk.h
+installinc-hmnet: ./include/hm_if_packet.h

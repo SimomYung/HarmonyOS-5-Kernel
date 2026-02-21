@@ -1,0 +1,128 @@
+#!/usr/bin/env python3
+# coding=utf-8
+"""
+Copyright (c) Huawei Technologies Co., Ltd. 2020-2022. All rights reserved.
+Description: Entry for dsl code generator
+Author: Huawei OS Kernel Lab
+Create: Mon 07 Dec 2020 08:19:00 PM CST
+"""
+
+import os
+from sys import argv
+from time import strftime
+from argparse import ArgumentParser
+from logging import DEBUG
+
+from hmdsl.common.logging import get_logger
+from hmdsl.sysif.codegen.sysif_gen import get_server, gen_client_actv_apis, gen_server_actv_apis
+from hmdsl.sysif.codegen.arguments_gen import mk_lsyscall_callno
+from hmdsl.sysif.codegen.audits_gen import gen_server_audit_statistics
+from hmdsl.sysif.codegen.uev_gen import gen_uev_list
+
+
+def get_parser() -> ArgumentParser:
+    parser = ArgumentParser("hm-dsl")
+    parser.add_argument("dsl-type", choices=['sysif', 'dsl2', 'dsl3'])
+    parser.add_argument("source")
+    parser.add_argument("-I", dest='includes', required=True, nargs='*')
+    parser.add_argument("--api-dest")
+    parser.add_argument("--server-dest")
+    parser.add_argument("--dump-callno")
+    parser.add_argument("--legacy-mode", action="store_true")
+    parser.add_argument("--no-selfcall", action="store_true")
+    parser.add_argument("--override-selfcall", action="store_true")
+    parser.add_argument("-v", action="store_true")
+    parser.add_argument("--audit-statistic")
+    parser.add_argument("--generate-uev")
+    return parser
+
+
+if __name__ == "__main__":
+    parser = get_parser()
+
+    if len(argv) == 1:
+       parser.print_help()
+    else:
+        args = parser.parse_args(argv[1:])
+
+        if args.legacy_mode:
+            legacy_mode = True
+        else:
+            legacy_mode = False
+
+        if args.v:
+            logger = get_logger("hm-dsl", DEBUG)
+        else:
+            logger = get_logger("hm-dsl")
+
+        source = args.source
+        includes = args.includes
+
+        server = get_server(source, includes, legacy_mode)
+        logger.info(f"read in sysif dsl for {server.name} successfully")
+
+        copyright = ''.join([
+            '/*\n'
+            '* Automatically generated file; DO NOT EDIT.\n'
+            '* {description}\n'
+            f'* Using command: {" ".join(argv)}\n'
+            f'* Create: {strftime("%c")}\n'
+            '*/\n'
+        ])
+
+        if args.api_dest:
+            client_target = args.api_dest
+            with open(client_target, 'w') as f:
+                actvcalls = gen_client_actv_apis(server)
+                f.write(copyright.format(description=f"Automatically generated sysif apis for {server.name}"))
+                f.write(actvcalls)
+                logger.info(f"generated sysif client apis for {server.name} successfully")
+
+        no_selfcall = True if args.no_selfcall else False
+        override = True if args.override_selfcall else False
+
+        if args.generate_uev:
+            uev_dir = args.generate_uev
+            uev_target = os.path.join(uev_dir, "uev_list.h")
+            with open(uev_target, 'w') as f:
+                uev_list = gen_uev_list(server)
+                f.write(copyright.format(description=f"Automatically generated sysif uev points for {server.name}"))
+                f.write('\n'.join(uev_list))
+                logger.info(f"generated uev list for {server.name} successfully")
+
+        if args.server_dest:
+            server_target = args.server_dest
+            with open(server_target, 'w') as f:
+                actvhdlrs = gen_server_actv_apis(server, no_selfcall, override)
+                f.write(copyright.format(description=f"Automatically generated sysif apis for {server.name}"))
+                f.write(actvhdlrs)
+                logger.info(f"generated sysif server apis for {server.name} successfully")
+
+        if args.audit_statistic:
+            audit_target = args.audit_statistic
+            with open(audit_target, 'w') as f:
+                audits = gen_server_audit_statistics(server)
+                f.write(audits)
+                logger.info(f"generated audit statistics for {server.name} successfully")
+
+        if args.dump_callno:
+            dump_file = args.dump_callno
+            svr_type = f"SVR_{server.name.upper()}"
+            svr_def = f"DEFINE_SERVER({svr_type})\n"
+            call_nums = mk_lsyscall_callno(server)
+            if len(call_nums) > 0:
+                with open(dump_file, 'a+') as f:
+                    f.seek(0)
+                    lines = f.readlines()
+                with open(dump_file, 'w') as f:
+                    if len(lines) == 0:
+                        f.writelines(svr_def)
+                        f.writelines(call_nums)
+                    else:
+                        for line in lines:
+                            if svr_type not in line:
+                                f.write(line)
+
+                        f.writelines(svr_def)
+                        f.writelines(call_nums)
+                logger.info(f"dump call numbers for {server.name} successfully")

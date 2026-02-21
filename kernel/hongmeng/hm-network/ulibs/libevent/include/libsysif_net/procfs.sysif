@@ -1,0 +1,35 @@
+/*
+ * Copyright (C) Huawei Technologies Co., Ltd. 2019-2020. All rights reserved.
+ * Description: Header file for net procfs sysif api
+ * Author: Huawei OS Kernel Lab
+ * Create: Sat Oct 05 08:58:35 2019
+ */
+
+/*
+ * To support the mixed data model which means the client and the server
+ * may use different data model. See the comment for limitation of data type
+ * used in the sysif interfaces in <libsysif/base/api.h>.
+ */
+DEFINE_MANAGER(procfs, 4,
+	DEFINE_SIMPLE_METHOD(procfs, read,
+			     ARG_NO,
+			     RET_NO,
+			     SLOWDATA)
+	DEFINE_SIMPLE_METHOD(procfs, write,
+			     ARG_NO,
+			     RET_NO,
+			     SLOWDATA)
+	DEFINE_SIMPLE_METHOD(procfs, fds_read,
+			     ARG(3, unsigned int, cnode_idx,
+				    unsigned long long, fd_map,
+				    unsigned int, max_files),
+			     RET_NO,
+			     SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(procfs, get_fd_path,
+			     ARG(4, unsigned int, cnode_idx,
+				    int, fd,
+				    unsigned long long, path_buf,
+				    unsigned int, path_buf_len),
+			     RET_NO,
+			     SLOWDATA_NO)
+)

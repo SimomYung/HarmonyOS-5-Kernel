@@ -1,0 +1,90 @@
+# Copyright (c) Huawei Technologies Co., Ltd. 2021. All rights reserved.
+# Description: HMbuild for devhost
+# Author: Huawei OS Kernel Lab
+# Create: Fri Nov 19 11:26:07 2021
+
+findpkg: HMUlibs
+findpkg: HMSecLib
+findpkg: HMCryptLib
+findpkg: HMFSLibs
+findpkg: HWSecureC
+findpkg: HMDevmgrLibs
+findpkg: HMLibC
+findpkg: HMNetLibs
+findpkg: HMAuditLib
+findpkg: HMSeHarmonyLib
+findpkg: HMSepolLib
+findpkg-CONFIG_SECCOMP: HMCbpfLib
+
+exec-dynamic-y: devhost.elf
+
+linklib-devhost.elf-CONFIG_NO_HKIP: -Tdh_plugin.lds
+linklib-devhost.elf-CONFIG_HKIP: -Tdevhost.lds
+
+# disable COMPAT support if not request
+cflags-.-CONFIG_NO_COMPAT: -D__sysif_server_devhost_no_compat32_handlers__
+
+# disable ILP32 support if not request
+cflags-.-CONFIG_NO_ILP32: -D__sysif_server_devhost_no_ilp32_handlers__
+
+# Add __sysif_trace__ macro if CONFIG_SYSIF_TRACE=y
+cflags-.-CONFIG_SYSIF_TRACE: -D__sysif_trace__
+
+cflags-.-CONFIG_SEHARMONY: -DNEED_SECURITY_FRAME_OVERLAY
+
+cflags-devhost_irq.c-y: -D_GNU_SOURCE
+
+cflags-devhost_loader.c-y: -Wno-strict-prototypes
+
+excludecflags-devhost.c-y: -fsanitize-coverage=trace-pc
+excludecflags-devhost.c-y: -fsanitize-coverage=trace-cmp
+excludecflags-devhost_irq.c-y: -fsanitize-coverage=trace-pc
+excludecflags-devhost_irq.c-y: -fsanitize-coverage=trace-cmp
+
+# sources of devhost.elf
+src-devhost.elf-y: devhost.c
+src-devhost.elf-y: devhost_api.c
+src-devhost.elf-y: devhost_irq.c
+src-devhost.elf-y: devhost_settime.c
+src-devhost.elf-y: devhost_svrp.c
+src-devhost.elf-y: devhost_kvic.c
+src-devhost.elf-y: devhost_loader.c
+src-devhost.elf-y: devhost_backend.c
+src-devhost.elf-y: devhost_kbox.c
+src-devhost.elf-y: devhost_bio.c
+src-devhost.elf-y: devhost_cfg.c
+src-devhost.elf-y: devhost_cma.c
+src-devhost.elf-y: block_if.c
+src-devhost.elf-y: sysif_ep.c
+
+src-devhost.elf-y: pal/mm.c
+src-devhost.elf-y: pal/module.c
+src-devhost.elf-y: pal/fw.c
+
+linklib-devhost.elf-y: -Wl,--no-as-needed
+linklib-devhost.elf: -Wl,--start-group -Wl,--whole-archive
+linklib-devhost.elf-CONFIG_SECCOMP: HMCbpfLib::HMCbpfLib_static
+linklib-devhost.elf: HMUlibs::HMUlibs_shared
+linklib-devhost.elf-CONFIG_DEVHOST_USE_STATIC_LINK: HMSecLib::HMSecLib_static
+linklib-devhost.elf-CONFIG_DEVHOST_USE_DYNAMIC_LINK: HMSecLib::HMSecLib_shared
+linklib-devhost.elf: HMDevmgrLibs::Libdh_shared
+linklib-devhost.elf: HMLibC::HMSysLibC_shared
+linklib-devhost.elf: HMNetLibs::HMNetLib_shared
+linklib-devhost.elf: HMDevmgrLibs::Libhmsrv_io_shared
+linklib-devhost.elf: HMCryptLib::HMCryptLib_shared
+linklib-devhost.elf: HMFSLibs::HMFSLib_shared
+linklib-devhost.elf: HMFSLibs::HMFSKernLib_shared
+linklib-devhost.elf: HWSecureC::HWSecureC_shared
+linklib-devhost.elf-CONFIG_AUDIT: HMAuditLib::HMAuditLib_shared
+linklib-devhost.elf-CONFIG_SEHARMONY: HMSeHarmonyLib::HMSeHarmonyLib_static
+linklib-devhost.elf-CONFIG_SEHARMONY: HMSepolLib::HMSepolLib_shared
+linklib-devhost.elf: -Wl,--end-group -Wl,--no-whole-archive
+
+subdir-y: plugins
+subdir-y: utils
+
+#
+# install rules
+#
+installinc-devhost: include/devhost/
+install-devhost.elf-y: BASE_BINDIR

@@ -1,0 +1,19 @@
+# Copyright (c) Huawei Technologies Co., Ltd. 2022-2022. All rights reserved.
+# Description: HMbuild
+# Author: Huawei OS Kernel Lab
+# Create: Thu May 26 15:52:56 2022
+
+src-y: slab.c
+src-y: memm_slab.c
+src-y: cache.c
+src-y: debug.c
+src-y: slab_ops.c
+src-y: utils.c
+src-y: umem.c
+src-y: memcg_utils.c
+src-y: mem_pool.c
+src-y: reserv_mem.c
+src-CONFIG_PER_CPU_SLAB: slab_per_cpu.c
+src-CONFIG_SLAB_REDZONE: redzone.c
+src-CONFIG_SLAB_DEBUG_USAGE: slab_track.c
+cflags-umem.c-CONFIG_AARCH64_V8_1: -march=armv8.1-a

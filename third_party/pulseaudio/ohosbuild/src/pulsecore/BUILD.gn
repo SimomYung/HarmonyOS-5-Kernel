@@ -1,0 +1,219 @@
+# Copyright (c) 2021-2022 Huawei Device Co., Ltd.
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+import("//build/ohos.gni")
+
+config("pulsecore_config") {
+  visibility = [ ":*" ]
+
+  include_dirs = [
+    "../../../include",
+    "../../../",
+    "../../../src",
+    "../../include",
+    "../../src",
+    "../../../speex/include",
+  ]
+
+  cflags = [
+    "-Wall",
+    "-Werror",
+    "-Wno-implicit-function-declaration",
+    "-Wno-unused-function",
+    "-Wno-uninitialized",
+    "-DHAVE_CONFIG_H",
+    "-D_GNU_SOURCE",
+    "-D__INCLUDED_FROM_PULSE_AUDIO",
+  ]
+}
+
+ohos_source_set("pulsecore_sources") {
+  sources = [
+    "../../../src/pulsecore/asyncmsgq.c",
+    "../../../src/pulsecore/asyncq.c",
+    "../../../src/pulsecore/auth-cookie.c",
+    "../../../src/pulsecore/card.c",
+    "../../../src/pulsecore/cli-command.c",
+    "../../../src/pulsecore/cli-text.c",
+    "../../../src/pulsecore/client.c",
+    "../../../src/pulsecore/core-scache.c",
+    "../../../src/pulsecore/core-subscribe.c",
+    "../../../src/pulsecore/core.c",
+    "../../../src/pulsecore/cpu-arm.c",
+    "../../../src/pulsecore/database-simple.c",
+    "../../../src/pulsecore/database.c",
+    "../../../src/pulsecore/device-port.c",
+    "../../../src/pulsecore/ffmpeg/resample2.c",
+    "../../../src/pulsecore/filter/biquad.c",
+    "../../../src/pulsecore/filter/crossover.c",
+    "../../../src/pulsecore/filter/lfe-filter.c",
+    "../../../src/pulsecore/hook-list.c",
+    "../../../src/pulsecore/ltdl-helper.c",
+    "../../../src/pulsecore/message-handler.c",
+    "../../../src/pulsecore/mix.c",
+    "../../../src/pulsecore/modargs.c",
+    "../../../src/pulsecore/modinfo.c",
+    "../../../src/pulsecore/module.c",
+    "../../../src/pulsecore/msgobject.c",
+    "../../../src/pulsecore/namereg.c",
+    "../../../src/pulsecore/object.c",
+    "../../../src/pulsecore/play-memblockq.c",
+    "../../../src/pulsecore/play-memchunk.c",
+    "../../../src/pulsecore/remap.c",
+    "../../../src/pulsecore/resampler.c",
+    "../../../src/pulsecore/resampler/ffmpeg.c",
+    "../../../src/pulsecore/resampler/peaks.c",
+    "../../../src/pulsecore/resampler/speex.c",
+    "../../../src/pulsecore/resampler/trivial.c",
+    "../../../src/pulsecore/rtpoll.c",
+    "../../../src/pulsecore/sconv-s16be.c",
+    "../../../src/pulsecore/sconv-s16le.c",
+    "../../../src/pulsecore/sconv.c",
+    "../../../src/pulsecore/shared.c",
+    "../../../src/pulsecore/sink-input.c",
+    "../../../src/pulsecore/sink.c",
+    "../../../src/pulsecore/sioman.c",
+    "../../../src/pulsecore/source-output.c",
+    "../../../src/pulsecore/source.c",
+    "../../../src/pulsecore/start-child.c",
+    "../../../src/pulsecore/stream-util.c",
+    "../../../src/pulsecore/svolume_arm.c",
+    "../../../src/pulsecore/svolume_c.c",
+    "../../../src/pulsecore/svolume_mmx.c",
+    "../../../src/pulsecore/svolume_sse.c",
+    "../../../src/pulsecore/thread-mq.c",
+    "../../src/pulsecore/ltdl_stub.c",
+  ]
+
+  configs = [ ":pulsecore_config" ]
+
+  external_deps = [ "hilog:libhilog" ]
+
+  defines = []
+  if (defined(global_parts_info) &&
+      defined(global_parts_info.hiviewdfx_hitrace)) {
+    defines += [ "FEATURE_HITRACE_METER" ]
+    external_deps += [ "hitrace:hitrace_meter" ]
+  }
+
+  subsystem_name = "thirdparty"
+  part_name = "pulseaudio"
+}
+
+config("export_pulsecore_include") {
+  include_dirs = [
+    "../../../include",
+    "../../../src",
+    "../../include",
+    "../../src",
+  ]
+}
+
+ohos_shared_library("pulsecore") {
+  deps = [
+    ":pulsecore_sources",
+    "../../../speex:speexresampler",
+    "../../src:pulsecommon",
+  ]
+
+  public_configs = [ ":export_pulsecore_include" ]
+
+  external_deps = [ "hilog:libhilog" ]
+
+  defines = []
+  if (defined(global_parts_info) &&
+      defined(global_parts_info.hiviewdfx_hitrace)) {
+    defines += [ "FEATURE_HITRACE_METER" ]
+    external_deps += [ "hitrace:hitrace_meter" ]
+  }
+
+  subsystem_name = "thirdparty"
+  innerapi_tags = [
+    "chipsetsdk_indirect",
+    "platformsdk_indirect",
+  ]
+  part_name = "pulseaudio"
+}
+
+config("modules_internal_lib_config") {
+  visibility = [ ":*" ]
+
+  include_dirs = [
+    "../../include",
+    "../../../include",
+    "../../../src",
+    "../../../",
+    "../../src",
+  ]
+
+  cflags = [
+    "-Wall",
+    "-Werror",
+    "-Wno-unused-function",
+    "-DHAVE_CONFIG_H",
+    "-D_GNU_SOURCE",
+    "-D__INCLUDED_FROM_PULSE_AUDIO",
+  ]
+}
+
+ohos_shared_library("cli") {
+  sources = [ "../../../src/pulsecore/cli.c" ]
+
+  configs = [ ":modules_internal_lib_config" ]
+
+  deps = [
+    "../../src:pulsecommon",
+    "../../src/pulsecore:pulsecore",
+  ]
+
+  subsystem_name = "thirdparty"
+  part_name = "pulseaudio"
+}
+
+ohos_shared_library("protocol-cli") {
+  sources = [ "../../../src/pulsecore/protocol-cli.c" ]
+
+  configs = [ ":modules_internal_lib_config" ]
+
+  deps = [
+    "../../src:pulsecommon",
+    "../../src/pulsecore:cli",
+    "../../src/pulsecore:pulsecore",
+  ]
+
+  subsystem_name = "thirdparty"
+  part_name = "pulseaudio"
+}
+
+ohos_shared_library("protocol-native") {
+  sources = [ "../../../src/pulsecore/protocol-native.c" ]
+
+  configs = [ ":modules_internal_lib_config" ]
+
+  deps = [
+    "../../src:pulsecommon",
+    "../../src/pulsecore:pulsecore",
+  ]
+
+  external_deps = [ "hilog:libhilog" ]
+
+  defines = []
+  if (defined(global_parts_info) &&
+      defined(global_parts_info.hiviewdfx_hitrace)) {
+    defines += [ "FEATURE_HITRACE_METER" ]
+    external_deps += [ "hitrace:hitrace_meter" ]
+  }
+
+  subsystem_name = "thirdparty"
+  part_name = "pulseaudio"
+}

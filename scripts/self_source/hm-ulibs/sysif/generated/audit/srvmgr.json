@@ -1,0 +1,1 @@
+{"server_name": "srvmgr", "methods": ["srvmgr_srvmgr_shutdown", "srvmgr_srvmgr_softreboot", "srvmgr_srvmgr_notify", "srvmgr_srvmgr_set_dh_pid", "srvmgr_srvmgr_reboot", "srvmgr_srvmgr_kexec"]}

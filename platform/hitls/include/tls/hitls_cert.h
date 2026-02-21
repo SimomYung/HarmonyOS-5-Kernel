@@ -1,0 +1,887 @@
+/**
+  * @defgroup    hitls_cert hitls_cert.h
+  * @ingroup     tls
+  * @copyright   Copyright (c) Huawei Technologies Co., Ltd. 2022-2022. All rights reserved.
+  * @brief       TLS Certificate Operation Interface
+ */
+
+#ifndef HITLS_CERT_H
+#define HITLS_CERT_H
+
+#include <stdbool.h>
+#include <stdint.h>
+#include <stddef.h>
+#include "hitls_type.h"
+#include "hitls_cert_type.h"
+#include "hitls_cert_reg.h"
+#include "hitls_error.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+#define HITLS_CERT_SET_FIRST    1
+#define HITLS_CERT_SET_NEXT     2
+
+/**
+ * @ingroup hitls_cert
+ * @brief   Set the verify store used by the TLS configuration, which is used for certificate verification.
+ *
+ * @param   config [OUT] TLS link configuration.
+ * @param   store   [IN] CA certificate store.
+ * @param   isClone [IN] Indicates whether deep copy is required. true indicates need, false indicates not need.
+ * @retval  HITLS_SUCCESS, if successful.
+ * @retval  For other error codes, see hitls_error.h.
+ */
+int32_t HITLS_CFG_SetVerifyStore(HITLS_Config *config, HITLS_CERT_Store *store, bool isClone);
+
+/**
+ * @ingroup hitls_cert
+ * @brief   Obtain the verify store used by the TLS configuration.
+ * @attention The user cannot release the memory.
+ *
+ * @param   config [IN] TLS link configuration
+ * @return  Verify store
+ */
+HITLS_CERT_Store *HITLS_CFG_GetVerifyStore(const HITLS_Config *config);
+
+/**
+ * @ingroup hitls_cert
+ * @brief   Set the verify store used by the TLS link for certificate verification.
+ * @param   ctx     [OUT] TLS link object
+ * @param   store   [IN] CA certificate store
+ * @param   isClone [IN] Indicates whether deep copy is required. The options are true and false.
+ * @retval  HITLS_SUCCESS, if successful.
+ * @retval  For other error codes, see hitls_error.h.
+ */
+int32_t HITLS_SetVerifyStore(HITLS_Ctx *ctx, HITLS_CERT_Store *store, bool isClone);
+
+/**
+ * @ingroup hitls_cert
+ * @brief   Obtain the verify store used by the TLS link.
+ * @param   ctx [IN] TLS link object
+ * @return  Verify store
+ */
+HITLS_CERT_Store *HITLS_GetVerifyStore(const HITLS_Ctx *ctx);
+
+/**
+ * @ingroup hitls_cert
+ * @brief   Set the chain store used by the TLS configuration, which is used to construct the certificate chain.
+ *
+ * @param   config [OUT] TLS link configuration
+ * @param   store   [IN] Certificate chain store
+ * @param   isClone [IN] Indicates whether deep copy is required. The options are as follows: true: yes; false: no.
+ * @retval  HITLS_SUCCESS.
+ * @retval  For other error codes, see hitls_error.h.
+ */
+int32_t HITLS_CFG_SetChainStore(HITLS_Config *config, HITLS_CERT_Store *store, bool isClone);
+
+/**
+ * @ingroup hitls_cert
+ * @brief   Obtain the chain store used by the TLS configuration.
+ * @attention The user cannot release the memory.
+ *
+ * @param   config [IN] TLS link configuration
+ * @return  Chain store
+ */
+HITLS_CERT_Store *HITLS_CFG_GetChainStore(const HITLS_Config *config);
+
+/**
+ * @ingroup hitls_cert
+ * @brief   Set the chain store used by the TLS link to construct the certificate chain.
+ * @param   ctx    [OUT] TLS link object
+ * @param   store   [IN] Certificate chain
+ * @param   isClone [IN] Indicates whether deep copy is required. The options are true and false.
+ * @retval  HITLS_SUCCESS, if successful.
+ * @retval  For other error codes, see hitls_error.h.
+ */
+int32_t HITLS_SetChainStore(HITLS_Ctx *ctx, HITLS_CERT_Store *store, bool isClone);
+
+/**
+ * @ingroup hitls_cert
+ * @brief   Obtain the chain store used by the TLS link.
+ * @param   ctx [IN] TLS object
+ * @return  Chain Store
+ */
+HITLS_CERT_Store *HITLS_GetChainStore(const HITLS_Ctx *ctx);
+
+/**
+ * @ingroup hitls_cert
+ * @brief   Set the cert store used by the TLS configuration.
+ * @attention If verify store is not set, use cert store to verify the certificate.
+ * If chain store is not set, use cert store to construct a certificate chain.
+ * @param   config [OUT] TLS link configuration
+ * @param   store   [IN] Trust certificate store
+ * @param   isClone [IN] Indicates whether deep copy is required. The options are true and false.
+ * @retval  HITLS_SUCCESS, if successful.
+ * @retval  For other error codes, see hitls_error.h.
+ */
+int32_t HITLS_CFG_SetCertStore(HITLS_Config *config, HITLS_CERT_Store *store, bool isClone);
+
+/**
+ * @ingroup hitls_cert
+ * @brief   Obtain the cert store used by the TLS configuration.
+ * @attention The user cannot release the memory.
+ *
+ * @param   config [IN] TLS link configuration
+ * @retval  Cert store
+ */
+HITLS_CERT_Store *HITLS_CFG_GetCertStore(const HITLS_Config *config);
+
+/**
+ * @ingroup hitls_cert
+ * @brief   Set the cert store used by the TLS link.
+ * @attention If verify store is not set, use cert store to verify the certificate.
+ * If chain store is not set, use cert store to construct a certificate chain.
+ * @param   ctx    [OUT] TLS link object
+ * @param   store   [IN] Trust certificate store
+ * @param   isClone [IN] Indicates whether deep copy is required. The options are true and false.
+ * @retval  HITLS_SUCCESS, if successful.
+ * @retval  For other error codes, see hitls_error.h.
+ */
+int32_t HITLS_SetCertStore(HITLS_Ctx *ctx, HITLS_CERT_Store *store, bool isClone);
+
+/**
+ * @ingroup hitls_cert
+ * @brief   Obtain the cert store used by the TLS link.
+ * @param   ctx [IN] TLS link object
+ * @return  Cert store
+ */
+HITLS_CERT_Store *HITLS_GetCertStore(const HITLS_Ctx *ctx);
+
+/**
+ * @ingroup hitls_cert
+ * @brief   Set the certificate verification depth.
+ * @param   config [OUT] TLS link configuration
+ * @param   depth   [IN] Verification depth
+ * @retval  HITLS_SUCCESS, if successful.
+ * @retval  For other error codes, see hitls_error.h.
+ */
+int32_t HITLS_CFG_SetVerifyDepth(HITLS_Config *config, uint32_t depth);
+
+/**
+ * @ingroup hitls_cert
+ * @brief   Obtain the certificate verification depth.
+ * @param   config [IN] TLS link configuration
+ * @param   depth  [OUT] Certificate verification depth
+ * @retval  HITLS_SUCCESS, if successful.
+ * @retval  For other error codes, see hitls_error.h.
+ */
+int32_t HITLS_CFG_GetVerifyDepth(const HITLS_Config *config, uint32_t *depth);
+
+/**
+ * @ingroup hitls_cert
+ * @brief   Set the certificate verification depth.
+ * @param   ctx  [OUT] TLS link object
+ * @param   depth [IN] Verification depth
+ * @retval  HITLS_SUCCESS, if successful.
+ * @retval  For other error codes, see hitls_error.h.
+ */
+int32_t HITLS_SetVerifyDepth(HITLS_Ctx *ctx, uint32_t depth);
+
+/**
+ * @ingroup hitls_cert
+ * @brief   Obtain the certificate verification depth.
+ * @param   ctx   [IN] TLS link object
+ * @param   depth [OUT] Certificate verification depth
+ * @retval  HITLS_SUCCESS, if successful.
+ * @retval  For other error codes, see hitls_error.h.
+ */
+int32_t HITLS_GetVerifyDepth(const HITLS_Ctx *ctx, uint32_t *depth);
+
+/**
+ * @ingroup hitls_cert
+ * @brief   Password Callback
+ * @attention This callback function must be compatible with OpenSSL and logically the same as OpenSSL.
+ *
+ * @param   buf    [OUT] Passwd data.
+ * @param   bufLen [IN] Maximum buffer length.
+ * @param   flag   [IN] r/w flag. The value 0 indicates read, and the value 1 indicates write.
+ * @param   userdata [IN] User data.
+ *
+ * @return  Passwd Data length
+ */
+typedef int32_t (*HITLS_PasswordCb)(char *buf, int32_t bufLen, int32_t flag, void *userdata);
+
+/**
+ * @ingroup hitls_cert
+ * @brief   Set the default password callback, cb can be NULL.
+ * @param   config [OUT] TLS link configuration
+ * @param   cb     [IN] Password Callback
+ * @retval  HITLS_SUCCESS, if successful.
+ * @retval  For other error codes, see hitls_error.h.
+ */
+int32_t HITLS_CFG_SetDefaultPasswordCb(HITLS_Config *config, HITLS_PasswordCb cb);
+
+/**
+ * @ingroup hitls_cert
+ * @brief   Callback for obtaining the default password.
+ * @param   config [IN] TLS link configuration.
+ * @return  Password Callback.
+ */
+HITLS_PasswordCb HITLS_CFG_GetDefaultPasswordCb(HITLS_Config *config);
+
+/**
+ * @ingroup hitls_cert
+ * @brief   Set the user data used by the password callback.
+ * @param   config [OUT] TLS link configuration
+ * @param   userdata [IN] User data
+ * @retval  HITLS_SUCCESS, if successful.
+ * @retval  For other error codes, see hitls_error.h.
+ */
+int32_t HITLS_CFG_SetDefaultPasswordCbUserdata(HITLS_Config *config, void *userdata);
+
+/**
+ * @ingroup hitls_cert
+ * @brief   Obtain the user data used by the password callback.
+ * @param   config [IN] TLS link configuration
+ * @return  User Data
+ */
+void *HITLS_CFG_GetDefaultPasswordCbUserdata(HITLS_Config *config);
+
+/**
+ * @ingroup hitls_cert
+ * @brief   Set the default password callback, cb can be NULL
+ * @param   ctx [OUT] TLS link object
+ * @param   cb  [IN] password Callback
+ * @retval  HITLS_SUCCESS, if successful.
+ * @retval  For other error codes, see hitls_error.h.
+ */
+int32_t HITLS_SetDefaultPasswordCb(HITLS_Ctx *ctx, HITLS_PasswordCb cb);
+
+/**
+ * @ingroup hitls_cert
+ * @brief   Callback for obtaining the default password
+ * @param   ctx [IN] TLS link object
+ * @return  Password Callback
+ */
+HITLS_PasswordCb HITLS_GetDefaultPasswordCb(HITLS_Ctx *ctx);
+
+/**
+ * @ingroup hitls_cert
+ * @brief   Set the user data used by the default password callback.
+ * @param   ctx     [OUT] TLS link object
+ * @param   userdata [IN] user data
+ * @retval  HITLS_SUCCESS, if successful.
+ * @retval  For other error codes, see hitls_error.h.
+ */
+int32_t HITLS_SetDefaultPasswordCbUserdata(HITLS_Ctx *ctx, void *userdata);
+
+/**
+ * @ingroup hitls_cert
+ * @brief   Obtain the user data used by the default password callback.
+ * @param   ctx [IN] TLS link object
+ * @return  User data
+ */
+void *HITLS_GetDefaultPasswordCbUserdata(HITLS_Ctx *ctx);
+
+#ifdef HITLS_TLS_PROTO_TLCP11
+/**
+ * @ingroup hitls_cert
+ * @brief   Add the device certificate by the ShangMi(SM) cipher suites.
+ *          Only one certificate can be added for each type.
+ *
+ * @param   config [OUT] TLS link configuration
+ * @param   cert   [IN] Device certificate
+ * @param   isClone [IN] Indicates whether deep copy is required. The options are as follows: true: yes; false: no.
+ * @param   isTlcpEncCert [IN] Indicates whether the certificate is encrypted by China.
+ * The options are as follows: true: yes; false: no.
+ * @return  HITLS_SUCCESS, if successful.
+ *          For details about other error codes, see hitls_error.h.
+ */
+int32_t HITLS_CFG_SetTlcpCertificate(HITLS_Config *config, HITLS_CERT_X509 *cert, bool isClone, bool isTlcpEncCert);
+
+/**
+ * @ingroup hitls_cert
+ * @brief   Add the private key of the device certificate by the ShangMi(SM) cipher suites.
+ * Only one private key can be added for each type of certificate.
+ *
+ * @param   config  [OUT] TLS link configuration
+ * @param   privateKey [IN] Certificate private key
+ * @param   isClone [IN] Indicates whether deep copy is required. The options are as follows: true: yes; false: no.
+ * @param   isTlcpEncCertPriKey [IN] Indicates whether the private key of the encryption certificate is
+ * the private key of the encryption certificate. true: yes; false: no.
+ * @return  HITLS_SUCCESS, if successful.
+ *          For details about other error codes, see hitls_error.h.
+ */
+int32_t HITLS_CFG_SetTlcpPrivateKey(HITLS_Config *config, HITLS_CERT_Key *privateKey,
+    bool isClone, bool isTlcpEncCertPriKey);
+#endif
+
+/**
+ * @ingroup hitls_cert
+ * @brief   Add a device certificate. Only one certificate of each type can be added
+ *
+ * @param   config [OUT] TLS link configuration
+ * @param   cert    [IN] Device certificate
+ * @param   isClone [IN] Indicates whether deep copy is required. The options are as follows: true: yes; false: no.
+ * @retval  HITLS_SUCCESS, if successful.
+ * @retval  For other error codes, see hitls_error.h.
+ */
+int32_t HITLS_CFG_SetCertificate(HITLS_Config *config, HITLS_CERT_X509 *cert, bool isClone);
+
+/**
+ * @ingroup hitls_cert
+ * @brief   Load the device certificate from the file.
+ * @param   config  [OUT] TLS link configuration
+ * @param   file  [IN] File name
+ * @param   type  [IN] File format
+ * @return  HITLS_SUCCESS, if successful.
+ *          For details about other error codes, see hitls_error.h.
+ */
+int32_t HITLS_CFG_LoadCertFile(HITLS_Config *config, const char *file, HITLS_ParseFormat format);
+
+/**
+ * @ingroup hitls_cert
+ * @brief   Read the device certificate from the buffer.
+ * @param   config [OUT] TLS link configuration
+ * @param   buf    [IN] Certificate data
+ * @param   bufLen [IN] Data length
+ * @param   format [IN] Data format
+ * @retval  HITLS_SUCCESS, if successful.
+ * @retval  For other error codes, see hitls_error.h.
+ */
+int32_t HITLS_CFG_LoadCertBuffer(HITLS_Config *config, const uint8_t *buf, uint32_t bufLen, HITLS_ParseFormat format);
+
+/**
+ * @ingroup hitls_cert
+ * @brief   Obtain the device certificate in use.
+ * @attention The user cannot release the memory.
+ *
+ * @param   config [IN] TLS link configuration
+ * @return  Device certificate
+ */
+HITLS_CERT_X509 *HITLS_CFG_GetCertificate(const HITLS_Config *config);
+
+/**
+ * @ingroup hitls_cert
+ * @brief   Add a device certificate. Only one certificate can be added for each type.
+ * @param   ctx [OUT] TLS link object
+ * @param   cert [IN] Device certificate
+ * @retval  HITLS_SUCCESS, if successful.
+ * @retval  For other error codes, see hitls_error.h.
+ */
+int32_t HITLS_SetCertificate(HITLS_Ctx *ctx, HITLS_CERT_X509 *cert, bool isClone);
+
+/**
+ * @ingroup hitls_cert
+ * @brief   Use a file to set the device certificate.
+ * @param   ctx  [IN/OUT] TLS connection handle
+ * @param   file  [IN] File name
+ * @param   format  [IN] Data format
+ * @return  HITLS_SUCCESS, if successful.
+ *          For details about other error codes, see hitls_error.h.
+ */
+int32_t HITLS_LoadCertFile(HITLS_Ctx *ctx, const char *file, HITLS_ParseFormat format);
+
+/**
+ * @ingroup hitls_cert
+ * @brief   Read the device certificate from the buffer.
+ * @param   ctx   [OUT] TLS link object
+ * @param   buf    [IN] Certificate data
+ * @param   bufLen [IN] Data length
+ * @param   format [IN] Data format
+ * @retval  HITLS_SUCCESS, if successful.
+ * @retval  For other error codes, see hitls_error.h.
+ */
+int32_t HITLS_LoadCertBuffer(HITLS_Ctx *ctx, const uint8_t *buf, uint32_t bufLen, HITLS_ParseFormat format);
+
+/**
+ * @ingroup hitls_cert
+ * @brief   Obtain the local certificate.
+ * Returns the most recently added certificate if it is called before the certificate is selected.
+ * If no certificate is added, NULL is returned.
+ * It returns the certificate selected during the handshake if a certificate selection occurs, or NULL
+ * if no certificate is selected (e.g. on a client that does not use a client certificate).
+ * @attention: Shallow copy, can be used only during the ctx life cycle, and the caller
+ * must not release the returned pointer.
+ * @param   ctx [IN] TLS link object
+ * @return  Device certificate
+ */
+HITLS_CERT_X509 *HITLS_GetCertificate(const HITLS_Ctx *ctx);
+
+/**
+ * @ingroup hitls_cert
+ * @brief   Obtain the peer certificate.
+ * @attention: Certificate reference increments by one.
+ * @param   ctx [IN] hitls Context
+ * @return  Peer certificate
+ */
+HITLS_CERT_X509 *HITLS_GetPeerCertificate(const HITLS_Ctx *ctx);
+
+/**
+ * @ingroup hitls_cert
+ * @brief   Add the private key of the device certificate.
+ * Only one private key can be added for each type of certificate.
+ *
+ * @param   config    [OUT] TLS link configuration
+ * @param   privateKey [IN] Certificate private key
+ * @param   isClone    [IN] Indicates whether deep copy is required. The options are as follows: true: yes; false: no.
+ * @retval  HITLS_SUCCESS, if successful.
+ * @retval  For other error codes, see hitls_error.h.
+ */
+int32_t HITLS_CFG_SetPrivateKey(HITLS_Config *config, HITLS_CERT_Key *privateKey, bool isClone);
+
+/**
+ * @ingroup hitls_cert
+ * @brief   Load the private key of the device certificate from the file.
+ * @param   config  [OUT] TLS link configuration
+ * @param   file  [IN] File name
+ * @param   format  [IN] Data format
+ * @return  HITLS_SUCCESS, if successful.
+ *          For details about other error codes, see hitls_error.h.
+ */
+int32_t HITLS_CFG_LoadKeyFile(HITLS_Config *config, const char *file, HITLS_ParseFormat format);
+
+/**
+ * @ingroup hitls_cert
+ * @brief   Read the private key of the device certificate from the buffer.
+ * @param   config [OUT] TLS link configuration
+ * @param   buf    [IN] Private key data
+ * @param   bufLen [IN] Data length
+ * @param   format [IN] Data format
+ * @retval  HITLS_SUCCESS, if successful.
+ * @retval  For other error codes, see hitls_error.h.
+ */
+int32_t HITLS_CFG_LoadKeyBuffer(HITLS_Config *config, const uint8_t *buf, uint32_t bufLen, HITLS_ParseFormat format);
+
+/**
+ * @ingroup hitls_cert
+ * @brief   Obtain the private key of the certificate in use.
+ * @attention The user cannot release the memory.
+ *
+ * @param   config [IN] TLS link configuration
+ * @return  Certificate private key
+ */
+HITLS_CERT_Key *HITLS_CFG_GetPrivateKey(HITLS_Config *config);
+
+/**
+ * @ingroup hitls_cert
+ * @brief   Check whether the configured certificate matches the private key.
+ *
+ * @param   config [IN] TLS link configuration
+ * @return  HITLS_SUCCESS, if successful.
+ *          For details about other error codes, see hitls_error.h.
+ */
+int32_t HITLS_CFG_CheckPrivateKey(HITLS_Config *config);
+
+/**
+ * @ingroup hitls_cert
+ * @brief   Add the private key of the device certificate.
+ * Only one private key can be added for each type of certificate.
+ * @param   ctx  [OUT] TLS link object.
+ * @param   pkey  [IN] Device private key.
+ * @param   isClone  [IN] Indicates whether deep copy is required. The options are as follows: true: yes; false: no.
+ * @retval  HITLS_SUCCESS, if successful.
+ * @retval  For other error codes, see hitls_error.h.
+ */
+int32_t HITLS_SetPrivateKey(HITLS_Ctx *ctx, HITLS_CERT_Key *key, bool isClone);
+
+/**
+ * @ingroup hitls_cert
+ * @brief   Use the file to set the device private key.
+ * @param   ctx  [IN/OUT] TLS connection handle
+ * @param   file  [IN] File name.
+ * @param   format  [IN] Data format.
+ * @return  HITLS_SUCCESS, if successful.
+ *          For details about other error codes, see hitls_error.h.
+ */
+int32_t HITLS_LoadKeyFile(HITLS_Ctx *ctx, const char *file, HITLS_ParseFormat format);
+
+/**
+ * @ingroup hitls_cert
+ * @brief   Read the private key of the device certificate from the buffer.
+ * @param   ctx   [OUT] TLS link object.
+ * @param   buf    [IN] Private key data.
+ * @param   bufLen [IN] Data length.
+ * @param   format [IN] Data format.
+ * @retval  HITLS_SUCCESS, if successful.
+ * @retval  For other error codes, see hitls_error.h.
+ */
+int32_t HITLS_LoadKeyBuffer(HITLS_Ctx *ctx, const uint8_t *buf, uint32_t bufLen, HITLS_ParseFormat format);
+
+/**
+ * @ingroup hitls_cert
+ * @brief   Obtain the private key of the certificate in use.
+ * @attention The user cannot release the memory.
+ *
+ * @param   ctx  [IN] TLS link object
+ * @return  Certificate private key
+ */
+HITLS_CERT_Key *HITLS_GetPrivateKey(HITLS_Ctx *ctx);
+
+/**
+ * @ingroup hitls_cert
+ * @brief   Check whether the configured certificate matches the private key.
+ *
+ * @param   ctx [IN] TLS link object
+ * @return  HITLS_SUCCESS, if successful.
+ *          For details about other error codes, see hitls_error.h.
+ */
+int32_t HITLS_CheckPrivateKey(HITLS_Ctx *ctx);
+
+/**
+ * @ingroup hitls_cert
+ * @brief   Add the certificate to the certificate chain that is being used by the current config.
+ * @param   config  [IN] TLS link configuration
+ * @param   cert [IN] Certificate to be added
+ * @param   isClone [IN] Indicates whether deep copy is required. The options are true and false.
+ * @return  HITLS_SUCCESS, if successful.
+ *          For details about other error codes, see hitls_error.h.
+ */
+int32_t HITLS_CFG_AddChainCert(HITLS_Config *config, HITLS_CERT_X509 *cert, bool isClone);
+
+/**
+ * @ingroup hitls_cert
+ * @brief   Add the certificate to the certificate store that is being used by the current config.
+ * @param   config  [IN] TLS link configuration
+ * @param   cert [IN] Certificate to be added
+ * @param   storeType [IN] Indicates which store to add cert.
+ * @param   isClone [IN] Indicates whether deep copy is required. The options are true and false.
+ * @return  HITLS_SUCCESS, if successful.
+ *          For details about other error codes, see hitls_error.h.
+ */
+int32_t HITLS_CFG_AddCertToStore(HITLS_Config *config, HITLS_CERT_X509 *cert,
+    HITLS_CERT_StoreType storeType, bool isClone);
+
+/**
+ * @ingroup hitls_cert
+ * @brief   Parse Certificate file or buffer to X509.
+ *
+ * @param   config [IN] TLS link configuration
+ * @param   buf [IN] Certificate file or buffer
+ * @param   len [IN] bufLen
+ * @param   type [IN] buf type: file or buffer
+ * @param   format [IN] cert type
+ *
+ * @return  HITLS_CERT_X509
+ */
+HITLS_CERT_X509 *HITLS_CFG_ParseCert(HITLS_Config *config, const uint8_t *buf, uint32_t len,
+    HITLS_ParseType type, HITLS_ParseFormat format);
+
+/**
+ * @ingroup hitls_cert
+ * @brief   Parse Certificate file or buffer to X509.
+ *
+ * @param   config [IN] TLS link configuration
+ * @param   buf [IN] Certificate file or buffer
+ * @param   len [IN] bufLen
+ * @param   type [IN] buf type: file or buffer
+ * @param   format [IN] cert type
+ *
+ * @return  HITLS_CERT_X509
+ */
+HITLS_CERT_Key *HITLS_CFG_ParseKey(HITLS_Config *config, const uint8_t *buf, uint32_t len,
+    HITLS_ParseType type, HITLS_ParseFormat format);
+
+/**
+ * @ingroup hitls_cert
+ * @brief   Obtain the certificate chain that is being used by the current config.
+ * @param   config  [IN] TLS link configuration
+ * @return  The certificate chain that is currently in use
+ */
+HITLS_CERT_Chain *HITLS_CFG_GetChainCerts(HITLS_Config *config);
+
+/**
+ * @ingroup hitls_cert
+ * @brief   Clear the certificate chain associated with the current certificate.
+ * @param   config  [IN] TLS link configuration
+ * @return  HITLS_SUCCESS, if successful.
+ *          For details about other error codes, see hitls_error.h.
+ */
+int32_t HITLS_CFG_ClearChainCerts(HITLS_Config *config);
+
+/**
+ * @ingroup hitls_cert
+ * @brief   Clear the certificate in the current certificate.
+ * @param   ctx [IN] hitls context
+ * @return  HITLS_SUCCESS, if successful.
+ *          For details about other error codes, see hitls_error.h.
+ */
+int32_t HITLS_ClearChainCerts(HITLS_Ctx *ctx);
+
+/**
+ * @ingroup hitls_cert
+ * @brief   Release all loaded certificates and private keys.
+ *
+ * @param   config  [IN] TLS link configuration
+ * @retval  HITLS_SUCCESS, if successful.
+ * @retval  For other error codes, see hitls_error.h.
+ */
+int32_t HITLS_CFG_RemoveCertAndKey(HITLS_Config *config);
+
+/**
+ * @ingroup hitls_cert
+ * @brief   Release all loaded certificates and private keys.
+ *
+ * @param   ctx  [IN] TLS link object
+ * @retval  HITLS_SUCCESS, if successful.
+ * @retval  For other error codes, see hitls_error.h.
+ */
+int32_t HITLS_RemoveCertAndKey(HITLS_Ctx *ctx);
+
+/**
+ * @@ingroup hitls_cert
+ * @brief   Certificate verification callback
+ * @attention This callback function must be compatible with OpenSSL and has the same logic as OpenSSL.
+ *
+ * @param   isPreverifyOk [IN] Indicates whether the relevant certificate has passed the verification
+ * (isPreverifyOk=1) or failed (isPreverifyOk=0)
+ * @param   storeCtx [IN] Cert store context
+ * @return  1 indicates success. Other values indicate failure.
+ */
+typedef int (*HITLS_VerifyCb)(int32_t isPreverifyOk, HITLS_CERT_StoreCtx *storeCtx);
+
+/**
+ * @ingroup hitls_cert
+ * @brief   Set the certificate verification callback function, cb can be NULL.
+ * @param   config  [OUT] TLS link configuration
+ * @param   callback [IN] Certificate verification callback function
+ * @retval  HITLS_SUCCESS, if successful.
+ * @retval  For other error codes, see hitls_error.h.
+ */
+int32_t HITLS_CFG_SetVerifyCb(HITLS_Config *config, HITLS_VerifyCb callback);
+
+/**
+ * @ingroup hitls_cert
+ * @brief   Obtain the certificate verification callback function.
+ * @param   config  [OUT] TLS link configuration
+ * @return  Certificate verification callback function
+ */
+HITLS_VerifyCb HITLS_CFG_GetVerifyCb(HITLS_Config *config);
+
+/**
+ * @ingroup hitls_cert
+ * @brief   Set the certificate verification callback function, cb can be NULL.
+ * @param   ctx     [OUT] TLS link object
+ * @param   callback [IN] Certificate verification callback function
+ * @retval  HITLS_SUCCESS, if successful.
+ * @retval  For other error codes, see hitls_error.h.
+ */
+int32_t HITLS_SetVerifyCb(HITLS_Ctx *ctx, HITLS_VerifyCb callback);
+
+/**
+ * @ingroup hitls_cert
+ * @brief   Obtain the certificate verification callback function.
+ * @param   ctx [IN] TLS link object
+ * @return  Certificate verification callback function
+ */
+HITLS_VerifyCb HITLS_GetVerifyCb(HITLS_Ctx *ctx);
+
+/**
+ * @ingroup hitls_cert
+ * @brief   Set the peer certificate verification result of the current context.
+ * @param   ctx  [IN] TLS connection handle
+ * @param   verifyResult [IN] Peer certificate verification result
+ * @return  HITLS_SUCCESS, if successful.
+ *          For details about other error codes, see hitls_error.h.
+ */
+int32_t HITLS_SetVerifyResult(HITLS_Ctx *ctx, HITLS_ERROR verifyResult);
+
+/**
+ * @ingroup hitls_cert
+ * @brief   Return the peer certificate verification result of the current context.
+ * @param   ctx  [IN] TLS connection handle
+ * @param   verifyResult [OUT] Peer certificate verification result
+ * @return  HITLS_SUCCESS, if successful.
+ *          For details about other error codes, see hitls_error.h.
+ */
+int32_t HITLS_GetVerifyResult(const HITLS_Ctx *ctx, HITLS_ERROR *verifyResult);
+
+/**
+ * @ingroup hitls_cert
+ * @brief   Obtain the peer certificate chain.
+ * @param   ctx [OUT] TLS connection handle
+ * @return  Peer certificate chain
+ */
+HITLS_CERT_Chain *HITLS_GetPeerCertChain(const HITLS_Ctx *ctx);
+
+/**
+ * @ingroup hitls_cert
+ * @brief   Obtain the trusted CA list of the peer end.
+ * @param   ctx [OUT] TLS connection handle
+ * @return  Peer CA list
+ */
+HITLS_TrustedCAList *HITLS_GetClientCAList(const HITLS_Ctx *ctx);
+
+/**
+ * @ingroup hitls_cert
+ * @brief   Add a certificate to the attached certificate chain.
+ * @param   config [OUT] Config handle
+ * @param   cert [IN] X509 certificate
+ * @return  0 indicates success. Other values indicate failure.
+ */
+int32_t HITLS_CFG_AddExtraChainCert(HITLS_Config *config, HITLS_CERT_X509 *cert);
+
+/**
+ * @ingroup hitls_cert
+ * @brief   Obtain the attached certificate chain.
+ * @param   config [IN] Config handle
+ * @return  Attach the certificate chain.
+ */
+HITLS_CERT_Chain *HITLS_CFG_GetExtraChainCerts(HITLS_Config *config);
+
+/**
+ * @ingroup hitls_cert
+ * @brief   Set certificate verification parameters.
+ * @param   config [OUT] TLS link configuration
+ * @param   verifyParam   [IN] Certificate verification configuration
+ * @retval  HITLS_SUCCESS, if successful.
+ * @retval  For other error codes, see hitls_error.h.
+ */
+int32_t HITLS_CFG_SetVerifyParam(HITLS_Config *config, void *verifyParam);
+
+/**
+ * @ingroup hitls_cert
+ * @brief   Obtaining certificate verification parameters
+ * @param   config [IN] TLS link configuration
+ * @retval  verifyParam point
+ * @retval  NULL
+ */
+void *HITLS_CFG_GetVerifyParam(HITLS_Config *config);
+
+/**
+ * @ingroup hitls_cert
+ * @brief   Set certificate verification parameters.
+ * @param   ctx [OUT] TLS handle
+ * @param   verifyParam   [IN] Certificate verification configuration
+ * @retval  HITLS_SUCCESS, if successful.
+ * @retval  For other error codes, see hitls_error.h.
+ */
+int32_t HITLS_SetVerifyParam(HITLS_Ctx *ctx, void *verifyParam);
+
+/**
+ * @ingroup hitls_cert
+ * @brief   Obtain the certificate verification parameters.
+ * @param   ctx [IN] TLS handle
+ * @param   verifyParam   [OUT] Certificate verification configuration
+ * @retval  verifyParam point
+ * @retval  NULL
+ */
+void *HITLS_GetVerifyParam(HITLS_Ctx *ctx);
+
+/**
+ * @ingroup hitls_cert
+ * @brief   Set the current certificate to the value based on the option parameter.
+ * @param   config  [IN] Configuration
+ * @param   option [IN] Setting options, including HITLS_CERT_SET_First, HITLS_CERT_SET_NEXT
+ * @retval  HITLS_SUCCESS, if successful.
+ * @retval  For other error codes, see hitls_error.h.
+ */
+int32_t HITLS_CFG_SetCurrentCert(HITLS_Config *config, long option);
+
+/**
+ * @ingroup hitls_cert
+ * @brief   Set the current certificate to the value based on the option parameter.
+ * @param   ctx     [OUT] TLS link object
+ * @param   option [IN] Setting options, including HITLS_CERT_SET_First, HITLS_CERT_SET_NEXT
+ * @retval  HITLS_SUCCESS, if successful.
+ * @retval  For other error codes, see hitls_error.h.
+ */
+int32_t HITLS_SetCurrentCert(HITLS_Ctx *ctx, long option);
+
+/**
+ * @ingroup hitls_cert
+ * @brief   Process the certificate callback.
+ * @attention This callback function must be compatible with OpenSSL and has the same logic as OpenSSL.
+ *
+ * @param   ctx [IN] TLS link object
+ * @param   arg [IN] Related parameters arg
+ */
+typedef int32_t (*HITLS_CertCb)(HITLS_Ctx *ctx, void *arg);
+
+/**
+ * @ingroup hitls_cert
+ * @brief   Sets the processing certificate callback function, which checks the passed ctx structure and
+ * sets or clears any appropriate certificate, cb can be NULL.
+ * @param   ctx     [OUT] TLS link object
+ * @param   cert_cb [IN] Certificate verification callback function
+ * @param   arg     [IN] Parameters required in the certificate verification callback function
+ * @retval  HITLS_SUCCESS, if successful.
+ * @retval  For other error codes, see hitls_error.h.
+ */
+int32_t HITLS_CFG_SetCertCb(HITLS_Config *config, HITLS_CertCb certCb, void *arg);
+
+/**
+ * @ingroup hitls_cert
+ * @brief   Set the certificate processing callback function. The callback can check the passed ctx structure and
+ * set or clear any appropriate certificate, cb can be NULL.
+ * @param   ctx     [OUT] TLS link object
+ * @param   cert_cb [IN] Certificate verification callback function
+ * @param   arg     [IN] Parameters required in the certificate verification callback function
+ * @retval  HITLS_SUCCESS, if successful.
+ * @retval  For other error codes, see hitls_error.h.
+ */
+int32_t HITLS_SetCertCb(HITLS_Ctx *ctx, HITLS_CertCb certCb, void *arg);
+
+/**
+ * @ingroup hitls_cert
+ * @brief   Certificate verification callback
+ * @attention This callback function must be compatible with OpenSSL and is logically the same as OpenSSL.
+ *
+ * @param   storeCtx [IN] Cert store context
+ * @param   arg [IN] Parameters required in the certificate verification callback function
+ */
+typedef int32_t (*HITLS_APPVerifyCb)(HITLS_CERT_StoreCtx *storeCtx, void *arg);
+
+/**
+ * @ingroup hitls_cert
+ * @brief   Sets the certificate verification callback function.
+ * @param   config  [OUT] TLS Link Configuration
+ * @param   callback [IN] Certificate verification callback function
+ * @param   arg [IN] Parameters required in the certificate verification callback function
+ *
+ * @retval  HITLS_SUCCESS, if successful.
+ * @retval  For other error codes, see hitls_error.h.
+ */
+int32_t HITLS_CFG_SetCertVerifyCb(HITLS_Config *config, HITLS_APPVerifyCb callback, void *arg);
+
+/**
+ * @ingroup hitls_cert
+ * @brief   Key logging callback
+ * @attention This callback function must be compatible with OpenSSL and is logically the same as OpenSSL.
+ *
+ * @param   ctx  [OUT] TLS Link object
+ * @param   line [IN] Content to be recorded
+ */
+typedef void (*HITLS_KeyLogCb)(HITLS_Ctx *ctx, const char *line);
+
+/**
+ * @ingroup hitls_cert
+ * @brief   Sets the callback for recording TLS keys.
+ * @param   config   [OUT] TLS Link Configuration
+ * @param   callback [IN] Callback function for recording keys
+ *
+ * @retval  HITLS_SUCCESS, if successful.
+ * @retval  For other error codes, see hitls_error.h.
+ */
+int32_t HITLS_CFG_SetKeyLogCb(HITLS_Config *config, HITLS_KeyLogCb callback);
+
+/**
+ * @ingroup hitls_cert
+ * @brief   Callback for obtaining TLS key logs
+ * @param   config  [OUT] TLS Link Configuration
+ *
+ * @retval  Callback function for recording key logs
+ */
+HITLS_KeyLogCb HITLS_CFG_GetKeyLogCb(HITLS_Config *config);
+
+/**
+ * @ingroup hitls_cert
+ * @brief If logging is enabled, the master key is logged
+ *
+ * @param ctx           [OUT] TLS Link object.
+ * @param label         [IN] Label
+ * @param secret        [IN] Key
+ * @param secretLen    [IN] Key length.
+ *
+ * @retval  HITLS_SUCCESS, if successful.
+ * @retval  For other error codes, see hitls_error.h.
+ */
+int32_t HITLS_LogSecret(HITLS_Ctx *ctx, const char *label, const uint8_t *secret, size_t secretLen);
+
+#ifdef __cplusplus
+}
+#endif
+
+#endif /* HITLS_CERT_H */

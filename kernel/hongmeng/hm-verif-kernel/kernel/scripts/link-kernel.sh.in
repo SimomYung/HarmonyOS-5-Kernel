@@ -1,0 +1,134 @@
+#!/usr/bin/env bash
+# Copyright (C) Huawei Technologies Co., Ltd. 2020. All rights reserved.
+# Description: Link kernel.elf
+# Author: Huawei OS Kernel Lab
+# Create: Sun Jul 19 16:36:46 2020
+
+# Error out on error
+set -e
+set -x
+
+gen_ksym_head()
+{
+cat << EOF > ksyms.${1}.S
+#include <hmasm/types.h>
+#if BITS_PER_LONG == 32
+#define LONG .long
+#else
+#define LONG .quad
+#endif
+#if defined(__clang__)
+#define SYM(addr, function) LONG addr; .pushsection .ksymstr,"wa"; 1: .asciz #function; .popsection; LONG 1b
+#else
+#define SYM(addr, function) LONG addr; .pushsection .ksymstr; 1: .asciz #function; .popsection; LONG 1b
+#endif
+.section .ksymtab, "wa"
+.global __kernel_symbols_start
+__kernel_symbols_start:
+EOF
+}
+
+gen_ksym_tail()
+{
+cat << EOF >> ksyms.${1}.S
+.global __kernel_symbols_end
+__kernel_symbols_end:
+EOF
+}
+
+gen_kernel_lds()
+{
+	rm -f kernel.lds
+	@HMBUILD_KERNEL_LINKSCRIPT_COMPILER@ @HMBUILD_KERNEL_LINKSCRIPT_LDS_CFLAGS@ -E -o kernel.lds @HMBUILD_KERNEL_LINKSCRIPT_LDS_SOURCE@
+}
+
+gen_kernel_sym()
+{
+	rm -f ksyms.${1}.S
+	gen_ksym_head ${1}
+	if [ "x${1}" = "xfake" ]; then
+		echo 'SYM(_start, _start)' >> ksyms.${1}.S
+	else
+		@HMBUILD_KERNEL_LINKSCRIPT_NM@ -n kernel.${1}.elf | grep '[0-9a-f]\{8,\} [Tt] [^\$]' | \
+			sed 's/^\([0-9a-f]\{1,\}\) . \(.*$\)/SYM(0x\1, \2)/g' >> ksyms.${1}.S
+	fi
+	gen_ksym_tail ${1}
+	@HMBUILD_KERNEL_LINKSCRIPT_COMPILER@ @HMBUILD_KERNEL_LINKSCRIPT_KSYM_CFLAGS@ -c -o ksyms.o ksyms.${1}.S
+}
+
+do_merge_link_kernel()
+{
+	@HMBUILD_KERNEL_LINKSCRIPT_COMPILER@ -o kernel.${1}.elf \
+	@HMBUILD_KERNEL_LINKSCRIPT_LDFLAGS@ \
+	@HMBUILD_KERNEL_LINKSCRIPT_MERGE_FLAG@ \
+	-Wl,--whole-archive \
+	@HMBUILD_KERNEL_LINKSCRIPT_LINK_OBJS@ \
+	-Wl,--no-whole-archive \
+	@HMBUILD_KERNEL_LINKSCRIPT_LINK_LIBS@ \
+	ksyms.o
+	# Delete ksyms.o from generated jam archive
+	@HMBUILD_KERNEL_LINKSCRIPT_AR@ dPv \
+	@HMBUILD_KERNEL_LINKSCRIPT_LINK_JAMOBJS@ \
+	${PWD}/ksyms.o
+}
+
+do_link_kernel()
+{
+	@HMBUILD_KERNEL_LINKSCRIPT_COMPILER@ -o kernel.${1}.elf \
+	@HMBUILD_KERNEL_LINKSCRIPT_LDFLAGS@ \
+	-Wl,--whole-archive \
+	@HMBUILD_KERNEL_LINKSCRIPT_LINK_JAMOBJS@ \
+	-Wl,--no-whole-archive \
+	@HMBUILD_KERNEL_LINKSCRIPT_LINK_LIBS@ \
+	ksyms.o
+}
+
+link_kernel_with_ksym()
+{
+	gen_kernel_sym ${1}
+	if [ "x${2}" = "xstage1" ]; then
+		do_merge_link_kernel ${2}
+	else
+		do_link_kernel ${2}
+	fi
+}
+
+link_kernel_strip()
+{
+	cp ${1} ${2}
+	@HMBUILD_KERNEL_LINKSCRIPT_STRIP@ --strip-all ${2}
+}
+
+link_kernel_kdp_check()
+{
+	if [ "x@CONFIG_KDP@" = "xy" ]; then
+		res=0
+		@HMBUILD_KERNEL_LINKSCRIPT_OBJDUMP@ -d ${1} > ${2}
+		grep_result=$(grep -Ei "dbgwcr0_el1|dbgwcr1_el1|dbgwvr0_el1|dbgwvr1_el1" ${2} | grep -i "msr" | grep -vi "x18" |grep -vi "xzr"||:)
+		if [ -n "${grep_result}" ]; then
+			echo "ERROR: kernel.elf should assign to debug point with x18, Failed"
+			echo "ERROR: ${grep_result}"
+			let res=res+1
+		fi
+		if [ "x@CONFIG_KDP_STRICT_CHECK@" = "xy" ]; then
+			# d51b4232        msr     daif, x18
+			# 92770252        and     x18, x18, #0x200
+			# b40000b2        cbz     x18, pc + 5
+			# b4000052        cbz     x18, pc + 2
+			grep_result=$(grep -A 2 "d51b4232" ${2} | grep -v "d51b4232\|92770252\|b40000b2\|b4000052\|--"||:)
+			if [ -n "${grep_result}" ]; then
+				echo "ERROR: kernel.elf should check reg after [msr daif, reg], Failed"
+				echo "ERROR: ${grep_result}"
+				let res=res+1
+			fi
+		fi
+		exit $res
+	fi
+}
+
+gen_kernel_lds
+link_kernel_with_ksym fake stage1
+link_kernel_with_ksym stage1 stage2
+link_kernel_with_ksym stage2 unstripped
+link_kernel_strip kernel.unstripped.elf kernel.elf
+link_kernel_kdp_check kernel.unstripped.elf kernel.unstripped.elf.S

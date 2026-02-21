@@ -1,0 +1,13 @@
+# Copyright (c) Huawei Technologies Co., Ltd. 2022-2022. All rights reserved.
+# Description: HMbuild
+# Author: Huawei OS Kernel Lab
+# Create: Fri May 06 15:26:35 2022
+
+lib-dynamic-y: hmuname_shared
+output-hmuname_shared: hmuname
+install-hmuname_shared-y: LIBDIR
+
+src-hmuname_shared-y: uname.c
+
+linklib-hmuname_shared-y: -nostdlib
+linklib-hmuname_shared-y: -Wl,--hash-style=both

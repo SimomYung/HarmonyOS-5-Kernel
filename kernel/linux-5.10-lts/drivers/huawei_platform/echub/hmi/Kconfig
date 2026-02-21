@@ -1,0 +1,10 @@
+#
+# hmi driver
+#
+ 
+config ARMPC_ECHUB_HMI
+	bool "Echub hmi driver"
+	depends on ARMPC_ECHUB
+	default n
+	help
+	  This driver supports the hmi feature of EC or MCU.

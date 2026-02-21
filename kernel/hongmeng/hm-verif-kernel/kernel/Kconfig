@@ -1,0 +1,478 @@
+# Copyright (c) Huawei Technologies Co., Ltd. 2022-2022. All rights reserved.
+# Description: Kconfig for cmakeng
+# Author: Huawei OS Kernel Lab
+# Create: Tue Feb 15 20:36:42 2022
+
+# HMCMAKENG_KCONFIG is injected by HongmengCMakeNG/Kconfig.cmake
+# which defines multiple config options which is useful for HMbuild.
+source "$(HMCMAKENG_KCONFIG)"
+
+menu "Build Profile Options"
+
+  choice
+    prompt "Build profile options"
+    default DEBUG_BUILD
+    config DEBUG_BUILD
+      bool "Build kernel with debug mode"
+    config RELEASE_BUILD
+      bool "Build kernel with release mode"
+  endchoice
+
+  config KERNEL_MERGE_BUILD
+    bool "Build kernel with merged source code"
+    default y
+
+  config CC_USE_CLANG
+    bool "Use Clang as compiler"
+
+  config DLIST_DEBUG
+    bool "Dlist check data corruption debug"
+    default y if DEBUG_BUILD
+    default n
+
+  config AUDIT
+    bool "Enable the audit feature"
+    depends on HMTRACE
+    default n
+
+config BAD_FD_DSM
+    bool "Enable badfd sysevent report"
+    default n
+
+  config VIRQ
+    bool "Enable the virtual irq"
+    default y
+
+  config NR_VIRQS
+    int "Maximum number of virtual irqs supported by the kernel"
+    default 64
+
+  config SMP_SHARABILITY_OUTER
+    bool "set memory shareability attribute from inner shareable to outer shareable"
+    default n
+
+  config KLOG_USE_MONO_TIME
+    bool "Klog use mono time"
+    default n
+
+  config PROCFSMGR_FFTS_SCHED
+    bool "procfsmgr ffts sched"
+    default n
+
+  config MM_BANKARRAY
+    bool "adjust memory module for mobile phone SoC"
+    default n
+
+endmenu # Build Profile Options
+
+source "arch/Kconfig"
+source "Kconfig.core"
+source "capability/Kconfig"
+source "drivers/Kconfig"
+source "timer/Kconfig"
+source "interrupt/Kconfig"
+source "livepatch/Kconfig"
+source "utsan/Kconfig"
+source "extensions/Kconfig"
+source "modules/Kconfig"
+source "livepatch/Kconfig"
+source "kev_trace/Kconfig"
+source "power/Kconfig"
+source "page_pool/Kconfig"
+source "pgstr/Kconfig"
+source "ctrlmem/Kconfig"
+source "sched/Kconfig"
+source "sysevent/Kconfig"
+source "pgtbl/Kconfig"
+
+menu "ulibs Options"
+
+config HM_NOTIFIER
+  bool "Notifier chain support"
+  default n
+
+config RWLOCK_PIP
+  bool "Enable rwlock priority inheritance ptotocol"
+  depends on HM_SCHED_TRANS
+  default n
+
+config REC_SPINLOCK_WFE
+  bool "Enable WFE support for rec_spinlock"
+  depends on AARCH64
+  default n
+
+endmenu # ulibs Options
+
+menu "klibs Options"
+
+endmenu # klibs Options
+
+menu "uapps Options"
+
+config PERF
+  bool "Support perf"
+  select PERF_CONTEXT
+  default n
+
+config HMPERF_NG
+  bool "Enable hmperf-ng support"
+  depends on PERF && AARCH64
+  default n
+  help
+    Enable hmperf-ng support.
+
+config HMPSF_PERFBUF
+  bool "Enable hongmeng xvm perf event buffer"
+  depends on HMXVM
+  depends on HMPERF_NG
+  default n
+
+config MOS_FDO
+  bool "MetaOs Feedback Directed Optimize"
+  depends on PRIVILEGED_SERVICE
+  default n
+
+config MOS_FDO_COFILE
+  bool "Co-manage file"
+  depends on MOS_FDO
+  default n
+
+config FUZZER
+  bool "Enable the fuzz driver"
+  help
+    If set, this option will enable the fuzz driver uapp,
+    but disable the interrupt for all tcbs except the idle.
+    For more information about fuzzing please refer to the
+    hm-fuzz repository.
+
+    This is intended for developer use only, you should say
+    "no" unless you know what this is.
+  default n
+
+menu "sysmgr config"
+
+config DYN_LINK_SYSMGR
+    bool "Enable build dynamic linked sysmgr"
+    depends on AARCH64
+    depends on !SYSMGR_KASAN
+    default n
+
+config SYSMGR_KASAN
+  bool "Enable kasan for sysmgr"
+  default n
+
+config SYSMGR_LINUXEMU_SUPPORT
+    bool "Sysmgr Linux syscall emulation support"
+    default n
+
+config SYSMGR_IRQ_PREEMPT
+  bool "sysmgr use hardware irq to implement preempt"
+  default n
+
+config SYSMGR_RO_PGTABLE
+  bool "Sysmgr read-only page table"
+  default y
+
+config HMTRACE
+  bool "Enable hmtrace"
+  default n
+
+config LSYSCALL_TRACE
+  bool "lsyscall trace"
+  default n
+
+config RUSAGE_CSW_COUNT
+  bool "Count nvcsw and nivcsw in getrusage"
+  default n
+
+config KERNEL_BOOTTIME
+  bool "Calculate kernel boot time"
+  depends on KERNEL_BOOTTRACE
+  default n
+
+config KERNEL_BOOTTRACE
+  bool "Record bootup stages"
+  default n
+
+config KERNEL_SWITCH_CORE_ENABLED
+  bool "The implementation depend on ELFLOADER_SWITCH_CORE_ENABLED"
+  default n
+
+config VFS_FUSION
+  bool "sysmgr and vfs fusion"
+  default n
+
+config NETFS_FUSION
+  bool "vfs and partial net fusion"
+  depends on VFS_FUSION
+  default n
+
+config HSYSRQ_KEY_L
+  bool "HSYSRQ_KEY_L option"
+  depends on DEBUG_BUILD
+  default y
+
+endmenu # endmenu sysmgr
+
+menu "idle config"
+
+config PRIVILEGE_IDLE
+  bool "Run idle in EL1 as privilege service"
+  depends on PRIVILEGED_SERVICE
+  default n
+
+endmenu # idle
+
+endmenu # uapps
+
+config SOFT_REBOOT_CORE
+  bool
+  default n
+
+config SOFT_REBOOT_RESERVE_MEM
+  bool
+  default n
+
+config SOFT_REBOOT
+  bool "Enable soft reboot"
+  select SOFT_REBOOT_CORE
+  select SOFT_REBOOT_RESERVE_MEM
+  default n
+
+config PLAT_CPU_PARK_SUPPORT
+  bool
+  default n
+
+config CPU_PARK
+  bool "Enable cpu park to simulate software power-on and power-off"
+  depends on PLAT_CPU_PARK_SUPPORT
+  default n
+
+config CAN_CHECK_INSIDE_STACK_FRAME
+  bool "Enable copy_to_user() to check if the source is inside the stack frame"
+  depends on HARDENED_USERCOPY
+  default n
+  help
+  Only select this when the architecture can get the range of each of its kernel
+  stack frames. That means the stack layout is relatively fixed, e.g. local
+  variables are always on top of frame pointer.
+  When this option is on, there should be an inline stack_frames_check() implemented.
+
+config SECCOMP
+  bool "Enable the secure computing feature"
+  default n
+
+config SECURITY_JITFORT
+  depends on AARCH64
+  bool "Enable jit memory protect feature"
+  default n
+
+config HKIP_PROTECT_BASE
+  bool "Enable hm kernel integrity protect feature"
+  depends on PLAT_SUPPORT_HKIP
+  depends on AARCH64
+  depends on !KERNEL_LIVEPATCH
+  default n
+
+config HKIP_SUPPORT_ROWM
+  bool "Enable hkip rowm"
+  depends on HKIP_PROTECT_BASE
+  default n
+
+config HKIP_SEC_REGION
+  bool "Enable hkip sec region"
+  default n
+
+config HKIP_PROTECT_KERNEL
+  bool "Enable hkip protect kernel"
+  default n
+
+config HKIP_PROTECT_SYSMGR
+  bool "Enable hkip protect sysmgr"
+  default n
+
+config BOOT_GET_HKIP_STATE
+  bool "Set hkip state by bootargs"
+  depends on HKIP_PROTECT_BASE
+  default n
+
+config KERNEL_HUGE_PAGE
+  bool "huge page for kernel code and data"
+  default n
+
+config KERNEL_TEXT_SECTION
+  bool "enable kernel text section"
+  default n
+
+config SEC_REGION
+  bool "Enable sec region protect feature"
+  depends on PLAT_SUPPORT_SEC_REGION
+  default n
+
+config TRACE_GLOBAL_KEY
+  bool "trace use global key to decrease dcache miss"
+  default n
+
+config FFA_SEC_REGION
+  bool "Enable sec region protect feature by ffa driver"
+  depends on SEC_REGION
+  default n
+
+config SEC_REGION_PROTECT_KERNEL_RO_ADDR_SPLIT
+  bool "Split addr for sec region kernel read only protection"
+  depends on SEC_REGION
+  default n
+
+config SEC_REGION_PROTECT_KERNEL_RW
+  bool "Enable sec region protect for kernel rw"
+  depends on SEC_REGION
+  default n
+
+config SEC_REGION_PROTECT_SYSMGR
+    bool "Enable sec region protect for sysmgr"
+    depends on SEC_REGION
+    default n
+
+config TSM_COMMON
+  bool "Enable common functionality for Thread State Monitor"
+  default n
+
+config ULWT
+  depends on TSM_COMMON
+  bool "Kernel support for silk"
+  default n
+
+config TSM_FFRT
+  depends on TSM_COMMON
+  bool "Kernel support for ffrt blockaware"
+  default n
+
+config THREAD_FINE_LOAD
+  bool "Fine load control for thread"
+  default n
+
+config KERNEL_SYMBOL
+  bool "Support get kernel symbol info"
+  default n
+
+config KEXEC
+  bool "Enable kexec"
+  select SOFT_REBOOT_CORE
+  default n
+
+config JUMP_LABEL
+  bool "Support jump label"
+  default n
+
+config TRACEMGR
+  bool "Trace manager"
+  default n
+
+config HMVIRT_TRACE
+  bool "Support hmvirt trace"
+  default n
+  depends on TRACEMGR
+  depends on HYPERVISOR
+  depends on VHE
+
+config CHANGE_KLINEAR_MAPPING
+  bool "Change kernel linear mapping attr"
+  depends on SPINHDLR_ENABLED
+  default n
+
+config TRACE_SNAPSHOT
+  bool "Enable trace snapshot"
+  default n
+  depends on TRACEMGR
+
+config TRACE_BLOCK_INFO
+  bool "Enable trace block info"
+  default y
+  depends on TRACEMGR
+
+config TRACE_BLOCK_INFO_ON_KOBJ
+  bool "Store trace block info on kobj"
+  default y
+  depends on KOBJ_THREAD
+  depends on TRACE_BLOCK_INFO
+
+config TRACE_SHM_SIZE_MAX
+ hex "The max size of trace shm"
+ depends on TRACEMGR
+ default 0x40000000
+ default 0x8000000 if PLAT_SD5151T || PLAT_HI1156 || PLAT_HI1172
+
+config SUPPORT_HMFDT
+  bool "Support use libhmfdt"
+  default n
+
+config USER_FUTEX
+  bool "Enable user space futex support"
+  default n
+
+  config PANIC_INTO_LOOP
+  bool "Enable panic into loop"
+
+config ENABLE_EVENTPOLL_DFX
+  bool "Enable eventpoll dfx support"
+  default n
+
+config EVENTPOLL_TRACE
+  depends on TRACEMGR
+  depends on ENABLE_EVENTPOLL_DFX
+  bool "Enable eventpoll trace support"
+  default n
+
+config SAVE_LOAD_INFO
+  bool "Enable saving loadinfo of kernel and system services to reserved memory"
+  default n
+
+config TIMER_HARDEN_S4
+  bool "Support timer on harden S4"
+  default n
+
+config KMAP_FORBID_WRITE_KLINEAR_PGTBL
+  bool "Forbit writing to kernel page table for linear mapping"
+  default y
+
+config KERNEL_PAGE_TABLE_RDONLY
+  bool "Map kernel linear mapping page table read only"
+  depends on KMAP_FORBID_WRITE_KLINEAR_PGTBL
+  default y
+
+config DEVHOST_HVC
+  bool "Enable HVC CALL for ldk"
+  depends on AARCH64
+  default n
+
+config PGSTRTBL_STAT
+  bool "Enable print histogram of page types"
+  default n
+
+# These options not be seen
+config ARCH64_CC_NOT_USE_CLANG
+   def_bool (AARCH64 && !CC_USE_CLANG)
+
+config ARM_NO_VIRT_EXTENSION
+   def_bool (ARM && !ARM_VIRT_EXTENSION)
+
+config AARCH64_V8_1_LSE
+   def_bool (AARCH64_V8_1 && AARCH64_LSE)
+
+config AARCH64_V8_2_LSE
+   def_bool (AARCH64_V8_2 && AARCH64_LSE)
+
+config AARCH64_V8_3_LSE
+   def_bool (AARCH64_V8_3 && AARCH64_LSE)
+
+config AARCH64_V8_1_NO_LSE
+   def_bool (AARCH64_V8_1 && !AARCH64_LSE)
+
+config AARCH64_V8_2_NO_LSE
+   def_bool (AARCH64_V8_2 && !AARCH64_LSE)
+
+config AARCH64_V8_3_NO_LSE
+   def_bool (AARCH64_V8_3 && !AARCH64_LSE)
+
+config AARCH64_VCPU_SVE
+   def_bool (AARCH64_V8_2 && AARCH64_SVE)

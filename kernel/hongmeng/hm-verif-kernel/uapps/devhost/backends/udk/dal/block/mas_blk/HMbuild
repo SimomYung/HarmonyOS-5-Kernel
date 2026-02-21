@@ -1,0 +1,23 @@
+# Copyright (c) Huawei Technologies Co., Ltd. 2022. All rights reserved.
+# Description: HMbuild for udk
+# Author: Huawei OS Kernel Lab
+# Create: Wed Feb 09 11:51:30 2022
+
+src-y: mas_blk_busy_idle_interface.c
+src-y: mas_blk_busy_idle_notify.c
+src-y: mas_blk_core.c
+src-y: mas_blk_core_interface.c
+src-y: mas_blk_dump.c
+src-y: mas_blk_dump_interface.c
+src-y: mas_blk_flush.c
+src-y: mas_blk_flush_interface.c
+src-y: mas_blk_iosched_interface.c
+src-y: mas_blk_iosched_ufs_mq.c
+src-y: mas_blk_latency.c
+src-y: mas_blk_latency_interface.c
+src-y: mas_blk_mq_tag.c
+src-y: mas_blk_sysfs.c
+src-CONFIG_MAS_BKOPS: mas_bkops_core.c
+src-CONFIG_MAS_BLK_NVME: mas_blk_iosched_nvme_interface.c
+src-CONFIG_MAS_BLK_NVME: mas_blk_iosched_nvme_mq.c
+src-CONFIG_MAS_BLK_NVME: mas_blk_nvme_mq_tag.c

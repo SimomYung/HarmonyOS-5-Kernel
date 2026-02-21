@@ -1,0 +1,308 @@
+/* SPDX-License-Identifier: GPL-2.0 */
+/*
+ * mt5788.h
+ *
+ * mt5788 macro, addr etc.
+ *
+ * Copyright (c) 2022-2022 Huawei Technologies Co., Ltd.
+ *
+ * This software is licensed under the terms of the GNU General Public
+ * License version 2, as published by the Free Software Foundation, and
+ * may be copied, distributed, and modified under those terms.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ */
+
+#ifndef _MT5788_H_
+#define _MT5788_H_
+
+#include <linux/init.h>
+#include <linux/module.h>
+#include <linux/device.h>
+#include <linux/gpio.h>
+#include <linux/slab.h>
+#include <linux/i2c.h>
+#include <linux/of.h>
+#include <linux/of_device.h>
+#include <linux/of_address.h>
+#include <linux/of_gpio.h>
+#include <linux/interrupt.h>
+#include <linux/irq.h>
+#include <linux/workqueue.h>
+#include <linux/bitops.h>
+#include <linux/jiffies.h>
+#include <chipset_common/hwpower/common_module/power_delay.h>
+#include <chipset_common/hwpower/hardware_ic/boost_5v.h>
+#include <chipset_common/hwpower/hardware_ic/charge_pump.h>
+#include <chipset_common/hwpower/hardware_ic/wireless_ic_fod.h>
+#include <chipset_common/hwpower/hardware_ic/wireless_ic_iout.h>
+#include <chipset_common/hwpower/hardware_ic/wireless_ic_debug.h>
+#include <chipset_common/hwpower/wireless_charge/wireless_firmware.h>
+#include <chipset_common/hwpower/wireless_charge/wireless_trx_intf.h>
+#include <chipset_common/hwpower/wireless_charge/wireless_rx_ic_intf.h>
+#include <chipset_common/hwpower/wireless_charge/wireless_tx_ic_intf.h>
+#include <chipset_common/hwpower/wireless_charge/wireless_power_supply.h>
+#include <chipset_common/hwpower/wireless_charge/wireless_rx_status.h>
+#include <huawei_platform/power/wireless/wireless_charger.h>
+#include <huawei_platform/power/wireless/wireless_direct_charger.h>
+#include <huawei_platform/power/wireless/wireless_transmitter.h>
+#include <chipset_common/hwpower/wireless_charge/wireless_test_hw.h>
+#include <chipset_common/hwpower/hardware_channel/wired_channel_switch.h>
+#include <chipset_common/hwpower/common_module/power_gpio.h>
+#include <chipset_common/hwpower/common_module/power_i2c.h>
+#include <chipset_common/hwpower/common_module/power_printk.h>
+#include <chipset_common/hwpower/common_module/power_common_macro.h>
+#include <chipset_common/hwpower/common_module/power_time.h>
+#include <chipset_common/hwpower/common_module/power_wakeup.h>
+#include <chipset_common/hwpower/common_module/power_cmdline.h>
+#include <chipset_common/hwpower/common_module/power_devices_info.h>
+#include <chipset_common/hwpower/common_module/power_pinctrl.h>
+#include "mt5788_chip.h"
+
+/* for rx dummy iload */
+enum mt5788_dummy_iload {
+	MT5788_DUMMY_ILOAD_BEGIN = 0,
+	MT5788_DUMMY_ILOAD_5V_NO_MOD = MT5788_DUMMY_ILOAD_BEGIN,
+	MT5788_DUMMY_ILOAD_5V_MOD,
+	MT5788_DUMMY_ILOAD_9V_NO_MOD,
+	MT5788_DUMMY_ILOAD_9V_MOD,
+	MT5788_DUMMY_ILOAD_SC_NO_MOD,
+	MT5788_DUMMY_ILOAD_SC_MOD,
+	MT5788_DUMMY_ILOAD_FODCHK_NO_MOD,
+	MT5788_DUMMY_ILOAD_FODCHK_MOD,
+	MT5788_DUMMY_ILOAD_END,
+};
+
+/* for tx bridge ctrl */
+enum mt5788_bridge_ctrl {
+	MT5788_BRIDGE_BEGIN = 0,
+	MT5788_BRIDGE_DUTY = MT5788_BRIDGE_BEGIN,
+	MT5788_BRIDGE_FREQ,
+	MT5788_BRIDGE_END,
+};
+
+struct mt5788_chip_info {
+	u16 chip_id;
+	u32 mtp_ver;
+};
+
+struct mt5788_fw_info {
+	u32 mtp_ver;
+	u16 mtp_crc;
+	u16 mtp_len;
+};
+
+struct mt5788_mtp_check_delay {
+	u32 user;
+	u32 fac;
+};
+
+struct mt5788_rx_cm_intfr_cfg {
+	u8 type;
+	u8 cm;
+	u8 polar;
+};
+
+struct mt5788_global_val {
+	bool mtp_latest;
+	bool mtp_chk_complete;
+	bool irq_abnormal;
+	bool rx_stop_chrg;
+	bool tx_stop_chrg;
+	bool tx_open_flag;
+	bool vfc_set_complete;
+	struct hwqi_handle *qi_hdl;
+};
+
+struct mt5788_rx_cm_cfg {
+	u8 l_volt;
+	u8 h_volt;
+	u8 fac_h_volt;
+};
+
+struct mt5788_rx_polar_cfg {
+	u8 l_volt;
+	u8 h_volt;
+	u8 fac_h_volt;
+};
+
+struct mt5788_rx_mod_cfg {
+	struct mt5788_rx_cm_cfg cm;
+	struct mt5788_rx_polar_cfg polar;
+};
+
+struct mt5788_rx_ldo_cfg {
+	u8 l_volt[MT5788_RX_LDO_CFG_LEN]; /* 5V buck */
+	u8 m_volt[MT5788_RX_LDO_CFG_LEN]; /* 9V buck */
+	u8 sc[MT5788_RX_LDO_CFG_LEN];
+};
+
+struct mt5788_tx_init_para {
+	u16 ping_interval;
+	u16 ping_freq;
+	u16 ping_duty;
+	u32 ping_ocp_th;
+	u32 ocp_th;
+};
+
+struct mt5788_tx_fod_para {
+	u32 ploss_th0;
+	u32 ploss_th1;
+	u32 ploss_th2;
+	u32 ploss_th3;
+	u32 hp_ploss_th0;
+	u32 hp_ploss_th1;
+	u32 hp_ploss_th2;
+	u32 hp_cur_th0;
+	u32 hp_cur_th1;
+	u32 ploss_cnt;
+};
+
+struct mt5788_rx_ldo_opp_vbst {
+	u32 vbst;
+	u32 iout_lth;
+	u32 iout_hth;
+};
+
+struct mt5788_rx_dummy_iload {
+	u32 th_no_ask;
+	u32 val_no_ask;
+	u32 th_ask;
+	u32 val_ask;
+};
+
+struct mt5788_dev_info {
+	struct i2c_client *client;
+	struct device *dev;
+	struct mutex mutex_irq;
+	struct wakeup_source *wakelock;
+	struct work_struct irq_work;
+	struct delayed_work mtp_check_work;
+	struct mt5788_fw_info fw_mtp;
+	struct mt5788_global_val g_val;
+	struct mt5788_rx_mod_cfg rx_mod_cfg;
+	struct mt5788_rx_cm_intfr_cfg *cm_intfr_cfg;
+	struct mt5788_rx_ldo_cfg rx_ldo_cfg;
+	struct mt5788_tx_init_para tx_init_para;
+	struct mt5788_tx_fod_para tx_fod;
+	struct mt5788_mtp_check_delay mtp_check_delay;
+	struct mt5788_rx_ldo_opp_vbst ldo_opp_vbst;
+	struct mt5788_rx_dummy_iload dummy_load;
+	struct wakeup_source *fw_wakelock;
+	bool is_scx_mode;
+	unsigned int ic_type;
+	int rx_ss_good_lth;
+	int otp_th;
+	int duty_max;
+	int duty_min;
+	int gpio_en;
+	int gpio_en_valid_val;
+	int gpio_sleep_en;
+	int gpio_int;
+	int gpio_pwr_good;
+	int irq_int;
+	int irq_cnt;
+	u32 irq_val;
+	u32 tx_ept_type;
+	bool need_ignore_irq;
+	bool irq_active;
+	bool irq_awake;
+	u32 tx_ping_freq;
+	u32 tx_ping_duty;
+	u32 ping_ocp_th;
+	u32 tx_pt_ocp_th;
+	u32 tx_iin_chip;
+	u32 tx_pt_cep_ctrl;
+	u32 rx_vfc_diff;
+	u32 rx_fod_offset;
+	u32 dummy_iload[MT5788_DUMMY_ILOAD_END];
+	u32 bridge_ctrl[MT5788_BRIDGE_END];
+	u32 fodchk_ask_cap;
+	u32 fodchk_dummy_load;
+	u32 coil_test_ping_freq;
+	u32 coil_test_ping_duty;
+	int cali_a;
+	int cali_b;
+	u16 chip_id;
+	u32 tx_fod_fmt;
+	int sysfs_cm_type;
+	int cm_intfr_cfg_level;
+	int last_vfc;
+	int need_ctrl_brg;
+	u32 rx_wdt_timeout;
+	int rx_icali;
+	int tx_icali;
+	u8 rx_icali_para[MT5788_RX_IOUT_CALI_LEN];
+	u8 tx_icali_para[MT5788_TX_IIN_CALI_LEN];
+	u8 rpp_intv_cnt;
+	int tx_fodchk_duty_max;
+	int tx_fodchk_duty_min;
+};
+
+/* mt5788 i2c */
+int mt5788_read_byte(struct mt5788_dev_info *di, u16 reg, u8 *data);
+int mt5788_write_byte(struct mt5788_dev_info *di, u16 reg, u8 data);
+int mt5788_read_byte_mask(struct mt5788_dev_info *di, u16 reg, u8 mask, u8 shift, u8 *data);
+int mt5788_write_byte_mask(struct mt5788_dev_info *di, u16 reg, u8 mask, u8 shift, u8 data);
+int mt5788_read_word(struct mt5788_dev_info *di, u16 reg, u16 *data);
+int mt5788_write_word(struct mt5788_dev_info *di, u16 reg, u16 data);
+int mt5788_write_word_mask(struct mt5788_dev_info *di, u16 reg, u16 mask, u16 shift, u16 data);
+int mt5788_read_dword(struct mt5788_dev_info *di, u16 reg, u32 *data);
+int mt5788_write_dword(struct mt5788_dev_info *di, u16 reg, u32 data);
+int mt5788_read_dword_mask(struct mt5788_dev_info *di, u16 reg, u32 mask, u32 shift, u32 *data);
+int mt5788_write_dword_mask(struct mt5788_dev_info *di, u16 reg, u32 mask, u32 shift, u32 data);
+int mt5788_read_block(struct mt5788_dev_info *di, u16 reg, u8 *data, u8 len);
+int mt5788_write_block(struct mt5788_dev_info *di, u16 reg, u8 *data, u8 data_len);
+
+/* mt5788 common */
+int mt5788_get_chip_info(struct mt5788_dev_info *di, struct mt5788_chip_info *info);
+int mt5788_get_chip_info_str(char *info_str, int len, void *dev_data);
+void mt5788_enable_irq(struct mt5788_dev_info *di);
+void mt5788_disable_irq_nosync(struct mt5788_dev_info *di);
+void mt5788_enable_irq_wake(struct mt5788_dev_info *di);
+void mt5788_disable_irq_wake(struct mt5788_dev_info *di);
+void mt5788_chip_enable(bool enable, void *dev_data);
+bool mt5788_is_chip_enable(void *dev_data);
+bool mt5788_is_pwr_good(struct mt5788_dev_info *di);
+int mt5788_get_mode(struct mt5788_dev_info *di, u32 *mode);
+int mt5788_get_chip_id(struct mt5788_dev_info *di, u16 *chip_id);
+
+struct device_node *mt5788_dts_dev_node(void *dev_data);
+
+/* mt5788 dts */
+int mt5788_parse_dts(struct device_node *np, struct mt5788_dev_info *di);
+
+#if 1
+/* mt5788 rx */
+bool mt5788_rx_is_tx_exist(void *dev_data);
+void mt5788_rx_probe_check_tx_exist(struct mt5788_dev_info *di);
+void mt5788_rx_shutdown_handler(struct mt5788_dev_info *di);
+void mt5788_rx_mode_irq_handler(struct mt5788_dev_info *di);
+void mt5788_rx_abnormal_irq_handler(struct mt5788_dev_info *di);
+int mt5788_rx_ops_register(struct wltrx_ic_ops *ops, struct mt5788_dev_info *di);
+
+/* mt5788 qi */
+int mt5788_qi_ops_register(struct wltrx_ic_ops *ops, struct mt5788_dev_info *di);
+#endif
+/* mt5788 fw */
+void mt5788_fw_mtp_check(struct mt5788_dev_info *di);
+int mt5788_fw_sram_update(void *dev_data);
+int mt5788_fw_get_mtp_ver(struct mt5788_dev_info *di, u32 *fw);
+int mt5788_fw_ops_register(struct wltrx_ic_ops *ops, struct mt5788_dev_info *di);
+#if 1
+/* mt5788 tx */
+void mt5788_tx_mode_irq_handler(struct mt5788_dev_info *di);
+int mt5788_tx_ops_register(struct wltrx_ic_ops *ops, struct mt5788_dev_info *di);
+
+/* mt5788 hw_test */
+int mt5788_hw_test_ops_register(struct wltrx_ic_ops *ops, struct mt5788_dev_info *di);
+
+/* mt5788 calibration */
+int mt5788_cali_ops_register(struct wltrx_ic_ops *ops, struct mt5788_dev_info *di);
+int mt5788_fw_load_bootloader_cali(struct mt5788_dev_info *di);
+#endif
+#endif /* _MT5788_H_ */

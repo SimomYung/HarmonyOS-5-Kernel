@@ -1,0 +1,99 @@
+# Copyright (c) Huawei Technologies Co., Ltd. 2023. All rights reserved.
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+import("//build/ohos.gni")
+import("//vendor/hisi/ap/build/build_args.gni")
+
+dfile_root_path = "//vendor/open_source/bftpd"
+
+ohos_executable("bftpd") {
+    sources = [
+        "//vendor/open_source/bftpd/bftpdutmp.c",
+        "//vendor/open_source/bftpd/commands.c",
+        "//vendor/open_source/bftpd/commands_admin.c",
+        "//vendor/open_source/bftpd/cwd.c",
+        "//vendor/open_source/bftpd/dirlist.c",
+        "//vendor/open_source/bftpd/list.c",
+        "//vendor/open_source/bftpd/login.c",
+        "//vendor/open_source/bftpd/logging.c",
+        "main.c",
+        "//vendor/open_source/bftpd/mystring.c",
+        "//vendor/open_source/bftpd/options.c",
+        "//vendor/open_source/bftpd/md5.c",
+    ]
+
+    include_dirs = [ "$dfile_root_path" ]
+
+    cflags_c = [
+      "-std=gnu11",
+      "-Wall",
+      "-Wundef",
+      "-Wno-char-subscripts",
+      "-Wno-implicit-function-declaration",
+      "-Wno-unused-variable",
+      "-Wno-unused-value",
+      "-Wno-incompatible-pointer-types",
+      "-Wno-int-conversion",
+      "-Wno-sign-compare",
+      "-Wno-format",
+      "-Wno-unused-result",
+      "-Os",
+      "-ffunction-sections",
+      "-fdata-sections",
+      "-fno-asynchronous-unwind-tables",
+      "-fPIE",
+      "-funsigned-char",
+      "-Wno-string-plus-int",
+      "-Wno-tautological-constant-compare",
+      "-Wno-string-conversion",
+      "-Wno-unused-but-set-variable",
+    ]
+
+    ldflags = [
+      "-pie",
+      "-Wl,-z,relro",
+      "-Wl,-z,now",
+      "-Wl,-z,noexecstack",
+      "-lm",
+      "-lcrypt",
+      "-lpthread",
+    ]
+
+    install_enable = true
+    module_install_dir = "bin/"
+    install_images = [
+        "system",
+    ]
+
+    subsystem_name = "open_source"
+    part_name = "bftpd"
+} 
+
+ohos_prebuilt_etc("bftpd.conf") {
+    source = "bftpd.conf"
+    install_enable = true
+    module_install_dir = "etc/"
+    install_images = [
+        "system",
+    ]
+
+    subsystem_name = "open_source"
+    part_name = "bftpd"
+}
+
+group("bftpd_files") {
+  deps = [
+    ":bftpd",
+    ":bftpd.conf",
+  ]
+}

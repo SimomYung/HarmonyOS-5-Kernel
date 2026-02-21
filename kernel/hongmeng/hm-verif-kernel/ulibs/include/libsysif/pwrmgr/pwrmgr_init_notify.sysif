@@ -1,0 +1,24 @@
+/*
+ * Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights reserved.
+ * Description: Definition for pwrmgr init event notifier sysif
+ * Author: Huawei OS Kernel Lab
+ * Create: Tue June 04 16:31:57 2024
+ */
+
+/*
+ * To support the mixed data model which means the client and the server
+ * may use different data model. See the comment for limitation of data type
+ * used in the sysif interfaces in <libsysif/base/api.h>.
+ */
+#ifdef SYSIF_EXPORT_API
+
+#include <libhmpm/pm_init_event.h>
+
+#endif
+
+DEFINE_MANAGER(pm, 1,
+	DEFINE_METHOD(pm, init_notify,
+		      ARG(1, enum pm_init_event, type),
+		      RET_NO,
+		      SLOWDATA_NO)
+)

@@ -1,0 +1,38 @@
+/*
+ * Copyright (c) Huawei Technologies Co., Ltd. 2021. All rights reserved.
+ * Description: Mutex interfaces of udk
+ * Author: Huawei OS Kernel Lab
+ * Create: Tue Jul 20 16:44:03 2021
+ */
+#ifndef __UDK_MUTEX_H__
+#define __UDK_MUTEX_H__
+
+#define UDK_RAW_MUTEX_IMPL_WITH_LOCKID 1
+#define UDK_RAW_MUTEX_IMPL_NO_LOCKID 2
+#define UDK_MUTEX_IMPL @UDK_MUTEX_IMPL@
+
+/* struct udk_mutex must align with struct raw_mutex */
+struct udk_mutex {
+	volatile unsigned int lock;
+	volatile unsigned int attr;
+#if UDK_MUTEX_IMPL == UDK_RAW_MUTEX_IMPL_WITH_LOCKID
+    volatile unsigned int lock_id;
+	struct {
+		unsigned long key;
+	} dep_map;
+#endif
+};
+
+#define UDK_MUTEX_INIT {.lock = 0U, .attr = 0U}
+
+void udk_mutex_init(struct udk_mutex *mutex);
+void udk_mutex_init_recursive(struct udk_mutex *mutex);
+void udk_mutex_lock(struct udk_mutex *mutex);
+void udk_mutex_unlock(struct udk_mutex *mutex);
+int udk_mutex_trylock(struct udk_mutex *mutex);
+
+int udk_shared_mutex_init(void *mutex);
+int udk_shared_mutex_lock(void *mutex);
+int udk_shared_mutex_unlock(void *mutex);
+
+#endif /* __UDK_MUTEX_H__ */

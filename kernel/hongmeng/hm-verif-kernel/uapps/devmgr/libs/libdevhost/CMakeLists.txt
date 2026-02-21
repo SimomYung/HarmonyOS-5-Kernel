@@ -1,0 +1,8 @@
+# Copyright (c) Huawei Technologies Co., Ltd. 2022-2022. All rights reserved.
+# Description: CMakeLists.txt
+# Author: Huawei OS Kernel Lab
+# Create: Fri May 06 15:26:10 2022
+
+add_link_options(-L${CMAKE_CURRENT_SOURCE_DIR})
+
+include(HongmengCMakeNG/HMbuild)

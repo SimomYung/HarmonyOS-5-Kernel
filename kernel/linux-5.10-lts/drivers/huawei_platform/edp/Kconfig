@@ -1,0 +1,6 @@
+config HW_EDP_DRIVER
+        bool "huawei EDP_DRIVER"
+        depends on DKMD_DPU_DP
+        default n
+        help
+            if you say yes here you get support for huawei EDP DRV.

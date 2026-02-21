@@ -1,0 +1,62 @@
+{
+    "name": "@ohos/glib",
+    "description": "GLib is the low-level core library that forms the basis for projects such as GTK and GNOME. It provides data structure handling for C, portability wrappers, and interfaces for such runtime functionality as an event loop, threads, dynamic loading, and an object system.",
+    "version": "2.72.2",
+    "license": "LGPL V2.1",
+    "publishAs": "code-segment",
+    "segment": {
+        "destPath": "third_party/glib"
+    },
+    "dirs": {},
+    "scripts": {},
+    "licensePath": "COPYING",
+    "component": {
+        "name": "glib",
+        "subsystem": "thirdparty",
+        "syscap": [],
+        "features": [],
+        "adapted_system_type": [ "standard" ],
+        "rom": "",
+        "ram": "",
+        "deps": {
+            "components": [
+                "c_utils",
+                "faultloggerd",
+                "hisysevent",
+                "hitrace",
+                "hilog",
+                "init",
+                "libffi"
+              ],
+            "third_party": []
+        },
+        "build": {
+            "sub_component": [],
+            "inner_kits": [
+                {
+                    "name": "//third_party/glib:glibpcre"
+                },
+                {
+                    "name": "//third_party/glib:glib"
+                },
+                {
+                    "name": "//third_party/glib:gmodule"
+                },
+                {
+                    "name": "//third_party/glib:gobject"
+                },
+                {
+                    "name": "//third_party/glib:g_mem_dfx",
+                    "header": {
+                      "header_files": [
+                        "gmemdfx.h",
+                        "gmemdfxdump.h"
+                      ],
+                      "header_base": "//third_party/glib/glibmemdfx"
+                    }
+                }
+            ],
+            "test": []
+        }
+    }
+}

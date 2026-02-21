@@ -1,0 +1,1988 @@
+
+
+/*****************************************************************************
+  1 其他头文件包含
+*****************************************************************************/
+
+#ifndef __SOC_SMMUv3_TBU_INTERFACE_H__
+#define __SOC_SMMUv3_TBU_INTERFACE_H__
+
+#ifdef __cplusplus
+#if __cplusplus
+    extern "C" {
+#endif
+#endif
+
+
+/*****************************************************************************
+  2 macro
+*****************************************************************************/
+
+/****************************************************************************
+                     (1/2) tbu
+ ****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+
+
+/* Register description: TBU Control Register
+   Bit domain definition UNION:  SOC_SMMUv3_TBU_SMMU_TBU_CR_UNION */
+#define SOC_SMMUv3_TBU_SMMU_TBU_CR_ADDR(base)                 ((base) + (0x0000UL))
+
+/* Register description: TBU Control Acknowledge Register
+   Bit domain definition UNION:  SOC_SMMUv3_TBU_SMMU_TBU_CRACK_UNION */
+#define SOC_SMMUv3_TBU_SMMU_TBU_CRACK_ADDR(base)              ((base) + (0x0004UL))
+
+/* Register description: SMMU SP memory control register
+   Bit domain definition UNION:  SOC_SMMUv3_TBU_SMMU_TBU_MEM_CTRL_S_DR_UNION */
+#define SOC_SMMUv3_TBU_SMMU_TBU_MEM_CTRL_S_DR_ADDR(base)      ((base) + (0x0008UL))
+
+/* Register description: SMMU BP memory control register
+   Bit domain definition UNION:  SOC_SMMUv3_TBU_SMMU_TBU_MEM_CTRL_B_DR_UNION */
+#define SOC_SMMUv3_TBU_SMMU_TBU_MEM_CTRL_B_DR_ADDR(base)      ((base) + (0x000CUL))
+
+/* Register description: SMMU non-secure interrupt msk register.
+   Bit domain definition UNION:  SOC_SMMUv3_TBU_SMMU_TBU_IRPT_MASK_NS_UNION */
+#define SOC_SMMUv3_TBU_SMMU_TBU_IRPT_MASK_NS_ADDR(base)       ((base) + (0x0010UL))
+
+/* Register description: SMMU TBU non-secure interrupt raw status register.
+   Bit domain definition UNION:  SOC_SMMUv3_TBU_SMMU_TBU_IRPT_RAW_NS_UNION */
+#define SOC_SMMUv3_TBU_SMMU_TBU_IRPT_RAW_NS_ADDR(base)        ((base) + (0x0014UL))
+
+/* Register description: SMMU TBU non-secure interrupt msked status register.
+   Bit domain definition UNION:  SOC_SMMUv3_TBU_SMMU_TBU_IRPT_STAT_NS_UNION */
+#define SOC_SMMUv3_TBU_SMMU_TBU_IRPT_STAT_NS_ADDR(base)       ((base) + (0x0018UL))
+
+/* Register description: SMMU TBU non-secure interrupt clear register.
+   Bit domain definition UNION:  SOC_SMMUv3_TBU_SMMU_TBU_IRPT_CLR_NS_UNION */
+#define SOC_SMMUv3_TBU_SMMU_TBU_IRPT_CLR_NS_ADDR(base)        ((base) + (0x001CUL))
+
+/* Register description: SMMU TBU TLB lock clear register.
+   Bit domain definition UNION:  SOC_SMMUv3_TBU_SMMU_TBU_LOCK_CLR_UNION */
+#define SOC_SMMUv3_TBU_SMMU_TBU_LOCK_CLR_ADDR(base)           ((base) + (0x0020UL))
+
+/* Register description: SMMU TBU TLB non-secure invalid register.
+   Bit domain definition UNION:  SOC_SMMUv3_TBU_SMMU_TBU_TLB_INV_NS_UNION */
+#define SOC_SMMUv3_TBU_SMMU_TBU_TLB_INV_NS_ADDR(base)         ((base) + (0x0024UL))
+
+/* Register description: SMMU TP memory control register
+   Bit domain definition UNION:  SOC_SMMUv3_TBU_SMMU_TBU_MEM_CTRL_T_DR_UNION */
+#define SOC_SMMUv3_TBU_SMMU_TBU_MEM_CTRL_T_DR_ADDR(base)      ((base) + (0x0028UL))
+
+/* Register description: SMMU SP memory control register
+   Bit domain definition UNION:  SOC_SMMUv3_TBU_SMMU_TBU_MEM_CTRL_S_SR_UNION */
+#define SOC_SMMUv3_TBU_SMMU_TBU_MEM_CTRL_S_SR_ADDR(base)      ((base) + (0x002CUL))
+
+/* Register description: SMMU BP memory control register
+   Bit domain definition UNION:  SOC_SMMUv3_TBU_SMMU_TBU_MEM_CTRL_B_SR_UNION */
+#define SOC_SMMUv3_TBU_SMMU_TBU_MEM_CTRL_B_SR_ADDR(base)      ((base) + (0x0030UL))
+
+/* Register description: SMMU TP memory control register
+   Bit domain definition UNION:  SOC_SMMUv3_TBU_SMMU_TBU_MEM_CTRL_T_SR_UNION */
+#define SOC_SMMUv3_TBU_SMMU_TBU_MEM_CTRL_T_SR_ADDR(base)      ((base) + (0x0034UL))
+
+/* Register description: SMMU TBU slide window config register.
+   Bit domain definition UNION:  SOC_SMMUv3_TBU_SMMU_TBU_SWID_CFG_UNION */
+#define SOC_SMMUv3_TBU_SMMU_TBU_SWID_CFG_ADDR(base, m)        ((base) + ((m)*0x4+0x100UL))
+
+/* Register description: TBU Component and Peripheral ID registers
+   Bit domain definition UNION:  SOC_SMMUv3_TBU_SMMU_TBU_PIDR4_UNION */
+#define SOC_SMMUv3_TBU_SMMU_TBU_PIDR4_ADDR(base)              ((base) + (0x0FD0UL))
+
+/* Register description: TBU Component and Peripheral ID registers
+   Bit domain definition UNION:  SOC_SMMUv3_TBU_SMMU_TBU_PIDR5_UNION */
+#define SOC_SMMUv3_TBU_SMMU_TBU_PIDR5_ADDR(base)              ((base) + (0x0FD4UL))
+
+/* Register description: TBU Component and Peripheral ID registers
+   Bit domain definition UNION:  SOC_SMMUv3_TBU_SMMU_TBU_PIDR6_UNION */
+#define SOC_SMMUv3_TBU_SMMU_TBU_PIDR6_ADDR(base)              ((base) + (0x0FD8UL))
+
+/* Register description: TBU Component and Peripheral ID registers
+   Bit domain definition UNION:  SOC_SMMUv3_TBU_SMMU_TBU_PIDR7_UNION */
+#define SOC_SMMUv3_TBU_SMMU_TBU_PIDR7_ADDR(base)              ((base) + (0x0FDCUL))
+
+/* Register description: TBU Component and Peripheral ID registers
+   Bit domain definition UNION:  SOC_SMMUv3_TBU_SMMU_TBU_PIDR0_UNION */
+#define SOC_SMMUv3_TBU_SMMU_TBU_PIDR0_ADDR(base)              ((base) + (0x0FE0UL))
+
+/* Register description: TBU Component and Peripheral ID registers
+   Bit domain definition UNION:  SOC_SMMUv3_TBU_SMMU_TBU_PIDR1_UNION */
+#define SOC_SMMUv3_TBU_SMMU_TBU_PIDR1_ADDR(base)              ((base) + (0x0FE4UL))
+
+/* Register description: TBU Component and Peripheral ID registers
+   Bit domain definition UNION:  SOC_SMMUv3_TBU_SMMU_TBU_PIDR2_UNION */
+#define SOC_SMMUv3_TBU_SMMU_TBU_PIDR2_ADDR(base)              ((base) + (0x0FE8UL))
+
+/* Register description: TBU Component and Peripheral ID registers
+   Bit domain definition UNION:  SOC_SMMUv3_TBU_SMMU_TBU_PIDR3_UNION */
+#define SOC_SMMUv3_TBU_SMMU_TBU_PIDR3_ADDR(base)              ((base) + (0x0FECUL))
+
+/* Register description: TBU Component and Peripheral ID registers
+   Bit domain definition UNION:  SOC_SMMUv3_TBU_SMMU_TBU_CIDR0_UNION */
+#define SOC_SMMUv3_TBU_SMMU_TBU_CIDR0_ADDR(base)              ((base) + (0x0FF0UL))
+
+/* Register description: TBU Component and Peripheral ID registers
+   Bit domain definition UNION:  SOC_SMMUv3_TBU_SMMU_TBU_CIDR1_UNION */
+#define SOC_SMMUv3_TBU_SMMU_TBU_CIDR1_ADDR(base)              ((base) + (0x0FF4UL))
+
+/* Register description: TBU Component and Peripheral ID registers
+   Bit domain definition UNION:  SOC_SMMUv3_TBU_SMMU_TBU_CIDR2_UNION */
+#define SOC_SMMUv3_TBU_SMMU_TBU_CIDR2_ADDR(base)              ((base) + (0x0FF8UL))
+
+/* Register description: TBU Component and Peripheral ID registers
+   Bit domain definition UNION:  SOC_SMMUv3_TBU_SMMU_TBU_CIDR3_UNION */
+#define SOC_SMMUv3_TBU_SMMU_TBU_CIDR3_ADDR(base)              ((base) + (0x0FFCUL))
+
+/* Register description: TBU Secure Control Register
+   Bit domain definition UNION:  SOC_SMMUv3_TBU_SMMU_TBU_SCR_UNION */
+#define SOC_SMMUv3_TBU_SMMU_TBU_SCR_ADDR(base)                ((base) + (0x1000UL))
+
+/* Register description: SMMU TBU secure interrupt msk register.
+   Bit domain definition UNION:  SOC_SMMUv3_TBU_SMMU_TBU_IRPT_MASK_S_UNION */
+#define SOC_SMMUv3_TBU_SMMU_TBU_IRPT_MASK_S_ADDR(base)        ((base) + (0x1010UL))
+
+/* Register description: SMMU TBU secure interrupt raw status register.
+   Bit domain definition UNION:  SOC_SMMUv3_TBU_SMMU_TBU_IRPT_RAW_S_UNION */
+#define SOC_SMMUv3_TBU_SMMU_TBU_IRPT_RAW_S_ADDR(base)         ((base) + (0x1014UL))
+
+/* Register description: SMMU TBU secure interrupt msked status register.
+   Bit domain definition UNION:  SOC_SMMUv3_TBU_SMMU_TBU_IRPT_STAT_S_UNION */
+#define SOC_SMMUv3_TBU_SMMU_TBU_IRPT_STAT_S_ADDR(base)        ((base) + (0x1018UL))
+
+/* Register description: SMMU TBU secure interrupt clear register.
+   Bit domain definition UNION:  SOC_SMMUv3_TBU_SMMU_TBU_IRPT_CLR_S_UNION */
+#define SOC_SMMUv3_TBU_SMMU_TBU_IRPT_CLR_S_ADDR(base)         ((base) + (0x101CUL))
+
+/* Register description: SMMU TBU debug port register.
+   Bit domain definition UNION:  SOC_SMMUv3_TBU_SMMU_TBU_DBG_PORT_IN_UNION */
+#define SOC_SMMUv3_TBU_SMMU_TBU_DBG_PORT_IN_ADDR(base)        ((base) + (0x1020UL))
+
+/* Register description: SMMU TBU debug port register.
+   Bit domain definition UNION:  SOC_SMMUv3_TBU_SMMU_TBU_DBG_PORT_OUT_0_UNION */
+#define SOC_SMMUv3_TBU_SMMU_TBU_DBG_PORT_OUT_0_ADDR(base)     ((base) + (0x1024UL))
+
+/* Register description: SMMU TBU debug port register.
+   Bit domain definition UNION:  SOC_SMMUv3_TBU_SMMU_TBU_DBG_PORT_OUT_1_UNION */
+#define SOC_SMMUv3_TBU_SMMU_TBU_DBG_PORT_OUT_1_ADDR(base)     ((base) + (0x1028UL))
+
+/* Register description: SMMU TBU debug port register.
+   Bit domain definition UNION:  SOC_SMMUv3_TBU_SMMU_TBU_DBG_PORT_OUT_2_UNION */
+#define SOC_SMMUv3_TBU_SMMU_TBU_DBG_PORT_OUT_2_ADDR(base)     ((base) + (0x102CUL))
+
+/* Register description: SMMU TBU debug port register.
+   Bit domain definition UNION:  SOC_SMMUv3_TBU_SMMU_TBU_DBG_PORT_OUT_3_UNION */
+#define SOC_SMMUv3_TBU_SMMU_TBU_DBG_PORT_OUT_3_ADDR(base)     ((base) + (0x1030UL))
+
+/* Register description: SMMU TBU TLB secure invalid register.
+   Bit domain definition UNION:  SOC_SMMUv3_TBU_SMMU_TBU_TLB_INV_S_UNION */
+#define SOC_SMMUv3_TBU_SMMU_TBU_TLB_INV_S_ADDR(base)          ((base) + (0x1034UL))
+
+/* Register description: SMMU TBU protected mode config register.
+   Bit domain definition UNION:  SOC_SMMUv3_TBU_SMMU_TBU_PROT_EN_UNION */
+#define SOC_SMMUv3_TBU_SMMU_TBU_PROT_EN_ADDR(base, m)         ((base) + ((m)*0x4+0x1100UL))
+
+/* Register description: SMMUv3 TBU PMU event counter value register.
+   Bit domain definition UNION:  SOC_SMMUv3_TBU_SMMUv3_TBU_PMU_EVCNT_UNION */
+#define SOC_SMMUv3_TBU_SMMUv3_TBU_PMU_EVCNT_ADDR(base, k)     ((base) + (0x2000+(k)*4UL))
+
+/* Register description: SMMUv3 TBU PMU event counter shadow value register.
+   Bit domain definition UNION:  SOC_SMMUv3_TBU_SMMUv3_TBU_PMU_EVSVR_UNION */
+#define SOC_SMMUv3_TBU_SMMUv3_TBU_PMU_EVSVR_ADDR(base, k)     ((base) + (0x2200+(k)*4UL))
+
+/* Register description: SMMUv3 TBU PMU event counter config register.
+   Bit domain definition UNION:  SOC_SMMUv3_TBU_SMMUv3_TBU_PMU_CNT_CFG_UNION */
+#define SOC_SMMUv3_TBU_SMMUv3_TBU_PMU_CNT_CFG_ADDR(base, k)   ((base) + (0x2400+(k)*4UL))
+
+/* Register description: SMMUv3 TBU PMU config register.
+   Bit domain definition UNION:  SOC_SMMUv3_TBU_SMMUv3_TBU_PMU_CFG_UNION */
+#define SOC_SMMUv3_TBU_SMMUv3_TBU_PMU_CFG_ADDR(base)          ((base) + (0x2600UL))
+
+/* Register description: SMMUv3 TBU PMU capture register.
+   Bit domain definition UNION:  SOC_SMMUv3_TBU_SMMUv3_TBU_PMU_CAPR_UNION */
+#define SOC_SMMUv3_TBU_SMMUv3_TBU_PMU_CAPR_ADDR(base)         ((base) + (0x2604UL))
+
+
+#else
+
+
+/* Register description: TBU Control Register
+   Bit domain definition UNION:  SOC_SMMUv3_TBU_SMMU_TBU_CR_UNION */
+#define SOC_SMMUv3_TBU_SMMU_TBU_CR_ADDR(base)                 ((base) + (0x0000))
+
+/* Register description: TBU Control Acknowledge Register
+   Bit domain definition UNION:  SOC_SMMUv3_TBU_SMMU_TBU_CRACK_UNION */
+#define SOC_SMMUv3_TBU_SMMU_TBU_CRACK_ADDR(base)              ((base) + (0x0004))
+
+/* Register description: SMMU SP memory control register
+   Bit domain definition UNION:  SOC_SMMUv3_TBU_SMMU_TBU_MEM_CTRL_S_DR_UNION */
+#define SOC_SMMUv3_TBU_SMMU_TBU_MEM_CTRL_S_DR_ADDR(base)      ((base) + (0x0008))
+
+/* Register description: SMMU BP memory control register
+   Bit domain definition UNION:  SOC_SMMUv3_TBU_SMMU_TBU_MEM_CTRL_B_DR_UNION */
+#define SOC_SMMUv3_TBU_SMMU_TBU_MEM_CTRL_B_DR_ADDR(base)      ((base) + (0x000C))
+
+/* Register description: SMMU non-secure interrupt msk register.
+   Bit domain definition UNION:  SOC_SMMUv3_TBU_SMMU_TBU_IRPT_MASK_NS_UNION */
+#define SOC_SMMUv3_TBU_SMMU_TBU_IRPT_MASK_NS_ADDR(base)       ((base) + (0x0010))
+
+/* Register description: SMMU TBU non-secure interrupt raw status register.
+   Bit domain definition UNION:  SOC_SMMUv3_TBU_SMMU_TBU_IRPT_RAW_NS_UNION */
+#define SOC_SMMUv3_TBU_SMMU_TBU_IRPT_RAW_NS_ADDR(base)        ((base) + (0x0014))
+
+/* Register description: SMMU TBU non-secure interrupt msked status register.
+   Bit domain definition UNION:  SOC_SMMUv3_TBU_SMMU_TBU_IRPT_STAT_NS_UNION */
+#define SOC_SMMUv3_TBU_SMMU_TBU_IRPT_STAT_NS_ADDR(base)       ((base) + (0x0018))
+
+/* Register description: SMMU TBU non-secure interrupt clear register.
+   Bit domain definition UNION:  SOC_SMMUv3_TBU_SMMU_TBU_IRPT_CLR_NS_UNION */
+#define SOC_SMMUv3_TBU_SMMU_TBU_IRPT_CLR_NS_ADDR(base)        ((base) + (0x001C))
+
+/* Register description: SMMU TBU TLB lock clear register.
+   Bit domain definition UNION:  SOC_SMMUv3_TBU_SMMU_TBU_LOCK_CLR_UNION */
+#define SOC_SMMUv3_TBU_SMMU_TBU_LOCK_CLR_ADDR(base)           ((base) + (0x0020))
+
+/* Register description: SMMU TBU TLB non-secure invalid register.
+   Bit domain definition UNION:  SOC_SMMUv3_TBU_SMMU_TBU_TLB_INV_NS_UNION */
+#define SOC_SMMUv3_TBU_SMMU_TBU_TLB_INV_NS_ADDR(base)         ((base) + (0x0024))
+
+/* Register description: SMMU TP memory control register
+   Bit domain definition UNION:  SOC_SMMUv3_TBU_SMMU_TBU_MEM_CTRL_T_DR_UNION */
+#define SOC_SMMUv3_TBU_SMMU_TBU_MEM_CTRL_T_DR_ADDR(base)      ((base) + (0x0028))
+
+/* Register description: SMMU SP memory control register
+   Bit domain definition UNION:  SOC_SMMUv3_TBU_SMMU_TBU_MEM_CTRL_S_SR_UNION */
+#define SOC_SMMUv3_TBU_SMMU_TBU_MEM_CTRL_S_SR_ADDR(base)      ((base) + (0x002C))
+
+/* Register description: SMMU BP memory control register
+   Bit domain definition UNION:  SOC_SMMUv3_TBU_SMMU_TBU_MEM_CTRL_B_SR_UNION */
+#define SOC_SMMUv3_TBU_SMMU_TBU_MEM_CTRL_B_SR_ADDR(base)      ((base) + (0x0030))
+
+/* Register description: SMMU TP memory control register
+   Bit domain definition UNION:  SOC_SMMUv3_TBU_SMMU_TBU_MEM_CTRL_T_SR_UNION */
+#define SOC_SMMUv3_TBU_SMMU_TBU_MEM_CTRL_T_SR_ADDR(base)      ((base) + (0x0034))
+
+/* Register description: SMMU TBU slide window config register.
+   Bit domain definition UNION:  SOC_SMMUv3_TBU_SMMU_TBU_SWID_CFG_UNION */
+#define SOC_SMMUv3_TBU_SMMU_TBU_SWID_CFG_ADDR(base, m)        ((base) + ((m)*0x4+0x100))
+
+/* Register description: TBU Component and Peripheral ID registers
+   Bit domain definition UNION:  SOC_SMMUv3_TBU_SMMU_TBU_PIDR4_UNION */
+#define SOC_SMMUv3_TBU_SMMU_TBU_PIDR4_ADDR(base)              ((base) + (0x0FD0))
+
+/* Register description: TBU Component and Peripheral ID registers
+   Bit domain definition UNION:  SOC_SMMUv3_TBU_SMMU_TBU_PIDR5_UNION */
+#define SOC_SMMUv3_TBU_SMMU_TBU_PIDR5_ADDR(base)              ((base) + (0x0FD4))
+
+/* Register description: TBU Component and Peripheral ID registers
+   Bit domain definition UNION:  SOC_SMMUv3_TBU_SMMU_TBU_PIDR6_UNION */
+#define SOC_SMMUv3_TBU_SMMU_TBU_PIDR6_ADDR(base)              ((base) + (0x0FD8))
+
+/* Register description: TBU Component and Peripheral ID registers
+   Bit domain definition UNION:  SOC_SMMUv3_TBU_SMMU_TBU_PIDR7_UNION */
+#define SOC_SMMUv3_TBU_SMMU_TBU_PIDR7_ADDR(base)              ((base) + (0x0FDC))
+
+/* Register description: TBU Component and Peripheral ID registers
+   Bit domain definition UNION:  SOC_SMMUv3_TBU_SMMU_TBU_PIDR0_UNION */
+#define SOC_SMMUv3_TBU_SMMU_TBU_PIDR0_ADDR(base)              ((base) + (0x0FE0))
+
+/* Register description: TBU Component and Peripheral ID registers
+   Bit domain definition UNION:  SOC_SMMUv3_TBU_SMMU_TBU_PIDR1_UNION */
+#define SOC_SMMUv3_TBU_SMMU_TBU_PIDR1_ADDR(base)              ((base) + (0x0FE4))
+
+/* Register description: TBU Component and Peripheral ID registers
+   Bit domain definition UNION:  SOC_SMMUv3_TBU_SMMU_TBU_PIDR2_UNION */
+#define SOC_SMMUv3_TBU_SMMU_TBU_PIDR2_ADDR(base)              ((base) + (0x0FE8))
+
+/* Register description: TBU Component and Peripheral ID registers
+   Bit domain definition UNION:  SOC_SMMUv3_TBU_SMMU_TBU_PIDR3_UNION */
+#define SOC_SMMUv3_TBU_SMMU_TBU_PIDR3_ADDR(base)              ((base) + (0x0FEC))
+
+/* Register description: TBU Component and Peripheral ID registers
+   Bit domain definition UNION:  SOC_SMMUv3_TBU_SMMU_TBU_CIDR0_UNION */
+#define SOC_SMMUv3_TBU_SMMU_TBU_CIDR0_ADDR(base)              ((base) + (0x0FF0))
+
+/* Register description: TBU Component and Peripheral ID registers
+   Bit domain definition UNION:  SOC_SMMUv3_TBU_SMMU_TBU_CIDR1_UNION */
+#define SOC_SMMUv3_TBU_SMMU_TBU_CIDR1_ADDR(base)              ((base) + (0x0FF4))
+
+/* Register description: TBU Component and Peripheral ID registers
+   Bit domain definition UNION:  SOC_SMMUv3_TBU_SMMU_TBU_CIDR2_UNION */
+#define SOC_SMMUv3_TBU_SMMU_TBU_CIDR2_ADDR(base)              ((base) + (0x0FF8))
+
+/* Register description: TBU Component and Peripheral ID registers
+   Bit domain definition UNION:  SOC_SMMUv3_TBU_SMMU_TBU_CIDR3_UNION */
+#define SOC_SMMUv3_TBU_SMMU_TBU_CIDR3_ADDR(base)              ((base) + (0x0FFC))
+
+/* Register description: TBU Secure Control Register
+   Bit domain definition UNION:  SOC_SMMUv3_TBU_SMMU_TBU_SCR_UNION */
+#define SOC_SMMUv3_TBU_SMMU_TBU_SCR_ADDR(base)                ((base) + (0x1000))
+
+/* Register description: SMMU TBU secure interrupt msk register.
+   Bit domain definition UNION:  SOC_SMMUv3_TBU_SMMU_TBU_IRPT_MASK_S_UNION */
+#define SOC_SMMUv3_TBU_SMMU_TBU_IRPT_MASK_S_ADDR(base)        ((base) + (0x1010))
+
+/* Register description: SMMU TBU secure interrupt raw status register.
+   Bit domain definition UNION:  SOC_SMMUv3_TBU_SMMU_TBU_IRPT_RAW_S_UNION */
+#define SOC_SMMUv3_TBU_SMMU_TBU_IRPT_RAW_S_ADDR(base)         ((base) + (0x1014))
+
+/* Register description: SMMU TBU secure interrupt msked status register.
+   Bit domain definition UNION:  SOC_SMMUv3_TBU_SMMU_TBU_IRPT_STAT_S_UNION */
+#define SOC_SMMUv3_TBU_SMMU_TBU_IRPT_STAT_S_ADDR(base)        ((base) + (0x1018))
+
+/* Register description: SMMU TBU secure interrupt clear register.
+   Bit domain definition UNION:  SOC_SMMUv3_TBU_SMMU_TBU_IRPT_CLR_S_UNION */
+#define SOC_SMMUv3_TBU_SMMU_TBU_IRPT_CLR_S_ADDR(base)         ((base) + (0x101C))
+
+/* Register description: SMMU TBU debug port register.
+   Bit domain definition UNION:  SOC_SMMUv3_TBU_SMMU_TBU_DBG_PORT_IN_UNION */
+#define SOC_SMMUv3_TBU_SMMU_TBU_DBG_PORT_IN_ADDR(base)        ((base) + (0x1020))
+
+/* Register description: SMMU TBU debug port register.
+   Bit domain definition UNION:  SOC_SMMUv3_TBU_SMMU_TBU_DBG_PORT_OUT_0_UNION */
+#define SOC_SMMUv3_TBU_SMMU_TBU_DBG_PORT_OUT_0_ADDR(base)     ((base) + (0x1024))
+
+/* Register description: SMMU TBU debug port register.
+   Bit domain definition UNION:  SOC_SMMUv3_TBU_SMMU_TBU_DBG_PORT_OUT_1_UNION */
+#define SOC_SMMUv3_TBU_SMMU_TBU_DBG_PORT_OUT_1_ADDR(base)     ((base) + (0x1028))
+
+/* Register description: SMMU TBU debug port register.
+   Bit domain definition UNION:  SOC_SMMUv3_TBU_SMMU_TBU_DBG_PORT_OUT_2_UNION */
+#define SOC_SMMUv3_TBU_SMMU_TBU_DBG_PORT_OUT_2_ADDR(base)     ((base) + (0x102C))
+
+/* Register description: SMMU TBU debug port register.
+   Bit domain definition UNION:  SOC_SMMUv3_TBU_SMMU_TBU_DBG_PORT_OUT_3_UNION */
+#define SOC_SMMUv3_TBU_SMMU_TBU_DBG_PORT_OUT_3_ADDR(base)     ((base) + (0x1030))
+
+/* Register description: SMMU TBU TLB secure invalid register.
+   Bit domain definition UNION:  SOC_SMMUv3_TBU_SMMU_TBU_TLB_INV_S_UNION */
+#define SOC_SMMUv3_TBU_SMMU_TBU_TLB_INV_S_ADDR(base)          ((base) + (0x1034))
+
+/* Register description: SMMU TBU protected mode config register.
+   Bit domain definition UNION:  SOC_SMMUv3_TBU_SMMU_TBU_PROT_EN_UNION */
+#define SOC_SMMUv3_TBU_SMMU_TBU_PROT_EN_ADDR(base, m)         ((base) + ((m)*0x4+0x1100))
+
+/* Register description: SMMUv3 TBU PMU event counter value register.
+   Bit domain definition UNION:  SOC_SMMUv3_TBU_SMMUv3_TBU_PMU_EVCNT_UNION */
+#define SOC_SMMUv3_TBU_SMMUv3_TBU_PMU_EVCNT_ADDR(base, k)     ((base) + (0x2000+(k)*4))
+
+/* Register description: SMMUv3 TBU PMU event counter shadow value register.
+   Bit domain definition UNION:  SOC_SMMUv3_TBU_SMMUv3_TBU_PMU_EVSVR_UNION */
+#define SOC_SMMUv3_TBU_SMMUv3_TBU_PMU_EVSVR_ADDR(base, k)     ((base) + (0x2200+(k)*4))
+
+/* Register description: SMMUv3 TBU PMU event counter config register.
+   Bit domain definition UNION:  SOC_SMMUv3_TBU_SMMUv3_TBU_PMU_CNT_CFG_UNION */
+#define SOC_SMMUv3_TBU_SMMUv3_TBU_PMU_CNT_CFG_ADDR(base, k)   ((base) + (0x2400+(k)*4))
+
+/* Register description: SMMUv3 TBU PMU config register.
+   Bit domain definition UNION:  SOC_SMMUv3_TBU_SMMUv3_TBU_PMU_CFG_UNION */
+#define SOC_SMMUv3_TBU_SMMUv3_TBU_PMU_CFG_ADDR(base)          ((base) + (0x2600))
+
+/* Register description: SMMUv3 TBU PMU capture register.
+   Bit domain definition UNION:  SOC_SMMUv3_TBU_SMMUv3_TBU_PMU_CAPR_UNION */
+#define SOC_SMMUv3_TBU_SMMUv3_TBU_PMU_CAPR_ADDR(base)         ((base) + (0x2604))
+
+
+#endif
+
+
+/****************************************************************************
+                     (2/2) tbu_dma
+ ****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+
+
+/* Register description: DMA Control Register
+   Bit domain definition UNION:  SOC_SMMUv3_TBU_SMMU_DMA_EN_UNION */
+#define SOC_SMMUv3_TBU_SMMU_DMA_EN_ADDR(base)                 ((base) + (0x0000UL))
+
+/* Register description: SMMU DMA START config register.
+   Bit domain definition UNION:  SOC_SMMUv3_TBU_SMMU_DMA_START_UNION */
+#define SOC_SMMUv3_TBU_SMMU_DMA_START_ADDR(base, j)           ((base) + ((j)*0x4+0x0004UL))
+
+/* Register description: SMMU DMA ADDR2  config register.
+   Bit domain definition UNION:  SOC_SMMUv3_TBU_SMMU_DMA_ADDR0_UNION */
+#define SOC_SMMUv3_TBU_SMMU_DMA_ADDR0_ADDR(base, j)           ((base) + ((j)*0x4+0x000CUL))
+
+/* Register description: SMMU DMA ADDR1 config register.
+   Bit domain definition UNION:  SOC_SMMUv3_TBU_SMMU_DMA_ADDR1_UNION */
+#define SOC_SMMUv3_TBU_SMMU_DMA_ADDR1_ADDR(base, j)           ((base) + ((j)*0x4+0x0014UL))
+
+/* Register description: SMMU DMA CTRL config register.
+   Bit domain definition UNION:  SOC_SMMUv3_TBU_SMMU_DMA_CTRL_UNION */
+#define SOC_SMMUv3_TBU_SMMU_DMA_CTRL_ADDR(base, j)            ((base) + ((j)*0x4+0x001CUL))
+
+/* Register description: SMMU DMA STATE config register.
+   Bit domain definition UNION:  SOC_SMMUv3_TBU_SMMU_DMA_STATE_UNION */
+#define SOC_SMMUv3_TBU_SMMU_DMA_STATE_ADDR(base, j)           ((base) + ((j)*0x4+0x0024UL))
+
+/* Register description: SMMU DMA WR data config register.
+   Bit domain definition UNION:  SOC_SMMUv3_TBU_SMMU_DMA_WR_DATA_UNION */
+#define SOC_SMMUv3_TBU_SMMU_DMA_WR_DATA_ADDR(base)            ((base) + (0x002CUL))
+
+/* Register description: SMMU DMA RD data config register.
+   Bit domain definition UNION:  SOC_SMMUv3_TBU_SMMU_DMA_RD_DATA0_UNION */
+#define SOC_SMMUv3_TBU_SMMU_DMA_RD_DATA0_ADDR(base)           ((base) + (0x0030UL))
+
+/* Register description: SMMU DMA RD data config register.
+   Bit domain definition UNION:  SOC_SMMUv3_TBU_SMMU_DMA_RD_DATA1_UNION */
+#define SOC_SMMUv3_TBU_SMMU_DMA_RD_DATA1_ADDR(base)           ((base) + (0x0034UL))
+
+/* Register description: SMMU DMA RD data config register.
+   Bit domain definition UNION:  SOC_SMMUv3_TBU_SMMU_DMA_RD_DATA2_UNION */
+#define SOC_SMMUv3_TBU_SMMU_DMA_RD_DATA2_ADDR(base)           ((base) + (0x0038UL))
+
+/* Register description: SMMU DMA RD data config register.
+   Bit domain definition UNION:  SOC_SMMUv3_TBU_SMMU_DMA_RD_DATA3_UNION */
+#define SOC_SMMUv3_TBU_SMMU_DMA_RD_DATA3_ADDR(base)           ((base) + (0x003CUL))
+
+/* Register description: SMMU DMA RD data config register.
+   Bit domain definition UNION:  SOC_SMMUv3_TBU_SMMU_DMA_RD_DATA4_UNION */
+#define SOC_SMMUv3_TBU_SMMU_DMA_RD_DATA4_ADDR(base)           ((base) + (0x0040UL))
+
+/* Register description: SMMU DMA RD data config register.
+   Bit domain definition UNION:  SOC_SMMUv3_TBU_SMMU_DMA_RD_DATA5_UNION */
+#define SOC_SMMUv3_TBU_SMMU_DMA_RD_DATA5_ADDR(base)           ((base) + (0x0044UL))
+
+/* Register description: SMMU DMA RD data config register.
+   Bit domain definition UNION:  SOC_SMMUv3_TBU_SMMU_DMA_RD_DATA6_UNION */
+#define SOC_SMMUv3_TBU_SMMU_DMA_RD_DATA6_ADDR(base)           ((base) + (0x0048UL))
+
+/* Register description: SMMU DMA RD data config register.
+   Bit domain definition UNION:  SOC_SMMUv3_TBU_SMMU_DMA_RD_DATA7_UNION */
+#define SOC_SMMUv3_TBU_SMMU_DMA_RD_DATA7_ADDR(base)           ((base) + (0x004CUL))
+
+
+#else
+
+
+/* Register description: DMA Control Register
+   Bit domain definition UNION:  SOC_SMMUv3_TBU_SMMU_DMA_EN_UNION */
+#define SOC_SMMUv3_TBU_SMMU_DMA_EN_ADDR(base)                 ((base) + (0x0000))
+
+/* Register description: SMMU DMA START config register.
+   Bit domain definition UNION:  SOC_SMMUv3_TBU_SMMU_DMA_START_UNION */
+#define SOC_SMMUv3_TBU_SMMU_DMA_START_ADDR(base, j)           ((base) + ((j)*0x4+0x0004))
+
+/* Register description: SMMU DMA ADDR2  config register.
+   Bit domain definition UNION:  SOC_SMMUv3_TBU_SMMU_DMA_ADDR0_UNION */
+#define SOC_SMMUv3_TBU_SMMU_DMA_ADDR0_ADDR(base, j)           ((base) + ((j)*0x4+0x000C))
+
+/* Register description: SMMU DMA ADDR1 config register.
+   Bit domain definition UNION:  SOC_SMMUv3_TBU_SMMU_DMA_ADDR1_UNION */
+#define SOC_SMMUv3_TBU_SMMU_DMA_ADDR1_ADDR(base, j)           ((base) + ((j)*0x4+0x0014))
+
+/* Register description: SMMU DMA CTRL config register.
+   Bit domain definition UNION:  SOC_SMMUv3_TBU_SMMU_DMA_CTRL_UNION */
+#define SOC_SMMUv3_TBU_SMMU_DMA_CTRL_ADDR(base, j)            ((base) + ((j)*0x4+0x001C))
+
+/* Register description: SMMU DMA STATE config register.
+   Bit domain definition UNION:  SOC_SMMUv3_TBU_SMMU_DMA_STATE_UNION */
+#define SOC_SMMUv3_TBU_SMMU_DMA_STATE_ADDR(base, j)           ((base) + ((j)*0x4+0x0024))
+
+/* Register description: SMMU DMA WR data config register.
+   Bit domain definition UNION:  SOC_SMMUv3_TBU_SMMU_DMA_WR_DATA_UNION */
+#define SOC_SMMUv3_TBU_SMMU_DMA_WR_DATA_ADDR(base)            ((base) + (0x002C))
+
+/* Register description: SMMU DMA RD data config register.
+   Bit domain definition UNION:  SOC_SMMUv3_TBU_SMMU_DMA_RD_DATA0_UNION */
+#define SOC_SMMUv3_TBU_SMMU_DMA_RD_DATA0_ADDR(base)           ((base) + (0x0030))
+
+/* Register description: SMMU DMA RD data config register.
+   Bit domain definition UNION:  SOC_SMMUv3_TBU_SMMU_DMA_RD_DATA1_UNION */
+#define SOC_SMMUv3_TBU_SMMU_DMA_RD_DATA1_ADDR(base)           ((base) + (0x0034))
+
+/* Register description: SMMU DMA RD data config register.
+   Bit domain definition UNION:  SOC_SMMUv3_TBU_SMMU_DMA_RD_DATA2_UNION */
+#define SOC_SMMUv3_TBU_SMMU_DMA_RD_DATA2_ADDR(base)           ((base) + (0x0038))
+
+/* Register description: SMMU DMA RD data config register.
+   Bit domain definition UNION:  SOC_SMMUv3_TBU_SMMU_DMA_RD_DATA3_UNION */
+#define SOC_SMMUv3_TBU_SMMU_DMA_RD_DATA3_ADDR(base)           ((base) + (0x003C))
+
+/* Register description: SMMU DMA RD data config register.
+   Bit domain definition UNION:  SOC_SMMUv3_TBU_SMMU_DMA_RD_DATA4_UNION */
+#define SOC_SMMUv3_TBU_SMMU_DMA_RD_DATA4_ADDR(base)           ((base) + (0x0040))
+
+/* Register description: SMMU DMA RD data config register.
+   Bit domain definition UNION:  SOC_SMMUv3_TBU_SMMU_DMA_RD_DATA5_UNION */
+#define SOC_SMMUv3_TBU_SMMU_DMA_RD_DATA5_ADDR(base)           ((base) + (0x0044))
+
+/* Register description: SMMU DMA RD data config register.
+   Bit domain definition UNION:  SOC_SMMUv3_TBU_SMMU_DMA_RD_DATA6_UNION */
+#define SOC_SMMUv3_TBU_SMMU_DMA_RD_DATA6_ADDR(base)           ((base) + (0x0048))
+
+/* Register description: SMMU DMA RD data config register.
+   Bit domain definition UNION:  SOC_SMMUv3_TBU_SMMU_DMA_RD_DATA7_UNION */
+#define SOC_SMMUv3_TBU_SMMU_DMA_RD_DATA7_ADDR(base)           ((base) + (0x004C))
+
+
+#endif
+
+
+
+
+/*****************************************************************************
+  3 enums
+*****************************************************************************/
+
+
+
+/*****************************************************************************
+  4 message head
+*****************************************************************************/
+
+
+
+/*****************************************************************************
+  5 message
+*****************************************************************************/
+
+
+
+/*****************************************************************************
+  6 struct
+*****************************************************************************/
+
+
+
+/*****************************************************************************
+  7 union
+*****************************************************************************/
+
+/****************************************************************************
+                     (1/2) tbu
+ ****************************************************************************/
+/*****************************************************************************
+ struct               : SOC_SMMUv3_TBU_SMMU_TBU_CR_UNION
+ struct description   : SMMU_TBU_CR Register structure definition
+                        Address Offset:0x0000 Initial:0x20200F02 Width:32
+ register description : TBU Control Register
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  tbu_en_req      : 1;  /* bit[0]    : TBU enable/disable request. Whenever change this bit, check SMMU_TBU_CRACK.tbu_en_ack and SMMU_TBU_CRACK.tbu_condis_st.
+                                                           0x0: TBU disable request
+                                                           0x1: TBU enable request */
+        unsigned int  clk_gt_ctrl     : 2;  /* bit[1-2]  : Auto clock gating control.
+                                                           0x0: clock off by software;
+                                                           0x1: auto clock by hardware;
+                                                           0x2/0x3: clock on by software; */
+        unsigned int  pref_qos_lvl_en : 1;  /* bit[3]    : Prefetch qos lvl enable.
+                                                           0x0: disable prefetch qos lvl;
+                                                           0x1: enable prefetch qos lvl; */
+        unsigned int  pref_qos_lvl    : 4;  /* bit[4-7]  : Prefetch qos lvl. */
+        unsigned int  max_tok_trans   : 8;  /* bit[8-15] : Indicates the number of DTI translation tokens to request when connecting to the TCU, minus 1.
+                                                           Note: Default value of this field is hardware custom made. */
+        unsigned int  fetchslot_full_level   : 6;  /* bit[16-21]: Fetch request threshold.
+                                                           Note: Default value of this field is hardware custom made. */
+        unsigned int  tok_sel         : 1;  /* bit[22]   : TBU token value source selection
+                                                           0x0: use top parameter
+                                                           0x1: use SMMU_TBU_CR[15:8] */
+        unsigned int  hit_map_sel     : 1;  /* bit[23]   : 0:支持最多8个hit map值
+                                                           1:支持最多3个hit map值
+                                                           1个hit map对应一个页表size(
+                                                           目前支持的size为：
+                                                            stream bypass、1GB、2MB、4KB) */
+        unsigned int  prefslot_full_level  : 6;  /* bit[24-29]: Prefetch request threshold.
+                                                           Note: Default value of this field is hardware custom made. */
+        unsigned int  trans_hzd_size  : 2;  /* bit[30-31]: Address hzd size.
+                                                           0x0: 4KB;
+                                                           0x1: 16KB;
+                                                           0x2: 64KB;
+                                                           0x3: reserved. */
+    } reg;
+} SOC_SMMUv3_TBU_SMMU_TBU_CR_UNION;
+#endif
+#define SOC_SMMUv3_TBU_SMMU_TBU_CR_tbu_en_req_START       (0)
+#define SOC_SMMUv3_TBU_SMMU_TBU_CR_tbu_en_req_END         (0)
+#define SOC_SMMUv3_TBU_SMMU_TBU_CR_clk_gt_ctrl_START      (1)
+#define SOC_SMMUv3_TBU_SMMU_TBU_CR_clk_gt_ctrl_END        (2)
+#define SOC_SMMUv3_TBU_SMMU_TBU_CR_pref_qos_lvl_en_START  (3)
+#define SOC_SMMUv3_TBU_SMMU_TBU_CR_pref_qos_lvl_en_END    (3)
+#define SOC_SMMUv3_TBU_SMMU_TBU_CR_pref_qos_lvl_START     (4)
+#define SOC_SMMUv3_TBU_SMMU_TBU_CR_pref_qos_lvl_END       (7)
+#define SOC_SMMUv3_TBU_SMMU_TBU_CR_max_tok_trans_START    (8)
+#define SOC_SMMUv3_TBU_SMMU_TBU_CR_max_tok_trans_END      (15)
+#define SOC_SMMUv3_TBU_SMMU_TBU_CR_cmdq_full_lvl_START    (16)
+#define SOC_SMMUv3_TBU_SMMU_TBU_CR_cmdq_full_lvl_END      (21)
+#define SOC_SMMUv3_TBU_SMMU_TBU_CR_tok_sel_START          (22)
+#define SOC_SMMUv3_TBU_SMMU_TBU_CR_tok_sel_END            (22)
+#define SOC_SMMUv3_TBU_SMMU_TBU_CR_hit_map_sel_START      (23)
+#define SOC_SMMUv3_TBU_SMMU_TBU_CR_hit_map_sel_END        (23)
+#define SOC_SMMUv3_TBU_SMMU_TBU_CR_prefq_full_lvl_START   (24)
+#define SOC_SMMUv3_TBU_SMMU_TBU_CR_prefq_full_lvl_END     (29)
+#define SOC_SMMUv3_TBU_SMMU_TBU_CR_trans_hzd_size_START   (30)
+#define SOC_SMMUv3_TBU_SMMU_TBU_CR_trans_hzd_size_END     (31)
+
+
+/*****************************************************************************
+ struct               : SOC_SMMUv3_TBU_SMMU_TBU_CRACK_UNION
+ struct description   : SMMU_TBU_CRACK Register structure definition
+                        Address Offset:0x0004 Initial:0x00000000 Width:32
+ register description : TBU Control Acknowledge Register
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  tbu_en_ack    : 1;  /* bit[0]    : TBU enable/disable acknowledge
+                                                         
+                                                         0x0: TBU enable/disable request has not been acknowledged
+                                                         0x1: TBU enable/disable request has been acknowledged */
+        unsigned int  tbu_connected : 1;  /* bit[1]    : TBU connect/disconnect status.
+                                                         
+                                                         0x0: TBU is disconnect from TCU or connecting failed.
+                                                         0x1: TBU is connected to TCU */
+        unsigned int  reserved_0    : 6;  /* bit[2-7]  :  */
+        unsigned int  tok_trans_gnt : 8;  /* bit[8-15] : Indicates the number of DTI translation tokens granted from TCU, minus 1. */
+        unsigned int  reserved_1    : 16; /* bit[16-31]:  */
+    } reg;
+} SOC_SMMUv3_TBU_SMMU_TBU_CRACK_UNION;
+#endif
+#define SOC_SMMUv3_TBU_SMMU_TBU_CRACK_tbu_en_ack_START     (0)
+#define SOC_SMMUv3_TBU_SMMU_TBU_CRACK_tbu_en_ack_END       (0)
+#define SOC_SMMUv3_TBU_SMMU_TBU_CRACK_tbu_connected_START  (1)
+#define SOC_SMMUv3_TBU_SMMU_TBU_CRACK_tbu_connected_END    (1)
+#define SOC_SMMUv3_TBU_SMMU_TBU_CRACK_tok_trans_gnt_START  (8)
+#define SOC_SMMUv3_TBU_SMMU_TBU_CRACK_tok_trans_gnt_END    (15)
+
+
+/*****************************************************************************
+ struct               : SOC_SMMUv3_TBU_SMMU_TBU_MEM_CTRL_S_DR_UNION
+ struct description   : SMMU_TBU_MEM_CTRL_S_DR Register structure definition
+                        Address Offset:0x0008 Initial:0x00015858 Width:32
+ register description : SMMU SP memory control register
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  mem_ctrl_s_dr : 26; /* bit[0-25] : SP memory control. For dual rail. */
+        unsigned int  reserved      : 6;  /* bit[26-31]:  */
+    } reg;
+} SOC_SMMUv3_TBU_SMMU_TBU_MEM_CTRL_S_DR_UNION;
+#endif
+#define SOC_SMMUv3_TBU_SMMU_TBU_MEM_CTRL_S_DR_mem_ctrl_s_dr_START  (0)
+#define SOC_SMMUv3_TBU_SMMU_TBU_MEM_CTRL_S_DR_mem_ctrl_s_dr_END    (25)
+
+
+/*****************************************************************************
+ struct               : SOC_SMMUv3_TBU_SMMU_TBU_MEM_CTRL_B_DR_UNION
+ struct description   : SMMU_TBU_MEM_CTRL_B_DR Register structure definition
+                        Address Offset:0x000C Initial:0x00004858 Width:32
+ register description : SMMU BP memory control register
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  mem_ctrl_bp_d1w2r_dr : 16; /* bit[0-15] : BP memory control. For dual rail. */
+        unsigned int  reserved             : 16; /* bit[16-31]:  */
+    } reg;
+} SOC_SMMUv3_TBU_SMMU_TBU_MEM_CTRL_B_DR_UNION;
+#endif
+#define SOC_SMMUv3_TBU_SMMU_TBU_MEM_CTRL_B_DR_mem_ctrl_bp_d1w2r_dr_START  (0)
+#define SOC_SMMUv3_TBU_SMMU_TBU_MEM_CTRL_B_DR_mem_ctrl_bp_d1w2r_dr_END    (15)
+
+
+/*****************************************************************************
+ struct               : SOC_SMMUv3_TBU_SMMU_TBU_IRPT_MASK_NS_UNION
+ struct description   : SMMU_TBU_IRPT_MASK_NS Register structure definition
+                        Address Offset:0x0010 Initial:0x0000000F Width:32
+ register description : SMMU non-secure interrupt msk register.
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  tbu_glb_irpt_ns_msk : 1;  /* bit[0]   : TBU glb non-secure interrupt.
+                                                              0x0: Interrupt enabled;
+                                                              0x1: Interrupt disabled; */
+        unsigned int  tbu_pmu_irpt_msk    : 1;  /* bit[1]   : TBU PMU interrupt.
+                                                              0x0: Interrupt enabled;
+                                                              0x1: Interrupt disabled; */
+        unsigned int  tlb_inv_end_ns_msk  : 1;  /* bit[2]   : TBU invalid end non-secure interrupt.
+                                                              0x0: Interrupt enabled;
+                                                              0x1: Interrupt disabled; */
+        unsigned int  tlb_inv_err_ns_msk  : 1;  /* bit[3]   : TBU invalid err non-secure interrupt.
+                                                              0x0: Interrupt enabled;
+                                                              0x1: Interrupt disabled; */
+        unsigned int  mem_err_mutlpl_msk  : 1;  /* bit[4]   : mem ecc multiple bits err interrupt.
+                                                              0x0: Interrupt enabled;
+                                                              0x1: Interrupt disabled; */
+        unsigned int  mem_err_detect_msk  : 1;  /* bit[5]   : mem ecc 1 bit err interrupt.
+                                                              0x0: Interrupt enabled;
+                                                              0x1: Interrupt disabled; */
+        unsigned int  reserved            : 26; /* bit[6-31]:  */
+    } reg;
+} SOC_SMMUv3_TBU_SMMU_TBU_IRPT_MASK_NS_UNION;
+#endif
+#define SOC_SMMUv3_TBU_SMMU_TBU_IRPT_MASK_NS_tbu_glb_irpt_ns_msk_START  (0)
+#define SOC_SMMUv3_TBU_SMMU_TBU_IRPT_MASK_NS_tbu_glb_irpt_ns_msk_END    (0)
+#define SOC_SMMUv3_TBU_SMMU_TBU_IRPT_MASK_NS_tbu_pmu_irpt_msk_START     (1)
+#define SOC_SMMUv3_TBU_SMMU_TBU_IRPT_MASK_NS_tbu_pmu_irpt_msk_END       (1)
+#define SOC_SMMUv3_TBU_SMMU_TBU_IRPT_MASK_NS_tlb_inv_end_ns_msk_START   (2)
+#define SOC_SMMUv3_TBU_SMMU_TBU_IRPT_MASK_NS_tlb_inv_end_ns_msk_END     (2)
+#define SOC_SMMUv3_TBU_SMMU_TBU_IRPT_MASK_NS_tlb_inv_err_ns_msk_START   (3)
+#define SOC_SMMUv3_TBU_SMMU_TBU_IRPT_MASK_NS_tlb_inv_err_ns_msk_END     (3)
+#define SOC_SMMUv3_TBU_SMMU_TBU_IRPT_MASK_NS_mem_err_mutlpl_msk_START   (4)
+#define SOC_SMMUv3_TBU_SMMU_TBU_IRPT_MASK_NS_mem_err_mutlpl_msk_END     (4)
+#define SOC_SMMUv3_TBU_SMMU_TBU_IRPT_MASK_NS_mem_err_detect_msk_START   (5)
+#define SOC_SMMUv3_TBU_SMMU_TBU_IRPT_MASK_NS_mem_err_detect_msk_END     (5)
+
+
+/*****************************************************************************
+ struct               : SOC_SMMUv3_TBU_SMMU_TBU_IRPT_RAW_NS_UNION
+ struct description   : SMMU_TBU_IRPT_RAW_NS Register structure definition
+                        Address Offset:0x0014 Initial:0x00000000 Width:32
+ register description : SMMU TBU non-secure interrupt raw status register.
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  tbu_glb_irpt_ns_raw : 1;  /* bit[0]   : TBU glb non-secure interrupt */
+        unsigned int  tbu_pmu_irpt_raw    : 1;  /* bit[1]   : TBU PMU interrupt */
+        unsigned int  tlb_inv_end_ns_raw  : 1;  /* bit[2]   : TBU invalid end non-secure interrupt */
+        unsigned int  tlb_inv_err_ns_raw  : 1;  /* bit[3]   : TBU invalid err non-secure interrupt */
+        unsigned int  mem_err_mutlpl_raw  : 1;  /* bit[4]   : mem ecc multiple bits err interrupt. */
+        unsigned int  mem_err_detect_raw  : 1;  /* bit[5]   : mem ecc 1 bit err interrupt */
+        unsigned int  reserved            : 26; /* bit[6-31]:  */
+    } reg;
+} SOC_SMMUv3_TBU_SMMU_TBU_IRPT_RAW_NS_UNION;
+#endif
+#define SOC_SMMUv3_TBU_SMMU_TBU_IRPT_RAW_NS_tbu_glb_irpt_ns_raw_START  (0)
+#define SOC_SMMUv3_TBU_SMMU_TBU_IRPT_RAW_NS_tbu_glb_irpt_ns_raw_END    (0)
+#define SOC_SMMUv3_TBU_SMMU_TBU_IRPT_RAW_NS_tbu_pmu_irpt_raw_START     (1)
+#define SOC_SMMUv3_TBU_SMMU_TBU_IRPT_RAW_NS_tbu_pmu_irpt_raw_END       (1)
+#define SOC_SMMUv3_TBU_SMMU_TBU_IRPT_RAW_NS_tlb_inv_end_ns_raw_START   (2)
+#define SOC_SMMUv3_TBU_SMMU_TBU_IRPT_RAW_NS_tlb_inv_end_ns_raw_END     (2)
+#define SOC_SMMUv3_TBU_SMMU_TBU_IRPT_RAW_NS_tlb_inv_err_ns_raw_START   (3)
+#define SOC_SMMUv3_TBU_SMMU_TBU_IRPT_RAW_NS_tlb_inv_err_ns_raw_END     (3)
+#define SOC_SMMUv3_TBU_SMMU_TBU_IRPT_RAW_NS_mem_err_mutlpl_raw_START   (4)
+#define SOC_SMMUv3_TBU_SMMU_TBU_IRPT_RAW_NS_mem_err_mutlpl_raw_END     (4)
+#define SOC_SMMUv3_TBU_SMMU_TBU_IRPT_RAW_NS_mem_err_detect_raw_START   (5)
+#define SOC_SMMUv3_TBU_SMMU_TBU_IRPT_RAW_NS_mem_err_detect_raw_END     (5)
+
+
+/*****************************************************************************
+ struct               : SOC_SMMUv3_TBU_SMMU_TBU_IRPT_STAT_NS_UNION
+ struct description   : SMMU_TBU_IRPT_STAT_NS Register structure definition
+                        Address Offset:0x0018 Initial:0x00000000 Width:32
+ register description : SMMU TBU non-secure interrupt msked status register.
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  tbu_glb_irpt_ns_stat : 1;  /* bit[0]   : TBU glb non-secure interrupt */
+        unsigned int  tbu_pmu_irpt_stat    : 1;  /* bit[1]   : TBU PMU interrupt */
+        unsigned int  tlb_inv_end_ns_stat  : 1;  /* bit[2]   : TBU invalid end non-secure interrupt */
+        unsigned int  tlb_inv_err_ns_stat  : 1;  /* bit[3]   : TBU invalid err non-secure interrupt */
+        unsigned int  mem_err_mutlpl_stat  : 1;  /* bit[4]   : mem ecc multiple bits err interrupt. */
+        unsigned int  mem_err_detect_stat  : 1;  /* bit[5]   : mem ecc 1 bit err interrupt */
+        unsigned int  reserved             : 26; /* bit[6-31]:  */
+    } reg;
+} SOC_SMMUv3_TBU_SMMU_TBU_IRPT_STAT_NS_UNION;
+#endif
+#define SOC_SMMUv3_TBU_SMMU_TBU_IRPT_STAT_NS_tbu_glb_irpt_ns_stat_START  (0)
+#define SOC_SMMUv3_TBU_SMMU_TBU_IRPT_STAT_NS_tbu_glb_irpt_ns_stat_END    (0)
+#define SOC_SMMUv3_TBU_SMMU_TBU_IRPT_STAT_NS_tbu_pmu_irpt_stat_START     (1)
+#define SOC_SMMUv3_TBU_SMMU_TBU_IRPT_STAT_NS_tbu_pmu_irpt_stat_END       (1)
+#define SOC_SMMUv3_TBU_SMMU_TBU_IRPT_STAT_NS_tlb_inv_end_ns_stat_START   (2)
+#define SOC_SMMUv3_TBU_SMMU_TBU_IRPT_STAT_NS_tlb_inv_end_ns_stat_END     (2)
+#define SOC_SMMUv3_TBU_SMMU_TBU_IRPT_STAT_NS_tlb_inv_err_ns_stat_START   (3)
+#define SOC_SMMUv3_TBU_SMMU_TBU_IRPT_STAT_NS_tlb_inv_err_ns_stat_END     (3)
+#define SOC_SMMUv3_TBU_SMMU_TBU_IRPT_STAT_NS_mem_err_mutlpl_stat_START   (4)
+#define SOC_SMMUv3_TBU_SMMU_TBU_IRPT_STAT_NS_mem_err_mutlpl_stat_END     (4)
+#define SOC_SMMUv3_TBU_SMMU_TBU_IRPT_STAT_NS_mem_err_detect_stat_START   (5)
+#define SOC_SMMUv3_TBU_SMMU_TBU_IRPT_STAT_NS_mem_err_detect_stat_END     (5)
+
+
+/*****************************************************************************
+ struct               : SOC_SMMUv3_TBU_SMMU_TBU_IRPT_CLR_NS_UNION
+ struct description   : SMMU_TBU_IRPT_CLR_NS Register structure definition
+                        Address Offset:0x001C Initial:0x00000000 Width:32
+ register description : SMMU TBU non-secure interrupt clear register.
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  tbu_glb_irpt_ns_clr : 1;  /* bit[0]   : TBU glb non-secure interrupt */
+        unsigned int  tbu_pmu_irpt_clr    : 1;  /* bit[1]   : TBU PMU interrupt */
+        unsigned int  tlb_inv_end_ns_clr  : 1;  /* bit[2]   : TBU invalid end non-secure interrupt */
+        unsigned int  tlb_inv_err_ns_clr  : 1;  /* bit[3]   : TBU invalid err non-secure interrupt */
+        unsigned int  mem_err_mutlpl_clr  : 1;  /* bit[4]   : mem ecc multiple bits err interrupt. */
+        unsigned int  mem_err_detect_clr  : 1;  /* bit[5]   : mem ecc 1 bit err interrupt */
+        unsigned int  reserved            : 26; /* bit[6-31]:  */
+    } reg;
+} SOC_SMMUv3_TBU_SMMU_TBU_IRPT_CLR_NS_UNION;
+#endif
+#define SOC_SMMUv3_TBU_SMMU_TBU_IRPT_CLR_NS_tbu_glb_irpt_ns_clr_START  (0)
+#define SOC_SMMUv3_TBU_SMMU_TBU_IRPT_CLR_NS_tbu_glb_irpt_ns_clr_END    (0)
+#define SOC_SMMUv3_TBU_SMMU_TBU_IRPT_CLR_NS_tbu_pmu_irpt_clr_START     (1)
+#define SOC_SMMUv3_TBU_SMMU_TBU_IRPT_CLR_NS_tbu_pmu_irpt_clr_END       (1)
+#define SOC_SMMUv3_TBU_SMMU_TBU_IRPT_CLR_NS_tlb_inv_end_ns_clr_START   (2)
+#define SOC_SMMUv3_TBU_SMMU_TBU_IRPT_CLR_NS_tlb_inv_end_ns_clr_END     (2)
+#define SOC_SMMUv3_TBU_SMMU_TBU_IRPT_CLR_NS_tlb_inv_err_ns_clr_START   (3)
+#define SOC_SMMUv3_TBU_SMMU_TBU_IRPT_CLR_NS_tlb_inv_err_ns_clr_END     (3)
+#define SOC_SMMUv3_TBU_SMMU_TBU_IRPT_CLR_NS_mem_err_mutlpl_clr_START   (4)
+#define SOC_SMMUv3_TBU_SMMU_TBU_IRPT_CLR_NS_mem_err_mutlpl_clr_END     (4)
+#define SOC_SMMUv3_TBU_SMMU_TBU_IRPT_CLR_NS_mem_err_detect_clr_START   (5)
+#define SOC_SMMUv3_TBU_SMMU_TBU_IRPT_CLR_NS_mem_err_detect_clr_END     (5)
+
+
+/*****************************************************************************
+ struct               : SOC_SMMUv3_TBU_SMMU_TBU_LOCK_CLR_UNION
+ struct description   : SMMU_TBU_LOCK_CLR Register structure definition
+                        Address Offset:0x0020 Initial:0x00000000 Width:32
+ register description : SMMU TBU TLB lock clear register.
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  tlb_lock_clr : 1;  /* bit[0]   : TLB lock状态清除：
+                                                       0x0: disable
+                                                       0x1: enable */
+        unsigned int  reserved     : 31; /* bit[1-31]:  */
+    } reg;
+} SOC_SMMUv3_TBU_SMMU_TBU_LOCK_CLR_UNION;
+#endif
+#define SOC_SMMUv3_TBU_SMMU_TBU_LOCK_CLR_tlb_lock_clr_START  (0)
+#define SOC_SMMUv3_TBU_SMMU_TBU_LOCK_CLR_tlb_lock_clr_END    (0)
+
+
+/*****************************************************************************
+ struct               : SOC_SMMUv3_TBU_SMMU_TBU_TLB_INV_NS_UNION
+ struct description   : SMMU_TBU_TLB_INV_NS Register structure definition
+                        Address Offset:0x0024 Initial:0x00000000 Width:32
+ register description : SMMU TBU TLB non-secure invalid register.
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  tlb_inv_ns_op    : 2;  /* bit[0-1]  : operation:
+                                                            0x0: CFGI_NS_SID_SSID
+                                                            0x1: CFGI_NS_SID
+                                                            0x2/0x3: CFGI_NS_ALL */
+        unsigned int  tlb_inv_ns_sid   : 8;  /* bit[2-9]  : TLB invalid SID */
+        unsigned int  tlb_inv_ns_ssid  : 12; /* bit[10-21]: TLB invalid SSID */
+        unsigned int  tlb_inv_ns_range : 5;  /* bit[22-26]: TLB invalid SID range.
+                                                            Inv SID Start = (SID & ~(2**Range - 1);
+                                                            Inv SID End = Start + 2**Range - 1;
+                                                            Note: ** means power of 2. */
+        unsigned int  reserved         : 4;  /* bit[27-30]:  */
+        unsigned int  tlb_inv_ns_en    : 1;  /* bit[31]   : TLB invalid enable, write only */
+    } reg;
+} SOC_SMMUv3_TBU_SMMU_TBU_TLB_INV_NS_UNION;
+#endif
+#define SOC_SMMUv3_TBU_SMMU_TBU_TLB_INV_NS_tlb_inv_ns_op_START     (0)
+#define SOC_SMMUv3_TBU_SMMU_TBU_TLB_INV_NS_tlb_inv_ns_op_END       (1)
+#define SOC_SMMUv3_TBU_SMMU_TBU_TLB_INV_NS_tlb_inv_ns_sid_START    (2)
+#define SOC_SMMUv3_TBU_SMMU_TBU_TLB_INV_NS_tlb_inv_ns_sid_END      (9)
+#define SOC_SMMUv3_TBU_SMMU_TBU_TLB_INV_NS_tlb_inv_ns_ssid_START   (10)
+#define SOC_SMMUv3_TBU_SMMU_TBU_TLB_INV_NS_tlb_inv_ns_ssid_END     (21)
+#define SOC_SMMUv3_TBU_SMMU_TBU_TLB_INV_NS_tlb_inv_ns_range_START  (22)
+#define SOC_SMMUv3_TBU_SMMU_TBU_TLB_INV_NS_tlb_inv_ns_range_END    (26)
+#define SOC_SMMUv3_TBU_SMMU_TBU_TLB_INV_NS_tlb_inv_ns_en_START     (31)
+#define SOC_SMMUv3_TBU_SMMU_TBU_TLB_INV_NS_tlb_inv_ns_en_END       (31)
+
+
+/*****************************************************************************
+ struct               : SOC_SMMUv3_TBU_SMMU_TBU_MEM_CTRL_T_DR_UNION
+ struct description   : SMMU_TBU_MEM_CTRL_T_DR Register structure definition
+                        Address Offset:0x0028 Initial:0x00000850 Width:32
+ register description : SMMU TP memory control register
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  mem_ctrl_tp_d1w2r_dr : 16; /* bit[0-15] : TP memory control. For dual rail */
+        unsigned int  reserved             : 16; /* bit[16-31]:  */
+    } reg;
+} SOC_SMMUv3_TBU_SMMU_TBU_MEM_CTRL_T_DR_UNION;
+#endif
+#define SOC_SMMUv3_TBU_SMMU_TBU_MEM_CTRL_T_DR_mem_ctrl_tp_d1w2r_dr_START  (0)
+#define SOC_SMMUv3_TBU_SMMU_TBU_MEM_CTRL_T_DR_mem_ctrl_tp_d1w2r_dr_END    (15)
+
+
+/*****************************************************************************
+ struct               : SOC_SMMUv3_TBU_SMMU_TBU_MEM_CTRL_S_SR_UNION
+ struct description   : SMMU_TBU_MEM_CTRL_S_SR Register structure definition
+                        Address Offset:0x002C Initial:0x00005858 Width:32
+ register description : SMMU SP memory control register
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  mem_ctrl_s_sr : 26; /* bit[0-25] : SP memory control. For single rail. */
+        unsigned int  reserved      : 6;  /* bit[26-31]:  */
+    } reg;
+} SOC_SMMUv3_TBU_SMMU_TBU_MEM_CTRL_S_SR_UNION;
+#endif
+#define SOC_SMMUv3_TBU_SMMU_TBU_MEM_CTRL_S_SR_mem_ctrl_s_sr_START  (0)
+#define SOC_SMMUv3_TBU_SMMU_TBU_MEM_CTRL_S_SR_mem_ctrl_s_sr_END    (25)
+
+
+/*****************************************************************************
+ struct               : SOC_SMMUv3_TBU_SMMU_TBU_MEM_CTRL_B_SR_UNION
+ struct description   : SMMU_TBU_MEM_CTRL_B_SR Register structure definition
+                        Address Offset:0x0030 Initial:0x00004058 Width:32
+ register description : SMMU BP memory control register
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  mem_ctrl_bp_d1w2r_sr : 16; /* bit[0-15] : BP memory control. For single rail. */
+        unsigned int  reserved             : 16; /* bit[16-31]:  */
+    } reg;
+} SOC_SMMUv3_TBU_SMMU_TBU_MEM_CTRL_B_SR_UNION;
+#endif
+#define SOC_SMMUv3_TBU_SMMU_TBU_MEM_CTRL_B_SR_mem_ctrl_bp_d1w2r_sr_START  (0)
+#define SOC_SMMUv3_TBU_SMMU_TBU_MEM_CTRL_B_SR_mem_ctrl_bp_d1w2r_sr_END    (15)
+
+
+/*****************************************************************************
+ struct               : SOC_SMMUv3_TBU_SMMU_TBU_MEM_CTRL_T_SR_UNION
+ struct description   : SMMU_TBU_MEM_CTRL_T_SR Register structure definition
+                        Address Offset:0x0034 Initial:0x00000050 Width:32
+ register description : SMMU TP memory control register
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  mem_ctrl_tp_d1w2r_sr : 16; /* bit[0-15] : TP memory control. For single rail */
+        unsigned int  reserved             : 16; /* bit[16-31]:  */
+    } reg;
+} SOC_SMMUv3_TBU_SMMU_TBU_MEM_CTRL_T_SR_UNION;
+#endif
+#define SOC_SMMUv3_TBU_SMMU_TBU_MEM_CTRL_T_SR_mem_ctrl_tp_d1w2r_sr_START  (0)
+#define SOC_SMMUv3_TBU_SMMU_TBU_MEM_CTRL_T_SR_mem_ctrl_tp_d1w2r_sr_END    (15)
+
+
+/*****************************************************************************
+ struct               : SOC_SMMUv3_TBU_SMMU_TBU_SWID_CFG_UNION
+ struct description   : SMMU_TBU_SWID_CFG Register structure definition
+                        Address Offset:(m)*0x4+0x100 Initial:0x00000008 Width:32
+ register description : SMMU TBU slide window config register.
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  pref_num          : 8;  /* bit[0-7]  : 预取预测失败时向前预取的page数。
+                                                             注意：仅用于调试，不可随意配置。 */
+        unsigned int  reserved          : 16; /* bit[8-23] :  */
+        unsigned int  pref_jump         : 4;  /* bit[24-27]: 预取速度慢于实取时，预取向前跳跃的距离，单位为2的幂次个page。
+                                                             注意：仅用于调试，不可随意配置。 */
+        unsigned int  syscache_hint_sel : 2;  /* bit[28-29]: 非bypass模式下system cache hint来源选择：
+                                                             0x0: 来源于页表PA[41:36];
+                                                             0x1: 来源于页表{PA[41:40],PBHA}；
+                                                             0x2: 来源于上游master；
+                                                             0x3: Override成0x0；
+                                                             注意：bypass模式下hint固定来源于上游master，不受此寄存器控制； */
+        unsigned int  pref_lock_msk     : 1;  /* bit[30]   : Prefetch TLB lock功能msk：
+                                                             0x0: msk不使能，是否lock TLB由master决定；
+                                                             0x1: msk使能，禁止master lock TLB； */
+        unsigned int  pref_en           : 1;  /* bit[31]   : 滑窗预取使能：
+                                                             0x0: disable
+                                                             0x1: enable */
+    } reg;
+} SOC_SMMUv3_TBU_SMMU_TBU_SWID_CFG_UNION;
+#endif
+#define SOC_SMMUv3_TBU_SMMU_TBU_SWID_CFG_pref_num_START           (0)
+#define SOC_SMMUv3_TBU_SMMU_TBU_SWID_CFG_pref_num_END             (7)
+#define SOC_SMMUv3_TBU_SMMU_TBU_SWID_CFG_pref_jump_START          (24)
+#define SOC_SMMUv3_TBU_SMMU_TBU_SWID_CFG_pref_jump_END            (27)
+#define SOC_SMMUv3_TBU_SMMU_TBU_SWID_CFG_syscache_hint_sel_START  (28)
+#define SOC_SMMUv3_TBU_SMMU_TBU_SWID_CFG_syscache_hint_sel_END    (29)
+#define SOC_SMMUv3_TBU_SMMU_TBU_SWID_CFG_pref_lock_msk_START      (30)
+#define SOC_SMMUv3_TBU_SMMU_TBU_SWID_CFG_pref_lock_msk_END        (30)
+#define SOC_SMMUv3_TBU_SMMU_TBU_SWID_CFG_pref_en_START            (31)
+#define SOC_SMMUv3_TBU_SMMU_TBU_SWID_CFG_pref_en_END              (31)
+
+
+/*****************************************************************************
+ struct               : SOC_SMMUv3_TBU_SMMU_TBU_PIDR4_UNION
+ struct description   : SMMU_TBU_PIDR4 Register structure definition
+                        Address Offset:0x0FD0 Initial:0x00000007 Width:32
+ register description : TBU Component and Peripheral ID registers
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  smmu_tbu_pidr4 : 32; /* bit[0-31]:  */
+    } reg;
+} SOC_SMMUv3_TBU_SMMU_TBU_PIDR4_UNION;
+#endif
+#define SOC_SMMUv3_TBU_SMMU_TBU_PIDR4_smmu_tbu_pidr4_START  (0)
+#define SOC_SMMUv3_TBU_SMMU_TBU_PIDR4_smmu_tbu_pidr4_END    (31)
+
+
+/*****************************************************************************
+ struct               : SOC_SMMUv3_TBU_SMMU_TBU_PIDR5_UNION
+ struct description   : SMMU_TBU_PIDR5 Register structure definition
+                        Address Offset:0x0FD4 Initial:0x00000000 Width:32
+ register description : TBU Component and Peripheral ID registers
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  smmu_tbu_pidr5 : 32; /* bit[0-31]:  */
+    } reg;
+} SOC_SMMUv3_TBU_SMMU_TBU_PIDR5_UNION;
+#endif
+#define SOC_SMMUv3_TBU_SMMU_TBU_PIDR5_smmu_tbu_pidr5_START  (0)
+#define SOC_SMMUv3_TBU_SMMU_TBU_PIDR5_smmu_tbu_pidr5_END    (31)
+
+
+/*****************************************************************************
+ struct               : SOC_SMMUv3_TBU_SMMU_TBU_PIDR6_UNION
+ struct description   : SMMU_TBU_PIDR6 Register structure definition
+                        Address Offset:0x0FD8 Initial:0x00000000 Width:32
+ register description : TBU Component and Peripheral ID registers
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  smmu_tbu_pidr6 : 32; /* bit[0-31]:  */
+    } reg;
+} SOC_SMMUv3_TBU_SMMU_TBU_PIDR6_UNION;
+#endif
+#define SOC_SMMUv3_TBU_SMMU_TBU_PIDR6_smmu_tbu_pidr6_START  (0)
+#define SOC_SMMUv3_TBU_SMMU_TBU_PIDR6_smmu_tbu_pidr6_END    (31)
+
+
+/*****************************************************************************
+ struct               : SOC_SMMUv3_TBU_SMMU_TBU_PIDR7_UNION
+ struct description   : SMMU_TBU_PIDR7 Register structure definition
+                        Address Offset:0x0FDC Initial:0x00000000 Width:32
+ register description : TBU Component and Peripheral ID registers
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  smmu_tbu_pidr7 : 32; /* bit[0-31]:  */
+    } reg;
+} SOC_SMMUv3_TBU_SMMU_TBU_PIDR7_UNION;
+#endif
+#define SOC_SMMUv3_TBU_SMMU_TBU_PIDR7_smmu_tbu_pidr7_START  (0)
+#define SOC_SMMUv3_TBU_SMMU_TBU_PIDR7_smmu_tbu_pidr7_END    (31)
+
+
+/*****************************************************************************
+ struct               : SOC_SMMUv3_TBU_SMMU_TBU_PIDR0_UNION
+ struct description   : SMMU_TBU_PIDR0 Register structure definition
+                        Address Offset:0x0FE0 Initial:0x00000084 Width:32
+ register description : TBU Component and Peripheral ID registers
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  smmu_tbu_pidr0 : 32; /* bit[0-31]:  */
+    } reg;
+} SOC_SMMUv3_TBU_SMMU_TBU_PIDR0_UNION;
+#endif
+#define SOC_SMMUv3_TBU_SMMU_TBU_PIDR0_smmu_tbu_pidr0_START  (0)
+#define SOC_SMMUv3_TBU_SMMU_TBU_PIDR0_smmu_tbu_pidr0_END    (31)
+
+
+/*****************************************************************************
+ struct               : SOC_SMMUv3_TBU_SMMU_TBU_PIDR1_UNION
+ struct description   : SMMU_TBU_PIDR1 Register structure definition
+                        Address Offset:0x0FE4 Initial:0x00000064 Width:32
+ register description : TBU Component and Peripheral ID registers
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  smmu_tbu_pidr1 : 32; /* bit[0-31]:  */
+    } reg;
+} SOC_SMMUv3_TBU_SMMU_TBU_PIDR1_UNION;
+#endif
+#define SOC_SMMUv3_TBU_SMMU_TBU_PIDR1_smmu_tbu_pidr1_START  (0)
+#define SOC_SMMUv3_TBU_SMMU_TBU_PIDR1_smmu_tbu_pidr1_END    (31)
+
+
+/*****************************************************************************
+ struct               : SOC_SMMUv3_TBU_SMMU_TBU_PIDR2_UNION
+ struct description   : SMMU_TBU_PIDR2 Register structure definition
+                        Address Offset:0x0FE8 Initial:0x0000000B Width:32
+ register description : TBU Component and Peripheral ID registers
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  smmu_tbu_pidr2 : 32; /* bit[0-31]:  */
+    } reg;
+} SOC_SMMUv3_TBU_SMMU_TBU_PIDR2_UNION;
+#endif
+#define SOC_SMMUv3_TBU_SMMU_TBU_PIDR2_smmu_tbu_pidr2_START  (0)
+#define SOC_SMMUv3_TBU_SMMU_TBU_PIDR2_smmu_tbu_pidr2_END    (31)
+
+
+/*****************************************************************************
+ struct               : SOC_SMMUv3_TBU_SMMU_TBU_PIDR3_UNION
+ struct description   : SMMU_TBU_PIDR3 Register structure definition
+                        Address Offset:0x0FEC Initial:0x00000020 Width:32
+ register description : TBU Component and Peripheral ID registers
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  smmu_tbu_pidr3 : 32; /* bit[0-31]:  */
+    } reg;
+} SOC_SMMUv3_TBU_SMMU_TBU_PIDR3_UNION;
+#endif
+#define SOC_SMMUv3_TBU_SMMU_TBU_PIDR3_smmu_tbu_pidr3_START  (0)
+#define SOC_SMMUv3_TBU_SMMU_TBU_PIDR3_smmu_tbu_pidr3_END    (31)
+
+
+/*****************************************************************************
+ struct               : SOC_SMMUv3_TBU_SMMU_TBU_CIDR0_UNION
+ struct description   : SMMU_TBU_CIDR0 Register structure definition
+                        Address Offset:0x0FF0 Initial:0x0000000D Width:32
+ register description : TBU Component and Peripheral ID registers
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  smmu_tbu_cidr0 : 32; /* bit[0-31]:  */
+    } reg;
+} SOC_SMMUv3_TBU_SMMU_TBU_CIDR0_UNION;
+#endif
+#define SOC_SMMUv3_TBU_SMMU_TBU_CIDR0_smmu_tbu_cidr0_START  (0)
+#define SOC_SMMUv3_TBU_SMMU_TBU_CIDR0_smmu_tbu_cidr0_END    (31)
+
+
+/*****************************************************************************
+ struct               : SOC_SMMUv3_TBU_SMMU_TBU_CIDR1_UNION
+ struct description   : SMMU_TBU_CIDR1 Register structure definition
+                        Address Offset:0x0FF4 Initial:0x000000F0 Width:32
+ register description : TBU Component and Peripheral ID registers
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  smmu_tbu_cidr1 : 32; /* bit[0-31]:  */
+    } reg;
+} SOC_SMMUv3_TBU_SMMU_TBU_CIDR1_UNION;
+#endif
+#define SOC_SMMUv3_TBU_SMMU_TBU_CIDR1_smmu_tbu_cidr1_START  (0)
+#define SOC_SMMUv3_TBU_SMMU_TBU_CIDR1_smmu_tbu_cidr1_END    (31)
+
+
+/*****************************************************************************
+ struct               : SOC_SMMUv3_TBU_SMMU_TBU_CIDR2_UNION
+ struct description   : SMMU_TBU_CIDR2 Register structure definition
+                        Address Offset:0x0FF8 Initial:0x00000005 Width:32
+ register description : TBU Component and Peripheral ID registers
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  smmu_tbu_cidr2 : 32; /* bit[0-31]:  */
+    } reg;
+} SOC_SMMUv3_TBU_SMMU_TBU_CIDR2_UNION;
+#endif
+#define SOC_SMMUv3_TBU_SMMU_TBU_CIDR2_smmu_tbu_cidr2_START  (0)
+#define SOC_SMMUv3_TBU_SMMU_TBU_CIDR2_smmu_tbu_cidr2_END    (31)
+
+
+/*****************************************************************************
+ struct               : SOC_SMMUv3_TBU_SMMU_TBU_CIDR3_UNION
+ struct description   : SMMU_TBU_CIDR3 Register structure definition
+                        Address Offset:0x0FFC Initial:0x000000B1 Width:32
+ register description : TBU Component and Peripheral ID registers
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  smmu_tbu_cidr3 : 32; /* bit[0-31]:  */
+    } reg;
+} SOC_SMMUv3_TBU_SMMU_TBU_CIDR3_UNION;
+#endif
+#define SOC_SMMUv3_TBU_SMMU_TBU_CIDR3_smmu_tbu_cidr3_START  (0)
+#define SOC_SMMUv3_TBU_SMMU_TBU_CIDR3_smmu_tbu_cidr3_END    (31)
+
+
+/*****************************************************************************
+ struct               : SOC_SMMUv3_TBU_SMMU_TBU_SCR_UNION
+ struct description   : SMMU_TBU_SCR Register structure definition
+                        Address Offset:0x1000 Initial:0x00000041 Width:32
+ register description : TBU Secure Control Register
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  ns_uarch        : 1;  /* bit[0]   : Non-secure register access enable for register addresses 0x0–0xC and 0x20–0x1FFC.
+                                                          
+                                                          0：When this bit is set to 0, Non-secure accesses are RAZ/WI.
+                                                          1：When this bit is set to 1, Non-secure accesses are permitted. */
+        unsigned int  hzd_dis         : 1;  /* bit[1]   : Address hzd disable.
+                                                          0x0: Address hzd enable
+                                                          0x1: Address hzd disable
+                                                          
+                                                          Disable hzding between translation requests from transactions in the same page. When this bit is set to 0 and multiple outstanding transactions access the same 4KB page, the TBU sends a single translation request that it uses for all affected transactions. */
+        unsigned int  l2tlb_his_dis   : 1;  /* bit[2]   : Main TLB hmp disable.
+                                                          0x0: Main TLB hmp enable
+                                                          0x1: Main TLB hmp disable */
+        unsigned int  tbu_bypass      : 1;  /* bit[3]   : TBU hardware bypass.
+                                                          0x0: Non-bypass
+                                                          0x1: Bypass
+                                                          Note: Only for debug. */
+        unsigned int  dummy_unlock_en : 1;  /* bit[4]   : TBU dummy unlock access enable.
+                                                          0x0: Disable. Unlock is real access.
+                                                          0x1: Enable. Unlock is dummy access (no data and response) and discard by TBU. */
+        unsigned int  tlb_inv_sel     : 1;  /* bit[5]   : TBU TLB invalid source selection:
+                                                          0x0: Invalid from TCU;
+                                                          0x1: Invalid from TBU config register; */
+        unsigned int  tlb_inv_mask_en : 1;  /* bit[6]   : TBU TLB invalid mask enable:
+                                                          0x0: TLB invalid mask disable;
+                                                          0x1: TLB invalid mask enable; */
+        unsigned int  reserved        : 25; /* bit[7-31]:  */
+    } reg;
+} SOC_SMMUv3_TBU_SMMU_TBU_SCR_UNION;
+#endif
+#define SOC_SMMUv3_TBU_SMMU_TBU_SCR_ns_uarch_START         (0)
+#define SOC_SMMUv3_TBU_SMMU_TBU_SCR_ns_uarch_END           (0)
+#define SOC_SMMUv3_TBU_SMMU_TBU_SCR_hzd_dis_START          (1)
+#define SOC_SMMUv3_TBU_SMMU_TBU_SCR_hzd_dis_END            (1)
+#define SOC_SMMUv3_TBU_SMMU_TBU_SCR_l2tlb_his_dis_START    (2)
+#define SOC_SMMUv3_TBU_SMMU_TBU_SCR_l2tlb_his_dis_END      (2)
+#define SOC_SMMUv3_TBU_SMMU_TBU_SCR_tbu_bypass_START       (3)
+#define SOC_SMMUv3_TBU_SMMU_TBU_SCR_tbu_bypass_END         (3)
+#define SOC_SMMUv3_TBU_SMMU_TBU_SCR_dummy_unlock_en_START  (4)
+#define SOC_SMMUv3_TBU_SMMU_TBU_SCR_dummy_unlock_en_END    (4)
+#define SOC_SMMUv3_TBU_SMMU_TBU_SCR_tlb_inv_sel_START      (5)
+#define SOC_SMMUv3_TBU_SMMU_TBU_SCR_tlb_inv_sel_END        (5)
+#define SOC_SMMUv3_TBU_SMMU_TBU_SCR_tlb_inv_mask_en_START  (6)
+#define SOC_SMMUv3_TBU_SMMU_TBU_SCR_tlb_inv_mask_en_END    (6)
+
+
+/*****************************************************************************
+ struct               : SOC_SMMUv3_TBU_SMMU_TBU_IRPT_MASK_S_UNION
+ struct description   : SMMU_TBU_IRPT_MASK_S Register structure definition
+                        Address Offset:0x1010 Initial:0x0000000D Width:32
+ register description : SMMU TBU secure interrupt msk register.
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  tbu_glb_irpt_s_msk : 1;  /* bit[0]   : TBU glb secure interrupt.
+                                                             0x0: Interrupt enabled;
+                                                             0x1: Interrupt disabled; */
+        unsigned int  reserved_0         : 1;  /* bit[1]   :  */
+        unsigned int  tlb_inv_end_s_msk  : 1;  /* bit[2]   : TBU invalid end secure interrupt.
+                                                             0x0: Interrupt enabled;
+                                                             0x1: Interrupt disabled; */
+        unsigned int  tlb_inv_err_s_msk  : 1;  /* bit[3]   : TBU invalid err secure interrupt.
+                                                             0x0: Interrupt enabled;
+                                                             0x1: Interrupt disabled; */
+        unsigned int  reserved_1         : 28; /* bit[4-31]:  */
+    } reg;
+} SOC_SMMUv3_TBU_SMMU_TBU_IRPT_MASK_S_UNION;
+#endif
+#define SOC_SMMUv3_TBU_SMMU_TBU_IRPT_MASK_S_tbu_glb_irpt_s_msk_START  (0)
+#define SOC_SMMUv3_TBU_SMMU_TBU_IRPT_MASK_S_tbu_glb_irpt_s_msk_END    (0)
+#define SOC_SMMUv3_TBU_SMMU_TBU_IRPT_MASK_S_tlb_inv_end_s_msk_START   (2)
+#define SOC_SMMUv3_TBU_SMMU_TBU_IRPT_MASK_S_tlb_inv_end_s_msk_END     (2)
+#define SOC_SMMUv3_TBU_SMMU_TBU_IRPT_MASK_S_tlb_inv_err_s_msk_START   (3)
+#define SOC_SMMUv3_TBU_SMMU_TBU_IRPT_MASK_S_tlb_inv_err_s_msk_END     (3)
+
+
+/*****************************************************************************
+ struct               : SOC_SMMUv3_TBU_SMMU_TBU_IRPT_RAW_S_UNION
+ struct description   : SMMU_TBU_IRPT_RAW_S Register structure definition
+                        Address Offset:0x1014 Initial:0x00000000 Width:32
+ register description : SMMU TBU secure interrupt raw status register.
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  tbu_glb_irpt_s_raw : 1;  /* bit[0]   : TBU glb secure interrupt */
+        unsigned int  reserved_0         : 1;  /* bit[1]   :  */
+        unsigned int  tlb_inv_end_s_raw  : 1;  /* bit[2]   : TBU invalid end secure interrupt */
+        unsigned int  tlb_inv_err_s_raw  : 1;  /* bit[3]   : TBU invalid err secure interrupt */
+        unsigned int  reserved_1         : 28; /* bit[4-31]:  */
+    } reg;
+} SOC_SMMUv3_TBU_SMMU_TBU_IRPT_RAW_S_UNION;
+#endif
+#define SOC_SMMUv3_TBU_SMMU_TBU_IRPT_RAW_S_tbu_glb_irpt_s_raw_START  (0)
+#define SOC_SMMUv3_TBU_SMMU_TBU_IRPT_RAW_S_tbu_glb_irpt_s_raw_END    (0)
+#define SOC_SMMUv3_TBU_SMMU_TBU_IRPT_RAW_S_tlb_inv_end_s_raw_START   (2)
+#define SOC_SMMUv3_TBU_SMMU_TBU_IRPT_RAW_S_tlb_inv_end_s_raw_END     (2)
+#define SOC_SMMUv3_TBU_SMMU_TBU_IRPT_RAW_S_tlb_inv_err_s_raw_START   (3)
+#define SOC_SMMUv3_TBU_SMMU_TBU_IRPT_RAW_S_tlb_inv_err_s_raw_END     (3)
+
+
+/*****************************************************************************
+ struct               : SOC_SMMUv3_TBU_SMMU_TBU_IRPT_STAT_S_UNION
+ struct description   : SMMU_TBU_IRPT_STAT_S Register structure definition
+                        Address Offset:0x1018 Initial:0x00000000 Width:32
+ register description : SMMU TBU secure interrupt msked status register.
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  tbu_glb_irpt_s_stat : 1;  /* bit[0]   : TBU glb secure interrupt */
+        unsigned int  reserved_0          : 1;  /* bit[1]   :  */
+        unsigned int  tlb_inv_end_s_stat  : 1;  /* bit[2]   : TBU invalid end secure interrupt */
+        unsigned int  tlb_inv_err_s_stat  : 1;  /* bit[3]   : TBU invalid err secure interrupt */
+        unsigned int  reserved_1          : 28; /* bit[4-31]:  */
+    } reg;
+} SOC_SMMUv3_TBU_SMMU_TBU_IRPT_STAT_S_UNION;
+#endif
+#define SOC_SMMUv3_TBU_SMMU_TBU_IRPT_STAT_S_tbu_glb_irpt_s_stat_START  (0)
+#define SOC_SMMUv3_TBU_SMMU_TBU_IRPT_STAT_S_tbu_glb_irpt_s_stat_END    (0)
+#define SOC_SMMUv3_TBU_SMMU_TBU_IRPT_STAT_S_tlb_inv_end_s_stat_START   (2)
+#define SOC_SMMUv3_TBU_SMMU_TBU_IRPT_STAT_S_tlb_inv_end_s_stat_END     (2)
+#define SOC_SMMUv3_TBU_SMMU_TBU_IRPT_STAT_S_tlb_inv_err_s_stat_START   (3)
+#define SOC_SMMUv3_TBU_SMMU_TBU_IRPT_STAT_S_tlb_inv_err_s_stat_END     (3)
+
+
+/*****************************************************************************
+ struct               : SOC_SMMUv3_TBU_SMMU_TBU_IRPT_CLR_S_UNION
+ struct description   : SMMU_TBU_IRPT_CLR_S Register structure definition
+                        Address Offset:0x101C Initial:0x00000000 Width:32
+ register description : SMMU TBU secure interrupt clear register.
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  tbu_glb_irpt_s_clr : 1;  /* bit[0]   : TBU glb secure interrupt */
+        unsigned int  reserved_0         : 1;  /* bit[1]   :  */
+        unsigned int  tlb_inv_end_s_clr  : 1;  /* bit[2]   : TBU invalid end secure interrupt */
+        unsigned int  tlb_inv_err_s_clr  : 1;  /* bit[3]   : TBU invalid err secure interrupt */
+        unsigned int  reserved_1         : 28; /* bit[4-31]:  */
+    } reg;
+} SOC_SMMUv3_TBU_SMMU_TBU_IRPT_CLR_S_UNION;
+#endif
+#define SOC_SMMUv3_TBU_SMMU_TBU_IRPT_CLR_S_tbu_glb_irpt_s_clr_START  (0)
+#define SOC_SMMUv3_TBU_SMMU_TBU_IRPT_CLR_S_tbu_glb_irpt_s_clr_END    (0)
+#define SOC_SMMUv3_TBU_SMMU_TBU_IRPT_CLR_S_tlb_inv_end_s_clr_START   (2)
+#define SOC_SMMUv3_TBU_SMMU_TBU_IRPT_CLR_S_tlb_inv_end_s_clr_END     (2)
+#define SOC_SMMUv3_TBU_SMMU_TBU_IRPT_CLR_S_tlb_inv_err_s_clr_START   (3)
+#define SOC_SMMUv3_TBU_SMMU_TBU_IRPT_CLR_S_tlb_inv_err_s_clr_END     (3)
+
+
+/*****************************************************************************
+ struct               : SOC_SMMUv3_TBU_SMMU_TBU_DBG_PORT_IN_UNION
+ struct description   : SMMU_TBU_DBG_PORT_IN Register structure definition
+                        Address Offset:0x1020 Initial:0x00000000 Width:32
+ register description : SMMU TBU debug port register.
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  dbg_cfg_addr : 16; /* bit[0-15] : Debug port address */
+        unsigned int  dbg_cfg_rd   : 1;  /* bit[16]   : Debug port read enable */
+        unsigned int  reserved     : 15; /* bit[17-31]:  */
+    } reg;
+} SOC_SMMUv3_TBU_SMMU_TBU_DBG_PORT_IN_UNION;
+#endif
+#define SOC_SMMUv3_TBU_SMMU_TBU_DBG_PORT_IN_dbg_cfg_addr_START  (0)
+#define SOC_SMMUv3_TBU_SMMU_TBU_DBG_PORT_IN_dbg_cfg_addr_END    (15)
+#define SOC_SMMUv3_TBU_SMMU_TBU_DBG_PORT_IN_dbg_cfg_rd_START    (16)
+#define SOC_SMMUv3_TBU_SMMU_TBU_DBG_PORT_IN_dbg_cfg_rd_END      (16)
+
+
+/*****************************************************************************
+ struct               : SOC_SMMUv3_TBU_SMMU_TBU_DBG_PORT_OUT_0_UNION
+ struct description   : SMMU_TBU_DBG_PORT_OUT_0 Register structure definition
+                        Address Offset:0x1024 Initial:0x00000000 Width:32
+ register description : SMMU TBU debug port register.
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  dbg_cfg_rdata_0 : 32; /* bit[0-31]: Debug port read data 0 */
+    } reg;
+} SOC_SMMUv3_TBU_SMMU_TBU_DBG_PORT_OUT_0_UNION;
+#endif
+#define SOC_SMMUv3_TBU_SMMU_TBU_DBG_PORT_OUT_0_dbg_cfg_rdata_0_START  (0)
+#define SOC_SMMUv3_TBU_SMMU_TBU_DBG_PORT_OUT_0_dbg_cfg_rdata_0_END    (31)
+
+
+/*****************************************************************************
+ struct               : SOC_SMMUv3_TBU_SMMU_TBU_DBG_PORT_OUT_1_UNION
+ struct description   : SMMU_TBU_DBG_PORT_OUT_1 Register structure definition
+                        Address Offset:0x1028 Initial:0x00000000 Width:32
+ register description : SMMU TBU debug port register.
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  dbg_cfg_rdata_1 : 32; /* bit[0-31]: Debug port read data 1 */
+    } reg;
+} SOC_SMMUv3_TBU_SMMU_TBU_DBG_PORT_OUT_1_UNION;
+#endif
+#define SOC_SMMUv3_TBU_SMMU_TBU_DBG_PORT_OUT_1_dbg_cfg_rdata_1_START  (0)
+#define SOC_SMMUv3_TBU_SMMU_TBU_DBG_PORT_OUT_1_dbg_cfg_rdata_1_END    (31)
+
+
+/*****************************************************************************
+ struct               : SOC_SMMUv3_TBU_SMMU_TBU_DBG_PORT_OUT_2_UNION
+ struct description   : SMMU_TBU_DBG_PORT_OUT_2 Register structure definition
+                        Address Offset:0x102C Initial:0x00000000 Width:32
+ register description : SMMU TBU debug port register.
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  dbg_cfg_rdata_2 : 32; /* bit[0-31]: Debug port read data 2 */
+    } reg;
+} SOC_SMMUv3_TBU_SMMU_TBU_DBG_PORT_OUT_2_UNION;
+#endif
+#define SOC_SMMUv3_TBU_SMMU_TBU_DBG_PORT_OUT_2_dbg_cfg_rdata_2_START  (0)
+#define SOC_SMMUv3_TBU_SMMU_TBU_DBG_PORT_OUT_2_dbg_cfg_rdata_2_END    (31)
+
+
+/*****************************************************************************
+ struct               : SOC_SMMUv3_TBU_SMMU_TBU_DBG_PORT_OUT_3_UNION
+ struct description   : SMMU_TBU_DBG_PORT_OUT_3 Register structure definition
+                        Address Offset:0x1030 Initial:0x00000000 Width:32
+ register description : SMMU TBU debug port register.
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  dbg_cfg_rdata_3 : 32; /* bit[0-31]: Debug port read data 3 */
+    } reg;
+} SOC_SMMUv3_TBU_SMMU_TBU_DBG_PORT_OUT_3_UNION;
+#endif
+#define SOC_SMMUv3_TBU_SMMU_TBU_DBG_PORT_OUT_3_dbg_cfg_rdata_3_START  (0)
+#define SOC_SMMUv3_TBU_SMMU_TBU_DBG_PORT_OUT_3_dbg_cfg_rdata_3_END    (31)
+
+
+/*****************************************************************************
+ struct               : SOC_SMMUv3_TBU_SMMU_TBU_TLB_INV_S_UNION
+ struct description   : SMMU_TBU_TLB_INV_S Register structure definition
+                        Address Offset:0x1034 Initial:0x00000000 Width:32
+ register description : SMMU TBU TLB secure invalid register.
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  tlb_inv_s_op    : 2;  /* bit[0-1]  : operation:
+                                                           0x0: CFGI_S_SID_SSID
+                                                           0x1: CFGI_S_SID
+                                                           0x2/0x3: CFGI_S_ALL */
+        unsigned int  tlb_inv_s_sid   : 8;  /* bit[2-9]  : TLB invalid SID */
+        unsigned int  tlb_inv_s_ssid  : 12; /* bit[10-21]: TLB invalid SSID */
+        unsigned int  tlb_inv_s_range : 5;  /* bit[22-26]: TLB invalid SID range */
+        unsigned int  reserved        : 4;  /* bit[27-30]:  */
+        unsigned int  tlb_inv_s_en    : 1;  /* bit[31]   : TLB invalid enable, write only */
+    } reg;
+} SOC_SMMUv3_TBU_SMMU_TBU_TLB_INV_S_UNION;
+#endif
+#define SOC_SMMUv3_TBU_SMMU_TBU_TLB_INV_S_tlb_inv_s_op_START     (0)
+#define SOC_SMMUv3_TBU_SMMU_TBU_TLB_INV_S_tlb_inv_s_op_END       (1)
+#define SOC_SMMUv3_TBU_SMMU_TBU_TLB_INV_S_tlb_inv_s_sid_START    (2)
+#define SOC_SMMUv3_TBU_SMMU_TBU_TLB_INV_S_tlb_inv_s_sid_END      (9)
+#define SOC_SMMUv3_TBU_SMMU_TBU_TLB_INV_S_tlb_inv_s_ssid_START   (10)
+#define SOC_SMMUv3_TBU_SMMU_TBU_TLB_INV_S_tlb_inv_s_ssid_END     (21)
+#define SOC_SMMUv3_TBU_SMMU_TBU_TLB_INV_S_tlb_inv_s_range_START  (22)
+#define SOC_SMMUv3_TBU_SMMU_TBU_TLB_INV_S_tlb_inv_s_range_END    (26)
+#define SOC_SMMUv3_TBU_SMMU_TBU_TLB_INV_S_tlb_inv_s_en_START     (31)
+#define SOC_SMMUv3_TBU_SMMU_TBU_TLB_INV_S_tlb_inv_s_en_END       (31)
+
+
+/*****************************************************************************
+ struct               : SOC_SMMUv3_TBU_SMMU_TBU_PROT_EN_UNION
+ struct description   : SMMU_TBU_PROT_EN Register structure definition
+                        Address Offset:(m)*0x4+0x1100 Initial:0x00000000 Width:32
+ register description : SMMU TBU protected mode config register.
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  protect_en : 1;  /* bit[0]   : TZMP2 salve protected模式选择
+                                                     0x0: non-trusted
+                                                     0x1: protected */
+        unsigned int  reserved   : 31; /* bit[1-31]:  */
+    } reg;
+} SOC_SMMUv3_TBU_SMMU_TBU_PROT_EN_UNION;
+#endif
+#define SOC_SMMUv3_TBU_SMMU_TBU_PROT_EN_protect_en_START  (0)
+#define SOC_SMMUv3_TBU_SMMU_TBU_PROT_EN_protect_en_END    (0)
+
+
+/*****************************************************************************
+ struct               : SOC_SMMUv3_TBU_SMMUv3_TBU_PMU_EVCNT_UNION
+ struct description   : SMMUv3_TBU_PMU_EVCNT Register structure definition
+                        Address Offset:0x2000+(k)*4 Initial:0x00000000 Width:32
+ register description : SMMUv3 TBU PMU event counter value register.
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  pmu_evcnt : 32; /* bit[0-31]: PMU event counter instant value. */
+    } reg;
+} SOC_SMMUv3_TBU_SMMUv3_TBU_PMU_EVCNT_UNION;
+#endif
+#define SOC_SMMUv3_TBU_SMMUv3_TBU_PMU_EVCNT_pmu_evcnt_START  (0)
+#define SOC_SMMUv3_TBU_SMMUv3_TBU_PMU_EVCNT_pmu_evcnt_END    (31)
+
+
+/*****************************************************************************
+ struct               : SOC_SMMUv3_TBU_SMMUv3_TBU_PMU_EVSVR_UNION
+ struct description   : SMMUv3_TBU_PMU_EVSVR Register structure definition
+                        Address Offset:0x2200+(k)*4 Initial:0x00000000 Width:32
+ register description : SMMUv3 TBU PMU event counter shadow value register.
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  pmu_evsvr : 32; /* bit[0-31]: PMU event counter capture value. */
+    } reg;
+} SOC_SMMUv3_TBU_SMMUv3_TBU_PMU_EVSVR_UNION;
+#endif
+#define SOC_SMMUv3_TBU_SMMUv3_TBU_PMU_EVSVR_pmu_evsvr_START  (0)
+#define SOC_SMMUv3_TBU_SMMUv3_TBU_PMU_EVSVR_pmu_evsvr_END    (31)
+
+
+/*****************************************************************************
+ struct               : SOC_SMMUv3_TBU_SMMUv3_TBU_PMU_CNT_CFG_UNION
+ struct description   : SMMUv3_TBU_PMU_CNT_CFG Register structure definition
+                        Address Offset:0x2400+(k)*4 Initial:0x00000000 Width:32
+ register description : SMMUv3 TBU PMU event counter config register.
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  pmu_evtype   : 8;  /* bit[0-7]  : PMU event type. */
+        unsigned int  pmu_cnten    : 1;  /* bit[8]    : PMU counter enable. Switching from enable to disable will clear corresponding pmuevnt/pmu_overflow status.
+                                                        0x0 disable
+                                                        0x1 enable */
+        unsigned int  pmu_ovcap_en : 1;  /* bit[9]    : PMU overflow capture enable.
+                                                        0x0 disable
+                                                        0x1 enable */
+        unsigned int  reserved     : 21; /* bit[10-30]:  */
+        unsigned int  pmu_overflow : 1;  /* bit[31]   : PMU counter overflow status. Whenever a counter overflows, all counters value are captured when pmu_ovcap_en = 1. */
+    } reg;
+} SOC_SMMUv3_TBU_SMMUv3_TBU_PMU_CNT_CFG_UNION;
+#endif
+#define SOC_SMMUv3_TBU_SMMUv3_TBU_PMU_CNT_CFG_pmu_evtype_START    (0)
+#define SOC_SMMUv3_TBU_SMMUv3_TBU_PMU_CNT_CFG_pmu_evtype_END      (7)
+#define SOC_SMMUv3_TBU_SMMUv3_TBU_PMU_CNT_CFG_pmu_cnten_START     (8)
+#define SOC_SMMUv3_TBU_SMMUv3_TBU_PMU_CNT_CFG_pmu_cnten_END       (8)
+#define SOC_SMMUv3_TBU_SMMUv3_TBU_PMU_CNT_CFG_pmu_ovcap_en_START  (9)
+#define SOC_SMMUv3_TBU_SMMUv3_TBU_PMU_CNT_CFG_pmu_ovcap_en_END    (9)
+#define SOC_SMMUv3_TBU_SMMUv3_TBU_PMU_CNT_CFG_pmu_overflow_START  (31)
+#define SOC_SMMUv3_TBU_SMMUv3_TBU_PMU_CNT_CFG_pmu_overflow_END    (31)
+
+
+/*****************************************************************************
+ struct               : SOC_SMMUv3_TBU_SMMUv3_TBU_PMU_CFG_UNION
+ struct description   : SMMUv3_TBU_PMU_CFG Register structure definition
+                        Address Offset:0x2600 Initial:0x00000000 Width:32
+ register description : SMMUv3 TBU PMU config register.
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  pmu_en   : 1;  /* bit[0]   : PMU enable. Switching from enable to disable will clear all pmuevnt/pmu_overflow status.
+                                                   0x0 disable
+                                                   0x1 enable */
+        unsigned int  reserved : 31; /* bit[1-31]:  */
+    } reg;
+} SOC_SMMUv3_TBU_SMMUv3_TBU_PMU_CFG_UNION;
+#endif
+#define SOC_SMMUv3_TBU_SMMUv3_TBU_PMU_CFG_pmu_en_START    (0)
+#define SOC_SMMUv3_TBU_SMMUv3_TBU_PMU_CFG_pmu_en_END      (0)
+
+
+/*****************************************************************************
+ struct               : SOC_SMMUv3_TBU_SMMUv3_TBU_PMU_CAPR_UNION
+ struct description   : SMMUv3_TBU_PMU_CAPR Register structure definition
+                        Address Offset:0x2604 Initial:0x00000000 Width:32
+ register description : SMMUv3 TBU PMU capture register.
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  pmu_cap  : 1;  /* bit[0]   : Whenever write to this bit, all counters value are captured. */
+        unsigned int  reserved : 31; /* bit[1-31]: Reserved */
+    } reg;
+} SOC_SMMUv3_TBU_SMMUv3_TBU_PMU_CAPR_UNION;
+#endif
+#define SOC_SMMUv3_TBU_SMMUv3_TBU_PMU_CAPR_pmu_cap_START   (0)
+#define SOC_SMMUv3_TBU_SMMUv3_TBU_PMU_CAPR_pmu_cap_END     (0)
+
+
+
+
+/****************************************************************************
+                     (2/2) tbu_dma
+ ****************************************************************************/
+/*****************************************************************************
+ struct               : SOC_SMMUv3_TBU_SMMU_DMA_EN_UNION
+ struct description   : SMMU_DMA_EN Register structure definition
+                        Address Offset:0x0000 Initial:0x00000000 Width:32
+ register description : DMA Control Register
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  dma_en   : 1;  /* bit[0]   : dma enable
+                                                   0x0: DMA disable
+                                                   0x1: DMA enable  */
+        unsigned int  reserved : 31; /* bit[1-31]:  */
+    } reg;
+} SOC_SMMUv3_TBU_SMMU_DMA_EN_UNION;
+#endif
+#define SOC_SMMUv3_TBU_SMMU_DMA_EN_dma_en_START    (0)
+#define SOC_SMMUv3_TBU_SMMU_DMA_EN_dma_en_END      (0)
+
+
+/*****************************************************************************
+ struct               : SOC_SMMUv3_TBU_SMMU_DMA_START_UNION
+ struct description   : SMMU_DMA_START Register structure definition
+                        Address Offset:(j)*0x4+0x0004 Initial:0x00000000 Width:32
+ register description : SMMU DMA START config register.
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  dma_start : 1;  /* bit[0]   : Whenever write to this bit, dma will start. */
+        unsigned int  reserved  : 31; /* bit[1-31]:  */
+    } reg;
+} SOC_SMMUv3_TBU_SMMU_DMA_START_UNION;
+#endif
+#define SOC_SMMUv3_TBU_SMMU_DMA_START_dma_start_START  (0)
+#define SOC_SMMUv3_TBU_SMMU_DMA_START_dma_start_END    (0)
+
+
+/*****************************************************************************
+ struct               : SOC_SMMUv3_TBU_SMMU_DMA_ADDR0_UNION
+ struct description   : SMMU_DMA_ADDR0 Register structure definition
+                        Address Offset:(j)*0x4+0x000C Initial:0x00000000 Width:32
+ register description : SMMU DMA ADDR2  config register.
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  dma_addr0 : 32; /* bit[0-31]: dma start addr low 32bits（16byte对齐）
+                                                    
+                                                    config before dma start  */
+    } reg;
+} SOC_SMMUv3_TBU_SMMU_DMA_ADDR0_UNION;
+#endif
+#define SOC_SMMUv3_TBU_SMMU_DMA_ADDR0_dma_addr0_START  (0)
+#define SOC_SMMUv3_TBU_SMMU_DMA_ADDR0_dma_addr0_END    (31)
+
+
+/*****************************************************************************
+ struct               : SOC_SMMUv3_TBU_SMMU_DMA_ADDR1_UNION
+ struct description   : SMMU_DMA_ADDR1 Register structure definition
+                        Address Offset:(j)*0x4+0x0014 Initial:0x00000000 Width:32
+ register description : SMMU DMA ADDR1 config register.
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  dma_addr1 : 7;  /* bit[0-6] : dma start addr high 7bits
+                                                    config before dma start  */
+        unsigned int  reserved  : 25; /* bit[7-31]:  */
+    } reg;
+} SOC_SMMUv3_TBU_SMMU_DMA_ADDR1_UNION;
+#endif
+#define SOC_SMMUv3_TBU_SMMU_DMA_ADDR1_dma_addr1_START  (0)
+#define SOC_SMMUv3_TBU_SMMU_DMA_ADDR1_dma_addr1_END    (6)
+
+
+/*****************************************************************************
+ struct               : SOC_SMMUv3_TBU_SMMU_DMA_CTRL_UNION
+ struct description   : SMMU_DMA_CTRL Register structure definition
+                        Address Offset:(j)*0x4+0x001C Initial:0x00000000 Width:32
+ register description : SMMU DMA CTRL config register.
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  prot     : 3;  /* bit[0-2]  : dma transaction [inst,ns,priv]
+                                                    bit2:inst：0 data，1 inst
+                                                    bit1: ns :0:secure ,1：nosecure
+                                                    bit0： priv：0：user 1：privilege */
+        unsigned int  ssidv    : 1;  /* bit[3]    : dma stream ssidv */
+        unsigned int  secsid   : 1;  /* bit[4]    : dma stream secsid */
+        unsigned int  ssid     : 12; /* bit[5-16] : dma stream ssid */
+        unsigned int  sid      : 6;  /* bit[17-22]: dma stream sid */
+        unsigned int  size     : 2;  /* bit[23-24]: dma 业务量：
+                                                    0:16或32byte(Cpro上为16byte),1:256Kbyte,2：64Mbyte，3：1GByte */
+        unsigned int  reserved : 7;  /* bit[25-31]:  */
+    } reg;
+} SOC_SMMUv3_TBU_SMMU_DMA_CTRL_UNION;
+#endif
+#define SOC_SMMUv3_TBU_SMMU_DMA_CTRL_prot_START      (0)
+#define SOC_SMMUv3_TBU_SMMU_DMA_CTRL_prot_END        (2)
+#define SOC_SMMUv3_TBU_SMMU_DMA_CTRL_ssidv_START     (3)
+#define SOC_SMMUv3_TBU_SMMU_DMA_CTRL_ssidv_END       (3)
+#define SOC_SMMUv3_TBU_SMMU_DMA_CTRL_secsid_START    (4)
+#define SOC_SMMUv3_TBU_SMMU_DMA_CTRL_secsid_END      (4)
+#define SOC_SMMUv3_TBU_SMMU_DMA_CTRL_ssid_START      (5)
+#define SOC_SMMUv3_TBU_SMMU_DMA_CTRL_ssid_END        (16)
+#define SOC_SMMUv3_TBU_SMMU_DMA_CTRL_sid_START       (17)
+#define SOC_SMMUv3_TBU_SMMU_DMA_CTRL_sid_END         (22)
+#define SOC_SMMUv3_TBU_SMMU_DMA_CTRL_size_START      (23)
+#define SOC_SMMUv3_TBU_SMMU_DMA_CTRL_size_END        (24)
+
+
+/*****************************************************************************
+ struct               : SOC_SMMUv3_TBU_SMMU_DMA_STATE_UNION
+ struct description   : SMMU_DMA_STATE Register structure definition
+                        Address Offset:(j)*0x4+0x0024 Initial:0x00000000 Width:32
+ register description : SMMU DMA STATE config register.
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  dma_flag : 1;  /* bit[0]   : 为1时dma正在处理 */
+        unsigned int  dma_ack  : 1;  /* bit[1]   : 为1时dma完成 */
+        unsigned int  dma_err  : 1;  /* bit[2]   : dma bus err */
+        unsigned int  reserved : 29; /* bit[3-31]:  */
+    } reg;
+} SOC_SMMUv3_TBU_SMMU_DMA_STATE_UNION;
+#endif
+#define SOC_SMMUv3_TBU_SMMU_DMA_STATE_dma_flag_START  (0)
+#define SOC_SMMUv3_TBU_SMMU_DMA_STATE_dma_flag_END    (0)
+#define SOC_SMMUv3_TBU_SMMU_DMA_STATE_dma_ack_START   (1)
+#define SOC_SMMUv3_TBU_SMMU_DMA_STATE_dma_ack_END     (1)
+#define SOC_SMMUv3_TBU_SMMU_DMA_STATE_dma_err_START   (2)
+#define SOC_SMMUv3_TBU_SMMU_DMA_STATE_dma_err_END     (2)
+
+
+/*****************************************************************************
+ struct               : SOC_SMMUv3_TBU_SMMU_DMA_WR_DATA_UNION
+ struct description   : SMMU_DMA_WR_DATA Register structure definition
+                        Address Offset:0x002C Initial:0x00000000 Width:32
+ register description : SMMU DMA WR data config register.
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  dma_wr_data : 32; /* bit[0-31]: dma写chanel数据(dma chanel1 ) */
+    } reg;
+} SOC_SMMUv3_TBU_SMMU_DMA_WR_DATA_UNION;
+#endif
+#define SOC_SMMUv3_TBU_SMMU_DMA_WR_DATA_dma_wr_data_START  (0)
+#define SOC_SMMUv3_TBU_SMMU_DMA_WR_DATA_dma_wr_data_END    (31)
+
+
+/*****************************************************************************
+ struct               : SOC_SMMUv3_TBU_SMMU_DMA_RD_DATA0_UNION
+ struct description   : SMMU_DMA_RD_DATA0 Register structure definition
+                        Address Offset:0x0030 Initial:0x00000000 Width:32
+ register description : SMMU DMA RD data config register.
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  dma_rd_data : 32; /* bit[0-31]: dma读chanel数据[31:0](dma chanel0) */
+    } reg;
+} SOC_SMMUv3_TBU_SMMU_DMA_RD_DATA0_UNION;
+#endif
+#define SOC_SMMUv3_TBU_SMMU_DMA_RD_DATA0_dma_rd_data_START  (0)
+#define SOC_SMMUv3_TBU_SMMU_DMA_RD_DATA0_dma_rd_data_END    (31)
+
+
+/*****************************************************************************
+ struct               : SOC_SMMUv3_TBU_SMMU_DMA_RD_DATA1_UNION
+ struct description   : SMMU_DMA_RD_DATA1 Register structure definition
+                        Address Offset:0x0034 Initial:0x00000000 Width:32
+ register description : SMMU DMA RD data config register.
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  dma_rd_data : 32; /* bit[0-31]: dma读chanel数据[63:32](dma chanel0) */
+    } reg;
+} SOC_SMMUv3_TBU_SMMU_DMA_RD_DATA1_UNION;
+#endif
+#define SOC_SMMUv3_TBU_SMMU_DMA_RD_DATA1_dma_rd_data_START  (0)
+#define SOC_SMMUv3_TBU_SMMU_DMA_RD_DATA1_dma_rd_data_END    (31)
+
+
+/*****************************************************************************
+ struct               : SOC_SMMUv3_TBU_SMMU_DMA_RD_DATA2_UNION
+ struct description   : SMMU_DMA_RD_DATA2 Register structure definition
+                        Address Offset:0x0038 Initial:0x00000000 Width:32
+ register description : SMMU DMA RD data config register.
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  dma_rd_data : 32; /* bit[0-31]: dma读chanel数据[95:64](dma chanel0) */
+    } reg;
+} SOC_SMMUv3_TBU_SMMU_DMA_RD_DATA2_UNION;
+#endif
+#define SOC_SMMUv3_TBU_SMMU_DMA_RD_DATA2_dma_rd_data_START  (0)
+#define SOC_SMMUv3_TBU_SMMU_DMA_RD_DATA2_dma_rd_data_END    (31)
+
+
+/*****************************************************************************
+ struct               : SOC_SMMUv3_TBU_SMMU_DMA_RD_DATA3_UNION
+ struct description   : SMMU_DMA_RD_DATA3 Register structure definition
+                        Address Offset:0x003C Initial:0x00000000 Width:32
+ register description : SMMU DMA RD data config register.
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  dma_rd_data : 32; /* bit[0-31]: dma读chanel数据[127:96](dma chanel0) */
+    } reg;
+} SOC_SMMUv3_TBU_SMMU_DMA_RD_DATA3_UNION;
+#endif
+#define SOC_SMMUv3_TBU_SMMU_DMA_RD_DATA3_dma_rd_data_START  (0)
+#define SOC_SMMUv3_TBU_SMMU_DMA_RD_DATA3_dma_rd_data_END    (31)
+
+
+/*****************************************************************************
+ struct               : SOC_SMMUv3_TBU_SMMU_DMA_RD_DATA4_UNION
+ struct description   : SMMU_DMA_RD_DATA4 Register structure definition
+                        Address Offset:0x0040 Initial:0x00000000 Width:32
+ register description : SMMU DMA RD data config register.
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  dma_rd_data : 32; /* bit[0-31]: dma读chanel数据[159:128](dma chanel0) */
+    } reg;
+} SOC_SMMUv3_TBU_SMMU_DMA_RD_DATA4_UNION;
+#endif
+#define SOC_SMMUv3_TBU_SMMU_DMA_RD_DATA4_dma_rd_data_START  (0)
+#define SOC_SMMUv3_TBU_SMMU_DMA_RD_DATA4_dma_rd_data_END    (31)
+
+
+/*****************************************************************************
+ struct               : SOC_SMMUv3_TBU_SMMU_DMA_RD_DATA5_UNION
+ struct description   : SMMU_DMA_RD_DATA5 Register structure definition
+                        Address Offset:0x0044 Initial:0x00000000 Width:32
+ register description : SMMU DMA RD data config register.
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  dma_rd_data : 32; /* bit[0-31]: dma读chanel数据[191:160](dma chanel0) */
+    } reg;
+} SOC_SMMUv3_TBU_SMMU_DMA_RD_DATA5_UNION;
+#endif
+#define SOC_SMMUv3_TBU_SMMU_DMA_RD_DATA5_dma_rd_data_START  (0)
+#define SOC_SMMUv3_TBU_SMMU_DMA_RD_DATA5_dma_rd_data_END    (31)
+
+
+/*****************************************************************************
+ struct               : SOC_SMMUv3_TBU_SMMU_DMA_RD_DATA6_UNION
+ struct description   : SMMU_DMA_RD_DATA6 Register structure definition
+                        Address Offset:0x0048 Initial:0x00000000 Width:32
+ register description : SMMU DMA RD data config register.
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  dma_rd_data : 32; /* bit[0-31]: dma读chanel数据[223:192](dma chanel0) */
+    } reg;
+} SOC_SMMUv3_TBU_SMMU_DMA_RD_DATA6_UNION;
+#endif
+#define SOC_SMMUv3_TBU_SMMU_DMA_RD_DATA6_dma_rd_data_START  (0)
+#define SOC_SMMUv3_TBU_SMMU_DMA_RD_DATA6_dma_rd_data_END    (31)
+
+
+/*****************************************************************************
+ struct               : SOC_SMMUv3_TBU_SMMU_DMA_RD_DATA7_UNION
+ struct description   : SMMU_DMA_RD_DATA7 Register structure definition
+                        Address Offset:0x004C Initial:0x00000000 Width:32
+ register description : SMMU DMA RD data config register.
+*****************************************************************************/
+#ifndef __SOC_H_FOR_ASM__
+typedef union {
+    unsigned int      value;
+    struct {
+        unsigned int  dma_rd_data : 32; /* bit[0-31]: dma读chanel数据[255:224](dma chanel0) */
+    } reg;
+} SOC_SMMUv3_TBU_SMMU_DMA_RD_DATA7_UNION;
+#endif
+#define SOC_SMMUv3_TBU_SMMU_DMA_RD_DATA7_dma_rd_data_START  (0)
+#define SOC_SMMUv3_TBU_SMMU_DMA_RD_DATA7_dma_rd_data_END    (31)
+
+
+
+
+
+
+/*****************************************************************************
+  8 others
+*****************************************************************************/
+
+
+
+/*****************************************************************************
+  9 global values
+*****************************************************************************/
+
+
+
+/*****************************************************************************
+  10 global functions
+*****************************************************************************/
+
+
+#ifdef __cplusplus
+#if __cplusplus
+    }
+#endif
+#endif
+
+#endif /* end of soc_SMMUv3_tbu_interface.h */

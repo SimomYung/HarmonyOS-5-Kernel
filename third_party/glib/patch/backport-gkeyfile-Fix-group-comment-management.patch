@@ -1,0 +1,536 @@
+From f74589f53041abff29d538a5d9884c3202f2c00a Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Ga=C3=ABl=20Bonithon?= <gael@xfce.org>
+Date: Thu, 20 Apr 2023 16:52:19 +0200
+Subject: [PATCH 1/2] gkeyfile: Replace g_slice_*() with
+ g_new*()/g_free_sized()
+ 
+Conflict:NA
+Reference:https://gitlab.gnome.org/GNOME/glib/-/commit/f74589f53041abff29d538a5d9884c3202f2c00a
+ 
+---
+ glib/gkeyfile.c | 26 +++++++++++++-------------
+ 1 file changed, 13 insertions(+), 13 deletions(-)
+ 
+diff --git a/glib/gkeyfile.c b/glib/gkeyfile.c
+index 9a4821bc5a..d76335653f 100644
+--- a/glib/gkeyfile.c
++++ b/glib/gkeyfile.c
+@@ -638,7 +638,7 @@ G_DEFINE_QUARK (g-key-file-error-quark, g_key_file_error)
+ static void
+ g_key_file_init (GKeyFile *key_file)
+ {  
+-  key_file->current_group = g_slice_new0 (GKeyFileGroup);
++  key_file->current_group = g_new0 (GKeyFileGroup, 1);
+   key_file->groups = g_list_prepend (NULL, key_file->current_group);
+   key_file->group_hash = NULL;
+   key_file->start_group = NULL;
+@@ -700,7 +700,7 @@ g_key_file_new (void)
+ {
+   GKeyFile *key_file;
+ 
+-  key_file = g_slice_new0 (GKeyFile);
++  key_file = g_new0 (GKeyFile, 1);
+   key_file->ref_count = 1;
+   g_key_file_init (key_file);
+ 
+@@ -1205,7 +1205,7 @@ g_key_file_free (GKeyFile *key_file)
+   g_key_file_clear (key_file);
+ 
+   if (g_atomic_int_dec_and_test (&key_file->ref_count))
+-    g_slice_free (GKeyFile, key_file);
++    g_free_sized (key_file, sizeof (GKeyFile));
+   else
+     g_key_file_init (key_file);
+ }
+@@ -1227,7 +1227,7 @@ g_key_file_unref (GKeyFile *key_file)
+   if (g_atomic_int_dec_and_test (&key_file->ref_count))
+     {
+       g_key_file_clear (key_file);
+-      g_slice_free (GKeyFile, key_file);
++      g_free_sized (key_file, sizeof (GKeyFile));
+     }
+ }
+ 
+@@ -1317,7 +1317,7 @@ g_key_file_parse_comment (GKeyFile     *key_file,
+   
+   g_warn_if_fail (key_file->current_group != NULL);
+ 
+-  pair = g_slice_new (GKeyFileKeyValuePair);
++  pair = g_new (GKeyFileKeyValuePair, 1);
+   pair->key = NULL;
+   pair->value = g_strndup (line, length);
+   
+@@ -1442,7 +1442,7 @@ g_key_file_parse_key_value_pair (GKeyFile     *key_file,
+     {
+       GKeyFileKeyValuePair *pair;
+ 
+-      pair = g_slice_new (GKeyFileKeyValuePair);
++      pair = g_new (GKeyFileKeyValuePair, 1);
+       pair->key = g_steal_pointer (&key);
+       pair->value = g_strndup (value_start, value_len);
+ 
+@@ -3339,7 +3339,7 @@ g_key_file_set_key_comment (GKeyFile     *key_file,
+ 
+   /* Now we can add our new comment
+    */
+-  pair = g_slice_new (GKeyFileKeyValuePair);
++  pair = g_new (GKeyFileKeyValuePair, 1);
+   pair->key = NULL;
+   pair->value = g_key_file_parse_comment_as_value (key_file, comment);
+   
+@@ -3383,7 +3383,7 @@ g_key_file_set_group_comment (GKeyFile     *key_file,
+ 
+   /* Now we can add our new comment
+    */
+-  group->comment = g_slice_new (GKeyFileKeyValuePair);
++  group->comment = g_new (GKeyFileKeyValuePair, 1);
+   group->comment->key = NULL;
+   group->comment->value = g_key_file_parse_comment_as_value (key_file, comment);
+ 
+@@ -3416,7 +3416,7 @@ g_key_file_set_top_comment (GKeyFile     *key_file,
+   if (comment == NULL)
+      return TRUE;
+ 
+-  pair = g_slice_new (GKeyFileKeyValuePair);
++  pair = g_new (GKeyFileKeyValuePair, 1);
+   pair->key = NULL;
+   pair->value = g_key_file_parse_comment_as_value (key_file, comment);
+   
+@@ -3840,7 +3840,7 @@ g_key_file_add_group (GKeyFile    *key_file,
+       return;
+     }
+ 
+-  group = g_slice_new0 (GKeyFileGroup);
++  group = g_new0 (GKeyFileGroup, 1);
+   group->name = g_strdup (group_name);
+   group->lookup_map = g_hash_table_new (g_str_hash, g_str_equal);
+   key_file->groups = g_list_prepend (key_file->groups, group);
+@@ -3862,7 +3862,7 @@ g_key_file_key_value_pair_free (GKeyFileKeyValuePair *pair)
+     {
+       g_free (pair->key);
+       g_free (pair->value);
+-      g_slice_free (GKeyFileKeyValuePair, pair);
++      g_free_sized (pair, sizeof (GKeyFileKeyValuePair));
+     }
+ }
+ 
+@@ -3971,7 +3971,7 @@ g_key_file_remove_group_node (GKeyFile *key_file,
+     }
+ 
+   g_free ((gchar *) group->name);
+-  g_slice_free (GKeyFileGroup, group);
++  g_free_sized (group, sizeof (GKeyFileGroup));
+   g_list_free_1 (group_node);
+ }
+ 
+@@ -4031,7 +4031,7 @@ g_key_file_add_key (GKeyFile      *key_file,
+ {
+   GKeyFileKeyValuePair *pair;
+ 
+-  pair = g_slice_new (GKeyFileKeyValuePair);
++  pair = g_new (GKeyFileKeyValuePair, 1);
+   pair->key = g_strdup (key);
+   pair->value = g_strdup (value);
+ 
+-- 
+GitLab
+ 
+ 
+From 86b4b0453ea3a814167d4a5f7a4031d467543716 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Ga=C3=ABl=20Bonithon?= <gael@xfce.org>
+Date: Fri, 14 Apr 2023 19:40:30 +0200
+Subject: [PATCH 2/2] gkeyfile: Fix group comment management
+ 
+This removes the `comment` member of the GKeyFileGroup structure, which
+seemed intended to distinguish comments just above a group from comments
+above them, separated by one or more blank lines. Indeed:
+* This does not seem to match any specification in the documentation,
+  where blank lines and lines starting with `#` are indiscriminately
+  considered comments. In particular, no distinction is made between the
+  comment above the first group and the comment at the beginning of the
+  file.
+* This distinction was only half implemented, resulting in confusion
+  between comment above a group and comment at the end of the preceding
+  group.
+ 
+Instead, the same logic is used for groups as for keys: the comment
+above a group is simply the sequence of key-value pairs of the preceding
+group where the key is null, starting from the bottom.
+ 
+The addition of a blank line above groups when writing, involved in
+bugs #104 and #2927, is kept, but:
+* It is now added as a comment as soon as the group is added (since a
+  blank line is considered a comment), so that
+  `g_key_file_get_comment()` returns the correct result right away.
+* It is always added if comments are not kept.
+* Otherwise it is only added if the group is newly created (not present
+  in the original data), in order to really keep comments (existing and
+  not existing).
+ 
+Closes: #104, #2927
+ 
+Conflict:NA
+Reference:https://gitlab.gnome.org/GNOME/glib/-/commit/86b4b0453ea3a814167d4a5f7a4031d467543716
+ 
+---
+ glib/gkeyfile.c      | 137 +++++++++++++++++++++++--------------------
+ glib/tests/keyfile.c |  75 ++++++++++++++++++++++-
+ 2 files changed, 147 insertions(+), 65 deletions(-)
+ 
+diff --git a/glib/gkeyfile.c b/glib/gkeyfile.c
+index d76335653f..1fcef9fc91 100644
+--- a/glib/gkeyfile.c
++++ b/glib/gkeyfile.c
+@@ -529,8 +529,6 @@ struct _GKeyFileGroup
+ {
+   const gchar *name;  /* NULL for above first group (which will be comments) */
+ 
+-  GKeyFileKeyValuePair *comment; /* Special comment that is stuck to the top of a group */
+-
+   GList *key_value_pairs;
+ 
+   /* Used in parallel with key_value_pairs for
+@@ -579,7 +577,8 @@ static void                  g_key_file_add_key                (GKeyFile
+ 								const gchar            *key,
+ 								const gchar            *value);
+ static void                  g_key_file_add_group              (GKeyFile               *key_file,
+-								const gchar            *group_name);
++								const gchar            *group_name,
++								gboolean                created);
+ static gboolean              g_key_file_is_group_name          (const gchar *name);
+ static gboolean              g_key_file_is_key_name            (const gchar *name,
+                                                                 gsize        len);
+@@ -1354,7 +1353,7 @@ g_key_file_parse_group (GKeyFile     *key_file,
+       return;
+     }
+ 
+-  g_key_file_add_group (key_file, group_name);
++  g_key_file_add_group (key_file, group_name, FALSE);
+   g_free (group_name);
+ }
+ 
+@@ -1610,14 +1609,6 @@ g_key_file_to_data (GKeyFile  *key_file,
+ 
+       group = (GKeyFileGroup *) group_node->data;
+ 
+-      /* separate groups by at least an empty line */
+-      if (data_string->len >= 2 &&
+-          data_string->str[data_string->len - 2] != '\n')
+-        g_string_append_c (data_string, '\n');
+-
+-      if (group->comment != NULL)
+-        g_string_append_printf (data_string, "%s\n", group->comment->value);
+-
+       if (group->name != NULL)
+         g_string_append_printf (data_string, "[%s]\n", group->name);
+ 
+@@ -1902,7 +1893,7 @@ g_key_file_set_value (GKeyFile    *key_file,
+ 
+   if (!group)
+     {
+-      g_key_file_add_group (key_file, group_name);
++      g_key_file_add_group (key_file, group_name, TRUE);
+       group = (GKeyFileGroup *) key_file->groups->data;
+ 
+       g_key_file_add_key (key_file, group, key, value);
+@@ -3349,6 +3340,42 @@ g_key_file_set_key_comment (GKeyFile     *key_file,
+   return TRUE;
+ }
+ 
++static gboolean
++g_key_file_set_top_comment (GKeyFile     *key_file,
++                            const gchar  *comment,
++                            GError      **error)
++{
++  GList *group_node;
++  GKeyFileGroup *group;
++  GKeyFileKeyValuePair *pair;
++
++  /* The last group in the list should be the top (comments only)
++   * group in the file
++   */
++  g_warn_if_fail (key_file->groups != NULL);
++  group_node = g_list_last (key_file->groups);
++  group = (GKeyFileGroup *) group_node->data;
++  g_warn_if_fail (group->name == NULL);
++
++  /* Note all keys must be comments at the top of
++   * the file, so we can just free it all.
++   */
++  g_list_free_full (group->key_value_pairs, (GDestroyNotify) g_key_file_key_value_pair_free);
++  group->key_value_pairs = NULL;
++
++  if (comment == NULL)
++     return TRUE;
++
++  pair = g_new (GKeyFileKeyValuePair, 1);
++  pair->key = NULL;
++  pair->value = g_key_file_parse_comment_as_value (key_file, comment);
++
++  group->key_value_pairs =
++    g_list_prepend (group->key_value_pairs, pair);
++
++  return TRUE;
++}
++
+ static gboolean
+ g_key_file_set_group_comment (GKeyFile     *key_file,
+                               const gchar  *group_name,
+@@ -3356,6 +3383,8 @@ g_key_file_set_group_comment (GKeyFile     *key_file,
+                               GError      **error)
+ {
+   GKeyFileGroup *group;
++  GList *group_node;
++  GKeyFileKeyValuePair *pair;
+   
+   g_return_val_if_fail (group_name != NULL && g_key_file_is_group_name (group_name), FALSE);
+ 
+@@ -3370,12 +3399,22 @@ g_key_file_set_group_comment (GKeyFile     *key_file,
+       return FALSE;
+     }
+ 
++  if (group == key_file->start_group)
++    return g_key_file_set_top_comment (key_file, comment, error);
++
+   /* First remove any existing comment
+    */
+-  if (group->comment)
++  group_node = g_key_file_lookup_group_node (key_file, group_name);
++  group = group_node->next->data;
++  for (GList *lp = group->key_value_pairs; lp != NULL; )
+     {
+-      g_key_file_key_value_pair_free (group->comment);
+-      group->comment = NULL;
++      GList *lnext = lp->next;
++      pair = lp->data;
++      if (pair->key != NULL)
++        break;
++
++      g_key_file_remove_key_value_pair_node (key_file, group, lp);
++      lp = lnext;
+     }
+ 
+   if (comment == NULL)
+@@ -3383,45 +3422,10 @@ g_key_file_set_group_comment (GKeyFile     *key_file,
+ 
+   /* Now we can add our new comment
+    */
+-  group->comment = g_new (GKeyFileKeyValuePair, 1);
+-  group->comment->key = NULL;
+-  group->comment->value = g_key_file_parse_comment_as_value (key_file, comment);
+-
+-  return TRUE;
+-}
+-
+-static gboolean
+-g_key_file_set_top_comment (GKeyFile     *key_file,
+-                            const gchar  *comment,
+-                            GError      **error)
+-{
+-  GList *group_node;
+-  GKeyFileGroup *group;
+-  GKeyFileKeyValuePair *pair;
+-
+-  /* The last group in the list should be the top (comments only)
+-   * group in the file
+-   */
+-  g_warn_if_fail (key_file->groups != NULL);
+-  group_node = g_list_last (key_file->groups);
+-  group = (GKeyFileGroup *) group_node->data;
+-  g_warn_if_fail (group->name == NULL);
+-
+-  /* Note all keys must be comments at the top of
+-   * the file, so we can just free it all.
+-   */
+-  g_list_free_full (group->key_value_pairs, (GDestroyNotify) g_key_file_key_value_pair_free);
+-  group->key_value_pairs = NULL;
+-
+-  if (comment == NULL)
+-     return TRUE;
+-
+   pair = g_new (GKeyFileKeyValuePair, 1);
+   pair->key = NULL;
+   pair->value = g_key_file_parse_comment_as_value (key_file, comment);
+-  
+-  group->key_value_pairs =
+-    g_list_prepend (group->key_value_pairs, pair);
++  group->key_value_pairs = g_list_prepend (group->key_value_pairs, pair);
+ 
+   return TRUE;
+ }
+@@ -3629,9 +3633,6 @@ g_key_file_get_group_comment (GKeyFile     *key_file,
+       return NULL;
+     }
+ 
+-  if (group->comment)
+-    return g_strdup (group->comment->value);
+-  
+   group_node = g_key_file_lookup_group_node (key_file, group_name);
+   group_node = group_node->next;
+   group = (GKeyFileGroup *)group_node->data;  
+@@ -3826,7 +3827,8 @@ g_key_file_has_key (GKeyFile     *key_file,
+ 
+ static void
+ g_key_file_add_group (GKeyFile    *key_file,
+-		      const gchar *group_name)
++		      const gchar *group_name,
++		      gboolean created)
+ {
+   GKeyFileGroup *group;
+ 
+@@ -3847,7 +3849,22 @@ g_key_file_add_group (GKeyFile    *key_file,
+   key_file->current_group = group;
+ 
+   if (key_file->start_group == NULL)
+-    key_file->start_group = group;
++    {
++      key_file->start_group = group;
++    }
++  else if (!(key_file->flags & G_KEY_FILE_KEEP_COMMENTS) || created)
++    {
++      /* separate groups by a blank line if we don't keep comments or group is created */
++      GKeyFileGroup *next_group = key_file->groups->next->data;
++      if (next_group->key_value_pairs == NULL ||
++          ((GKeyFileKeyValuePair *) next_group->key_value_pairs->data)->key != NULL)
++        {
++          GKeyFileKeyValuePair *pair = g_new (GKeyFileKeyValuePair, 1);
++          pair->key = NULL;
++          pair->value = g_strdup ("");
++          next_group->key_value_pairs = g_list_prepend (next_group->key_value_pairs, pair);
++        }
++    }
+ 
+   if (!key_file->group_hash)
+     key_file->group_hash = g_hash_table_new (g_str_hash, g_str_equal);
+@@ -3958,12 +3975,6 @@ g_key_file_remove_group_node (GKeyFile *key_file,
+ 
+   g_warn_if_fail (group->key_value_pairs == NULL);
+ 
+-  if (group->comment)
+-    {
+-      g_key_file_key_value_pair_free (group->comment);
+-      group->comment = NULL;
+-    }
+-
+   if (group->lookup_map)
+     {
+       g_hash_table_destroy (group->lookup_map);
+diff --git a/glib/tests/keyfile.c b/glib/tests/keyfile.c
+index 3d72d9670e..d3eed29841 100644
+--- a/glib/tests/keyfile.c
++++ b/glib/tests/keyfile.c
+@@ -382,7 +382,9 @@ test_comments (void)
+     "key4 = value4\n"
+     "# group comment\n"
+     "# group comment, continued\n"
+-    "[group2]\n";
++    "[group2]\n\n"
++    "[group3]\n"
++    "[group4]\n";
+ 
+   const gchar *top_comment = " top comment\n top comment, continued";
+   const gchar *group_comment = " group comment\n group comment, continued";
+@@ -427,6 +429,12 @@ test_comments (void)
+   check_name ("top comment", comment, top_comment, 0);
+   g_free (comment);
+ 
++  g_key_file_remove_comment (keyfile, NULL, NULL, &error);
++  check_no_error (&error);
++  comment = g_key_file_get_comment (keyfile, NULL, NULL, &error);
++  check_no_error (&error);
++  g_assert_null (comment);
++
+   comment = g_key_file_get_comment (keyfile, "group1", "key2", &error);
+   check_no_error (&error);
+   check_name ("key comment", comment, key_comment, 0);
+@@ -448,7 +456,25 @@ test_comments (void)
+   check_name ("group comment", comment, group_comment, 0);
+   g_free (comment);
+ 
++  g_test_bug ("https://gitlab.gnome.org/GNOME/glib/-/issues/104");
++
++  /* check if comments above another group than the first one are properly removed */
++  g_key_file_remove_comment (keyfile, "group2", NULL, &error);
++  check_no_error (&error);
++  comment = g_key_file_get_comment (keyfile, "group2", NULL, &error);
++  check_no_error (&error);
++  g_assert_null (comment);
++
+   comment = g_key_file_get_comment (keyfile, "group3", NULL, &error);
++  check_no_error (&error);
++  check_name ("group comment", comment, "", 0);
++  g_free (comment);
++
++  comment = g_key_file_get_comment (keyfile, "group4", NULL, &error);
++  check_no_error (&error);
++  g_assert_null (comment);
++
++  comment = g_key_file_get_comment (keyfile, "group5", NULL, &error);
+   check_error (&error,
+                G_KEY_FILE_ERROR,
+                G_KEY_FILE_ERROR_GROUP_NOT_FOUND);
+@@ -1321,9 +1347,16 @@ test_reload_idempotency (void)
+     "[fifth]\n";
+   GKeyFile *keyfile;
+   GError *error = NULL;
+-  gchar *data1, *data2;
++  gchar *data1, *data2, *comment;
+   gsize len1, len2;
+ 
++  const gchar *key_comment = " A random comment in the first group";
++  const gchar *top_comment = " Top comment\n\n First comment";
++  const gchar *group_comment_1 = top_comment;
++  const gchar *group_comment_2 = " Second comment - one line";
++  const gchar *group_comment_3 = " Third comment - two lines\n Third comment - two lines";
++  const gchar *group_comment_4 = "\n";
++
+   g_test_bug ("https://bugzilla.gnome.org/show_bug.cgi?id=420686");
+ 
+   /* check that we only insert a single new line between groups */
+@@ -1347,6 +1380,44 @@ test_reload_idempotency (void)
+ 
+   data2 = g_key_file_to_data (keyfile, &len2, &error);
+   g_assert_nonnull (data2);
++
++  g_test_bug ("https://gitlab.gnome.org/GNOME/glib/-/issues/2927");
++
++  /* check if comments are preserved on reload */
++  comment = g_key_file_get_comment (keyfile, "first", "anotherkey", &error);
++  check_no_error (&error);
++  g_assert_cmpstr (comment, ==, key_comment);
++  g_free (comment);
++
++  comment = g_key_file_get_comment (keyfile, NULL, NULL, &error);
++  check_no_error (&error);
++  g_assert_cmpstr (comment, ==, top_comment);
++  g_free (comment);
++
++  comment = g_key_file_get_comment (keyfile, "first", NULL, &error);
++  check_no_error (&error);
++  g_assert_cmpstr (comment, ==, group_comment_1);
++  g_free (comment);
++
++  comment = g_key_file_get_comment (keyfile, "second", NULL, &error);
++  check_no_error (&error);
++  g_assert_cmpstr (comment, ==, group_comment_2);
++  g_free (comment);
++
++  comment = g_key_file_get_comment (keyfile, "third", NULL, &error);
++  check_no_error (&error);
++  g_assert_cmpstr (comment, ==, group_comment_3);
++  g_free (comment);
++
++  comment = g_key_file_get_comment (keyfile, "fourth", NULL, &error);
++  check_no_error (&error);
++  g_assert_cmpstr (comment, ==, group_comment_4);
++  g_free (comment);
++
++  comment = g_key_file_get_comment (keyfile, "fifth", NULL, &error);
++  check_no_error (&error);
++  g_assert_null (comment);
++
+   g_key_file_free (keyfile);
+ 
+   g_assert_cmpstr (data1, ==, data2);
+-- 
+GitLab

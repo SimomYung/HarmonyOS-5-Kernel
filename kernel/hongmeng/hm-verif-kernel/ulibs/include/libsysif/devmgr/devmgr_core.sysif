@@ -1,0 +1,111 @@
+/*
+ * Copyright (C) Huawei Technologies Co., Ltd. 2019-2020. All rights reserved.
+ * Description: devmgr core sysif APIs
+ * Author: Huawei OS Kernel Lab
+ * Create: Fri Jan 11 10:45:12 2019
+ */
+
+/*
+ * To support the mixed data model which means the client and the server
+ * may use different data model. See the document for limitation of data type
+ * used in the sysif interfaces in <Documentation/sysif_compat.md>.
+ */
+/* Maximum number of reousce supported */
+#ifdef SYSIF_EXPORT_API
+#define RESOURCE_COUNT_MAX    128
+
+struct devhost_boot_resource {
+	unsigned long long bootfdt_shm_id;
+	unsigned int bootfdt_fwtype;
+};
+#endif
+
+DEFINE_MANAGER(core, 8,
+	DEFINE_METHOD(core, register_devhost,
+		      ARG(4,
+			  unsigned int, flags,
+			  uref_t, ap_uref,
+			  struct hm_actv_buf, group,
+			  uref_t, devmgr_ap_uref),
+		      RET(1, struct devhost_boot_resource, resource),
+		      SLOWDATA_NO)
+
+	DEFINE_METHOD(core, devhost_init_done,
+		      ARG_NO,
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_METHOD(core, device_add,
+		      ARG(7,
+			  struct hm_actv_buf, devname,
+			  struct hm_actv_buf, devnode_name,
+			  int, parent,
+			  unsigned int, flags,
+			  unsigned int, devt,	/* dev->devt */
+			  int, vfs_mode,
+			  struct hm_actv_buf, group),
+		      RET(2, int, devid, unsigned int, dev_flags),
+		      SLOWDATA)
+
+	DEFINE_METHOD(core, device_del,
+		      ARG(1,
+			  int, devid),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_METHOD(core, request_module,
+		      ARG(2,
+			  struct hm_actv_buf, modname,
+			  struct hm_actv_buf, args),
+		      RET_NO,
+		      SLOWDATA_NO)
+)
+
+DEFINE_MANAGER(chrdev, 4,
+	DEFINE_METHOD(chrdev, register_region,
+		      ARG(4,
+			  unsigned int, major,
+			  unsigned int, baseminor,
+			  int, minorct,
+			  struct hm_actv_buf, name),
+		      RET(1, unsigned int, major),
+		      SLOWDATA_NO)
+
+	DEFINE_METHOD(chrdev, unregister_region,
+		      ARG(3,
+			  unsigned int, major,
+			  unsigned int, baseminor,
+			  int, minorct),
+		      RET_NO,
+		      SLOWDATA_NO)
+)
+
+DEFINE_MANAGER(blkdev, 4,
+	DEFINE_METHOD(blkdev, register_region,
+		      ARG(2, unsigned int, major,
+			  struct hm_actv_buf, name),
+		      RET(1, unsigned int, major),
+		      SLOWDATA_NO)    /* name */
+
+	DEFINE_METHOD(blkdev, unregister_region,
+		      ARG(2, unsigned int, major,
+			  struct hm_actv_buf, name),
+		      RET_NO,
+		      SLOWDATA_NO)
+)
+
+DEFINE_MANAGER(fops, 2,
+	DEFINE_METHOD(fops, open,
+		      ARG(4,
+			  unsigned int, devno,	/* linux dev_t <major, minor> */
+			  unsigned int, vfs_flags,
+			  int, vfs_mode,
+			  rref_t, tgt_rref),
+		      RET(6, unsigned int, fastpath,
+			     unsigned long long, filp,
+			     unsigned long long, kshm_key,
+			     unsigned long, kobj_offset,
+			     unsigned int, nonvapre,
+			     unsigned int, dev_fops_flags),
+		      SLOWDATA_NO)
+)

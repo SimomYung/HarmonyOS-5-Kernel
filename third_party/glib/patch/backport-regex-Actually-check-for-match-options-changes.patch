@@ -1,0 +1,25 @@
+From d4966911e6b35d8923bc6cd58e7cb8a1b0e09d4a Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Marco=20Trevisan=20=28Trevi=C3=B1o=29?= <mail@3v1n0.net>
+Date: Tue, 6 Sep 2022 21:44:12 +0200
+Subject: [PATCH] tests/regex: Actually check for match options changes
+
+---
+ glib/tests/regex.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/glib/tests/regex.c b/glib/tests/regex.c
+index 567b6e2202..abf27e619e 100644
+--- a/glib/tests/regex.c
++++ b/glib/tests/regex.c
+@@ -105,7 +105,7 @@ test_new (gconstpointer d)
+   data = g_new0 (TestNewData, 1);                                \
+   data->pattern = _pattern;                                      \
+   data->compile_opts = _compile_opts;                            \
+-  data->match_opts = 0;                                          \
++  data->match_opts = _match_opts;                                \
+   data->expected_error = 0;                                      \
+   data->check_flags = TRUE;                                      \
+   data->real_compile_opts = _real_compile_opts;                  \
+-- 
+GitLab
+

@@ -1,0 +1,101 @@
+comment "UDK Backend Settings"
+source "$(HMCMAKENG_KCONFIG)"
+
+source "Kconfig.legacy"
+source "fusion/Kconfig"
+
+config MODULE_SCHED_CLASS
+	def_bool y
+
+config COMPAT
+	bool "Support for 32-bit applications at EL0"
+	default n
+
+config UDK_I2C
+	bool "enable udk i2c"
+	default n
+
+config UDK_TTY
+	bool "enable udk tty, only close in LDK+UDK mode"
+	default y
+
+config UDK_DMA_MEMPOOL_BITMAP
+	hex "dma mempool order bitmap"
+	default 0x1
+
+config UDK_EXT
+    bool "UDK EXT Support"
+    help
+        UDK framework has extension api. The driver could invoke
+        customized extension fastcall provided by micro-kernel.
+    default n
+
+config UDK_SPI
+	bool "enable udk spi"
+	default n
+
+config UDK_TIMER_PRECISION
+	int "precision of udk timer(ms)"
+	default 100
+
+config UDK_FUSION
+	bool "enable udk fusion"
+	default n
+
+config UDK_BLOCK_MQ
+	bool "enable udk block multi queue"
+	default n
+
+config TRACEMGR
+       bool "trace manager"
+       default n
+
+config NO_TRACEMGR
+	def_bool !TRACEMGR
+
+config MAS_BLK
+	bool "MAS Block feature"
+	depends on UDK_BLOCK_MQ
+	default n
+	help
+		MAS Block feature
+
+config MAS_DEBUG_FS
+	bool "mas debug fs"
+	depends on MAS_BLK
+	default n
+
+config MAS_BLK_BW_OPTIMIZE
+	bool "Enlarge async inflight when dirty page flashing"
+	depends on MAS_BLK
+	default n
+
+config MAS_MQ_USING_CP
+	bool "MAS UFS Command Priority"
+	depends on MAS_BLK
+	default n
+	help
+		MAS UFS Command Priority, good for foreground APP's IO performance
+
+config MAS_BKOPS
+	bool "MAS BKOPS"
+	depends on MAS_BLK
+	default n
+	help
+		MAS BKOPS feature
+
+# bd_types header file use this config, needs to keep the value consistent with other config
+config HISI_INLINE_ENCRYPTION
+	bool "Enable hisi inline encrypt"
+	default n
+
+config UDK_FALLBACK_ENCRYPTION
+	bool "Enable udk fallback encrypt"
+	default n
+
+config MAS_BLK_NVME
+	bool "nvme MAS Block feature"
+	depends on MAS_BLK
+	default n
+	help
+		nvme MAS Block feature

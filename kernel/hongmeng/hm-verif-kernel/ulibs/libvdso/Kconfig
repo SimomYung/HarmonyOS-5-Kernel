@@ -1,0 +1,60 @@
+# Copyright (c) Huawei Technologies Co., Ltd. 2022-2022. All rights reserved.
+# Description: Kconfig for libvdso.so
+# Author: Huawei OS Kernel Lab
+# Create: Wed Mar 23 14:30:57 2022
+
+source "$(HMCMAKENG_KCONFIG)"
+
+choice
+    prompt "Target Arch"
+    default AARCH64
+    config ARM
+        bool "ARM"
+    config AARCH64
+        bool "AARCH64"
+endchoice
+
+config AARCH64_UAO
+    bool "Enable User Access Override (UAO)"
+    depends on AARCH64
+    default n
+    help
+        User Access Override (UAO) is part of the ARMv8.2 Extensions Feature.
+        Enable UAO will make LDTR/STTR(Unprivilege) running in current execption
+        level.
+
+config U_HW_UNALIGN_ACCESS
+    bool "Hardware unalign access support"
+    default y
+
+config CC_USE_CLANG
+    bool "Use Clang as compiler"
+    default n
+
+config SMP
+    bool "Enable Symmetric multi-processing support"
+    default y
+    help
+        Enable SMP
+
+config MMIO_DISPATCHER
+    bool "Enable hypervisor MMIO region dispatcher"
+    default n
+    help
+        Enable MMIO region dispatcher on hypervisor
+
+config XOM
+    bool "Use _xom suffix link script"
+    default n
+    help
+        Use _xom suffix link script to separate rodata and text
+
+config HKIP_SEC_REGION_PROT_VDSO
+    bool "Use split link script"
+    default n
+    help
+        Use split link script to separate rodata and text
+
+config TIMER_HARDEN_S4
+  bool "Support timer on harden S4"
+  default n

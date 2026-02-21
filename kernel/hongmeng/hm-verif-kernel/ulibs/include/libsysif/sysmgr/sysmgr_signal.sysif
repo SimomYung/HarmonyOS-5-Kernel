@@ -1,0 +1,110 @@
+/*
+ * Copyright (c) Huawei Technologies Co., Ltd. 2018-2023. All rights reserved.
+ * Description: Add interfaces for signal.
+ * Author: Huawei OS Kernel Lab
+ * Create: Mon Dec 10 20:33:34 2018
+ */
+
+/*
+ * To support the mixed data model which means the client and the server
+ * may use different data model. See the document for limitation of data type
+ * used in the sysif interfaces in <Documentation/sysif_compat.md>.
+ */
+#ifdef SYSIF_EXPORT_API
+#include <libhmsrv_sys/hm_signal.h>
+/* For the user to set siginfo_t struct */
+struct siginfo_set {
+	int si_code;
+};
+
+#define SIGNAL_GET_SIGMASK		(0)
+#define SIGNAL_SET_SIGMASK		(1)
+#define SIGNAL_GETSET_SIGMASK		(2)
+#endif
+
+DEFINE_MANAGER(signal, 32,
+	DEFINE_SIMPLE_METHOD(signal, kill,
+		      ARG(3, int, pid, int, signum, struct siginfo_set, sig_set),
+		      RET_NO,
+		      SLOWDATA_NO)
+	DEFINE_LSYSCALL_METHOD(kill_lsyscall, SYS_kill,
+			       ARG(2, int, pid, int, signum))
+	DEFINE_SIMPLE_METHOD(signal, tkill,
+		      ARG(3, int, tid, int, signum, struct siginfo_set, sig_set),
+		      RET_NO,
+		      SLOWDATA_NO)
+	DEFINE_LSYSCALL_METHOD(tkill_lsyscall, SYS_tkill,
+			       ARG(2, int, tid, int, signum))
+	DEFINE_SIMPLE_METHOD(signal, tgkill,
+		      ARG(3, int, tgid, int, tid, int, signum),
+		      RET_NO,
+		      SLOWDATA_NO)
+	DEFINE_LSYSCALL_METHOD(tgkill_lsyscall, SYS_tgkill,
+			       ARG(3, int, tgid, int, tid, int, signum))
+	DEFINE_SIMPLE_METHOD(signal, sigqueue,
+		      ARG(3, int, tgid, struct __siginfo, siginfo, int, signum),
+		      RET_NO,
+		      SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(signal, memcheck,
+		      ARG(3, int, pid, struct __siginfo, siginfo, int, signum),
+		      RET_NO,
+		      SLOWDATA_NO)
+	DEFINE_LSYSCALL_METHOD(rt_sigqueueinfo, SYS_rt_sigqueueinfo,
+			       ARG(3, int, tgid, int, signum, void *, info))
+	DEFINE_SIMPLE_METHOD(signal, pthread_sigqueue,
+		      ARG(4, int, tgid, int, tid, int, signum, struct __siginfo, siginfo),
+		      RET_NO,
+		      SLOWDATA_NO)
+	DEFINE_LSYSCALL_METHOD(rt_tgsigqueueinfo, SYS_rt_tgsigqueueinfo,
+			       ARG(4, int, tgid, int, tid, int, signum, void *, info))
+	DEFINE_SIMPLE_METHOD(signal, set_signal_handler,
+		      ARG(3, unsigned int, signum, bool, set_new, struct uni_sigaction, new_act),
+		      RET(1, struct uni_sigaction, old_act),
+		      SLOWDATA_NO)
+	DEFINE_LSYSCALL_METHOD(rt_sigaction, SYS_rt_sigaction,
+			       ARG(4, int, signum, void *, newact, void *, oldact, unsigned long, size))
+	DEFINE_SIMPLE_METHOD(signal, read_signalfd,
+		      ARG(4, unsigned long long, sigmask, unsigned int, flags,
+			  void *, buf, size_t, buf_size),
+		      RET(1, long long, nread),
+		      SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(signal, read_signalevents,
+		      ARG(1, unsigned long long, sigmask),
+		      RET(1, unsigned int, revents),
+		      SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(signal, epoll_ctrl,
+		      ARG(3, int, sigfd, unsigned long long, sigmask, int, op),
+		      RET_NO,
+		      SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(signal, set_sigmask,
+		      ARG(2, unsigned long, ops, unsigned long long, new_mask),
+		      RET(1, unsigned long long, old_mask),
+		      SLOWDATA_NO)
+	DEFINE_LSYSCALL_METHOD(rt_sigprocmask, SYS_rt_sigprocmask,
+			       ARG(4, int, how, void *, nset, void *, oset, unsigned long, size))
+	DEFINE_SIMPLE_METHOD(signal, get_pending_signal,
+		      ARG_NO,
+		      RET(1, unsigned long long, pending_signal),
+		      SLOWDATA_NO)
+	DEFINE_LSYSCALL_METHOD(rt_sigpending, SYS_rt_sigpending,
+			       ARG(2, void *, set, unsigned long, size))
+	DEFINE_SIMPLE_METHOD(signal, drop_pending_signal,
+		      ARG(1, unsigned long long, sigmask),
+		      RET(1, struct __siginfo, siginfo),
+		      SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(signal, set_sigstack,
+		      ARG(2, bool, set_new, struct sigaltstack, new_ss),
+		      RET(1, struct sigaltstack, old_ss),
+		      SLOWDATA_NO)
+	DEFINE_LSYSCALL_METHOD(sigaltstack, SYS_sigaltstack,
+			       ARG(2, void *, ss, void *, oss))
+	DEFINE_SIMPLE_METHOD(signal, timedwait,
+		      ARG(4, unsigned long long, sigset, bool, set_timeout, time_t, tv_sec, long, tv_nsec),
+		      RET(1, struct __siginfo, siginfo),
+		      SLOWDATA_NO)
+	DEFINE_LSYSCALL_METHOD(rt_sigtimedwait, SYS_rt_sigtimedwait,
+			       ARG(4, void *, set, void *, info, void *, timeout, unsigned long, size))
+	DEFINE_LSYSCALL_METHOD(rt_sigsuspend, SYS_rt_sigsuspend,
+			       ARG(2, void *, set, unsigned long, size))
+	DEFINE_LSYSCALL_METHOD_NONE(rt_sigreturn, SYS_rt_sigreturn, ARG(1, void *, frame))
+)

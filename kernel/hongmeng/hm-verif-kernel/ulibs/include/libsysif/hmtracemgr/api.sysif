@@ -1,0 +1,13 @@
+/*
+ * Copyright (c) Huawei Technologies Co., Ltd. 2020-2020. All rights reserved.
+ * Description: Generate hmtracemgr sysif apis using code generator
+ * Author: Huawei OS Kernel Lab
+ * Create: Mon 07 Dec 2020 07:39:48 PM CST
+ */
+
+INCLUDE_C_HEADER(libhwsecurec/securec.h)
+
+INCLUDE_SUBSYSTEM(libsysif/hmtracemgr/hmtracemgr.sysif)
+USE_CALL_PREFIX(hmtracecall)
+USE_HANDLER_PREFIX(hmtracehandler)
+USE_SERVER_NAME(hmtracemgr)

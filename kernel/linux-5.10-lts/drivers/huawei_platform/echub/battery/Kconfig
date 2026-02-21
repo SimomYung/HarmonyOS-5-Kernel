@@ -1,0 +1,38 @@
+#
+# echub battery moudule
+#
+
+config ARMPC_ECHUB_BATTERY
+        bool "echub battery"
+        depends on ARMPC_ECHUB
+        default n
+        help
+          This driver provides support for echub battery
+
+config HW_ECHUB_CHARGER
+        bool "ec charger"
+        depends on ARMPC_ECHUB
+        default n
+        help
+          This driver provides support for echub charger
+
+config HW_ECHUB_CHARGEDATA
+        bool "ec chargedata"
+        depends on ARMPC_ECHUB_HMI
+        default n
+        help
+          This driver provides support for echub chargedata
+
+config HW_ECHUB_FLOAT_CHARGE
+        bool "ec float charge"
+        depends on ARMPC_ECHUB_BATTERY
+        default n
+        help
+          This driver provides support for ec custom charge and smart charge
+
+config HW_ECHUB_TURBO_CHARGE
+        bool "ec turbo charge"
+        depends on ARMPC_ECHUB_BATTERY
+        default n
+        help
+          This driver provides support for ec turbo charge

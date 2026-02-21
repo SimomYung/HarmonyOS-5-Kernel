@@ -1,0 +1,54 @@
+{
+    "template": "hook",
+    "server": "devhost",
+    "manager": "kstate",
+    "generation": {
+        "header": {
+            "embedded_code": {
+                "hook": ""
+            }
+        }
+    },
+    "hooks": {
+        "kstate_binderinfo_notify": {
+            "scheme": "security check/inner constraint",
+            "arguments": [],
+            "ac": {
+                "buckle": {
+                    "alias": "sec_chk_ability_kstate_binderinfo_notify",
+                    "permission": "ab_as_vfs"
+                }
+            }
+        },
+        "kstate_killinfo_notify": {
+            "scheme": "security check/inner constraint",
+            "arguments": [],
+            "ac": {
+                "buckle": {
+                    "alias": "sec_chk_ability_kstate_killinfo_notify",
+                    "permission": "ab_as_vfs"
+                }
+            }
+        },
+        "kstate_freeze_binder_info_notify": {
+            "scheme": "security check/inner constraint",
+            "arguments": [],
+            "ac": {
+                "buckle": {
+                    "alias": "sec_chk_ability_kstate_freeze_binder_info_notify",
+                    "permission": "ab_as_vfs"
+                }
+            }
+        },
+        "kstate_request_anco_thaw": {
+            "scheme": "security check/inner constraint",
+            "arguments": [],
+            "ac": {
+                "buckle": {
+                    "alias": "sec_chk_ability_kstate_request_anco_thaw",
+                    "permission": "ab_as_vfs"
+                }
+            }
+        }
+    }
+}

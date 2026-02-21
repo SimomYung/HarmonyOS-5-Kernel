@@ -1,0 +1,56 @@
+From 3ea7f5ac296ee5c19459c2bf00fecf98f552a1c5 Mon Sep 17 00:00:00 2001
+From: Feilong Lin <linfeilong@huawei.com>
+Date: Mon, 2 Mar 2020 20:52:06 +0800
+
+---
+ include/uapi/linux/if_link.h |  2 +-
+ ip/iplink_ipvlan.c           | 10 +++++-----
+ 2 files changed, 6 insertions(+), 6 deletions(-)
+diff --git a/include/uapi/linux/if_link.h b/include/uapi/linux/if_link.h
+index 1d4ed60..bddbdc7 100644
+--- a/include/uapi/linux/if_link.h
++++ b/include/uapi/linux/if_link.h
+@@ -702,6 +702,7 @@ enum {
+ enum ipvlan_mode {
+ 	IPVLAN_MODE_L2 = 0,
+ 	IPVLAN_MODE_L3,
++	IPVLAN_MODE_L2E,
+ 	IPVLAN_MODE_L3S,
+ 	IPVLAN_MODE_MAX
+ };
+diff --git a/ip/iplink_ipvlan.c b/ip/iplink_ipvlan.c
+index baae767..6de3138 100644
+--- a/ip/iplink_ipvlan.c
++++ b/ip/iplink_ipvlan.c
+@@ -23,7 +23,7 @@ static void print_explain(struct link_util *lu, FILE *f)
+ 	fprintf(f,
+ 		"Usage: ... %s [ mode MODE ] [ FLAGS ]\n"
+ 		"\n"
+-		"MODE: l3 | l3s | l2\n"
++		"MODE: l3 | l2e | l3s | l2\n"
+ 		"FLAGS: bridge | private | vepa\n"
+ 		"(first values are the defaults if nothing is specified).\n",
+ 		lu->id);
+@@ -47,8 +47,10 @@ static int ipvlan_parse_opt(struct link_util *lu, int argc, char **argv,
+ 				mode = IPVLAN_MODE_L3;
+ 			else if (strcmp(*argv, "l3s") == 0)
+ 				mode = IPVLAN_MODE_L3S;
++			else if (strcmp(*argv, "l2e") == 0)
++				mode = IPVLAN_MODE_L2E;
+ 			else {
+-				fprintf(stderr, "Error: argument of \"mode\" must be either \"l2\", \"l3\" or \"l3s\"\n");
++				fprintf(stderr, "Error: argument of \"mode\" must be either \"l2\", \"l3\", \"l2e\", or \"l3s\"\n");
+ 				return -1;
+ 			}
+ 			addattr16(n, 1024, IFLA_IPVLAN_MODE, mode);
+@@ -88,6 +90,7 @@ static void ipvlan_print_opt(struct link_util *lu, FILE *f, struct rtattr *tb[])
+ 			__u16 mode = rta_getattr_u16(tb[IFLA_IPVLAN_MODE]);
+ 			const char *mode_str = mode == IPVLAN_MODE_L2 ? "l2" :
+ 				mode == IPVLAN_MODE_L3 ? "l3" :
++				mode == IPVLAN_MODE_L2E ? "l2e" :
+ 				mode == IPVLAN_MODE_L3S ? "l3s" : "unknown";
+ 
+ 			print_string(PRINT_ANY, "mode", " mode %s ", mode_str);
+-- 
+2.19.1
+

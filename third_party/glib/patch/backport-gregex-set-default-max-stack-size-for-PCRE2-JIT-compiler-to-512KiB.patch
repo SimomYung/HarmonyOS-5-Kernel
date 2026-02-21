@@ -1,0 +1,166 @@
+From 842a105464f6390a433da8791d7b19b65df16f47 Mon Sep 17 00:00:00 2001
+From: Aleksei Rybalkin <aleksei@rybalkin.org>
+Date: Mon, 14 Aug 2023 20:32:48 +0200
+Subject: [PATCH 1/2] gregex: remove redundant call to
+ enable_jit_with_match_options
+ 
+There is no point to enable jit in g_regex_new, since JIT will be only
+used when we do a first match, and at that point
+enable_jit_with_match_options will be called again already and will
+update the options set in g_regex_new. Instead just run it at first
+match for the first time, to the same end result.
+ 
+Conflict:NA
+Reference:https://gitlab.gnome.org/GNOME/glib/-/commit/842a105464f6390a433da8791d7b19b65df16f47
+ 
+---
+ glib/gregex.c | 1 -
+ 1 file changed, 1 deletion(-)
+ 
+diff --git a/glib/gregex.c b/glib/gregex.c
+index 39b9edeecd..f6b2b716fc 100644
+--- a/glib/gregex.c
++++ b/glib/gregex.c
+@@ -1764,7 +1764,6 @@ G_GNUC_END_IGNORE_DEPRECATIONS
+   regex->orig_compile_opts = compile_options;
+   regex->match_opts = pcre_match_options;
+   regex->orig_match_opts = match_options;
+-  regex->jit_status = enable_jit_with_match_options (regex, regex->match_opts);
+ 
+   return regex;
+ }
+-- 
+GitLab
+ 
+ 
+From c3ff5b8eb39f1ab31383604910ae12f325e5afee Mon Sep 17 00:00:00 2001
+From: Aleksei Rybalkin <aleksei@rybalkin.org>
+Date: Mon, 14 Aug 2023 20:41:40 +0200
+Subject: [PATCH 2/2] gregex: set default max stack size for PCRE2 JIT compiler
+ to 512KiB
+ 
+Previous default used was 32KiB (the library default) which caused some
+complex patterns to fail, see #2824. The memory will not be allocated
+unless used.
+ 
+Conflict:Move test_string to fix declaration-after-statement
+Reference:https://gitlab.gnome.org/GNOME/glib/-/commit/c3ff5b8eb39f1ab31383604910ae12f325e5afee
+ 
+---
+ glib/gregex.c      | 22 ++++++++++++++--------
+ glib/tests/regex.c |  9 +++++++++
+ 2 files changed, 23 insertions(+), 8 deletions(-)
+ 
+diff --git a/glib/gregex.c b/glib/gregex.c
+index f6b2b716fc..5ce034db41 100644
+--- a/glib/gregex.c
++++ b/glib/gregex.c
+@@ -232,6 +232,7 @@ struct _GMatchInfo
+   gssize string_len;            /* length of string, in bytes */
+   pcre2_match_context *match_context;
+   pcre2_match_data *match_data;
++  pcre2_jit_stack *jit_stack;
+ };
+ 
+ typedef enum
+@@ -896,22 +897,22 @@ recalc_match_offsets (GMatchInfo *match_info,
+ }
+ 
+ static JITStatus
+-enable_jit_with_match_options (GRegex   *regex,
++enable_jit_with_match_options (GMatchInfo  *match_info,
+                                uint32_t  match_options)
+ {
+   gint retval;
+   uint32_t old_jit_options, new_jit_options;
+ 
+-  if (!(regex->orig_compile_opts & G_REGEX_OPTIMIZE))
++  if (!(match_info->regex->orig_compile_opts & G_REGEX_OPTIMIZE))
+     return JIT_STATUS_DISABLED;
+ 
+-  if (regex->jit_status == JIT_STATUS_DISABLED)
++  if (match_info->regex->jit_status == JIT_STATUS_DISABLED)
+     return JIT_STATUS_DISABLED;
+ 
+   if (match_options & G_REGEX_PCRE2_JIT_UNSUPPORTED_OPTIONS)
+     return JIT_STATUS_DISABLED;
+ 
+-  old_jit_options = regex->jit_options;
++  old_jit_options = match_info->regex->jit_options;
+   new_jit_options = old_jit_options | PCRE2_JIT_COMPLETE;
+   if (match_options & PCRE2_PARTIAL_HARD)
+     new_jit_options |= PCRE2_JIT_PARTIAL_HARD;
+@@ -920,13 +921,16 @@ enable_jit_with_match_options (GRegex   *regex,
+ 
+   /* no new options enabled */
+   if (new_jit_options == old_jit_options)
+-    return regex->jit_status;
++    return match_info->regex->jit_status;
+ 
+-  retval = pcre2_jit_compile (regex->pcre_re, new_jit_options);
++  retval = pcre2_jit_compile (match_info->regex->pcre_re, new_jit_options);
+   switch (retval)
+     {
+     case 0: /* JIT enabled successfully */
+-      regex->jit_options = new_jit_options;
++      match_info->regex->jit_options = new_jit_options;
++      /* Set min stack size for JIT to 32KiB and max to 512KiB */
++      match_info->jit_stack = pcre2_jit_stack_create (1 << 15, 1 << 19, NULL);
++      pcre2_jit_stack_assign (match_info->match_context, NULL, match_info->jit_stack);
+       return JIT_STATUS_ENABLED;
+     case PCRE2_ERROR_NOMEMORY:
+       g_debug ("JIT compilation was requested with G_REGEX_OPTIMIZE, "
+@@ -1023,6 +1027,8 @@ g_match_info_unref (GMatchInfo *match_info)
+       g_regex_unref (match_info->regex);
+       if (match_info->match_context)
+         pcre2_match_context_free (match_info->match_context);
++      if (match_info->jit_stack)
++        pcre2_jit_stack_free (match_info->jit_stack);
+       if (match_info->match_data)
+         pcre2_match_data_free (match_info->match_data);
+       g_free (match_info->offsets);
+@@ -1091,7 +1097,7 @@ g_match_info_next (GMatchInfo  *match_info,
+ 
+   opts = match_info->regex->match_opts | match_info->match_opts;
+ 
+-  jit_status = enable_jit_with_match_options (match_info->regex, opts);
++  jit_status = enable_jit_with_match_options (match_info, opts);
+   if (jit_status == JIT_STATUS_ENABLED)
+     {
+       match_info->matches = pcre2_jit_match (match_info->regex->pcre_re,
+diff --git a/glib/tests/regex.c b/glib/tests/regex.c
+index cf2bb8199d..821fc59608 100644
+--- a/glib/tests/regex.c
++++ b/glib/tests/regex.c
+@@ -51,6 +51,9 @@
+ /* A random value use to mark untouched integer variables. */
+ #define UNTOUCHED -559038737
+ 
++/* A length of the test string in JIT stack test */
++#define TEST_STRING_LEN 20000
++
+ static gint total;
+ 
+ typedef struct {
+@@ -2481,6 +2484,7 @@ test_jit_unsupported_matching_options (void)
+ int
+ main (int argc, char *argv[])
+ {
++  char test_string[TEST_STRING_LEN];
+   setlocale (LC_ALL, "");
+ 
+   g_test_init (&argc, &argv, NULL);
+@@ -2702,6 +2706,11 @@ G_GNUC_END_IGNORE_DEPRECATIONS
+   TEST_MATCH_SIMPLE("\\", "a", 0, 0, FALSE);
+   TEST_MATCH_SIMPLE("[", "", 0, 0, FALSE);
+ 
++  /* Test that JIT compiler has enough stack */
++  memset (test_string, '*', TEST_STRING_LEN);
++  test_string[TEST_STRING_LEN - 1] = '\0';
++  TEST_MATCH_SIMPLE ("^(?:[ \t\n]|[^[:cntrl:]])*$", test_string, 0, 0, TRUE);
++
+   /* TEST_MATCH(pattern, compile_opts, match_opts, string,
+    * 		string_len, start_position, match_opts2, expected) */
+   TEST_MATCH("a", 0, 0, "a", -1, 0, 0, TRUE);
+-- 
+GitLab

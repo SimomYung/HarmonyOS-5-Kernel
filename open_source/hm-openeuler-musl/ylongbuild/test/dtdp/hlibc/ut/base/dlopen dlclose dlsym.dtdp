@@ -1,0 +1,439 @@
+{
+    "root": {
+        "data": {
+            "id": "ci292ltqm540",
+            "created": 1645500012169,
+            "text": "HLIBC",
+            "usecase": 99
+        },
+        "children": [
+            {
+                "data": {
+                    "id": "ci2949rzhsg0",
+                    "created": 1645500142670,
+                    "text": "dlopen:打开动态链接库",
+                    "usecase": 1,
+                    "layout_right_offset": {
+                        "x": -48,
+                        "y": 0
+                    },
+                    "progress": null,
+                    "priority": null
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "ci2csuy00b40",
+                            "created": 1645510532816,
+                            "text": "入参分析"
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "ci2cumjxfaw0",
+                                    "created": 1645510671279,
+                                    "text": "filename"
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "ci2cv49qp4o0",
+                                            "created": 1645510709845,
+                                            "text": "是否为空",
+                                            "usecase": 2,
+                                            "expandState": "collapse"
+                                        },
+                                        "children": [
+                                            {
+                                                "data": {
+                                                    "id": "ci2cvupduxk0",
+                                                    "created": 1645510767388,
+                                                    "text": "传入空指针，预期返回主程序句柄",
+                                                    "usecase": 4,
+                                                    "author": "c00455000",
+                                                    "showId": "00001"
+                                                },
+                                                "children": []
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "data": {
+                                            "id": "ci2daqzdch40",
+                                            "created": 1645511934747,
+                                            "text": "filename异同",
+                                            "usecase": 2,
+                                            "expandState": "collapse"
+                                        },
+                                        "children": [
+                                            {
+                                                "data": {
+                                                    "id": "ci2db1s2by80",
+                                                    "created": 1645511958250,
+                                                    "text": "同一个名字返回相同的值",
+                                                    "usecase": 4,
+                                                    "author": "c00455000",
+                                                    "showId": "00004"
+                                                },
+                                                "children": []
+                                            }
+                                        ]
+                                    }
+                                ]
+                            },
+                            {
+                                "data": {
+                                    "id": "ci2cup4q3bc0",
+                                    "created": 1645510676890,
+                                    "text": "flags"
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "ci2d44g497s0",
+                                            "created": 1645511415508,
+                                            "text": "非法值",
+                                            "usecase": 2,
+                                            "expandState": "collapse"
+                                        },
+                                        "children": [
+                                            {
+                                                "data": {
+                                                    "id": "ci2d5ffhl8g0",
+                                                    "created": 1645511517779,
+                                                    "text": "未包含必须标志：RTLD_LAZY 、RTLD_NOW 预期返回错误",
+                                                    "usecase": 4,
+                                                    "author": "c00455000",
+                                                    "showId": "00003"
+                                                },
+                                                "children": []
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "data": {
+                                            "id": "ci42xb1yyu00",
+                                            "created": 1645685790157,
+                                            "text": "flags = RTLD_GLOBAL时， so的符号是完整的",
+                                            "usecase": 2,
+                                            "layout": null,
+                                            "expandState": "collapse"
+                                        },
+                                        "children": [
+                                            {
+                                                "data": {
+                                                    "id": "ci42yskevow0",
+                                                    "created": 1645685906640,
+                                                    "text": "函数不完整",
+                                                    "usecase": 4,
+                                                    "author": "c00455000",
+                                                    "showId": "00016",
+                                                    "layout": null
+                                                },
+                                                "children": []
+                                            },
+                                            {
+                                                "data": {
+                                                    "id": "ci42yxhp8sg0",
+                                                    "created": 1645685917360,
+                                                    "text": "全局变量不完整",
+                                                    "usecase": 4,
+                                                    "author": "c00455000",
+                                                    "showId": "00018",
+                                                    "layout": null
+                                                },
+                                                "children": []
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "data": {
+                                            "id": "ci42zbf609s0",
+                                            "created": 1645685947682,
+                                            "text": "flags = RTLD_LOCAL, 可以重复加载",
+                                            "usecase": 2
+                                        },
+                                        "children": [
+                                            {
+                                                "data": {
+                                                    "id": "ci430302i9k0",
+                                                    "created": 1645686007719,
+                                                    "text": "分支主题"
+                                                },
+                                                "children": []
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "data": {
+                            "id": "ci2dduwl4ds0",
+                            "created": 1645512178378,
+                            "text": "功能分析"
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "ci2ddzfip480",
+                                    "created": 1645512188230,
+                                    "text": "动态链接库",
+                                    "usecase": 2,
+                                    "expandState": "collapse"
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "ci2dehpkehs0",
+                                            "created": 1645512228019,
+                                            "text": "不存在，预期返回NULL",
+                                            "usecase": 4,
+                                            "author": "c00455000",
+                                            "showId": "00005"
+                                        },
+                                        "children": []
+                                    }
+                                ]
+                            },
+                            {
+                                "data": {
+                                    "id": "ci436ljqjd40",
+                                    "created": 1645686518275,
+                                    "text": "dlopen 时，hpe的搜索路径，考虑各种场景组合",
+                                    "usecase": 2
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "ci43704afts0",
+                                            "created": 1645686549993,
+                                            "text": "分支主题"
+                                        },
+                                        "children": []
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "data": {
+                    "id": "ci2cqpbqqm80",
+                    "created": 1645510363858,
+                    "text": "dlsym：在打开的动态库中查找符号的值",
+                    "usecase": 1,
+                    "layout_right_offset": {
+                        "x": 17,
+                        "y": -8
+                    },
+                    "expandState": "expand"
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "ci2dkuq9fns0",
+                            "created": 1645512726545,
+                            "text": "入参分析",
+                            "expandState": "expand"
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "ci2dvg62yzs0",
+                                    "created": 1645513556855,
+                                    "text": "handle"
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "ci434594c000",
+                                            "created": 1645686326076,
+                                            "text": "default  next",
+                                            "usecase": 2,
+                                            "expandState": "collapse"
+                                        },
+                                        "children": [
+                                            {
+                                                "data": {
+                                                    "id": "ci434h468yo0",
+                                                    "created": 1645686351899,
+                                                    "text": "分支主题"
+                                                },
+                                                "children": []
+                                            },
+                                            {
+                                                "data": {
+                                                    "id": "ci434i663bs0",
+                                                    "created": 1645686354196,
+                                                    "text": "分支主题"
+                                                },
+                                                "children": []
+                                            }
+                                        ]
+                                    }
+                                ]
+                            },
+                            {
+                                "data": {
+                                    "id": "ci2dvysdi9s0",
+                                    "created": 1645513597385,
+                                    "text": "symbol"
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "ci2dxoup8ps0",
+                                            "created": 1645513732487,
+                                            "text": "是否合法",
+                                            "usecase": 2,
+                                            "expandState": "collapse"
+                                        },
+                                        "children": [
+                                            {
+                                                "data": {
+                                                    "id": "ci2dxouqavk0",
+                                                    "created": 1645513732488,
+                                                    "text": "传入空指针，预期返回错误",
+                                                    "usecase": 4,
+                                                    "author": "c00455000",
+                                                    "showId": "00011"
+                                                },
+                                                "children": []
+                                            },
+                                            {
+                                                "data": {
+                                                    "id": "ci2dzips55c0",
+                                                    "created": 1645513875857,
+                                                    "text": "符号不存在，预期返回空指针",
+                                                    "usecase": 4,
+                                                    "author": "c00455000",
+                                                    "showId": "00012"
+                                                },
+                                                "children": []
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "data": {
+                            "id": "ci2dkxi1xw80",
+                            "created": 1645512732579,
+                            "text": "功能分析"
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "ci2e26yt4w80",
+                                    "created": 1645514085374,
+                                    "text": "获取函数地址",
+                                    "usecase": 2,
+                                    "expandState": "collapse"
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "ci2e31oufts0",
+                                            "created": 1645514152251,
+                                            "text": "传入dlopen得到的句柄，及正确符号名称，获取函数地址，并且可以正常调用。",
+                                            "usecase": 4,
+                                            "author": "c00455000",
+                                            "showId": "00015"
+                                        },
+                                        "children": []
+                                    }
+                                ]
+                            },
+                            {
+                                "data": {
+                                    "id": "ci432d6hfso0",
+                                    "created": 1645686186603,
+                                    "text": "获取变量",
+                                    "usecase": 2,
+                                    "expandState": "collapse"
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "cidfowtjo8o0",
+                                            "created": 1646635846297,
+                                            "text": "传入dlopen得到的句柄，及正确符号名称，变量地址，可访问",
+                                            "usecase": 4,
+                                            "author": "c00455000",
+                                            "showId": "00019"
+                                        },
+                                        "children": []
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "data": {
+                    "id": "ci2cnzs58yw0",
+                    "created": 1645510151525,
+                    "text": "dlclose:关闭动态链接库",
+                    "usecase": 1,
+                    "expandState": "expand"
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "ci2dlngv82g0",
+                            "created": 1645512789103,
+                            "text": "入参分析",
+                            "expandState": "expand"
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "ci2dnmnbyt40",
+                                    "created": 1645512944046,
+                                    "text": "handle是否为空",
+                                    "usecase": 2
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "ci2do4b4s600",
+                                            "created": 1645512982490,
+                                            "text": "传入空指针，预期返回错误",
+                                            "usecase": 4,
+                                            "author": "c00455000",
+                                            "showId": "00008"
+                                        },
+                                        "children": []
+                                    },
+                                    {
+                                        "data": {
+                                            "id": "ci2dradoudc0",
+                                            "created": 1645513230799,
+                                            "text": "传入dlopen得到的句柄，预期返回成功",
+                                            "usecase": 4,
+                                            "author": "c00455000",
+                                            "showId": "00009"
+                                        },
+                                        "children": []
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    "templatePath": null,
+    "singleTemplatePath": null,
+    "testcaseFilePath": "",
+    "template": "right",
+    "theme": "fresh-blue-compat",
+    "version": "1.4.43"
+}

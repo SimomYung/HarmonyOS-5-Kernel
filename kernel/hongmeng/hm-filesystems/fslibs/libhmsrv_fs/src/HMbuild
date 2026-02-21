@@ -1,0 +1,62 @@
+# Copyright (c) Huawei Technologies Co., Ltd. 2021-2021. All rights reserved.
+# Description: HMbuild
+# Author: Huawei OS Kernel Lab
+# Create: Fri Sep 10 10:23:24 2021
+
+src-CONFIG_FSLIB_TRANSFER_FD: transfer_fd.c
+
+src-y: fs_ioaccount.c
+src-y: fs_malloc.c
+src-y: vfs_epoll.c
+src-y: read_write.c
+src-y: sec.c
+src-y: str.c
+src-y: xattr.c
+src-y: statfs.c
+src-y: sync.c
+src-y: stat.c
+src-y: ioctl.c
+src-y: mmap.c
+src-y: clock.c
+src-y: fd.c
+src-y: internal.c
+src-y: open.c
+src-y: fs_server.c
+src-y: proc.c
+src-y: vfs.c
+src-y: eventfd.c
+src-y: signalfd.c
+src-y: timerfd.c
+src-y: vfs_audit.c
+src-y: vfs_devfs.c
+
+cflags-memfd_create.c-y: -D_GNU_SOURCE
+cflags-sync.c-y: -D_GNU_SOURCE
+
+# These files will be used before kasan init
+# so should disable kasan
+excludecflags-fd.c: -fsanitize=kernel-address '-fasan-shadow-offset=0x[0-9]*' '--param asan-stack=1' '--param asan-globals=1'
+excludecflags-internal.c: -fsanitize=kernel-address '-fasan-shadow-offset=0x[0-9]*' '--param asan-stack=1' '--param asan-globals=1'
+excludecflags-open.c: -fsanitize=kernel-address '-fasan-shadow-offset=0x[0-9]*' '--param asan-stack=1' '--param asan-globals=1'
+excludecflags-fs_server.c: -fsanitize=kernel-address '-fasan-shadow-offset=0x[0-9]*' '--param asan-stack=1' '--param asan-globals=1'
+excludecflags-proc.c: -fsanitize=kernel-address '-fasan-shadow-offset=0x[0-9]*' '--param asan-stack=1' '--param asan-globals=1'
+excludecflags-vfs.c: -fsanitize=kernel-address '-fasan-shadow-offset=0x[0-9]*' '--param asan-stack=1' '--param asan-globals=1'
+
+excludecflags-fd.c: -fsanitize=kernel-address '-mllvm -asan-mapping-offset=0x[0-9]*' '-mllvm asan-stack=1' '-mllvm asan-stack=0' '-mllvm asan-globals=1'
+excludecflags-internal.c: -fsanitize=kernel-address '-mllvm -asan-mapping-offset=0x[0-9]*' '-mllvm asan-stack=1' '-mllvm asan-stack=0' '-mllvm asan-globals=1'
+excludecflags-open.c: -fsanitize=kernel-address '-mllvm -asan-mapping-offset=0x[0-9]*' '-mllvm asan-stack=1' '-mllvm asan-stack=0' '-mllvm asan-globals=1'
+excludecflags-fs_server.c: -fsanitize=kernel-address '-mllvm -asan-mapping-offset=0x[0-9]*' '-mllvm asan-stack=1' '-mllvm asan-stack=0' '-mllvm asan-globals=1'
+excludecflags-proc.c: -fsanitize=kernel-address '-mllvm -asan-mapping-offset=0x[0-9]*' '-mllvm asan-stack=1' '-mllvm asan-stack=0' '-mllvm asan-globals=1'
+excludecflags-vfs.c: -fsanitize=kernel-address '-mllvm -asan-mapping-offset=0x[0-9]*' '-mllvm asan-stack=1' '-mllvm asan-stack=0' '-mllvm asan-globals=1'
+
+excludecflags-fd.c: -fsanitize=thread -fplugin=libtsan_plugin.so
+excludecflags-internal.c: -fsanitize=thread -fplugin=libtsan_plugin.so
+excludecflags-open.c: -fsanitize=thread -fplugin=libtsan_plugin.so
+excludecflags-fs_server.c: -fsanitize=thread -fplugin=libtsan_plugin.so
+excludecflags-proc.c: -fsanitize=thread -fplugin=libtsan_plugin.so
+excludecflags-vfs.c: -fsanitize=thread -fplugin=libtsan_plugin.so
+
+include-y: ../include
+include-y: ../../../fslibs/include
+
+# vim:ts=4:sw=4:expandtab

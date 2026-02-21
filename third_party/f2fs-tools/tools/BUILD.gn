@@ -1,0 +1,89 @@
+# Copyright (c) 2021 Huawei Device Co., Ltd.
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License version 2 as
+# published by the Free Software Foundation.
+
+import("//build/ohos.gni")
+
+config("f2fs-defaults") {
+  cflags = [
+    "-std=gnu89",
+    "-Wno-implicit-function-declaration",
+    "-Wno-pointer-sign",
+  ]
+}
+
+###################################################
+##Build f2fscrypt
+ohos_executable("f2fscrypt") {
+  configs = [ ":f2fs-defaults" ]
+  sources = [
+    "f2fscrypt.c",
+    "sha512.c",
+  ]
+  include_dirs = [
+    ".",
+    "//third_party/f2fs-tools",
+    "//third_party/f2fs-tools/include",
+    "//third_party/e2fsprogs/e2fsprogs/lib/uuid",
+  ]
+  cflags = [ "-Wno-error=format-extra-args" ]
+
+  deps = [ "//third_party/e2fsprogs:libext2_uuid" ]
+
+  install_enable = true
+  subsystem_name = "thirdparty"
+  part_name = "f2fs-tools"
+  install_images = [ "system" ]
+}
+
+###################################################
+##Build f2fstat
+ohos_executable("f2fstat") {
+  configs = [ ":f2fs-defaults" ]
+  sources = [ "f2fstat.c" ]
+
+  include_dirs = [ "." ]
+  cflags = [
+    "-Wno-error=format",
+    "-Wno-error=type-limits",
+    "-Wno-format-extra-args",
+  ]
+
+  deps = []
+
+  install_enable = true
+  subsystem_name = "thirdparty"
+  part_name = "f2fs-tools"
+  install_images = [ "system" ]
+}
+
+###################################################
+##Build fibmap.f2fs
+ohos_executable("fibmap.f2fs") {
+  configs = [ ":f2fs-defaults" ]
+  sources = [ "fibmap.c" ]
+
+  include_dirs = [
+    ".",
+    "//third_party/f2fs-tools",
+    "//third_party/f2fs-tools/include",
+    "//third_party/f2fs-tools/lib",
+  ]
+
+  cflags = [
+    "-Wno-error=format",
+    "-Wno-error=type-limits",
+    "-Wno-format-extra-args",
+  ]
+
+  deps = [ "//third_party/f2fs-tools/lib:libf2fs" ]
+
+  defines = [ "HAVE_CONFIG_H" ]
+
+  install_enable = true
+  subsystem_name = "thirdparty"
+  part_name = "f2fs-tools"
+  install_images = [ "system" ]
+}

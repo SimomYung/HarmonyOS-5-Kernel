@@ -1,0 +1,47 @@
+menu "ARCH Options"
+config ARCH
+  string
+  default "aarch64" if AARCH64
+  default "arm" if ARM
+
+choice
+  prompt "Arch choice"
+  default AARCH64
+  config AARCH64
+    bool "aarch64"
+  config ARM
+    bool "ARM"
+endchoice
+
+menu "AARCH build options"
+
+  config BIG_ENDIAN
+  bool "Build big endian kernel"
+  default n
+  help
+    Build big endian kernel
+
+  config LITTLE_ENDIAN
+  def_bool !BIG_ENDIAN
+  help
+    Build little endian kernel
+
+  config SMP
+    bool "Enable Symmetric multi-processing support"
+    default y
+    help
+      Enable SMP
+
+  config MMU
+      bool "Enable MMU"
+      default y
+      help
+        Enable MMU
+
+endmenu # AARCH build options
+
+source "arch/aarch64/Kconfig"
+source "arch/arm/Kconfig"
+
+endmenu # ARCH Options
+

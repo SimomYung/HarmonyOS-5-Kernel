@@ -1,0 +1,592 @@
+{
+    "root": {
+        "data": {
+            "id": "ci27l63cu8w0",
+            "created": 1645495824622,
+            "text": "HLIBC",
+            "usecase": 99
+        },
+        "children": [
+            {
+                "data": {
+                    "id": "ci27qws4yuw0",
+                    "created": 1645496274537,
+                    "text": "HpeGetUserNameByUid",
+                    "usecase": 1,
+                    "expandState": "expand",
+                    "layout_right_offset": {
+                        "x": -17.499999739229622,
+                        "y": -153.74999770894647
+                    }
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "ci27rvfzp400",
+                            "created": 1645496349990,
+                            "text": "入参分析",
+                            "expandState": "expand"
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "ci28tkf4jz40",
+                                    "created": 1645499303831,
+                                    "text": "name"
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "ci28z03xi1s0",
+                                            "created": 1645499729804,
+                                            "text": "是否为空",
+                                            "usecase": 2
+                                        },
+                                        "children": [
+                                            {
+                                                "data": {
+                                                    "id": "ci2964gj2ls0",
+                                                    "created": 1645500287822,
+                                                    "text": "传入空指针，预期获取失败",
+                                                    "usecase": 4,
+                                                    "author": "z00572669",
+                                                    "showId": "00002"
+                                                },
+                                                "children": []
+                                            }
+                                        ]
+                                    }
+                                ]
+                            },
+                            {
+                                "data": {
+                                    "id": "ci28tslifz40",
+                                    "created": 1645499321632,
+                                    "text": "size"
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "ci290s29xb40",
+                                            "created": 1645499869018,
+                                            "text": "大小",
+                                            "usecase": 2,
+                                            "expandState": "expand"
+                                        },
+                                        "children": [
+                                            {
+                                                "data": {
+                                                    "id": "ci296n0q1gw0",
+                                                    "created": 1645500328225,
+                                                    "text": "传入0，预期获取失败",
+                                                    "usecase": 4,
+                                                    "author": "z00572669",
+                                                    "showId": "00003"
+                                                },
+                                                "children": []
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "data": {
+                            "id": "ci3xhcbiek80",
+                            "created": 1645670433533,
+                            "text": "功能分析"
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "ci3xhnwgl0g0",
+                                    "created": 1645670458744,
+                                    "text": "用户不存在",
+                                    "usecase": 2
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "ci3xij6p9go0",
+                                            "created": 1645670526844,
+                                            "text": "传入非法uid，预期获取失败",
+                                            "usecase": 4,
+                                            "author": "z00572669",
+                                            "showId": "00004"
+                                        },
+                                        "children": []
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "data": {
+                    "id": "ci4aglt4rns0",
+                    "created": 1645707050254,
+                    "text": "HpeGetGroupList",
+                    "layout_right_offset": {
+                        "x": -1.2499999813734917,
+                        "y": 151.24999774619937
+                    },
+                    "usecase": 1
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "ci4ayw2zits0",
+                            "created": 1645708483173,
+                            "text": "入参分析"
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "ci4b2snele80",
+                                    "created": 1645708789157,
+                                    "text": "name",
+                                    "usecase": null
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "ci4b3febg680",
+                                            "created": 1645708838673,
+                                            "text": "是否为空",
+                                            "usecase": 2
+                                        },
+                                        "children": [
+                                            {
+                                                "data": {
+                                                    "id": "ci4b524itnk0",
+                                                    "created": 1645708966511,
+                                                    "text": "传入空指针，预期获取失败",
+                                                    "usecase": 4,
+                                                    "author": "z00572669",
+                                                    "showId": "00008"
+                                                },
+                                                "children": []
+                                            }
+                                        ]
+                                    }
+                                ]
+                            },
+                            {
+                                "data": {
+                                    "id": "ci4b2tp8irc0",
+                                    "created": 1645708791444,
+                                    "text": "groups",
+                                    "usecase": null
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "ci4b5a3lv1c0",
+                                            "created": 1645708983870,
+                                            "text": "是否为空",
+                                            "usecase": 2
+                                        },
+                                        "children": [
+                                            {
+                                                "data": {
+                                                    "id": "ci4b5f1qws80",
+                                                    "created": 1645708994642,
+                                                    "text": "传入空指针，预期获取失败",
+                                                    "usecase": 4,
+                                                    "author": "z00572669",
+                                                    "showId": "00009"
+                                                },
+                                                "children": []
+                                            }
+                                        ]
+                                    }
+                                ]
+                            },
+                            {
+                                "data": {
+                                    "id": "ci4b2zcohko0",
+                                    "created": 1645708803746,
+                                    "text": "ngroups",
+                                    "usecase": null
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "ci4b5ksxkoo0",
+                                            "created": 1645709007169,
+                                            "text": "是否为空",
+                                            "usecase": 2
+                                        },
+                                        "children": [
+                                            {
+                                                "data": {
+                                                    "id": "ci4b5ptrvpk0",
+                                                    "created": 1645709018104,
+                                                    "text": "传入空指针，预期获取失败",
+                                                    "usecase": 4,
+                                                    "author": "z00572669",
+                                                    "showId": "00010"
+                                                },
+                                                "children": []
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "data": {
+                            "id": "ci4aywt6vaw0",
+                            "created": 1645708484757,
+                            "text": "功能分析"
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "ci4b3atuw3c0",
+                                    "created": 1645708828729,
+                                    "text": "用户不存在",
+                                    "usecase": 2
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "ci4b3hlxdoo0",
+                                            "created": 1645708843487,
+                                            "text": "传入任意用户名，预期获取失败",
+                                            "usecase": 4,
+                                            "author": "z00572669",
+                                            "showId": "00011"
+                                        },
+                                        "children": []
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "data": {
+                    "id": "ci4b6fnppnc0",
+                    "created": 1645709074334,
+                    "text": "HpeGetProcessNameByPid",
+                    "usecase": 1,
+                    "layout_right_offset": {
+                        "x": -13.749999795109034,
+                        "y": -359.999994635582
+                    }
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "ci4b6s3rw3k0",
+                            "created": 1645709101427,
+                            "text": "入参分析"
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "ci4b6yhey4o0",
+                                    "created": 1645709115312,
+                                    "text": "name"
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "ci4b72ui0fk0",
+                                            "created": 1645709124810,
+                                            "text": "是否为空",
+                                            "usecase": 2
+                                        },
+                                        "children": [
+                                            {
+                                                "data": {
+                                                    "id": "ci4b7b079p40",
+                                                    "created": 1645709142569,
+                                                    "text": "传入空指针，预期获取失败",
+                                                    "usecase": 4,
+                                                    "author": "z00572669",
+                                                    "showId": "00012"
+                                                },
+                                                "children": []
+                                            }
+                                        ]
+                                    }
+                                ]
+                            },
+                            {
+                                "data": {
+                                    "id": "ci4b6z3ohu00",
+                                    "created": 1645709116658,
+                                    "text": "size"
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "ci4b77j5mww0",
+                                            "created": 1645709135008,
+                                            "text": "大小",
+                                            "usecase": 2
+                                        },
+                                        "children": [
+                                            {
+                                                "data": {
+                                                    "id": "ci4b7g2iz6o0",
+                                                    "created": 1645709153594,
+                                                    "text": "传入0，预期获取失败",
+                                                    "usecase": 4,
+                                                    "author": "z00572669",
+                                                    "showId": "00013"
+                                                },
+                                                "children": []
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "data": {
+                            "id": "ci4b6spo6mw0",
+                            "created": 1645709102751,
+                            "text": "功能分析"
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "ci4b7msx5nk0",
+                                    "created": 1645709168251,
+                                    "text": "进程不存在",
+                                    "usecase": 2
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "ci4b7rfkl280",
+                                            "created": 1645709178327,
+                                            "text": "传入非法pid，预期获取失败",
+                                            "usecase": 4,
+                                            "author": "z00572669",
+                                            "showId": "ci4b7rfkl280"
+                                        },
+                                        "children": []
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "data": {
+                    "id": "ci4brue7uko0",
+                    "created": 1645710752059,
+                    "text": "HpeGetGroupNameByGid",
+                    "usecase": 1
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "ci4bsa4grq80",
+                            "created": 1645710786298,
+                            "text": "入参分析"
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "ci4bsfpga540",
+                                    "created": 1645710798451,
+                                    "text": "name"
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "ci4bsu2o8b40",
+                                            "created": 1645710829725,
+                                            "text": "是否为空",
+                                            "usecase": 2
+                                        },
+                                        "children": [
+                                            {
+                                                "data": {
+                                                    "id": "ci4bsv81ugw0",
+                                                    "created": 1645710832227,
+                                                    "text": "传入空指针，预期获取失败",
+                                                    "usecase": 4,
+                                                    "author": "z00572669",
+                                                    "showId": "00015"
+                                                },
+                                                "children": []
+                                            }
+                                        ]
+                                    }
+                                ]
+                            },
+                            {
+                                "data": {
+                                    "id": "ci4bsggqf6g0",
+                                    "created": 1645710800100,
+                                    "text": "size"
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "ci4bsvwv0f40",
+                                            "created": 1645710833727,
+                                            "text": "大小",
+                                            "usecase": 2
+                                        },
+                                        "children": [
+                                            {
+                                                "data": {
+                                                    "id": "ci4bsx1xk4g0",
+                                                    "created": 1645710836211,
+                                                    "text": "传入0，预期获取失败",
+                                                    "usecase": 4,
+                                                    "author": "z00572669",
+                                                    "showId": "00016"
+                                                },
+                                                "children": []
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "data": {
+                            "id": "ci4bsau5xpk0",
+                            "created": 1645710787852,
+                            "text": "功能分析"
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "ci4bu0t50vc0",
+                                    "created": 1645710922750,
+                                    "text": "组不存在",
+                                    "usecase": 2
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "ci4bu4p7w7c0",
+                                            "created": 1645710931220,
+                                            "text": "传入非法gid，预期获取失败",
+                                            "usecase": 4,
+                                            "author": "z00572669",
+                                            "showId": "00017"
+                                        },
+                                        "children": []
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "data": {
+                    "id": "ci4bwhelj680",
+                    "created": 1645711115605,
+                    "text": "HpeChannelGetCred",
+                    "usecase": 1
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "ci4bwsjwnw00",
+                            "created": 1645711139870,
+                            "text": "入参分析"
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "ci4bx9fui5k0",
+                                    "created": 1645711176630,
+                                    "text": "chanId"
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "ci4bxid01gw0",
+                                            "created": 1645711196049,
+                                            "text": "是否合法",
+                                            "usecase": 2
+                                        },
+                                        "children": [
+                                            {
+                                                "data": {
+                                                    "id": "ci4bxnrjrw00",
+                                                    "created": 1645711207813,
+                                                    "text": "传入无效chanId，预期获取失败",
+                                                    "usecase": 4,
+                                                    "author": "z00572669",
+                                                    "showId": "00018"
+                                                },
+                                                "children": []
+                                            },
+                                            {
+                                                "data": {
+                                                    "id": "ci4wkmf78880",
+                                                    "created": 1645769429463,
+                                                    "text": "chanId >= MAX_CHANNEL_NUM，预期获取失败",
+                                                    "usecase": 4,
+                                                    "author": "z00572669",
+                                                    "showId": "00020"
+                                                },
+                                                "children": []
+                                            }
+                                        ]
+                                    }
+                                ]
+                            },
+                            {
+                                "data": {
+                                    "id": "ci4bx9zksrk0",
+                                    "created": 1645711177823,
+                                    "text": "cred"
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "ci4bxp2c72g0",
+                                            "created": 1645711210642,
+                                            "text": "是否为空",
+                                            "usecase": 2
+                                        },
+                                        "children": [
+                                            {
+                                                "data": {
+                                                    "id": "ci4byc1t63k0",
+                                                    "created": 1645711260676,
+                                                    "text": "传入空指针，预期获取失败",
+                                                    "usecase": 4,
+                                                    "author": "z00572669",
+                                                    "showId": "00019"
+                                                },
+                                                "children": []
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    "templatePath": null,
+    "singleTemplatePath": null,
+    "testcaseFilePath": "",
+    "template": "right",
+    "theme": "fresh-blue",
+    "version": "1.4.43"
+}

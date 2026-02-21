@@ -1,0 +1,66 @@
+# Copyright (c) Huawei Technologies Co., Ltd. 2022-2022. All rights reserved.
+# Description: Kconfig for devmgr libs
+# Author: Huawei OS Kernel Lab
+# Create: Fri May 06 15:21:44 2022
+
+source "$(HMCMAKENG_KCONFIG)"
+
+choice
+prompt "Target Arch"
+default AARCH64
+config ARM
+bool "ARM"
+config AARCH64
+bool "AARCH64"
+endchoice
+
+config COMPAT
+    bool "Support for 32-bit applications at EL0"
+    default n
+config NO_COMPAT
+    def_bool !COMPAT
+
+config AUDIT
+    bool "audit support"
+    default n
+
+config MMIO_DISPATCHER
+    bool "Enable hypervisor MMIO region dispatcher"
+    default n
+
+config CC_USE_CLANG
+    bool "Use Clang as compiler"
+    default n
+
+config SHADOW_STACK
+    bool "Enable aarch64 shadow stack"
+    depends on AARCH64
+    depends on !CC_USE_CLANG
+    default n
+
+config ILP32
+    bool "Support for aarch64ilp32 applications at EL0"
+    depends on AARCH64
+    default n
+    help
+    This option enables support for the aarch64ilp32 EL0 apps running
+    under 64-bit kernel and 64-bit servers.
+
+config NO_ILP32
+    def_bool !ILP32
+
+config MODULE_SCHED_CLASS
+    bool "Sched Class module"
+    default y
+
+config DEVMGR_NET_STACK
+    bool "Enable net socket interface"
+    default n
+
+config SEHARMONY
+  bool "Enable seharmony"
+  default n
+
+config HKIP
+    bool "Enable HKIP Protection"
+    default n

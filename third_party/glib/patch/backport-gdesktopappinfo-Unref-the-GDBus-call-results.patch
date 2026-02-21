@@ -1,0 +1,48 @@
+From 221f22b6e18fdd306e676e28a79afd3697bddd03 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Marco=20Trevisan=20=28Trevi=C3=B1o=29?= <mail@3v1n0.net>
+Date: Fri, 2 Sep 2022 20:38:46 +0200
+Subject: [PATCH] gdesktopappinfo: Unref the GDBus call results
+
+On our GDBus call callback wrapper we were completing the gdbus call but
+ignoring the returned value, that was always leaked.
+
+Fix this.
+
+Helps with: https://gitlab.gnome.org/GNOME/glib/-/issues/333
+
+Conflict:NA
+Reference:https://gitlab.gnome.org/GNOME/glib/-/commit/221f22b6e18fdd306e676e28a79afd3697bddd03
+
+---
+ gio/gdesktopappinfo.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
+
+diff --git a/gio/gdesktopappinfo.c b/gio/gdesktopappinfo.c
+index af2311ca52..52d308f540 100644
+--- a/gio/gdesktopappinfo.c
++++ b/gio/gdesktopappinfo.c
+@@ -3283,15 +3283,19 @@ launch_uris_with_dbus_cb (GObject      *object,
+ {
+   GTask *task = G_TASK (user_data);
+   GError *error = NULL;
++  GVariant *ret;
+ 
+-  g_dbus_connection_call_finish (G_DBUS_CONNECTION (object), result, &error);
++  ret = g_dbus_connection_call_finish (G_DBUS_CONNECTION (object), result, &error);
+   if (error != NULL)
+     {
+       g_dbus_error_strip_remote_error (error);
+       g_task_return_error (task, g_steal_pointer (&error));
+     }
+   else
+-    g_task_return_boolean (task, TRUE);
++    {
++      g_task_return_boolean (task, TRUE);
++      g_variant_unref (ret);
++    }
+ 
+   g_object_unref (task);
+ }
+-- 
+GitLab
+

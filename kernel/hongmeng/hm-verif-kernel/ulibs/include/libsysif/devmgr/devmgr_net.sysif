@@ -1,0 +1,47 @@
+/*
+ * Copyright (C) Huawei Technologies Co., Ltd. 2019-2020. All rights reserved.
+ * Description: devmgr net device operation sysif APIs
+ * Author: Huawei OS Kernel Lab
+ * Create: Fri Jan 11 10:45:12 2019
+ */
+
+/*
+ * To support the mixed data model which means the client and the server
+ * may use different data model. See the document for limitation of data type
+ * used in the sysif interfaces in <Documentation/sysif_compat.md>.
+ */
+DEFINE_MANAGER(net, 8,
+	DEFINE_METHOD(net, alloc_ifindex,
+		      ARG(1,
+			  int, ifindex),
+		      RET(1,
+			  int, ifindex),
+		      SLOWDATA_NO)
+
+	DEFINE_METHOD(net, register,
+		      ARG(3,
+			  struct hm_actv_buf, name,
+			  int, ifindex,
+			  unsigned long long, features),
+		      RET(1,
+			  int, ifindex),
+		      SLOWDATA_NO)
+
+	DEFINE_METHOD(net, unregister,
+		      ARG(1,
+			  int, ifindex),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_METHOD(net, hmnetd_ready,
+		      ARG_NO,
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_METHOD(net, open,
+		      ARG(2,
+			  int, ifindex,
+			  rref_t, tgt_rref),
+		      RET_NO,
+		      SLOWDATA_NO)
+)

@@ -1,0 +1,181 @@
+/*
+ * Copyright (C) Huawei Technologies Co., Ltd. 2018-2020. All rights reserved.
+ * Description: Sysmgr sysctrl function declaration
+ * Author: Huawei OS Kernel Lab
+ * Create: Fri Nov 16 10:27:57 2018
+ */
+
+/*
+ * To support the mixed data model which means the client and the server
+ * may use different data model. See the document for limitation of data type
+ * used in the sysif interfaces in <Documentation/sysif_compat.md>.
+ */
+#ifdef SYSIF_EXPORT_API
+
+#include <hmkernel/capability.h>
+
+/*
+ * lib's len is 65, keep same with libc
+ */
+struct uname {
+	char sysname[__SYSCONF_STR_LEN_MAX + 1];
+	char nodename[__SYSCONF_STR_LEN_MAX + 1];
+	char release[__SYSCONF_STR_LEN_MAX + 1];
+	char version[__SYSCONF_STR_LEN_MAX + 1];
+	char machine[__SYSCONF_STR_LEN_MAX + 1];
+	char domainname[__SYSCONF_STR_LEN_MAX + 1];
+};
+
+/* This struct is compact for `struct sysinfo` in libc */
+struct sys_info {
+	uint64_t uptime;
+	uint64_t loads_1;
+	uint64_t loads_5;
+	uint64_t loads_15;
+	uint64_t total_ram;
+	uint64_t avail_ram;
+	uint64_t shared_ram;
+	uint64_t buffer_ram;
+	uint64_t total_swap;
+	uint64_t avail_swap;
+	uint64_t procs;
+	uint64_t total_high;
+	uint64_t free_high;
+
+	/*
+	 * ram start address, which is required by devhost to build
+	 * "kernel" mapping for liblinux properly.
+	 */
+	uint64_t ramstart;
+	uint64_t ramend;
+};
+
+struct nodename {
+	char nodename[__SYSCONF_STR_LEN_MAX + 1];
+};
+
+enum {
+	CPU_FLAGS_WITH_STATE,
+	CPU_FLAGS_WITH_TIME,
+};
+
+struct trace_event {
+	char name[KEV_EVENT_NAME_SIZE];
+	char filter[KEV_EVENT_FILTER_SIZE];
+	unsigned int enable;
+};
+
+#endif
+
+DEFINE_MANAGER(sysctrl, 33,
+	DEFINE_SIMPLE_METHOD(sysctrl, sysconf_string,
+			     ARG(3, unsigned int, type, char *, buf, unsigned int, buflen),
+			     RET_NO,
+			     SLOWDATA_NO)
+	DEFINE_LSYSCALL_METHOD(uname, SYS_uname,
+		      ARG(1, void *, uname))
+	DEFINE_LSYSCALL_METHOD_LONG(cpu_getnum, SYS_cpu_getnum,
+				    ARG(1, unsigned long, isonline))
+	DEFINE_SIMPLE_METHOD(sysctrl, require,
+		      ARG(2, unsigned int, _mandatory_permission,
+			  unsigned int, _avail_permission),
+		      RET(1, rref_t, rref),
+		      SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(sysctrl, sysinfo_native,
+		      ARG_NO,
+		      RET(1, struct sys_info, info),
+		      SLOWDATA_NO)
+	DEFINE_LSYSCALL_METHOD(sysinfo,
+		      NATIVE,
+		      SYS_sysinfo,
+		      ARG(1, void *, user_info))
+	DEFINE_SIMPLE_METHOD(sysctrl, cpustat,
+		      ARG(2, unsigned int, flags,
+			  struct bunch_ipc_attr, attr),
+		      RET_NO,
+		      SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(sysctrl, attach_cpuctx,
+		      ARG_NO,
+		      RET_NO,
+		      SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(sysctrl, detach_cpuctx,
+		      ARG_NO,
+		      RET_NO,
+		      SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(sysctrl, check_cpuctx,
+		      ARG_NO,
+		      RET(1, unsigned int, is_attached),
+		      SLOWDATA_NO)
+	DEFINE_LSYSCALL_METHOD(set_hostname, SYS_sethostname,
+		      ARG(2, const char *, name, size_t, len))
+	DEFINE_LSYSCALL_METHOD(set_domainname, SYS_setdomainname,
+		      ARG(2, const char *, name, size_t, len))
+	DEFINE_SIMPLE_METHOD(sysctrl, kev_read_event_number,
+		      ARG_NO,
+		      RET(1, unsigned int, event_number),
+		      SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(sysctrl, kev_read_event_config,
+			     ARG(1, unsigned int, event_type),
+			     RET(1, struct __sysctrl_kev_config, event_config),
+			     SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(sysctrl, reserved_memory_read_config,
+			     ARG(1, unsigned int, type),
+			     RET(2, __u64, paddr, __u32, size),
+			     SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(sysctrl, kev_set_enable,
+		      ARG(1, struct trace_event, event),
+		      RET_NO,
+		      SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(sysctrl, kev_set_filter,
+		      ARG(1, struct trace_event, event),
+		      RET_NO,
+		      SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(sysctrl, kev_print,
+		      ARG_NO,
+		      RET_NO,
+		      SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(sysctrl, kev_read_data,
+		      ARG(4, unsigned int, kev_type, void *, buf,
+			  size_t, size, uint64_t *, head),
+		      RET_NO,
+		      SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(sysctrl, kev_set_water,
+		      ARG(2, unsigned int, kev_type, uint64_t, head),
+		      RET_NO,
+		      SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(sysctrl, kev_set_block_info,
+		      ARG(3, unsigned int, event_type, cref_t, vspace_cref,
+		          void *, uaddr),
+		      RET_NO,
+		      SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(sysctrl, kev_switch_klogport,
+		      ARG(1, bool, is_on),
+		      RET_NO,
+		      SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(sysctrl, kev_set_console_level,
+		      ARG(1, unsigned int, level),
+		      RET_NO,
+		      SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(sysctrl, ekbox_read,
+		      ARG(2, void *, buf, unsigned int, buflen),
+		      RET_NO,
+		      SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(sysctrl, kvic_kev_source_bind,
+		      ARG(3, unsigned int, kev_type,
+			  unsigned int, source_id, unsigned int, flags),
+		      RET_NO,
+		      SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(sysctrl, kvic_kev_source_unbind,
+		      ARG(2, unsigned int, kev_type,
+		          unsigned int, source_id),
+		      RET_NO,
+		      SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(sysctrl, sysmgr_reboot,
+		      ARG(3, const char *, reboot_reason,
+			  size_t, reason_size,
+			  unsigned int, reboot_flag),
+		      RET_NO,
+		      SLOWDATA_NO)
+	DEFINE_LSYSCALL_METHOD(klogctl, SYS_syslog,
+		      ARG(3, unsigned int, type, char *, buf, int, len))
+)

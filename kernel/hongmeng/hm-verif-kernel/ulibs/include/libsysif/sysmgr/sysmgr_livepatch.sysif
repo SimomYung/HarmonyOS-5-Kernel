@@ -1,0 +1,66 @@
+/*
+ * Copyright (c) Huawei Technologies Co., Ltd. 2020-2020. All rights reserved.
+ * Description: Generate livepatchmgr sysif client interface
+ * Author: Huawei OS Kernel Lab
+ * Create: Fri Aug 28 16:32:26 2020
+ */
+
+/*
+ * To support the mixed data model which means the client and the server
+ * may use different data model. See the document for limitation of data type
+ * used in the sysif interfaces in <Documentation/sysif_compat.md>.
+ */
+#ifdef SYSIF_EXPORT_API
+
+#define LIVEPATCH_NAME_MAX_LEN		32
+
+struct livepatch_string {
+	char name[LIVEPATCH_NAME_MAX_LEN];
+};
+
+#endif
+
+DEFINE_MANAGER(livepatch, 16,
+	DEFINE_SIMPLE_METHOD(livepatch, register_target,
+			     ARG_NO,
+			     RET_NO,
+			     SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(livepatch, unregister_target,
+			     ARG_NO,
+			     RET_NO,
+			     SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(livepatch, load,
+			     ARG(6, pid_t, pid,
+				    struct livepatch_string, patch,
+				    unsigned long long, content,
+				    unsigned long long, content_sz,
+				    unsigned long long, signature,
+				    unsigned long long, signature_sz),
+			     RET_NO,
+			     SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(livepatch, unload,
+			     ARG(2, pid_t, pid,
+				    struct livepatch_string, patch),
+			     RET_NO,
+			     SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(livepatch, enable,
+			     ARG(2, pid_t, pid,
+				    struct livepatch_string, patch),
+			     RET_NO,
+			     SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(livepatch, disable,
+			     ARG(2, pid_t, pid,
+				    struct livepatch_string, patch),
+			     RET_NO,
+			     SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(livepatch, list,
+			     ARG(2, pid_t, pid,
+				    struct livepatch_string, patch),
+			     RET_NO,
+			     SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(livepatch, reserved,
+			     ARG(2, pid_t, pid,
+				    struct livepatch_string, patch),
+			     RET_NO,
+			     SLOWDATA_NO)
+)

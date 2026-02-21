@@ -1,0 +1,46 @@
+From 02d0d6497b92d05d1145d1077654ad2453938b6c Mon Sep 17 00:00:00 2001
+From: Rozhuk Ivan <rozhuk.im@gmail.com>
+Date: Sat, 25 Jun 2022 19:01:30 +0300
+Subject: [PATCH] [PATCH] _g_get_unix_mount_points(): reduce syscalls inside
+ loop
+
+Conflict:NA
+Reference:https://gitlab.gnome.org/GNOME/glib/-/commit/02d0d6497b92d05d1145d1077654ad2453938b6c
+
+---
+ gio/gunixmounts.c | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
+diff --git a/gio/gunixmounts.c b/gio/gunixmounts.c
+index ba08245..92ab163 100644
+--- a/gio/gunixmounts.c
++++ b/gio/gunixmounts.c
+@@ -1414,6 +1414,7 @@ _g_get_unix_mount_points (void)
+   GList *return_list = NULL;
+   G_LOCK_DEFINE_STATIC (fsent);
+ #ifdef HAVE_SYS_SYSCTL_H
++  uid_t uid = getuid ();
+   int usermnt = 0;
+   struct stat sb;
+ #endif
+@@ -1466,14 +1467,13 @@ _g_get_unix_mount_points (void)
+ 
+ #ifdef HAVE_SYS_SYSCTL_H
+       if (usermnt != 0)
+-	{
+-	  uid_t uid = getuid ();
+-	  if (stat (fstab->fs_file, &sb) == 0)
+-	    {
+-	      if (uid == 0 || sb.st_uid == uid)
+-		is_user_mountable = TRUE;
+-	    }
+-	}
++        {
++          if (uid == 0 ||
++              (stat (fstab->fs_file, &sb) == 0 && sb.st_uid == uid))
++            {
++              is_user_mountable = TRUE;
++            }
++        }
+ #endif
+ 
+       mount_point = create_unix_mount_point (fstab->fs_spec,

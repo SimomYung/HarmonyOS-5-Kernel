@@ -1,0 +1,45 @@
+{
+    "name": "@ohos/alsa-lib",
+    "description": "The alsa-lib is a library to interface with ALSA in the Linux kernel and virtual devices using a plugin system.",
+    "version": "3.1",
+    "license": "GNU Lesser General Public License v2.1",
+    "publishAs": "code-segment",
+    "segment": {
+        "destPath": "third_party/alsa-lib"
+    },
+    "dirs": {},
+    "scripts": {},
+    "licensePath": "COPYING",
+    "readmePath": {
+        "en": "README.md",
+        "zh": "README_zh.md"
+    },
+    "component": {
+        "name": "alsa-lib",
+        "subsystem": "thirdparty",
+        "syscap": [],
+        "features": [],
+        "adapted_system_type": [ "standard" ],
+        "rom": "950KB",
+        "ram": "988KB",
+        "deps": {
+            "components": [],
+            "third_party": []
+        },
+        "build": {
+            "sub_component": [ "//third_party/alsa-lib:libasound" ],
+            "inner_kits": [
+                {
+                    "type": "so",
+                    "name": "//third_party/alsa-lib:libasound",
+                    "header": {
+                        "header_base": "//third_party/alsa-lib",
+                        "header_files": [
+                        ]
+                    }
+                }
+            ],
+            "test": []
+        }
+    }
+}

@@ -1,0 +1,220 @@
+# Copyright (c) Huawei Technologies Co., Ltd. 2022-2022. All rights reserved.
+# Author: Huawei OS Kernel Lab
+# Create: Tue Feb 08 16:24:29 2022
+
+lib-static-y: kernel_builtin
+
+src-y: init.c
+src-y: core.c
+src-y: panic.c
+src-y: dumpstack.c
+src-CONFIG_DUMP_USER_STACK: dumpstack_user.c
+src-y: ksyms.c
+src-y: devicetree.c
+src-y: bootmem.c
+src-y: kvspace.c
+src-y: kstack.c
+src-y: kmap.c
+src-y: klinear.c
+src-y: module.c
+src-y: kconsole.c
+src-y: pgtable.c
+src-y: uaccess.c
+src-y: scheduler.c
+src-y: schedmap.c
+src-y: cpu.c
+src-y: extab.c
+src-y: futex.c
+src-y: lsyscall_futex.c
+src-y: pause.c
+src-y: vspace.c
+src-y: ipc.c
+src-y: power.c
+src-y: kshare.c
+src-y: watchdog.c
+src-y: sysctrl.c
+src-y: sysconf.c
+src-y: exception.c
+src-y: knotifier.c
+src-y: kvic_trigger.c
+src-y: respart.c
+src-y: udata.c
+src-y: trigger.c
+src-y: trng.c
+src-y: rtc.c
+src-y: modif.c
+src-y: krandom.c
+src-y: cpufeatures.c
+src-y: cputopo.c
+src-y: fastpath.c
+src-y: cpuid_common.c
+src-y: relocate.c
+src-y: uart_early_map.c
+src-y: elf_layout.c
+src-y: membarrier.c
+src-y: vsswitch.c
+src-y: ras.c
+src-y: badfd_detect.c
+src-CONFIG_HKIP_PROTECT_KERNEL: hkip.c
+src-y: cache.c
+src-CONFIG_DEVHOST_HVC: hvc_call.c
+
+src-CONFIG_BKL: bkl.c
+src-CONFIG_MOS_FDO_COFILE: mos_fdo/fdo_cofile.c
+src-y: kaslr.c
+src-CONFIG_SMP: smp.c ipi.c klocks.c vspace_lock.c
+src-CONFIG_TEST_CASES: tests.c
+src-CONFIG_KERNEL_PM_SUSPEND: pm_suspend.c
+src-CONFIG_DEEP_IDLE: pm_idle.c
+src-CONFIG_CPU_HOTPLUG: pm_cpu.c
+src-CONFIG_MISCDATA: miscdata.c
+src-CONFIG_RT_FUTEX: rt_futex.c
+src-CONFIG_KLOCK_TRACE: lock_trace.c
+src-CONFIG_HARDENED_USERCOPY: ucopy_chk.c
+src-CONFIG_BOOT_WATCHDOG: wdt_early_map.c
+src-CONFIG_AUDIT: audit.c
+src-CONFIG_KERNEL_BOOTTIME: boottime.c
+src-CONFIG_KERNEL_BOOTTRACE: boottrace.c
+src-CONFIG_SOFT_REBOOT_CORE: softreboot.c
+src-CONFIG_KEXEC: kexec.c
+src-CONFIG_JUMP_LABEL: jump_label.c
+src-CONFIG_PAC: pacfix_init.c
+src-CONFIG_USER_FUTEX: ufutex.c
+src-CONFIG_PANIC_INTO_LOOP: panic_into_loop.c
+
+subdir-y: activation
+subdir-y: capability
+subdir-y: timer
+subdir-y: interrupt
+subdir-y: trigger
+subdir-y: bitops
+subdir-y: syscall
+subdir-y: switch
+subdir-y: pgstr
+subdir-y: drivers
+subdir-y: tcb
+subdir-y: extensions
+subdir-y: devicetree
+subdir-y: ctrlmem
+subdir-y: pgtbl
+subdir-y: sysproc
+subdir-y: errno
+subdir-y: power
+subdir-y: ulwt
+subdir-y: sec_region
+subdir-CONFIG_SECURITY_JITFORT: jitfort
+subdir-CONFIG_SYSEVENT: sysevent
+subdir-y: hkip
+subdir-y: kdp
+subdir-CONFIG_MODULE_SCHED_CLASS: sched
+subdir-CONFIG_KERNEL_PM_HIBERNATION: hibernation
+
+subdir-y: include
+
+subdir-y: page_pool
+subdir-y: eventpoll
+subdir-y: fdtable
+subdir-CONFIG_KEV_TRACING: kev_trace
+subdir-CONFIG_NUMA: numa
+subdir-CONFIG_PERF_CONTEXT: perfctx
+subdir-CONFIG_KERNEL_UTSAN: utsan
+subdir-CONFIG_KERNEL_LIVEPATCH: livepatch
+subdir-CONFIG_HMPSF: hmpsf
+subdir-CONFIG_HMPROBE: hmprobe
+subdir-CONFIG_TRACEMGR: trace
+subdir-CONFIG_KCOV: kcov
+
+subdir-y: modules
+subdir-y: arch
+
+findpkg: HMUlibs
+findpkg: LibVSync
+findpkg: HMKitDemoKit
+findpkg: HMVirtLib
+findpkg: HMKCrypto
+inclib: HMKCrypto::HMKCrypto_include
+
+inclib: LibVSync::LibVSync_include
+include-devicetree.c: ../klibs/include/lib/stdinc
+inclib-devicetree.c: LibVSync::LibVSync_include
+inclib-devicetree.c: HMUlibs::HMUlibs_sysif_sysmgr_include
+inclib-devicetree.c-isystem: HMBase::Sysroot
+
+include-boottime.c: ../klibs/include/lib/stdinc
+inclib-boottime.c: LibVSync::LibVSync_include
+inclib-boottime.c: HMUlibs::HMUlibs_sysif_sysmgr_include
+inclib-boottime.c-isystem: HMBase::Sysroot
+
+# Jam now process '-include xx.h' will expand xx.h in each source file,
+# but generated/autoconf.h don't have MACRO protect,so we use ourselves header file
+excludecflags-.: '-include .*generated/autoconf.h'
+cflags-.-y: -include kconfig_kernel.h
+cflags-.-y: -nostdinc
+cflags-.-y: -D__KERNEL__
+cflags-.-y: -fvisibility=hidden
+cflags-.-y: -fno-strict-aliasing
+cflags-.-y: -fno-common
+cflags-.-y: -Wno-format-security
+cflags-.-y: -Wno-unused-parameter
+cflags-uaccess.c-y: -Wno-strict-prototypes -Wno-old-style-definition
+cflags-scheduler.c-y: -Wno-strict-prototypes -Wno-old-style-definition
+cflags-exception.c-y: -Wno-strict-prototypes -Wno-old-style-definition
+cflags-watchdog.c-y: -Wno-strict-prototypes -Wno-old-style-definition
+cflags-fastpath.c-y: -Wno-strict-prototypes -Wno-old-style-definition
+cflags-audit.c-y: -Wno-strict-prototypes -Wno-old-style-definition
+cflags-cpu.c-y: -Wno-strict-prototypes -Wno-old-style-definition
+cflags-pm_idle.c-y: -Wno-strict-prototypes -Wno-old-style-definition
+
+excludecflags-pacfix_init.c-CONFIG_HMBUILD_TOOLCHAIN_BISHENG_MOBILE_CPU: "-fpass-plugin=libPacFecfiPass.so -mllvm -FECFI=true"
+
+cflags-.-CONFIG_PIE: -fPIE
+cflags-.-CONFIG_KERNEL_UTSAN: -fsanitize=thread
+cflags-relocate.c: -fno-stack-protector
+cflags-.-CONFIG_FRAME_POINTER: -fno-omit-frame-pointer
+cflags-.-CONFIG_BIG_ENDIAN: -mbig-endian
+cflags-.-CONFIG_LITTLE_ENDIAN: -mlittle-endian
+cflags-.-CONFIG_DLIST_DEBUG: -DDLIST_DEBUG_ENABLE
+
+# Cflags for arm
+cflags-.-CONFIG_ARM: -fno-dwarf2-cfi-asm
+cflags-.-CONFIG_ARM: -mno-sched-prolog
+cflags-.-CONFIG_ARM: -mno-unaligned-access
+cflags-.-CONFIG_ARM: -msoft-float
+cflags-.-CONFIG_ARM: -Uarm
+cflags-.-CONFIG_ARM: -mno-thumb-interwork
+cflags-.-CONFIG_ARM: -mfpu=vfp
+cflags-.-CONFIG_ARM: -fno-asynchronous-unwind-tables
+cflags-.-CONFIG_ARM: -marm
+cflags-.-CONFIG_ARM_VIRT_EXTENSION: -D__HM_ARM_ARCH__=7
+cflags-.-CONFIG_ARM_VIRT_EXTENSION: -march=armv7ve
+cflags-.-CONFIG_ARM_VIRT_EXTENSION: -Wa,-march=armv7ve
+cflags-.-CONFIG_ARM_VIRT_EXTENSION: -mcpu=cortex-a15
+
+cflags-.-CONFIG_ARM_NO_VIRT_EXTENSION: -D__HM_ARM_ARCH__=7
+cflags-.-CONFIG_ARM_NO_VIRT_EXTENSION: -march=armv7-a
+cflags-.-CONFIG_ARM_NO_VIRT_EXTENSION: -Wa,-march=armv7-a
+cflags-.-CONFIG_ARM_NO_VIRT_EXTENSION: -mcpu=cortex-a9
+
+# Cflags for aarch64
+cflags-.-CONFIG_AARCH64_V8_1_NO_LSE: -march=armv8.1-a+nolse -DVATOMIC_DISABLE_ARM64_LSE
+cflags-.-CONFIG_AARCH64_V8_2_NO_LSE: -march=armv8.2-a+nolse
+cflags-.-CONFIG_AARCH64_V8_3_NO_LSE: -march=armv8.3-a+nolse
+cflags-.-CONFIG_AARCH64_V8_1_LSE: -march=armv8.1-a
+cflags-.-CONFIG_AARCH64_V8_2_LSE: -march=armv8.2-a
+cflags-.-CONFIG_AARCH64_V8_3_LSE: -march=armv8.3-a
+
+cflags-.-CONFIG_AARCH64: -mgeneral-regs-only
+cflags-.-CONFIG_AARCH64: -fno-asynchronous-unwind-tables
+
+cflags-.-CONFIG_ARCH64_CC_NOT_USE_CLANG: -mabi=lp64
+
+cflags-.-CONFIG_CC_STACKPROTECTOR_STRONG: -fstack-protector-strong
+cflags-.-CONFIG_CC_STACKPROTECTOR_REGULAR: -fstack-protector
+cflags-.-CONFIG_HMBUILD_LLVM_RETURN_GUARD: -fstack-protector-ret-strong
+cflags-.-CONFIG_HMBUILD_LLVM_RETURN_GUARD_ALL: -fstack-protector-ret-all
+
+cflags-rt_futex.c-y: -Wno-zero-length-array
+cflags-futex.c-y: -Wno-zero-length-array
+cflags-vspace.c-y: -Wno-zero-length-array
+cflags-lsyscall_futex.c-y: -Wno-zero-length-array
+cflags-ufutex.c-y: -Wno-zero-length-array

@@ -1,0 +1,85 @@
+if KIRIN_TYPEC
+
+config KIRIN_TCPC
+	bool "Hisilicon TypeC Port Controller Device"
+	help
+	  Say Y to enable Hisilicon Typec Port Controller Driver
+
+
+config KIRIN_TCPC_DEBUG
+	bool "Hisilicon TypeC Driver verbose debug information."
+	default n
+	help
+	  If unsure, say N.
+
+config KIRIN_TCPC_HI6526
+	bool "Hisilicon hi6526 Type-C Port Controller support"
+	default n
+	help
+	  Say Y to enable Hisilicon hi6525 support
+
+config KIRIN_TYPEC_CAP_DBGACC_SNK_SUPPORT
+	bool "DebugAccessory sink support"
+	default n
+	help
+	  Debug Accessory sink support.
+
+config KIRIN_TYPEC_CAP_CUSTOM_SRC_SUPPORT
+	bool "Custom SRC support"
+	default n
+	help
+	  Custom SRC support
+
+config KIRIN_TCPC_VSAFE0V_DETECT_SUPPORT
+	bool "TCPC Vsafe0V detect support"
+	default n
+	help
+	  TCPC Vsafe0V detect support
+
+config KIRIN_POWER_DELIVERY_SUPPORT
+	bool "Hisilicon Power Delivery Support"
+	help
+	  Support PD using hisi tcpc.
+
+config KIRIN_USB_PD_ALT_MODE_SUPPORT
+	bool "Alternate Mode support"
+	default n
+	help
+	  Alternate Mode support
+
+config KIRIN_USB_PD_ALT_MODE_DFP_SUPPORT
+	bool "Alternate Mode DFP support"
+	default n
+	help
+	  Alternate Mode DFP support
+
+config KIRIN_USB_PD_UVDM_SUPPORT
+	bool "USB PD Unstructed VDM support"
+	default n
+	help
+	  USB PD Unstructed VDM support
+
+config KIRIN_USB_PD_CUSTOM_DBGACC_SUPPORT
+	bool "Custom Debug Accessory support"
+	default n
+	help
+	  Custom Debug Accessory support
+
+config KIRIN_PD_REV30
+	bool "PD REV30"
+	depends on KIRIN_TCPC
+	depends on KIRIN_POWER_DELIVERY_SUPPORT
+	default n
+	help
+		PD REV30
+
+config KIRIN_PD_REV30_PPS_SINK
+	bool "sink pps feature of PD REV30"
+	depends on KIRIN_TCPC
+	depends on KIRIN_POWER_DELIVERY_SUPPORT
+	depends on KIRIN_PD_REV30
+	default n
+	help
+		sink pps feature of PD REV30
+
+endif

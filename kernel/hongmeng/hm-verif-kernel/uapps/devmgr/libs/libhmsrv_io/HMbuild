@@ -1,0 +1,28 @@
+# Copyright (c) Huawei Technologies Co., Ltd. 2022-2022. All rights reserved.
+# Description: HMbuild
+# Author: Huawei OS Kernel Lab
+# Create: Fri May 06 15:29:52 2022
+
+lib-dynamic-y: hmsrv_io_shared
+output-hmsrv_io_shared: hmsrv_io
+install-hmsrv_io_shared-y: LIBDIR
+
+lib-static-y: hmsrv_io
+install-hmsrv_io-y: LIBDIR
+
+src-y: io.c
+src-y: mgmt.c
+src-y: dev.c
+src-y: blk.c
+src-y: net.c
+src-y: clock.c
+src-y: transfs.c
+src-y: stub.c
+src-CONFIG_DEVMGR_NET_STACK: net_socket.c
+
+subdir-y: common
+
+cflags-.-y: -funwind-tables
+
+linklib-hmsrv_io_shared-y: -nostdlib
+linklib-hmsrv_io_shared-y: -Wl,--hash-style=both

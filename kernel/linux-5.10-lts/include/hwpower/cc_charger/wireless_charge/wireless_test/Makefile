@@ -1,0 +1,6 @@
+# SPDX-License-Identifier: GPL-2.0
+obj-$(CONFIG_WIRELESS_CHARGER) += charge_pump_test.o
+obj-$(CONFIG_WIRELESS_CHARGER) += wireless_test_hw.o
+obj-$(CONFIG_WIRELESS_CHARGER) += wireless_test_mmi.o
+obj-$(CONFIG_WIRELESS_CHARGER) += wireless_test_coil.o
+obj-$(CONFIG_WIRELESS_CHARGER) += wireless_test_wp.o

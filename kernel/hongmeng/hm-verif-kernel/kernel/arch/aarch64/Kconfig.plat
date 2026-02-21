@@ -1,0 +1,470 @@
+menu "Platform config"
+
+choice
+  prompt "Platform"
+  default PLAT_QEMU_VIRT
+
+config PLAT_QEMU_VIRT
+  bool "QEMU virt"
+  select CPU_CORTEX_A53
+  select PLAT_QEMU
+  select ARM_PSCI
+  select ARM_GENERIC_TIMER
+  select ARM_GIC_V3 if (!BIG_ENDIAN && !HYPERVISOR)
+  select ARM_GIC_V2 if (BIG_ENDIAN || (HYPERVISOR && !VHE))
+  select ARM_PMU_QEMU
+
+  select AARCH64_ICACHE_ALIASING_NON_UNIFORM
+
+  help
+    Qemu virt platform
+
+config PLAT_KIRIN
+  bool "Kirin platform"
+  select BROADCAST_TIMER
+  select ARM_GENERIC_TIMER
+  select ARM_SP804_TIMER
+  select SUPPORT_NONMASKABLE_FIQ
+  select LASTKLOG if (KIRIN_CHIP_CHARLOTTE || KIRIN_CHIP_CHARLOTTE_PRO || KIRIN_CHIP_NASHVILLE || KIRIN_CHIP_XIAN || KIRIN_CHIP_ATHERTON || KIRIN_CHIP_CHANGSHA)
+
+  help
+    Kirin platform
+
+config PLAT_M536A
+  bool "M536a platform"
+  select CPU_CORTEX_A53
+  select CPU_CORTEX_A73
+  select CPU_CAPACITY_LEVEL
+  select KCONSOLE_CARRIAGE_RETURN
+  select AARCH64_ICACHE_ALIASING_NON_UNIFORM
+  select ARM_PSCI
+  select MODULE_ATFD_SMC
+  select ARM_GIC_V3
+  select BROADCAST_TIMER
+  select ARM_GENERIC_TIMER
+  select ARM_SP804_TIMER
+  select AARCH64_V8_1
+  select HISI_SP805_WDT
+  select SUPPORT_NONMASKABLE_FIQ
+  select KBOX_RECORD_REBOOTCODE
+  select LASTKLOG
+  help
+    m536a platform
+
+config PLAT_CPRO
+  bool "Charlotte pro platform"
+  select CPU_CORTEX_A53
+  select CPU_CORTEX_A73
+  select CPU_CAPACITY_LEVEL
+  select KCONSOLE_CARRIAGE_RETURN
+  select AARCH64_ICACHE_ALIASING_NON_UNIFORM
+  select ARM_PSCI
+  select MODULE_ATFD_SMC
+  select ARM_GIC_V3
+  select ARM_GENERIC_TIMER
+  select AARCH64_V8_3
+  select HISI_HIV500_WDT
+  select SUPPORT_NONMASKABLE_FIQ
+  select SMC_HANDLE_FIQ
+  select KBOX_RECORD_REBOOTCODE
+  select LASTKLOG
+  help
+    charlotte pro platform
+
+config PLAT_FOUNDATION
+  bool "Foundation"
+  select CPU_CORTEX_A53
+  select KCONSOLE_CARRIAGE_RETURN
+  select ARM_PSCI
+  select ARM_GIC_V3
+  select ARM_GENERIC_TIMER
+  select AARCH64_V8_4
+  # use liblinux-4.4 as default
+  # elfloader options
+  help
+    foundation platform
+
+config PLAT_HIP05_D02
+  bool "Hip05-d02"
+  select CPU_CORTEX_A53
+  select KCONSOLE_CARRIAGE_RETURN
+  select ARM_GIC_V3
+  select AARCH64_ICACHE_ALIASING_ON
+  help
+    Hip05-D02 platform
+
+config PLAT_HI1910
+  bool "hi1910"
+  select CPU_CORTEX_A55
+  select KCONSOLE_CARRIAGE_RETURN
+  select ARM_PSCI
+  select ARM_GIC_V3
+  select ARM_GIC_V3_ITS
+  select ARM_GIC_V3_ITS_VLPI
+  select ARM_GENERIC_TIMER
+  select AARCH64_V8_3
+  select AARCH64_ICACHE_ALIASING_ON
+  select HISI_SBSA_GWDT
+  help
+    hi1910 platform
+
+config PLAT_TSCH
+  bool "tsch"
+  select CPU_CORTEX_A55
+  select KCONSOLE_CARRIAGE_RETURN
+  select ARM_GIC_V3
+  select ARM_GENERIC_TIMER
+  select AARCH64_V8_2
+  select AARCH64_ICACHE_ALIASING_ON
+
+  help
+    tsch platform
+
+ config PLAT_HI1620
+  bool "hi1620"
+  select CPU_CORTEX_A55
+  select KCONSOLE_CARRIAGE_RETURN
+  select ARM_PSCI
+  select ARM_GIC_V3
+  select ARM_GIC_V3_ITS
+  select ARM_GIC_V3_ITS_VLPI
+  select ARM_GENERIC_TIMER
+  select AARCH64_V8_1
+  select AARCH64_ICACHE_ALIASING_ON
+  help
+    hi1620 platform
+
+config PLAT_1620_OSP
+  bool "1620_osp"
+  select CPU_CORTEX_A55
+  select KCONSOLE_CARRIAGE_RETURN
+  select ARM_PSCI
+  select ARM_GIC_V3
+  select ARM_GIC_V3_ITS
+  select ARM_GIC_V3_ITS_VLPI
+  select ARM_GENERIC_TIMER
+  select AARCH64_V8_1
+  select AARCH64_ICACHE_ALIASING_ON
+  help
+    1620 os partition
+
+ config PLAT_HI1951
+   bool "hi1951"
+   select CPU_CORTEX_R52
+   select KCONSOLE_CARRIAGE_RETURN
+   select ARM_PSCI
+   select ARM_GIC_V3
+   select ARM_GIC_V3_ITS
+   select ARM_GIC_V3_ITS_VLPI
+   select ARM_GENERIC_TIMER
+   select AARCH64_V8_1
+   select AARCH64_ICACHE_ALIASING_ON
+   help
+     hi1951 platform
+
+ config PLAT_SD62XX
+   bool "sd62xx"
+   select CPU_CORTEX_A53
+   select KCONSOLE_CARRIAGE_RETURN
+   select AARCH64_ICACHE_ALIASING_NON_UNIFORM
+   select ARM_CACHE_ECC
+   # elfloader options
+   help
+     SoC digital sd62xx series
+
+ config PLAT_SD5151T
+   bool "sd5151t"
+   select CPU_CORTEX_A53
+   select KCONSOLE_CARRIAGE_RETURN
+   select AARCH64_ICACHE_ALIASING_NON_UNIFORM
+   select ARM_PSCI
+   select ARM_GIC_V2
+   select DRIVER_SERIAL
+   select DRIVER_SERIAL_8250_DW
+   select HISI_SD5151T_WDT
+   select LASTWORD_KBOX
+   select IRQ_STORMCHK
+   select KLOG_PURE_NOLOCK
+   select SUPPORT_NONMASKABLE_FIQ
+   select ARM_GENERIC_TIMER
+   select KBOX_RECORD_REBOOTCODE
+   select PLAT_CPU_PARK_SUPPORT
+   # elfloader options
+   select BOOT_CONSOLE_8250_DW
+   select BOOT_CONSOLE_PL011
+
+   help
+     sd5151t platform
+
+config PLAT_IPQ6028
+   bool "ipq6028"
+   select CPU_CORTEX_A53
+   select KCONSOLE_CARRIAGE_RETURN
+   select AARCH64_ICACHE_ALIASING_NON_UNIFORM
+   select ARM_PSCI
+   select ARM_GIC_V2
+   select DRIVER_SERIAL
+   select DRIVER_SERIAL_MSM
+   select QCOM_IPQ6028_WDT
+   select LASTWORD_KBOX
+   select IRQ_STORMCHK
+   select KLOG_PURE_NOLOCK
+   select SUPPORT_NONMASKABLE_FIQ
+   select ARM_GENERIC_TIMER
+   select KBOX_RECORD_REBOOTCODE
+   # elfloader options
+   select BOOT_CONSOLE_MSM
+   select BOOT_CONSOLE_PL011
+
+   help
+     ipq6028 platform
+
+config PLAT_BCM
+  bool "broadcom"
+  select KCONSOLE_CARRIAGE_RETURN
+  select ARM_GIC_V2
+  select ARM_GENERIC_TIMER
+  select ARM_PSCI
+  # elfloader options
+  help
+    broadcom platform
+
+ config PLAT_HISI_HI1383
+   bool "hi1383"
+   select CPU_CORTEX_A72
+   select KCONSOLE_CARRIAGE_RETURN
+   select AARCH64_ICACHE_ALIASING_NON_UNIFORM
+   select ARM_PSCI
+   select ARM_GIC_V3
+   select ARM_GIC_V3_ITS
+   select ARM_GENERIC_TIMER
+   select HISI_SD6219E_WDT
+   select DRIVER_SERIAL
+   select DRIVER_SERIAL_8250_DW
+   select LASTWORD_KBOX
+   select IRQ_STORMCHK
+   select KLOG_PURE_NOLOCK
+   select SUPPORT_NONMASKABLE_FIQ
+   select KBOX_RECORD_REBOOTCODE
+   select PLAT_CPU_PARK_SUPPORT
+   # elfloader options
+   select BOOT_CONSOLE_8250_DW
+   help
+     hi1383 platform
+
+ config PLAT_HI1156
+   bool "hi1156"
+   select CPU_CORTEX_A55
+   select KCONSOLE_CARRIAGE_RETURN
+   select AARCH64_ICACHE_ALIASING_NON_UNIFORM
+   select ARM_PSCI
+   select ARM_GIC_V3
+   select DRIVER_SERIAL
+   select DRIVER_SERIAL_PL011
+   select IRQ_STORMCHK
+   select KLOG_PURE_NOLOCK
+   select SUPPORT_NONMASKABLE_FIQ
+   select ARM_GENERIC_TIMER
+   select KBOX_RECORD_REBOOTCODE
+   select DW_WDT
+   # elfloader options
+   select BOOT_CONSOLE_PL011
+
+   help
+     hi1156 platform
+
+endchoice
+
+# Common platform config
+
+config KERNEL_BASE_ADDR
+  hex "kernel load address"
+  default "0x80000000" if PLAT_FOUNDATION
+  default "0x80000000" if PLAT_M536A
+  default "0x200000" if PLAT_CPRO || KIRIN_CHIP_CHARLOTTE_PRO
+  default "0x08000000" if PLAT_HI1620
+  default "0x08000000" if PLAT_HI1910
+  default "0x41f00000" if PLAT_HI1951
+  default "0x00080000" if PLAT_HIP05_D02
+  default "0x40000000" if PLAT_QEMU_VIRT
+  default "0x00A10000" if PLAT_SD62XX
+  default "0x8aa80000" if PLAT_SD5151T
+  default "0x41080000" if PLAT_IPQ6028
+  default "0x00080000" if PLAT_KIRIN_REE && (KIRIN_CHIP_970 || \
+			  KIRIN_CHIP_980 || KIRIN_CHIP_990) && (!HARMONYOS_DEMO)
+  default "0x00400000" if PLAT_KIRIN_REE && (KIRIN_CHIP_980 || KIRIN_CHIP_9000 || KIRIN_CHIP_BURBANK || KIRIN_CHIP_CHARLOTTE || KIRIN_CHIP_NASHVILLE || KIRIN_CHIP_XIAN || KIRIN_CHIP_CHANGSHA) && HARMONYOS_DEMO
+  default "0x00080000" if KIRIN_CHIP_ATHERTON
+  default "0x00080000" if PLAT_BCM
+  default "0x52000000" if PLAT_1620_OSP
+  default "0x8aa80000" if PLAT_HI1156
+
+# Unconfigurable
+config NO_NEED_PHYSMEM_MAX_BITS
+  bool
+  default n
+
+config PLAT_SUPPORT_HKIP
+  bool
+  default n
+
+config PLAT_SUPPORT_SEC_REGION
+  bool
+  default n
+
+config ARCH_PA_BITS
+  int
+  default 36 if LASP_WP
+  default 40 if PLAT_FOUNDATION
+  default 40 if PLAT_M536A
+  default 40 if PLAT_CPRO
+  default 40 if (PLAT_HI1620 && !AARCH64_VA_BITS_48)
+  default 48 if (PLAT_HI1620 && AARCH64_VA_BITS_48)
+  default 40 if PLAT_HI1910
+  default 40 if PLAT_HI1951
+  default 40 if PLAT_HIP05_D02
+  default 40 if PLAT_QEMU_VIRT
+  default 40 if PLAT_SD62XX
+  default 40 if PLAT_SD5151T
+  default 40 if PLAT_IPQ6028
+  default 40 if PLAT_KIRIN_REE
+  default 40 if PLAT_TSCH
+  default 40 if PLAT_BCM
+  default 40 if PLAT_HISI_HI1383
+  default 40 if PLAT_1620_OSP
+  default 40 if PLAT_HI1156
+  depends on !NO_NEED_PHYSMEM_MAX_BITS
+
+config CONFIGURABLE_TEXT_OFFSET
+  bool
+  default y if PLAT_FOUNDATION || PLAT_HI1620 || \
+               PLAT_HI1910 || PLAT_HI1951 || PLAT_HIP05_D02 || \
+               PLAT_QEMU_VIRT || PLAT_SD62XX || PLAT_KIRIN || \
+	       PLAT_TSCH || PLAT_M536A || PLAT_CPRO || PLAT_SD5151T || PLAT_IPQ6028 || \
+               PLAT_BCM || PLAT_HISI_HI1383 || PLAT_1620_OSP || PLAT_HI1156
+
+config AARCH64_TEXT_OFFSET
+  hex "Text offset"
+  default "0x10000000" if PLAT_HI1620
+  default "0x02800000" if PLAT_SD5151T || PLAT_QEMU_VIRT || PLAT_IPQ6028 || PLAT_HI1156
+  default "0x04000000"
+  default "0x04000000" if PLAT_1620_OSP
+  depends on CONFIGURABLE_TEXT_OFFSET
+
+config CACHELINE_SIZE_L1
+  int
+  default 64 if PLAT_FOUNDATION || PLAT_HI1620 || \
+                PLAT_HI1910 || PLAT_HI1951 || PLAT_HIP05_D02 || \
+                PLAT_QEMU_VIRT || PLAT_SD62XX || PLAT_KIRIN || PLAT_TSCH || \
+                PLAT_SD5151T || PLAT_M536A || PLAT_CPRO || PLAT_BCM || \
+                PLAT_HISI_HI1383 || PLAT_1620_OSP || PLAT_IPQ6028 || PLAT_HI1156
+
+config PLAT_QEMU
+  bool "plat qemu for aarch64"
+  default n
+
+config BOOT_ROOTFS_STANDALONE
+  bool "Use standalone rootfs to boot system"
+  default y if PLAT_HI1910
+  default n
+  help
+    Use rootfs outside of boot image
+
+config BOOT_CONSOLE_PL011
+  bool
+  default y if PLAT_FOUNDATION || PLAT_HI1620 || \
+               PLAT_HI1910 || PLAT_HI1951 || PLAT_HIP05_D02 || \
+               PLAT_QEMU_VIRT || PLAT_TSCH || PLAT_M536A || PLAT_CPRO || \
+               PLAT_BCM || PLAT_1620_OSP || KIRIN_CHIP_CHARLOTTE_PRO
+
+config BOOT_CONSOLE_HISI_UART
+  bool
+  default y if PLAT_CPRO || KIRIN_CHIP_CHARLOTTE_PRO || KIRIN_CHIP_NASHVILLE || KIRIN_CHIP_XIAN || KIRIN_CHIP_ATHERTON || KIRIN_CHIP_CHANGSHA
+
+config BOOT_CONSOLE_8250_DW
+  bool
+  default y if PLAT_SD62XX || PLAT_HISI_HI1383
+
+config BOOT_CONSOLE_MSM
+  bool
+  default n
+
+config BOOT_CONSOLE_BASE_ADDR
+  hex "Base address of PL011 uart device used for elfloader"
+  default "0x1c090000" if PLAT_FOUNDATION
+  default "0x09000000" if PLAT_QEMU_VIRT
+  default "0x94080000" if PLAT_HI1620 || PLAT_1620_OSP
+  default "0x10cf80000" if PLAT_HI1910
+  default "0x840c0000" if PLAT_HI1951
+  default "0x80300000" if PLAT_HIP05_D02
+  default "0x44B54000" if PLAT_SD62XX && (!PLAT_SD7601)
+  default "0xF2510000" if PLAT_SD7601
+  default "0xFFF32000" if KIRIN_CHIP_970 || KIRIN_CHIP_980
+  default "0xFA054000" if KIRIN_CHIP_990
+  default "0xFFF02000" if PLAT_M536A || KIRIN_CHIP_9000 || KIRIN_CHIP_BURBANK
+  default "0x10106000" if PLAT_SD5151T
+  default "0x078b1000" if PLAT_IPQ6028
+  default "0xFFB82000" if PLAT_CPRO || KIRIN_CHIP_CHARLOTTE || KIRIN_CHIP_CHARLOTTE_PRO || KIRIN_CHIP_NASHVILLE || KIRIN_CHIP_XIAN || KIRIN_CHIP_CHANGSHA
+  default "0xFFB02000" if KIRIN_CHIP_ATHERTON
+  default "0xFE201000" if PLAT_BCM
+  default "0xB4090000" if PLAT_HISI_HI1383
+  default "0x10119000" if PLAT_HI1156
+
+config BOOT_WATCHDOG
+  bool
+  default n
+
+config BOOT_WDT_BASE_ADDR
+  hex
+  default "0x44802028" if PLAT_SD6220
+  default "0x44823138" if PLAT_SD6221
+  default "0xF3011344" if PLAT_SD7601
+  default "0x14880070" if PLAT_SD5151T
+  default "0x01013000" if PLAT_IPQ6028
+  default "0xFFA26000" if PLAT_M536A
+  default "0xE8A06000" if KIRIN_CHIP_980
+  default "0xb4004104" if PLAT_HISI_HI1383
+  default "0xFEC36000" if KIRIN_CHIP_9000
+  default "0xFEC36000" if KIRIN_CHIP_BURBANK
+  default "0xFF4E1000" if KIRIN_CHIP_CHARLOTTE
+  default "0xFF221000" if KIRIN_CHIP_NASHVILLE
+  default "0xFF221000" if KIRIN_CHIP_XIAN
+  default "0xEE421000" if KIRIN_CHIP_ATHERTON
+  default "0xFF221000" if KIRIN_CHIP_CHANGSHA
+  default "0x10128000" if PLAT_HI1156
+  depends on BOOT_WATCHDOG
+
+config AARCH64_PLAT_DIR
+  string
+  default "qemu" if PLAT_QEMU
+  default "kirin" if PLAT_KIRIN
+  default "foundation" if PLAT_FOUNDATION
+  default "hip05-d02" if PLAT_HIP05_D02
+  default "hi1910" if PLAT_HI1910
+  default "hi1620" if PLAT_HI1620
+  default "hi1951" if PLAT_HI1951
+  default "sd62xx" if PLAT_SD62XX
+  default "sd5151t" if PLAT_SD5151T
+  default "ipq6028" if PLAT_IPQ6028
+  default "1620-osp" if PLAT_HI1620
+  default "hi1156" if PLAT_HI1156
+
+config NO_ROOTFS
+  bool "No rootfs"
+  depends on !BOOT_ROOTFS_STANDALONE
+  default n
+
+config LINUX_INITRD
+  bool "Load Linux initrd into rootfs"
+  depends on !NO_ROOTFS
+  default n
+
+# Platform specific config
+source "arch/aarch64/plat/foundation/Kconfig"
+source "arch/aarch64/plat/kirin/Kconfig"
+source "arch/aarch64/plat/hi1620/Kconfig"
+source "arch/aarch64/plat/sd62xx/Kconfig"
+source "arch/aarch64/plat/hi1951/Kconfig"
+source "arch/aarch64/plat/tsch/Kconfig"
+source "arch/aarch64/plat/bcm/Kconfig"
+
+endmenu

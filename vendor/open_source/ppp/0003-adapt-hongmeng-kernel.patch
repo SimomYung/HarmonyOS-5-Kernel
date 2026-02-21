@@ -1,0 +1,214 @@
+From f154c402291af29f9213d77925b4d9eaaae42262 Mon Sep 17 00:00:00 2001
+From: w30063796 <w30063796@notesmail.huawei.com/>
+Date: Mon, 21 Oct 2024 20:53:29 +0800
+Subject: [PATCH] [Init] modify open source ppp
+
+TicketNo:DTS2024101019820
+Description: adapt hongmeng kernel
+Team:SP_XA_PTL
+Feature or Bugfix:Bugfix
+Binary Source:No
+PrivateCode(Yes/No):No
+
+Change-Id: I4900966111d93a71919c51f339d0869c471e0e9f
+---
+ pppd/pppd.h      |  5 +++++
+ pppd/sys-linux.c | 54 +++++++++++++++++++++++++++++++++++++++---------------
+ 2 files changed, 44 insertions(+), 15 deletions(-)
+
+diff --git a/pppd/pppd.h b/pppd/pppd.h
+index ed50f9b..36e095b 100644
+--- a/pppd/pppd.h
++++ b/pppd/pppd.h
+@@ -441,6 +441,11 @@ void ppp_script_unsetenv(char *);
+ int ppp_check_kernel_support(void);
+ 
+ /*
++ * Test whether hongmeng kernel support
++ */
++int check_hongmeng_kernel(void);
++
++/*
+  * Restore device setting
+  */
+ void ppp_generic_disestablish(int dev_fd);
+diff --git a/pppd/sys-linux.c b/pppd/sys-linux.c
+index 561b150..17a4d76 100644
+--- a/pppd/sys-linux.c
++++ b/pppd/sys-linux.c
+@@ -261,6 +261,13 @@ static int	link_mtu;		/* mtu for the link (not bundle) */
+ 
+ static struct utsname utsname;	/* for the kernel version */
+ static int kernel_version;
++
++#ifdef SUPPORT_SYSVPN
++static char sys_name[20];
++#define HARMONY_OS "HarmonyOS"
++#define HARMONY_OS_LEN 9
++#endif // SUPPORT_SYSVPN
++
+ #define KVERSION(j,n,p)	((j)*1000000 + (n)*1000 + (p))
+ 
+ #define MAX_IFS		100
+@@ -884,7 +891,7 @@ static int make_ppp_unit_rtnetlink(void)
+          * the old ioctl method.
+          */
+         errno = (resp < 0) ? -resp : EINVAL;
+-        if (kernel_version >= KVERSION(4,7,0))
++        if (kernel_version >= KVERSION(4,7,0) || check_hongmeng_kernel())
+             error("Couldn't create ppp interface %s: %m", req_ifname);
+         return 0;
+     }
+@@ -925,7 +932,7 @@ static int make_ppp_unit(void)
+ 	 * So use rtnetlink API only when user requested custom ifname. It will
+ 	 * avoid system issues with interface renaming.
+ 	 */
+-	if (req_unit == -1 && req_ifname[0] != '\0' && kernel_version >= KVERSION(2,1,16)) {
++	if (req_unit == -1 && req_ifname[0] != '\0' && (kernel_version >= KVERSION(2,1,16) || check_hongmeng_kernel())) {
+ 	    if (make_ppp_unit_rtnetlink()) {
+ 		if (ioctl(ppp_dev_fd, PPPIOCGUNIT, &ifunit))
+ 		    fatal("Couldn't retrieve PPP unit id: %m");
+@@ -1806,7 +1813,7 @@ get_ppp_stats_rtnetlink(int u, struct pppd_stats *stats)
+     resp = rtnetlink_msg("RTM_GETSTATS/NLM_F_REQUEST", &fd, &nlreq, sizeof(nlreq), &nlresp_data, &nlresp_size, RTM_NEWSTATS);
+     if (resp) {
+         errno = (resp < 0) ? -resp : EINVAL;
+-        if (kernel_version >= KVERSION(4,7,0))
++        if (kernel_version >= KVERSION(4,7,0) || check_hongmeng_kernel())
+             error("get_ppp_stats_rtnetlink: %m (line %d)", __LINE__);
+         goto err;
+     }
+@@ -2135,7 +2142,7 @@ static int defaultroute_exists (struct rtentry *rt, int metric)
+ 	if ((rt->rt_flags & RTF_UP) == 0)
+ 	    continue;
+ 
+-	if (kernel_version > KVERSION(2,1,0) && SIN_ADDR(rt->rt_genmask) != 0)
++	if (((kernel_version) > KVERSION(2,1,0) || check_hongmeng_kernel()) && SIN_ADDR(rt->rt_genmask) != 0)
+ 	    continue;
+ 	if (SIN_ADDR(rt->rt_dst) == 0L && (metric < 0
+ 					   || rt->rt_metric == metric)) {
+@@ -2234,7 +2241,7 @@ int sifdefaultroute (int unit, u_int32_t ouraddr, u_int32_t gateway, bool replac
+     rt.rt_dev = ifname;
+     rt.rt_metric = dfl_route_metric + 1; /* +1 for binary compatibility */
+ 
+-    if (kernel_version > KVERSION(2,1,0)) {
++    if (kernel_version > KVERSION(2,1,0) || check_hongmeng_kernel()) {
+ 	SET_SA_FAMILY (rt.rt_genmask, AF_INET);
+ 	SIN_ADDR(rt.rt_genmask) = 0L;
+     }
+@@ -2276,7 +2283,7 @@ int cifdefaultroute (int unit, u_int32_t ouraddr, u_int32_t gateway)
+     rt.rt_dev = ifname;
+     rt.rt_metric = dfl_route_metric + 1; /* +1 for binary compatibility */
+ 
+-    if (kernel_version > KVERSION(2,1,0)) {
++    if (kernel_version > KVERSION(2,1,0) || check_hongmeng_kernel()) {
+ 	SET_SA_FAMILY (rt.rt_genmask, AF_INET);
+ 	SIN_ADDR(rt.rt_genmask) = 0L;
+     }
+@@ -2858,6 +2865,20 @@ ppp_registered(void)
+     return ret;
+ }
+ 
++/**
++ * Test whether hongmeng kernel support
++ */
++int check_hongmeng_kernel(void)
++{
++#ifdef SUPPORT_SYSVPN
++    if (strncmp(sys_name, HARMONY_OS, HARMONY_OS_LEN) == 0)
++    {
++        return 1;
++    }
++#endif // SUPPORT_SYSVPN
++    return 0;
++}
++
+ /********************************************************************
+  *
+  * ppp_check_kernel_support - check whether the system has any ppp interfaces
+@@ -2877,7 +2898,10 @@ int ppp_check_kernel_support(void)
+     osmaj = osmin = ospatch = 0;
+     sscanf(utsname.release, "%d.%d.%d", &osmaj, &osmin, &ospatch);
+     kernel_version = KVERSION(osmaj, osmin, ospatch);
+-
++#ifdef SUPPORT_SYSVPN
++    memset (sys_name, 0, sizeof(sys_name));
++    strlcpy(sys_name, utsname.sysname, sizeof(sys_name));
++#endif // SUPPORT_SYSVPN
+     fd = open("/dev/ppp", O_RDWR);
+     if (fd >= 0) {
+ 	new_style_driver = 1;
+@@ -2890,7 +2914,7 @@ int ppp_check_kernel_support(void)
+ 	return 1;
+     }
+ 
+-    if (kernel_version >= KVERSION(2,3,13)) {
++    if (kernel_version >= KVERSION(2,3,13) || check_hongmeng_kernel()) {
+ 	error("Couldn't open the /dev/ppp device: %m");
+ 	if (errno == ENOENT)
+ 	    no_ppp_msg =
+@@ -3238,7 +3262,7 @@ int sifaddr (int unit, u_int32_t our_adr, u_int32_t his_adr,
+  *  Set the netmask.
+  *  For recent kernels, force the netmask to 255.255.255.255.
+  */
+-    if (kernel_version >= KVERSION(2,1,16))
++    if (kernel_version >= KVERSION(2,1,16) || check_hongmeng_kernel())
+ 	net_mask = ~0L;
+     if (net_mask != 0) {
+ 	SIN_ADDR(ifr.ifr_netmask) = net_mask;
+@@ -3251,7 +3275,7 @@ int sifaddr (int unit, u_int32_t our_adr, u_int32_t his_adr,
+ /*
+  *  Add the device route
+  */
+-    if (kernel_version < KVERSION(2,1,16)) {
++    if (kernel_version < KVERSION(2,1,16) && !check_hongmeng_kernel()) {
+ 	SET_SA_FAMILY (rt.rt_dst,     AF_INET);
+ 	SET_SA_FAMILY (rt.rt_gateway, AF_INET);
+ 	rt.rt_dev = ifname;
+@@ -3260,7 +3284,7 @@ int sifaddr (int unit, u_int32_t our_adr, u_int32_t his_adr,
+ 	SIN_ADDR(rt.rt_dst)     = his_adr;
+ 	rt.rt_flags = RTF_UP | RTF_HOST;
+ 
+-	if (kernel_version > KVERSION(2,1,0)) {
++	if (kernel_version > KVERSION(2,1,0) || check_hongmeng_kernel()) {
+ 	    SET_SA_FAMILY (rt.rt_genmask, AF_INET);
+ 	    SIN_ADDR(rt.rt_genmask) = -1L;
+ 	}
+@@ -3302,7 +3326,7 @@ int cifaddr (int unit, u_int32_t our_adr, u_int32_t his_adr)
+ {
+     struct ifreq ifr;
+ 
+-    if (kernel_version < KVERSION(2,1,16)) {
++    if (kernel_version < KVERSION(2,1,16) && !check_hongmeng_kernel()) {
+ /*
+  *  Delete the route through the device
+  */
+@@ -3317,7 +3341,7 @@ int cifaddr (int unit, u_int32_t our_adr, u_int32_t his_adr)
+ 	SIN_ADDR(rt.rt_dst)     = his_adr;
+ 	rt.rt_flags = RTF_UP | RTF_HOST;
+ 
+-	if (kernel_version > KVERSION(2,1,0)) {
++	if (kernel_version > KVERSION(2,1,0) || check_hongmeng_kernel()) {
+ 	    SET_SA_FAMILY (rt.rt_genmask, AF_INET);
+ 	    SIN_ADDR(rt.rt_genmask) = -1L;
+ 	}
+@@ -3400,7 +3424,7 @@ static int sif6addr_rtnetlink(unsigned int iface, eui64_t our_eui64, eui64_t his
+          * the old IOCTL method.
+          */
+         errno = (resp < 0) ? -resp : EINVAL;
+-        if (kernel_version >= KVERSION(3,11,0))
++        if (kernel_version >= KVERSION(3,11,0) || check_hongmeng_kernel())
+             error("sif6addr_rtnetlink: %m (line %d)", __LINE__);
+         return 0;
+     }
+@@ -3431,7 +3455,7 @@ int sif6addr (int unit, eui64_t our_eui64, eui64_t his_eui64)
+ 	return 0;
+     }
+ 
+-    if (kernel_version >= KVERSION(2,1,16)) {
++    if (kernel_version >= KVERSION(2,1,16) || check_hongmeng_kernel()) {
+         /* Set both local address and remote peer address (with route for it) via rtnetlink */
+         ret = sif6addr_rtnetlink(ifr.ifr_ifindex, our_eui64, his_eui64);
+     } else {
+-- 
+2.7.4
+

@@ -1,0 +1,60 @@
+# Copyright (c) Huawei Technologies Co., Ltd. 2022-2022. All rights reserved.
+# Description: HMbuild for hmld.so
+# Author: Huawei OS Kernel Lab
+# Create: Tue Feb 08 16:24:29 2022
+
+exec-dynamic-y: hmld.so.elf
+
+src-y: stub.c
+src-y: hm_ldso_main.c
+src-y: hm_ldso_start.c
+
+subdir-y: stdio
+subdir-y: stdlib
+subdir-y: sysif
+subdir-y: syscall
+subdir-y: string
+subdir-y: log
+subdir-y: vsyscall
+
+include-.-y: include
+include-.-CONFIG_AARCH64: arch/aarch64
+# NOTE: Add include path of arch/aarch64/kernel for search copy_template.S
+include-.-CONFIG_AARCH64: ../../arch/aarch64/kernel
+include-.-CONFIG_ARM: arch/arm
+# NOTE: Add include path of arch/arm/kernel for search copy_template.S
+include-.-CONFIG_ARM: ../../arch/arm/kernel
+
+cflags-hm_ldso_start.c: -fno-stack-protector
+cflags-.-y: -Wmissing-prototypes
+cflags-.-y: -Wold-style-definition
+cflags-.-y: -std=gnu99
+cflags-.-y: -ffreestanding
+cflags-.-y: -fvisibility=hidden
+cflags-.-y: -ffunction-sections
+cflags-.-y: -fdata-sections
+cflags-.-y: -D_XOPEN_SOURCE=700
+cflags-.-y: -Wno-unused-parameter
+cflags-.-y: -Wno-implicit-fallthrough
+
+
+findpkg-y: HWSecureC
+findpkg-y: CompilerLibs
+findpkg-y: HMFSLibs
+findpkg-CONFIG_USE_LIBOPT: HMLibOpt
+
+linklib-hmld.so.elf-y: -nostdlib
+linklib-hmld.so.elf-y: -shared
+linklib-hmld.so.elf-y: -Wl,--entry=_hm_ldso_start
+linklib-hmld.so.elf-y: -Wl,--exclude-libs=ALL
+linklib-hmld.so.elf-y: -Wl,--no-undefined
+linklib-hmld.so.elf-y: -Wl,--gc-sections
+linklib-hmld.so.elf-y: -Wl,--hash-style=both
+linklib-hmld.so.elf-y: -Wl,--start-group
+linklib-hmld.so.elf-y: HMFSLibs::HMFSLdsoLib_static
+linklib-hmld.so.elf-y: CompilerLibs::CompilerLibs_static
+linklib-hmld.so.elf-y: HWSecureC::HWSecureC_pic_static
+linklib-hmld.so.elf-CONFIG_USE_LIBOPT: HMLibOpt::HMLibOpt_static
+linklib-hmld.so.elf-y: -Wl,--end-group
+
+install-hmld.so.elf-y: BASE_LIBDIR

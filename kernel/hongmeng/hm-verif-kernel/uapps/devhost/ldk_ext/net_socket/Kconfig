@@ -1,0 +1,52 @@
+# Copyright (C) Huawei Technologies Co., Ltd. 2022. All rights reserved.
+# Description: Kconfig for ldk extension
+# Author: Huawei OS Kernel Lab
+# Create: Wed Jul 6 09:24:07 2022
+
+# HMCMAKENG_KCONFIG is injected by HongmengCMakeNG/Kconfig.cmake
+# which defines multiple config options which is useful for HMbuild.
+source "$(HMCMAKENG_KCONFIG)"
+
+config DEVHOST_NET_QIPCRTR
+	bool "devhost support QMI socket family"
+	default y
+
+config DEVHOST_NET_INET
+	bool "devhost support INET socket family"
+	default n
+
+config DEVHOST_NET_NETLINK
+	bool "devhost support NETLINK socket family"
+	default n
+
+config DEVHOST_NET_PACKET
+	bool "devhost support PACKET socket family"
+	default n
+
+config DEVHOST_NET_INET6
+	bool "devhost support INET6 socket family"
+	default n
+
+config DEVHOST_NET_PPPOX
+	bool "devhost support PPPOX socket family"
+	default n
+
+config DEVHOST_NET_XDP
+	bool "devhost support XDP socket family"
+	default n
+
+config DEVHOST_NET_KEY
+        bool "devhost support AF_KEY socket family"
+        default n
+
+config DEVHOST_NET_ALG
+	bool "devhost support AF_ALG socket family"
+	default n
+
+config NET_FUSION
+	bool "devhost support hmnetd in fusion mode"
+	default n
+
+config NET_NS
+	bool "devhost support net namespace"
+	default n

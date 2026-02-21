@@ -1,0 +1,67 @@
+From 1da208cddc19cad05ccf4b798a99f7045e41ffc4 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Marco=20Trevisan=20=28Trevi=C3=B1o=29?= <mail@3v1n0.net>
+Date: Fri, 2 Sep 2022 20:26:06 +0200
+Subject: [PATCH] gio/tests/gdbus-proxy-threads: Unref GVariant's that we own
+
+This test is leaking various GVariant's that we are supposed to unref,
+leading the valgrind CI job to complain about.
+
+Helps with: https://gitlab.gnome.org/GNOME/glib/-/issues/333
+
+Conflict:NA
+Reference:https://gitlab.gnome.org/GNOME/glib/-/commit/1da208cddc19cad05ccf4b798a99f7045e41ffc4
+
+---
+ gio/tests/gdbus-proxy-threads.c | 12 ++++++++++--
+ 1 file changed, 10 insertions(+), 2 deletions(-)
+
+diff --git a/gio/tests/gdbus-proxy-threads.c b/gio/tests/gdbus-proxy-threads.c
+index 76b857e731..a0a38d07cd 100644
+--- a/gio/tests/gdbus-proxy-threads.c
++++ b/gio/tests/gdbus-proxy-threads.c
+@@ -119,13 +119,17 @@ request_name_cb (GObject *source,
+   GDBusConnection *connection = G_DBUS_CONNECTION (source);
+   GError *error = NULL;
+   GVariant *var;
++  GVariant *child;
+ 
+   var = g_dbus_connection_call_finish (connection, res, &error);
+   g_assert_no_error (error);
+-  g_assert_cmpuint (g_variant_get_uint32 (g_variant_get_child_value (var, 0)),
++  child = g_variant_get_child_value (var, 0);
++  g_assert_cmpuint (g_variant_get_uint32 (child),
+                     ==, DBUS_REQUEST_NAME_REPLY_PRIMARY_OWNER);
+ 
+   release_name (connection, TRUE);
++  g_variant_unref (child);
++  g_variant_unref (var);
+ }
+ 
+ static void
+@@ -154,11 +158,13 @@ release_name_cb (GObject *source,
+   GDBusConnection *connection = G_DBUS_CONNECTION (source);
+   GError *error = NULL;
+   GVariant *var;
++  GVariant *child;
+   int i;
+ 
+   var = g_dbus_connection_call_finish (connection, res, &error);
+   g_assert_no_error (error);
+-  g_assert_cmpuint (g_variant_get_uint32 (g_variant_get_child_value (var, 0)),
++  child = g_variant_get_child_value (var, 0);
++  g_assert_cmpuint (g_variant_get_uint32 (child),
+                     ==, DBUS_RELEASE_NAME_REPLY_RELEASED);
+ 
+   /* generate some rapid NameOwnerChanged signals to try to trigger crashes */
+@@ -170,6 +176,8 @@ release_name_cb (GObject *source,
+ 
+   /* wait for dbus-daemon to catch up */
+   request_name (connection, TRUE);
++  g_variant_unref (child);
++  g_variant_unref (var);
+ }
+ 
+ static void
+-- 
+GitLab
+

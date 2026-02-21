@@ -1,0 +1,88 @@
+diff --git a/misc/blkid.c b/misc/blkid.c
+index e46efc707daaf5867bea6cd415b9637e6c5bba61..7b7e015ec66e1800b0e9691aa7f23495a7de66fe 100644
+--- a/misc/blkid.c
++++ b/misc/blkid.c
+@@ -37,6 +37,9 @@ extern int optind;
+ 
+ #include "ext2fs/ext2fs.h"
+ #include "blkid/blkid.h"
++#include "blkidP.h"
++#include "iconv.h"
++#include "securec.h"
+ 
+ static const char *progname = "blkid";
+ 
+@@ -228,6 +231,54 @@ static void pretty_print_dev(blkid_dev dev)
+ 	pretty_print_line(devname, fs_type, label, mtpt, uuid);
+ }
+ 
++static int is_str_utf8(const char* str)
++{
++	unsigned int nBytes = 0;
++	unsigned char chr = *str;
++	int bAllAscii = 1;
++
++	for (unsigned int i = 0; str[i] != '\0'; ++i) {
++		chr = *(str + i);
++		if ((chr & 0x80) != 0)
++			bAllAscii = 0;
++		if(nBytes == 0 && ((chr & 0x80) != 0)) {
++			while((chr & 0x80) != 0) {
++				chr <<= 1;
++				nBytes ++;
++			}
++			if((nBytes < 2) || (nBytes > 6)) {
++				return 0;
++			}
++			nBytes --;
++		} else if (nBytes != 0) {
++			if((chr & 0xc0) != 0x80) {
++				return 0;
++			}
++			nBytes --;
++		}
++	}
++	if (nBytes && !bAllAscii)  {
++		return 0;
++	}
++
++	return 1;
++}
++
++
++static int code_convert(char *from_charset, char *to_charset,char *inbuf, size_t inlen, char *outbuf, size_t outlen)
++{
++	iconv_t cd;
++	char **pin = &inbuf;
++	char **pout = &outbuf;
++
++	cd = iconv_open(to_charset, from_charset);
++	if (cd == 0) return -1;
++	if (memset_s(outbuf, outlen, 0, outlen) != EOK) return -1;
++	if (iconv(cd, pin, &inlen, pout, &outlen) == (size_t)-1) return -1;
++	iconv_close(cd); 
++	return 0;
++}
++
+ static void print_tags(blkid_dev dev, char *show[], int numtag, int output)
+ {
+ 	blkid_tag_iterate	iter;
+@@ -257,7 +308,17 @@ static void print_tags(blkid_dev dev, char *show[], int numtag, int output)
+ 				continue;
+ 		}
+ 		if (output & OUTPUT_VALUE_ONLY) {
+-			fputs(value, stdout);
++			if (!strncmp(type, "LABEL", 5) && !strncmp(dev->bid_type, "vfat", 4) && !is_str_utf8(value)) {
++				char outbuf[255];
++				int res = code_convert("gbk","utf-8", (char *)value, strlen(value), outbuf, 255);
++				if (!res) {
++					fputs(outbuf, stdout);
++				} else {
++					fputs(value, stdout);
++				}
++			} else {
++				fputs(value, stdout);
++			}
+ 			fputc('\n', stdout);
+ 		} else {
+ 			if (first) {

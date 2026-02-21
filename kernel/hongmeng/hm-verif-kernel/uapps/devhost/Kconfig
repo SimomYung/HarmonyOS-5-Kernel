@@ -1,0 +1,156 @@
+# Copyright (c) Huawei Technologies Co., Ltd. 2021. All rights reserved.
+# Description: Kconfig for devhsot
+# Author: Huawei OS Kernel Lab
+# Create: Fri Nov 19 11:26:07 2021
+source "$(HMCMAKENG_KCONFIG)"
+
+comment "Common Settings Inherited from kernel"
+
+# fixed settings
+config MODULE_SCHED_CLASS
+	def_bool y
+config TPPMGR
+	def_bool y
+
+# configurable settings
+config AUDIT
+	bool "audit support"
+	default n
+
+config COMPAT
+	bool "Support for 32-bit applications at EL0"
+	default n
+config NO_COMPAT
+	def_bool !COMPAT
+
+config ILP32
+	bool "Support for aarch64-ilp32 applications at EL0"
+	default n
+config NO_ILP32
+	def_bool !ILP32
+
+config POSIX_CAPS
+	bool "posix caps support"
+	default y
+
+config PM_WAKELOCK
+	bool "PM wakelock support"
+	default n
+
+config PM_SUSPEND
+	bool "PM suspend support"
+	default n
+
+config PM_HIBERNATE
+	bool "PM hibernate support"
+	default n
+
+config NET_IO_URING
+	bool "net io uring support"
+	default y
+
+#
+# Private configs for devhost only
+#
+comment "Private Settings for devhost only"
+
+config DEVHOST_BLK_SRING_LEN
+	int "max number of bd_io in a block queue"
+	default 16
+
+config BLK_INLINE_ENCRYPTION
+	bool "Enable block inline encrypt"
+	default n
+
+config FILEGUARD
+  bool "Enable file guard"
+  default n
+  help
+    Enable file guard if available. This
+    feature is only supported on PC.
+
+config HISI_INLINE_ENCRYPTION
+	bool "Enable hisi inline encrypt"
+	default n
+
+config NET_POOL_BITS
+	int "net pool size"
+	default 23
+
+config NET_POOL_UNIT_BITS
+	int "net unit size"
+	default 12
+
+config NET_FUSION
+	bool "devhost support hmnetd in fusion mode"
+	default n
+
+config DEVHOST_NET_SPARSE_POOL
+	bool "Support sparse net pool"
+	default n
+
+config DEVHOST_ENTROPY_COLLECT
+	bool "Collect unstable system status as entropy"
+	default y
+
+#
+# import common settings from legacy kconfig
+#
+source "Kconfig.common"
+
+#
+# devhost use ngbuild
+#
+config USE_DEVHOST_NGBUILD
+	def_bool y
+
+config SYSIF_TRACE
+	bool "Enable sysif user event trace"
+	default n
+
+config SHMEC
+  bool "Enable shared memory event channel"
+  default n
+
+config SEC_SERVICE
+  bool "Enable security service response"
+  default n
+
+config SEHARMONY
+  bool "Enable seharmony"
+  select SEC_SERVICE
+  default n
+
+config HKIP
+  bool "Enable HKIP Protection"
+  default n
+
+config NO_HKIP
+  bool "disable ro after init segment"
+  def_bool !HKIP
+
+config HKIP_TEST_CASES
+  bool "Enable hkip service test cases"
+  depends on DEBUG_BUILD
+  default n
+
+config SECCOMP
+  bool "Enable the secure computing feature"
+  default n
+
+choice
+  prompt "devhost.elf use HMSecLib_static or HMSecLib_shared"
+  default DEVHOST_USE_DYNAMIC_LINK
+  config DEVHOST_USE_STATIC_LINK
+    bool "devhost.elf use HMSecLib_static"
+  config DEVHOST_USE_DYNAMIC_LINK
+    bool "devhost.elf use HMSecLib_shared"
+endchoice
+
+config DEBUG_BUILD
+  bool "Build kernel with debug mode"
+  default n
+
+config HMSD_TREND
+  string "Security description generation trend"
+  default "performance"

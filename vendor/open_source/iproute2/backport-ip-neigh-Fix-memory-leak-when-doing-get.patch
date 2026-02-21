@@ -1,0 +1,54 @@
+From c5433c4b7a57d380f4cb351316f5ba5ebae9538e Mon Sep 17 00:00:00 2001
+From: Benjamin Poirier <bpoirier@nvidia.com>
+Date: Mon, 11 Jul 2022 08:52:54 +0900
+Subject: [PATCH] ip neigh: Fix memory leak when doing 'get'
+
+With the following command sequence:
+
+ip link add dummy0 type dummy
+ip neigh add 192.168.0.1 dev dummy0
+ip neigh get 192.168.0.1 dev dummy0
+
+when running the last command under valgrind, it reports
+
+32,768 bytes in 1 blocks are definitely lost in loss record 2 of 2
+   at 0x483F7B5: malloc (vg_replace_malloc.c:381)
+   by 0x17A0EC: rtnl_recvmsg (libnetlink.c:838)
+   by 0x17A3D1: __rtnl_talk_iov.constprop.0 (libnetlink.c:1040)
+   by 0x17B894: __rtnl_talk (libnetlink.c:1141)
+   by 0x17B894: rtnl_talk (libnetlink.c:1147)
+   by 0x12E49B: ipneigh_get (ipneigh.c:728)
+   by 0x1174CB: do_cmd (ip.c:136)
+   by 0x116F7C: main (ip.c:324)
+
+Free the answer obtained from rtnl_talk().
+
+Fixes: 62842362370b ("ipneigh: neigh get support")
+Suggested-by: Ido Schimmel <idosch@nvidia.com>
+Reviewed-by: Ido Schimmel <idosch@nvidia.com>
+Signed-off-by: Benjamin Poirier <bpoirier@nvidia.com>
+Signed-off-by: Stephen Hemminger <stephen@networkplumber.org>
+Conflict: NA
+Reference: https://git.kernel.org/pub/scm/network/iproute2/iproute2.git/commit?id=c5433c4b
+---
+ ip/ipneigh.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/ip/ipneigh.c b/ip/ipneigh.c
+index 7facc399..61b0a4a2 100644
+--- a/ip/ipneigh.c
++++ b/ip/ipneigh.c
+@@ -731,8 +731,10 @@ static int ipneigh_get(int argc, char **argv)
+ 	ipneigh_reset_filter(0);
+ 	if (print_neigh(answer, stdout) < 0) {
+ 		fprintf(stderr, "An error :-)\n");
++		free(answer);
+ 		return -1;
+ 	}
++	free(answer);
+ 
+ 	return 0;
+ }
+-- 
+2.23.0
+

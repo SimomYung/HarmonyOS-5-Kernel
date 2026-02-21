@@ -1,0 +1,45 @@
+# SPDX-License-Identifier: GPL-2.0-only
+#
+# PHY
+#
+
+source "platform_source/basicplatform/drivers/phy/hisilicon/Kconfig"
+
+config PHY_HISI_USB2_T5
+	tristate "USB2 PHY T5 support"
+	select GENERIC_PHY
+	select MFD_SYSCON
+	help
+	  Enable this to support the HISILICON USB2 T5 PHY.
+	  To compile this driver as a module, choose M here.
+
+config PHY_HISI_USB3_LITE
+	tristate "HISI USB3 Lite PHY support"
+	select GENERIC_PHY
+	select MFD_SYSCON
+	help
+	  Enable this to support the HISILICON USB3 Lite PHY.
+	  To compile this driver as a module, choose M here.
+
+config PHY_USB2_HI6502
+	tristate "USB2 HI6502 PHY support"
+	select GENERIC_PHY
+	select MFD_SYSCON
+	help
+	  Enable this to support the HISILICON USB2 Hi6502 PHY.
+	  To compile this driver as a module, choose M here.
+
+config PHY_USB2_EUSB
+	tristate "USB2 Eusb PHY support"
+	select GENERIC_PHY
+	select MFD_SYSCON
+	help
+	  Enable this to support the HISILICON USB2 Eusb PHY.
+	  To compile this driver as a module, choose M here.
+config PHY_USB4_COMBOPHY
+        tristate "USB4 COMBOPHY support"
+        select GENERIC_PHY
+        select MFD_SYSCON
+        help
+          Enable this to support the HISILICON USB4 Combo PHY.
+          To compile this driver as a module, choose M here.

@@ -1,0 +1,8 @@
+# Copyright (c) Huawei Technologies Co., Ltd. 2021-2022. All rights reserved.
+# Description: HMbuild for libhmsrv_sec/libsec
+# Author: Huawei OS Kernel Lab
+# Create: Tue Nov 09 10:25:23 2021
+
+src-y: sec_cred.c
+
+# vim:ts=4:sw=4:expandtab

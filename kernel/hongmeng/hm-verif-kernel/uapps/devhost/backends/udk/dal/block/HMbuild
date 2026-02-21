@@ -1,0 +1,19 @@
+# Copyright (c) Huawei Technologies Co., Ltd. 2022. All rights reserved.
+# Description: HMbuild for udk
+# Author: Huawei OS Kernel Lab
+# Create: Wed Feb 09 11:51:30 2022
+
+src-y: udk_block.c
+src-y: udk_block_mq.c
+src-y: udk_block_merge.c
+src-y: udk_block_sysfs.c
+src-y: udk_io_scheduler.c
+src-y: udk_block_ops.c
+src-y: udk_disk.c
+src-y: udk_partition.c
+src-y: udk_disk_stats.c
+src-y:udk_block_stats.c
+src-y: udk_no_mas_blk.c
+src-CONFIG_UDK_FALLBACK_ENCRYPTION: udk_block_fallback.c
+
+subdir-CONFIG_MAS_BLK: mas_blk

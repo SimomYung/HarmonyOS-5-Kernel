@@ -1,0 +1,6 @@
+# Copyright (c) Huawei Technologies Co., Ltd. 2023. All rights reserved.
+# Description: Kconfig for sd proxy
+# Author: Huawei OS Kernel Lab
+# Create: Thur Jun 8 11:26:07 2023
+
+source "$(HMCMAKENG_KCONFIG)"

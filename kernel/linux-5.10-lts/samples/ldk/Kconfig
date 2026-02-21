@@ -1,0 +1,99 @@
+# SPDX-License-Identifier: GPL-2.0-only
+config SAMPLE_LDK_EXTRA_HEAD
+	bool "Link extra LDK source"
+	default y
+	help
+	  Link extra LDK source with liblinux build.
+
+config SAMPLE_LDK_TEST_KSYS
+	bool "Test LDK ksys_* functions"
+	default n
+
+config LIBLINUX_BOOTFDT
+	def_bool y
+
+config LIBLINUX_REBOOT_ON_POWERKEY
+	tristate "Reboot to bootloader when powerkey is pressed in a special pattern"
+	depends on POWERKEY_SPMI
+	default n
+
+config LIBLINUX_UDK_UFS
+	bool "Enable udk ufs"
+	default n
+
+config LIBLINUX_DEBUGFS
+	bool "Enable liblinux debugfs extension support"
+	depends on DEBUG_FS
+	default n
+
+if LIBLINUX_DEBUGFS
+source "samples/ldk/debugfs/Kconfig"
+endif
+
+config LIBLINUX_MODULE_BINDER
+	tristate "Enable binder module"
+	default n
+
+config BLK_DEV_SD_HELPER
+	tristate "SCSI disk helper support"
+	depends on SCSI
+	depends on LIBLINUX_UDK_UFS
+	help
+	  This is a scsi disk helper module designed to export scsi proxy
+	  device info.
+
+config LIBLINUX_BATCH_UACCESS
+	bool "Batch uaccess support"
+	default n
+
+config LIBLINUX_DEVFS_WORKAROUND
+	bool "Workground for blue tooth hotplug"
+	default n
+
+config LIBLINUX_VB2_VMALLOC_WORKAROUND
+	bool "Replace vmalloc with kmalloc as a workaround for videobuf2"
+	depends on VIDEOBUF2_VMALLOC
+	default n
+
+config LIBLINUX_MEM_SHRINK
+	bool "Enable liblinux mem shrink"
+	default y
+
+config LIBLINUX_BATTERY_WORKAROUND
+	bool "Workground for pc battery"
+	default n
+
+config LIBLINUX_HMTRACEFS
+	bool "Enable hongmeng tracefs"
+	default n
+
+config LIBLINUX_MIPSMEM_FREQ
+	bool "Enable mips mem freq"
+	default n
+
+config LIBLINUX_CONFIGFS_EXT
+	bool "Enable hongmeng configfs extension"
+	default n
+	help
+	  Enable configfs extension, to support configfs usage by other
+	  services, like hmdfs/sharefs.
+
+config LIBLINUX_USE_LASTKLOG
+	bool "Use lastklog for pstore"
+	default n
+
+config LIBLINUX_READ_MIDR_EL0
+	bool "Enable reading MIDR register from EL0"
+	default n
+
+config LIBLINUX_USE_TRACK_INFO
+	bool "Use track_info"
+	default n
+
+config HISI_INLINE_ENCRYPTION
+  bool "Enable hisi inline encrypt"
+  default n
+
+config VCODEC_HISP_DFX
+	bool "enable vcodec and hisp in memview"
+	default n

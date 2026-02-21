@@ -1,0 +1,609 @@
+{
+    "root": {
+        "data": {
+            "id": "ci2e9s6e9a00",
+            "created": 1645514680094,
+            "text": "time_func",
+            "usecase": 99,
+            "expandState": "expand"
+        },
+        "children": [
+            {
+                "data": {
+                    "id": "ci2eak1zvw00",
+                    "created": 1645514740778,
+                    "text": "clock_gettime",
+                    "usecase": 1,
+                    "layout": null,
+                    "expandState": "expand"
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "ci2fa3bagug0",
+                            "created": 1645517525444,
+                            "text": "入参分析",
+                            "layout": null,
+                            "expandState": "expand"
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "ci2fecwsou80",
+                                    "created": 1645517859793,
+                                    "text": "clk_id",
+                                    "layout": null,
+                                    "expandState": "expand"
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "ci2ffyevcjs0",
+                                            "created": 1645517984962,
+                                            "text": "非法值",
+                                            "usecase": 2,
+                                            "layout": null,
+                                            "expandState": "expand"
+                                        },
+                                        "children": [
+                                            {
+                                                "data": {
+                                                    "id": "ci2ffyevcog0",
+                                                    "created": 1645517984962,
+                                                    "text": "传入非法id，预期返回错误",
+                                                    "usecase": 4,
+                                                    "author": "c00455000",
+                                                    "showId": "00002",
+                                                    "layout": null,
+                                                    "expandState": "expand"
+                                                },
+                                                "children": []
+                                            }
+                                        ]
+                                    }
+                                ]
+                            },
+                            {
+                                "data": {
+                                    "id": "ci2feluk5js0",
+                                    "created": 1645517879248,
+                                    "text": "tp",
+                                    "layout": null,
+                                    "expandState": "expand"
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "ci2fwfyij6g0",
+                                            "created": 1645519276982,
+                                            "text": "是否合法",
+                                            "usecase": 2,
+                                            "layout": null,
+                                            "expandState": "expand"
+                                        },
+                                        "children": [
+                                            {
+                                                "data": {
+                                                    "id": "ci2fwfyjaow0",
+                                                    "created": 1645519276983,
+                                                    "text": "传入空指针，预期返回错误",
+                                                    "usecase": 4,
+                                                    "author": "c00455000",
+                                                    "showId": "00003",
+                                                    "layout": null,
+                                                    "expandState": "expand"
+                                                },
+                                                "children": []
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "data": {
+                            "id": "ci2fa41e5i80",
+                            "created": 1645517527023,
+                            "text": "功能分析",
+                            "layout": null,
+                            "expandState": "expand"
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "ci2g0sk1hn40",
+                                    "created": 1645519617861,
+                                    "text": "获取时间类型",
+                                    "usecase": 2,
+                                    "layout": null,
+                                    "expandState": "expand"
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "ci2g0zgcwmg0",
+                                            "created": 1645519632876,
+                                            "text": "传入CLOCK_REALTIME，获取墙上时间",
+                                            "usecase": 4,
+                                            "author": "c00455000",
+                                            "showId": "00005",
+                                            "layout": null,
+                                            "expandState": "expand"
+                                        },
+                                        "children": []
+                                    },
+                                    {
+                                        "data": {
+                                            "id": "ci2g1fv0nu00",
+                                            "created": 1645519668591,
+                                            "text": "传入CLOCK_MONOTONIC，获取启动到这一刻的时间",
+                                            "usecase": 4,
+                                            "author": "c00455000",
+                                            "showId": "00006",
+                                            "layout": null,
+                                            "expandState": "expand"
+                                        },
+                                        "children": []
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "data": {
+                    "id": "ci2g7a7a6gg0",
+                    "created": 1645520126457,
+                    "text": "time",
+                    "usecase": 1,
+                    "layout": null,
+                    "expandState": "expand"
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "ci2g7a79vzc0",
+                            "created": 1645520126457,
+                            "text": "功能分析",
+                            "layout": null,
+                            "expandState": "expand"
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "ci2g7a7ae940",
+                                    "created": 1645520126457,
+                                    "text": "获取时间",
+                                    "usecase": 2,
+                                    "layout": null,
+                                    "expandState": "expand"
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "ci2gd2uijm80",
+                                            "created": 1645520580633,
+                                            "text": "入参是否为NULL",
+                                            "usecase": 2,
+                                            "layout": null,
+                                            "expandState": "expand"
+                                        },
+                                        "children": [
+                                            {
+                                                "data": {
+                                                    "id": "ci2gd2uj1qw0",
+                                                    "created": 1645520580633,
+                                                    "text": "传入空指针, 获取自纪元 Epoch（1970-01-01 00:00:00 UTC）起经过的时间",
+                                                    "usecase": 4,
+                                                    "author": "c00455000",
+                                                    "showId": "00022",
+                                                    "layout": null,
+                                                    "expandState": "expand"
+                                                },
+                                                "children": []
+                                            },
+                                            {
+                                                "data": {
+                                                    "id": "ci2gd2uip3k0",
+                                                    "created": 1645520580633,
+                                                    "text": "传入非空，预期获取的时间也存在该指针指向的内存中",
+                                                    "usecase": 4,
+                                                    "author": "c00455000",
+                                                    "showId": "00023",
+                                                    "layout": null,
+                                                    "expandState": "expand"
+                                                },
+                                                "children": []
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "data": {
+                    "id": "ci2geh5dn4w0",
+                    "created": 1645520690129,
+                    "text": "gettimeofday",
+                    "usecase": 1,
+                    "layout": null,
+                    "expandState": "expand"
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "ci2geh5dtm80",
+                            "created": 1645520690129,
+                            "text": "入参分析",
+                            "layout": null,
+                            "expandState": "expand"
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "ci2geh5ely80",
+                                    "created": 1645520690130,
+                                    "text": "tv",
+                                    "layout": null,
+                                    "expandState": "expand"
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "ci2geh5eork0",
+                                            "created": 1645520690130,
+                                            "text": "非法值",
+                                            "usecase": 2,
+                                            "layout": null,
+                                            "expandState": "expand"
+                                        },
+                                        "children": [
+                                            {
+                                                "data": {
+                                                    "id": "ci2gmpyn66o0",
+                                                    "created": 1645521336226,
+                                                    "text": "传入空指针，预期返回错误",
+                                                    "usecase": 4,
+                                                    "author": "c00455000",
+                                                    "showId": "00030",
+                                                    "layout": null,
+                                                    "expandState": "expand"
+                                                },
+                                                "children": []
+                                            }
+                                        ]
+                                    }
+                                ]
+                            },
+                            {
+                                "data": {
+                                    "id": "ci2geh5ej480",
+                                    "created": 1645520690130,
+                                    "text": "tz",
+                                    "layout": null,
+                                    "expandState": "expand"
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "ci2geh5ec4g0",
+                                            "created": 1645520690130,
+                                            "text": "是否合法",
+                                            "usecase": 2,
+                                            "layout": null,
+                                            "expandState": "expand"
+                                        },
+                                        "children": [
+                                            {
+                                                "data": {
+                                                    "id": "ci2geh5eni00",
+                                                    "created": 1645520690130,
+                                                    "text": "tz为空时，预期返回正常",
+                                                    "usecase": 4,
+                                                    "author": "c00455000",
+                                                    "showId": "00026",
+                                                    "layout": null,
+                                                    "expandState": "expand"
+                                                },
+                                                "children": []
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "data": {
+                            "id": "ci2geh5efmg0",
+                            "created": 1645520690130,
+                            "text": "功能分析",
+                            "layout": null,
+                            "expandState": "expand"
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "ci2geh5emrc0",
+                                    "created": 1645520690130,
+                                    "text": "获取当前精确时间",
+                                    "usecase": 2,
+                                    "layout": null,
+                                    "expandState": "expand"
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "ci2geh5emow0",
+                                            "created": 1645520690130,
+                                            "text": "tv入参非空，可获得当前精确时间（1970年1月1日到现在的时间） ",
+                                            "usecase": 4,
+                                            "author": "c00455000",
+                                            "showId": "00028",
+                                            "layout": null,
+                                            "expandState": "expand"
+                                        },
+                                        "children": []
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "data": {
+                    "id": "ci2gv6wagio0",
+                    "created": 1645522000002,
+                    "text": "localtime_r",
+                    "usecase": 1,
+                    "expandState": "expand"
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "ci2h7drk9mw0",
+                            "created": 1645522955324,
+                            "text": "功能分析",
+                            "layout": null,
+                            "expandState": "expand"
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "ci2h7drkolk0",
+                                    "created": 1645522955324,
+                                    "text": "时间转换",
+                                    "usecase": 2,
+                                    "layout": null,
+                                    "expandState": "expand"
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "ci2h7drkrlc0",
+                                            "created": 1645522955324,
+                                            "text": "把time_t的秒数时间转换为本地时间",
+                                            "usecase": 4,
+                                            "author": "c00455000",
+                                            "showId": "00035",
+                                            "layout": null,
+                                            "expandState": "expand"
+                                        },
+                                        "children": []
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "data": {
+                    "id": "ci2hdbhqpmg0",
+                    "created": 1645523420561,
+                    "text": "mktime",
+                    "usecase": 1,
+                    "expandState": "expand"
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "ci2hdbhr4d40",
+                            "created": 1645523420562,
+                            "text": "功能分析",
+                            "layout": null,
+                            "expandState": "expand"
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "ci2hdbhr3ww0",
+                                    "created": 1645523420562,
+                                    "text": "时间转换",
+                                    "usecase": 2,
+                                    "layout": null,
+                                    "expandState": "expand"
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "ci2hdbhr5uw0",
+                                            "created": 1645523420562,
+                                            "text": "把 timeptr 所指向的结构转换为一个依据本地时区的 time_t 值",
+                                            "usecase": 4,
+                                            "author": "c00455000",
+                                            "showId": "00038",
+                                            "layout": null,
+                                            "expandState": "expand"
+                                        },
+                                        "children": []
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "data": {
+                    "id": "ci2he4thmi00",
+                    "created": 1645523484398,
+                    "text": "strftime",
+                    "usecase": 1,
+                    "expandState": "expand"
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "ci2he4thn740",
+                            "created": 1645523484398,
+                            "text": "功能分析",
+                            "layout": null,
+                            "expandState": "expand"
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "ci2he4thhxc0",
+                                    "created": 1645523484398,
+                                    "text": "时间格式化",
+                                    "usecase": 2,
+                                    "layout": null,
+                                    "expandState": "expand"
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "ci2he4thppk0",
+                                            "created": 1645523484398,
+                                            "text": "预期格式化一个时间字符串",
+                                            "usecase": 4,
+                                            "author": "c00455000",
+                                            "showId": "00039",
+                                            "layout": null,
+                                            "expandState": "expand"
+                                        },
+                                        "children": []
+                                    }
+                                ]
+                            },
+                            {
+                                "data": {
+                                    "id": "ci43iuqga5s0",
+                                    "created": 1645687478642,
+                                    "text": "不同时区",
+                                    "layout_right_offset": {
+                                        "x": 9,
+                                        "y": 4
+                                    },
+                                    "usecase": 2,
+                                    "expandState": "expand"
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "ci43pfhzj000",
+                                            "created": 1645687994028,
+                                            "text": "不同时区，是否可以正确转换",
+                                            "usecase": 4,
+                                            "author": "c00455000",
+                                            "showId": "00041",
+                                            "expandState": "expand"
+                                        },
+                                        "children": []
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "data": {
+                    "id": "ci2hhp26yxc0",
+                    "created": 1645523763553,
+                    "text": "strptime",
+                    "usecase": 1,
+                    "expandState": "expand"
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "ci2hhp27brs0",
+                            "created": 1645523763553,
+                            "text": "功能分析",
+                            "layout": null,
+                            "expandState": "expand"
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "ci2hhp27hhk0",
+                                    "created": 1645523763553,
+                                    "text": "字符串转换为时间类型",
+                                    "usecase": 2,
+                                    "layout": null,
+                                    "expandState": "expand"
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "ci2hhp27avk0",
+                                            "created": 1645523763553,
+                                            "text": "按照特定时间格式将字符串转换（解析）为时间类型",
+                                            "usecase": 4,
+                                            "author": "c00455000",
+                                            "showId": "00040",
+                                            "layout": null,
+                                            "expandState": "expand"
+                                        },
+                                        "children": []
+                                    }
+                                ]
+                            },
+                            {
+                                "data": {
+                                    "id": "ci43pj1licg0",
+                                    "created": 1645688001744,
+                                    "text": "不同时区",
+                                    "layout_right_offset": {
+                                        "x": 15,
+                                        "y": 4
+                                    },
+                                    "usecase": 2,
+                                    "expandState": "expand"
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "ci43pj1lh5k0",
+                                            "created": 1645688001744,
+                                            "text": "不同时区，是否可以正确转换",
+                                            "usecase": 4,
+                                            "author": "c00455000",
+                                            "showId": "00042",
+                                            "expandState": "expand"
+                                        },
+                                        "children": []
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    "templatePath": null,
+    "singleTemplatePath": null,
+    "testcaseFilePath": "",
+    "template": "right",
+    "theme": "fresh-blue-compat",
+    "version": "1.4.43"
+}

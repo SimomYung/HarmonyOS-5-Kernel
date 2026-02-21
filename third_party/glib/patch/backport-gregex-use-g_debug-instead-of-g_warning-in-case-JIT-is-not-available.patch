@@ -1,0 +1,55 @@
+From 2c2e059cd354a9020ce9188e58e3ab0683008d08 Mon Sep 17 00:00:00 2001
+From: Aleksei Rybalkin <aleksei@rybalkin.org>
+Date: Fri, 22 Jul 2022 20:27:04 +0200
+Subject: [PATCH] gregex: use g_debug instead of g_warning in case JIT is not
+ available
+
+In case JIT is not available in pcre2 we printed warning about it. This
+warning broke tests on systems which don't have JIT support in pcre2
+(e.g. macos).
+
+Conflict:NA
+Reference:https://gitlab.gnome.org/GNOME/glib/-/commit/2c2e059cd354a9020ce9188e58e3ab0683008d08
+
+---
+ glib/gregex.c | 18 +++++++++---------
+ 1 file changed, 9 insertions(+), 9 deletions(-)
+
+diff --git a/glib/gregex.c b/glib/gregex.c
+index cf9ce23e8d..6741d2479f 100644
+--- a/glib/gregex.c
++++ b/glib/gregex.c
+@@ -855,21 +855,21 @@ enable_jit_with_match_options (GRegex *regex,
+       regex->jit_options = new_jit_options;
+       break;
+     case PCRE2_ERROR_NOMEMORY:
+-      g_warning ("JIT compilation was requested with G_REGEX_OPTIMIZE, "
+-                 "but JIT was unable to allocate executable memory for the "
+-                 "compiler. Falling back to interpretive code.");
++      g_debug ("JIT compilation was requested with G_REGEX_OPTIMIZE, "
++               "but JIT was unable to allocate executable memory for the "
++               "compiler. Falling back to interpretive code.");
+       regex->jit_status = JIT_STATUS_DISABLED;
+       break;
+     case PCRE2_ERROR_JIT_BADOPTION:
+-      g_warning ("JIT compilation was requested with G_REGEX_OPTIMIZE, "
+-                 "but JIT support is not available. Falling back to "
+-                 "interpretive code.");
++      g_debug ("JIT compilation was requested with G_REGEX_OPTIMIZE, "
++               "but JIT support is not available. Falling back to "
++               "interpretive code.");
+       regex->jit_status = JIT_STATUS_DISABLED;
+       break;
+     default:
+-      g_warning ("JIT compilation was requested with G_REGEX_OPTIMIZE, "
+-                 "but request for JIT support had unexpectedly failed. "
+-                 "Falling back to interpretive code.");
++      g_debug ("JIT compilation was requested with G_REGEX_OPTIMIZE, "
++               "but request for JIT support had unexpectedly failed. "
++               "Falling back to interpretive code.");
+       regex->jit_status = JIT_STATUS_DISABLED;
+       break;
+     }
+-- 
+GitLab
+

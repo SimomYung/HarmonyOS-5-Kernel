@@ -1,0 +1,11 @@
+# Copyright (c) Huawei Technologies Co., Ltd. 2021. All rights reserved.
+# Description: HMbuild
+# Author: Huawei OS Kernel Lab
+# Create: Tue Jan 04 11:43:45 2022
+
+src-y: ux_vhost_genl.c
+src-CONFIG_VIRTIO_VSOCK: ux_vhost_vsock.c
+src-CONFIG_VHOST_VNET: ux_vhost_vnet.c
+
+cflags-ux_vhost_vsock.c-y: -Wno-sign-compare
+cflags-ux_vhost_vsock.c-y: -Wno-unused-parameter

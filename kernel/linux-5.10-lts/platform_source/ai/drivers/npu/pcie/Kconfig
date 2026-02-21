@@ -1,0 +1,8 @@
+config NPU_PCIE
+	tristate "NPU PCIE"
+	depends on ARCH_PLATFORM
+	default n
+config NPU_UDP_FPGA_MIXED_PLAT
+	tristate "npu verify in UDP+FPGA MIXED PLAT"
+	depends on NPU_PCIE
+	default n

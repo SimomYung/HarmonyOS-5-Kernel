@@ -1,0 +1,86 @@
+From 0faec4d050b607f7544b6cf9a4c2d57e191f981f Mon Sep 17 00:00:00 2001
+From: Lahav Schlesinger <lschlesinger@drivenets.com>
+Date: Mon, 5 Dec 2022 10:47:41 +0200
+Subject: [PATCH] libnetlink: Fix memory leak in __rtnl_talk_iov()
+
+If `__rtnl_talk_iov` fails then callers are not expected to free `answer`.
+
+Currently if `NLMSG_ERROR` was received with an error then the netlink
+buffer was stored in `answer`, while still returning an error
+
+This leak can be observed by running this snippet over time.
+This triggers an `NLMSG_ERROR` because for each neighbour update, `ip`
+will try to query for the name of interface 9999 in the wrong netns.
+(which in itself is a separate bug)
+
+ set -e
+
+ ip netns del test-a || true
+ ip netns add test-a
+ ip netns del test-b || true
+ ip netns add test-b
+
+ ip -n test-a netns set test-b auto
+ ip -n test-a link add veth_a index 9999 type veth \
+  peer name veth_b netns test-b
+ ip -n test-b link set veth_b up
+
+ ip -n test-a monitor link address prefix neigh nsid label all-nsid \
+  > /dev/null &
+ monitor_pid=$!
+ clean() {
+  kill $monitor_pid
+  ip netns del test-a
+  ip netns del test-b
+ }
+ trap clean EXIT
+
+ while true; do
+  ip -n test-b neigh add dev veth_b 1.2.3.4 lladdr AA:AA:AA:AA:AA:AA
+  ip -n test-b neigh del dev veth_b 1.2.3.4
+ done
+
+
+Conflict:NA
+Reference:https://git.kernel.org/pub/scm/network/iproute2/iproute2.git/commit?id=0faec4d050b607f7544b6cf9a4c2d57e191f981f
+
+Fixes: 55870dfe7f8b ("Improve batch and dump times by caching link lookups")
+Signed-off-by: Lahav Schlesinger <lschlesinger@drivenets.com>
+Signed-off-by: Gilad Naaman <gnaaman@drivenets.com>
+Signed-off-by: Stephen Hemminger <stephen@networkplumber.org>
+---
+ lib/libnetlink.c | 17 +++++++++++------
+ 1 file changed, 11 insertions(+), 6 deletions(-)
+
+diff --git a/lib/libnetlink.c b/lib/libnetlink.c
+index 9af06232..001efc1d 100644
+--- a/lib/libnetlink.c
++++ b/lib/libnetlink.c
+@@ -1092,14 +1092,19 @@ next:
+ 						rtnl_talk_error(h, err, errfn);
+ 				}
+ 
+-				if (answer)
+-					*answer = (struct nlmsghdr *)buf;
+-				else
++				if (i < iovlen) {
+ 					free(buf);
+-
+-				if (i < iovlen)
+ 					goto next;
+-				return error ? -i : 0;
++				}
++
++				if (error) {
++					free(buf);
++					return -i;
++				}
++
++				if (answer)
++					*answer = (struct nlmsghdr *)buf;
++				return 0;
+ 			}
+ 
+ 			if (answer) {
+-- 
+2.23.0

@@ -1,0 +1,5 @@
+config MCUTHERMAL_TRACE
+	bool "show lpmcu thermal trace"
+	default n
+	help
+	  Show the mcuthermal freq limit trace.

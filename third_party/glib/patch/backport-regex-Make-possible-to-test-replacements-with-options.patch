@@ -1,0 +1,71 @@
+From 0831393dd08d5f9dcf2e0517dbb4ea546ff7156b Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Marco=20Trevisan=20=28Trevi=C3=B1o=29?= <mail@3v1n0.net>
+Date: Wed, 7 Sep 2022 15:21:52 +0200
+Subject: [PATCH] tests/regex: Make possible to test replacements with options
+
+---
+ glib/tests/regex.c | 21 ++++++++++++++++++---
+ 1 file changed, 18 insertions(+), 3 deletions(-)
+
+diff --git a/glib/tests/regex.c b/glib/tests/regex.c
+index 291c21b4c7..26844d63a7 100644
+--- a/glib/tests/regex.c
++++ b/glib/tests/regex.c
+@@ -1207,6 +1207,8 @@ typedef struct {
+   gint         start_position;
+   const gchar *replacement;
+   const gchar *expected;
++  GRegexCompileFlags compile_flags;
++  GRegexMatchFlags match_flags;
+ } TestReplaceData;
+ 
+ static void
+@@ -1215,17 +1217,25 @@ test_replace (gconstpointer d)
+   const TestReplaceData *data = d;
+   GRegex *regex;
+   gchar *res;
++  GError *error = NULL;
+ 
+-  regex = g_regex_new (data->pattern, G_REGEX_DEFAULT, G_REGEX_MATCH_DEFAULT, NULL);
+-  res = g_regex_replace (regex, data->string, -1, data->start_position, data->replacement, 0, NULL);
++  regex = g_regex_new (data->pattern, data->compile_flags, G_REGEX_MATCH_DEFAULT, &error);
++  g_assert_no_error (error);
++
++  res = g_regex_replace (regex, data->string, -1, data->start_position,
++                         data->replacement, data->match_flags, &error);
+ 
+   g_assert_cmpstr (res, ==, data->expected);
+ 
++  if (data->expected)
++    g_assert_no_error (error);
++
+   g_free (res);
+   g_regex_unref (regex);
++  g_clear_error (&error);
+ }
+ 
+-#define TEST_REPLACE(_pattern, _string, _start_position, _replacement, _expected) { \
++#define TEST_REPLACE_OPTIONS(_pattern, _string, _start_position, _replacement, _expected, _compile_flags, _match_flags) { \
+   TestReplaceData *data;                                                \
+   gchar *path;                                                          \
+   data = g_new0 (TestReplaceData, 1);                                   \
+@@ -1234,11 +1244,16 @@ test_replace (gconstpointer d)
+   data->start_position = _start_position;                               \
+   data->replacement = _replacement;                                     \
+   data->expected = _expected;                                           \
++  data->compile_flags = _compile_flags;                                 \
++  data->match_flags = _match_flags;                                     \
+   path = g_strdup_printf ("/regex/replace/%d", ++total);                \
+   g_test_add_data_func_full (path, data, test_replace, g_free);         \
+   g_free (path);                                                        \
+ }
+ 
++#define TEST_REPLACE(_pattern, _string, _start_position, _replacement, _expected) \
++  TEST_REPLACE_OPTIONS (_pattern, _string, _start_position, _replacement, _expected, 0, 0)
++
+ static void
+ test_replace_lit (gconstpointer d)
+ {
+-- 
+GitLab
+

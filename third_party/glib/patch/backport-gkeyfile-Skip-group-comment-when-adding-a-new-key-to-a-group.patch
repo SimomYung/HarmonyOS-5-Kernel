@@ -1,0 +1,97 @@
+From 51dfb3c229c0478b3615f486fbbc36de2586bd52 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Ga=C3=ABl=20Bonithon?= <gael@xfce.org>
+Date: Thu, 13 Jul 2023 10:19:04 +0200
+Subject: [PATCH] gkeyfile: Skip group comment when adding a new key to a group
+
+An oversight in 86b4b045: since the comment of group N now consists of
+the last null-key values of group N-1, these keys must obviously be
+skipped when adding a new non-null key to group N-1.
+
+Closes: #3047
+Fixes: 86b4b0453ea3a814167d4a5f7a4031d467543716
+---
+ glib/gkeyfile.c      | 19 ++++++++++++++-----
+ glib/tests/keyfile.c |  9 +++++++++
+ 2 files changed, 23 insertions(+), 5 deletions(-)
+
+diff --git a/glib/gkeyfile.c b/glib/gkeyfile.c
+index 0e21ab4f14..4759051977 100644
+--- a/glib/gkeyfile.c
++++ b/glib/gkeyfile.c
+@@ -573,7 +573,8 @@ static void                  g_key_file_remove_key_value_pair_node (GKeyFile
+ 
+ static void                  g_key_file_add_key_value_pair     (GKeyFile               *key_file,
+                                                                 GKeyFileGroup          *group,
+-                                                                GKeyFileKeyValuePair   *pair);
++                                                                GKeyFileKeyValuePair   *pair,
++                                                                GList                  *sibling);
+ static void                  g_key_file_add_key                (GKeyFile               *key_file,
+ 								GKeyFileGroup          *group,
+ 								const gchar            *key,
+@@ -1447,7 +1448,8 @@ g_key_file_parse_key_value_pair (GKeyFile     *key_file,
+       pair->key = g_steal_pointer (&key);
+       pair->value = g_strndup (value_start, value_len);
+ 
+-      g_key_file_add_key_value_pair (key_file, key_file->current_group, pair);
++      g_key_file_add_key_value_pair (key_file, key_file->current_group, pair,
++                                     key_file->current_group->key_value_pairs);
+     }
+ 
+   g_free (key);
+@@ -4034,10 +4036,11 @@ g_key_file_remove_group (GKeyFile     *key_file,
+ static void
+ g_key_file_add_key_value_pair (GKeyFile             *key_file,
+                                GKeyFileGroup        *group,
+-                               GKeyFileKeyValuePair *pair)
++                               GKeyFileKeyValuePair *pair,
++                               GList                *sibling)
+ {
+   g_hash_table_replace (group->lookup_map, pair->key, pair);
+-  group->key_value_pairs = g_list_prepend (group->key_value_pairs, pair);
++  group->key_value_pairs = g_list_insert_before (group->key_value_pairs, sibling, pair);
+ }
+ 
+ static void
+@@ -4047,12 +4050,18 @@ g_key_file_add_key (GKeyFile      *key_file,
+ 		    const gchar   *value)
+ {
+   GKeyFileKeyValuePair *pair;
++  GList *lp;
+ 
+   pair = g_new (GKeyFileKeyValuePair, 1);
+   pair->key = g_strdup (key);
+   pair->value = g_strdup (value);
+ 
+-  g_key_file_add_key_value_pair (key_file, group, pair);
++  /* skip group comment */
++  lp = group->key_value_pairs;
++  while (lp != NULL && ((GKeyFileKeyValuePair *) lp->data)->key == NULL)
++    lp = lp->next;
++
++  g_key_file_add_key_value_pair (key_file, group, pair, lp);
+ }
+ 
+ /**
+diff --git a/glib/tests/keyfile.c b/glib/tests/keyfile.c
+index 80cdc93d8f..2c8eca4ebc 100644
+--- a/glib/tests/keyfile.c
++++ b/glib/tests/keyfile.c
+@@ -456,6 +456,15 @@ test_comments (void)
+   check_name ("group comment", comment, group_comment, 0);
+   g_free (comment);
+ 
++  g_test_bug ("https://gitlab.gnome.org/GNOME/glib/-/issues/3047");
++
++  /* check if adding a key to group N preserve group comment of group N+1 */
++  g_key_file_set_string (keyfile, "group1", "key5", "value5");
++  comment = g_key_file_get_comment (keyfile, "group2", NULL, &error);
++  check_no_error (&error);
++  check_name ("group comment", comment, group_comment, 0);
++  g_free (comment);
++
+   g_test_bug ("https://gitlab.gnome.org/GNOME/glib/-/issues/104");
+ 
+   /* check if comments above another group than the first one are properly removed */
+-- 
+GitLab
+

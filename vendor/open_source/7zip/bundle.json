@@ -1,0 +1,39 @@
+{
+    "name": "@ohos/7zip",
+    "description": "7-Zip is free software distributed under the GNU LGPL (except for unRar code).",
+    "version": "24.09",
+    "license": "Public domain",
+    "publishAs": "code-segment",
+    "segment": {
+      "destPath": "vendor/open_source/7zip"
+    },
+    "dirs": {},
+    "scripts": {},
+    "component": {
+        "name": "7zip",
+        "subsystem": "open_source",
+        "syscap": [],
+        "features": [],
+        "adapted_system_type": ["standard", "mini", "small"],
+        "rom": "",
+        "ram": "",
+        "deps": {
+            "components": []
+    },
+        "build": {
+            "sub_component": [
+                "//vendor/open_source/7zip:7zip_shared",
+                "//vendor/open_source/7zip:7zip_static"
+            ],
+            "inner_kits": [
+                {
+                "name": "//vendor/open_source/7zip:7zip_shared",
+                "header": {
+                    "header_files": [ ],
+                    "header_base": "${root_gen_dir}/vendor/open_source/7zip/"
+                }
+            }],
+            "test": []
+        }
+    }
+  }

@@ -1,0 +1,465 @@
+LNXBASE_VERS_1.0 {
+  global:
+    /* lnxbase APIs */
+    lnxbase_newctx;
+    lnxbase_destroy;
+    lnxbase_enable_module;
+    lnxbase_enable_netlink;
+    lnxbase_enable_timesync;
+    lnxbase_enable_skip_first_timesync;
+    lnxbase_enable_backtrace;
+    lnxbase_enable_vmallocinfo;
+    lnxbase_enable_stop_tick;
+    lnxbase_init;
+    lnxbase_backend_args;
+    lnxbase_backend_args_find;
+    lnxbase_load_symbols;
+    lnxbase_enable_post_dev_populate;
+    lnxbase_register_reclaim_func;
+    lnxbase_register_fget;
+    lnxbase_register_fput;
+    lnxbase_root_notify;
+    lnxbase_get_dac;
+    /* time helper APIs */
+    lnxbase_default_clocksource;
+    lnxbase_register_mem_shrinker;
+    lnxbase_shrink_mem;
+    lnxbase_dev_synchronize;
+    lnxbase_invoke_on_cpu;
+    lnxbase_anon_devinfo_init;
+    lnxbase_fill_mod_symbol;
+    lnxbase_drop_mod_symbol;
+    lnxbase_iofast_acquire_regions;
+
+    /* PAL APIs */
+    liblinux_pal_alloc_dma_pool;
+    liblinux_pal_alloc_dma_pool_ex;
+    liblinux_pal_cond_broadcast;
+    liblinux_pal_cond_destroy;
+    liblinux_pal_cond_init;
+    liblinux_pal_cond_signal;
+    liblinux_pal_cond_wait;
+    liblinux_pal_copy_from_user;
+    liblinux_pal_copy_in_user;
+    liblinux_pal_copy_to_user;
+    liblinux_pal_copy_from_caller;
+    liblinux_pal_copy_to_caller;
+    liblinux_pal_copy_msghdr_from_user;
+    liblinux_pal_copy_msghdr_to_user;
+    liblinux_pal_cpu_config;
+    liblinux_pal_cpu_config_ex;
+    liblinux_pal_dma_alloc;
+    liblinux_pal_dma_alloc_coherent;
+    liblinux_pal_dma_free;
+    liblinux_pal_drop_ko_symbol;
+    liblinux_pal_fget;
+    liblinux_pal_fget_ex;
+    liblinux_pal_fput_ex;
+    liblinux_pal_transfs_fget;
+    liblinux_pal_transfs_fput;
+    liblinux_pal_get_unused_fd_flags;
+    liblinux_pal_fd_install;
+    liblinux_pal_fd_install_ex;
+    liblinux_pal_alloc_unused_fd;
+    liblinux_pal_put_unused_fd;
+    liblinux_pal_fill_mod_symbol;
+    liblinux_pal_flush_cache_range;
+    liblinux_pal_flush_pgtbl_cache;
+    liblinux_pal_free_dma_pool;
+    liblinux_pal_futex_timedwait;
+    liblinux_pal_futex_timedwait_ex;
+    liblinux_pal_futex_wake;
+    liblinux_pal_thread_block;
+    liblinux_pal_thread_unblock;
+    liblinux_pal_fw_acquire_contents;
+    liblinux_pal_ioremap;
+    liblinux_pal_ioremap_ex;
+    liblinux_pal_local_irq_disable;
+    liblinux_pal_local_irq_enable;
+    liblinux_pal_local_irq_restore;
+    liblinux_pal_local_irq_save;
+    liblinux_pal_local_save_flags;
+    liblinux_pal_irq_set_affinity_hint;
+    liblinux_pal_log_store;
+    liblinux_pal_module_alloc_init;
+    liblinux_pal_module_alloc_prepare;
+    liblinux_pal_module_alloc_prepare_hkip;
+    liblinux_pal_module_alloc_release;
+    liblinux_pal_mutex_destroy;
+    liblinux_pal_mutex_init;
+    liblinux_pal_mutex_is_locked;
+    liblinux_pal_mutex_lock;
+    liblinux_pal_mutex_trylock;
+    liblinux_pal_mutex_unlock;
+    liblinux_pal_rwlock_tryrdlock;
+    liblinux_pal_rwlock_rdlock;
+    liblinux_pal_rwlock_trywrlock;
+    liblinux_pal_rwlock_wrlock;
+    liblinux_pal_rwlock_unlock;
+    liblinux_pal_native_net_rx;
+    liblinux_pal_native_net_rx_ex;
+    liblinux_pal_netdev_alloc_ifindex;
+    liblinux_pal_page_allocator_get;
+    liblinux_pal_page_alloc_extend;
+    liblinux_pal_page_alloc_init;
+    liblinux_pal_page_alloc_populate;
+    liblinux_pal_page_alloc_unpopulate;
+    liblinux_pal_preempt_init;
+    liblinux_pal_preempt_resched;
+    liblinux_pal_preempt_disable;
+    liblinux_pal_preempt_enable;
+    liblinux_pal_process_set_slv;
+    liblinux_pal_thread_set_slv;
+    liblinux_pal_thread_dump;
+    liblinux_pal_set_control_terminal;
+    liblinux_pal_get_sid;
+    liblinux_pal_get_pgid;
+    liblinux_pal_set_pgrp;
+    liblinux_pal_get_pgrp;
+    liblinux_pal_process_signal;
+    liblinux_pal_process_signal_with_pid;
+    liblinux_pal_peri_dma_write;
+    liblinux_pal_signal_isignored;
+    liblinux_pal_current_pgrp_isorphaned;
+    liblinux_pal_sys_shutdown;
+    liblinux_pal_sys_snapshot;
+    liblinux_pal_processor_id;
+    liblinux_pal_procfs_register_ops;
+    liblinux_pal_procfs_create_dir;
+    liblinux_pal_procfs_create_file;
+    liblinux_pal_procfs_create_file_bypath;
+    liblinux_pal_procfs_create_link;
+    liblinux_pal_procfs_delete;
+    liblinux_pal_register_blkdev_region;
+    liblinux_pal_register_chrdev_region;
+    liblinux_pal_remap_pfn_range;
+    liblinux_pal_request_module;
+    liblinux_pal_require_frange;
+    liblinux_pal_reserve_range;
+    liblinux_pal_reserve_range_ex;
+    liblinux_pal_reserve_range_name;
+    liblinux_pal_reserve_vmalloc_range;
+    liblinux_pal_sem_getvalue;
+    liblinux_pal_sem_init;
+    liblinux_pal_sem_post;
+    liblinux_pal_sem_timedwait;
+    liblinux_pal_sem_trywait;
+    liblinux_pal_sem_wait;
+    liblinux_pal_set_pageattr;
+    liblinux_pal_set_pageattr_ex;
+    liblinux_pal_sysfs_create_dir;
+    liblinux_pal_sysfs_create_file;
+    liblinux_pal_sysfs_create_file_ldk;
+    liblinux_pal_sysfs_create_link;
+    liblinux_pal_sysfs_delete;
+    liblinux_pal_sysfs_register_ops;
+    liblinux_pal_sysfs_register_ops_ex;
+    liblinux_pal_sysfs_notify;
+    liblinux_pal_sysfs_register_ops_ex_ns;
+    liblinux_pal_sysfs_create_file_ex;
+    liblinux_pal_sysfs_create_data_batch;
+    liblinux_pal_sysfs_create_dir_ns;
+    liblinux_pal_sysfs_create_link_ns;
+    liblinux_pal_sysfs_delete_ns;
+    liblinux_pal_thread_create;
+    liblinux_pal_thread_create_ex;
+    liblinux_pal_thread_exit;
+    liblinux_pal_thread_exit_ex;
+    liblinux_pal_thread_get_my_data;
+    liblinux_pal_thread_init;
+    liblinux_pal_thread_init_ex;
+    liblinux_pal_thread_join_ex;
+    liblinux_pal_thread_stack_info;
+    liblinux_pal_thread_actv_cref;
+    liblinux_pal_thread_sched_cref;
+    liblinux_pal_thread_setaffinity;
+    liblinux_pal_thread_getaffinity;
+    liblinux_pal_thread_set_my_data;
+    liblinux_pal_thread_setname;
+    liblinux_pal_thread_yield;
+    liblinux_pal_thread_inactive;
+    liblinux_pal_thread_set_freezable;
+    liblinux_pal_thread_freezing;
+    liblinux_pal_thread_try_to_freeze;
+    liblinux_pal_get_current_exec_path;
+    liblinux_pal_thread_vtid_to_root_tid;
+    liblinux_pal_set_user_nice;
+    liblinux_pal_query_main_thread;
+    liblinux_pal_is_thread_ctx;
+    liblinux_pal_unregister_blkdev_region;
+    liblinux_pal_unregister_chrdev_region;
+    liblinux_pal_vfree;
+    liblinux_pal_vmalloc_range;
+    liblinux_pal_vmalloc_range_ex;
+    liblinux_pal_vmalloc_nr_pages;
+    liblinux_pal_vmalloc_nr_pages_trylock;
+    liblinux_pal_vmalloc_pmem_stat;
+    liblinux_pal_remap_vmalloc_range;
+    liblinux_pal_check_vmalloc_size;
+    liblinux_pal_malloc;
+    liblinux_pal_calloc;
+    liblinux_pal_free;
+    liblinux_pal_vm_mmap;
+    liblinux_pal_iofast_page_info_init;
+    liblinux_pal_vm_prepare;
+    liblinux_pal_vm_unmap;
+    liblinux_pal_vm_zap;
+    liblinux_pal_vm_zap_sp;
+    liblinux_pal_usermap_alloc_va;
+    liblinux_pal_usermap_prepare;
+    liblinux_pal_usermap_finish;
+    liblinux_pal_usermap_munmap;
+    liblinux_pal_usermap_munmap_sp;
+    liblinux_pal_find_vma;
+    liblinux_pal_find_vma_by_mm;
+    liblinux_pal_ws_activate;
+    liblinux_pal_ws_deactivate;
+    liblinux_pal_kasan_report;
+    liblinux_pal_kasan_check;
+    liblinux_pal_kasan_poison;
+    liblinux_pal_query_pgd;
+    liblinux_pal_socket_create;
+    liblinux_pal_socket_connect;
+    liblinux_pal_socket_sendmsg;
+    liblinux_pal_socket_close;
+    liblinux_pal_set_iowait;
+    liblinux_pal_clr_iowait;
+    /* dfx apis */
+    liblinux_dfx_vmalloc_hook;
+    liblinux_pal_mincore;
+    liblinux_pal_in_group_p;
+    liblinux_pal_in_egroup_p;
+    liblinux_pal_capable;
+    /* kernel livepatch */
+    liblinux_pal_klp_for_each_thread;
+    liblinux_pal_sub_shrinker_register;
+    liblinux_pal_sub_shrinker_unregister;
+
+    /* rtc */
+    liblinux_pal_rtc_ops_init;
+    liblinux_pal_register_rtc_ops;
+
+  local:
+    *;
+};
+
+LNXBASE_VERS_1.1 {
+  global:
+    /* lnxbase APIs */
+    lnxbase_page_pool_get;
+    lnxbase_page_pool_setup;
+    lnxbase_sysinfo_get;
+    lnxbase_max_cspace_slots_get;
+    lnxbase_register_dentry;
+    lnxbase_enable_device_autoprobe;
+    lnxbase_support_device_autoprobe;
+    lnxbase_set_default_ctx;
+    __lnxbase_acquire_bootfdt;
+    lnxbase_enable_bootfdt;
+    lnxbase_load_extra_modules;
+    lnxbase_flush_cache_range_by_pa;
+    lnxbase_vtimer_init;
+    lnxbase_vtimer_set_next_event;
+    lnxbase_mm_alloc;
+    lnxbase_mm_query;
+    lnxbase_mm_free;
+    lnxbase_iofast_declare;
+    lnxbase_iofast_alloc_pfn_v;
+    lnxbase_iofast_free_pfn_v;
+    lnxbase_rtc_read_pid_and_name;
+    lnxbase_wakelock_stat_enqueue;
+    lnxbase_current_cnode_idx;
+    lnxbase_resolve_caller;
+    lnxbase_stat_func_register;
+    lnxbase_pages_stat;
+
+    /* PAL APIs */
+    liblinux_pal_page_alloc_init_ex;
+    liblinux_pal_thread_setscheduler;
+    liblinux_pal_getpriority_by_tid;
+    liblinux_pal_sched_getaffinity;
+    liblinux_pal_sched_setaffinity;
+    liblinux_pal_thread_specific_init;
+    lnxbase_verify_cms_data;
+    liblinux_pal_gdentry;
+    liblinux_pal_pdentry;
+    liblinux_pal_current_mm;
+    liblinux_pal_vm_zap_ptes;
+    liblinux_pal_vmemmap_init;
+    liblinux_pal_vmemmap_is_populated;
+    liblinux_pal_vmemmap_dump;
+    liblinux_pal_vm_mmap_batch;
+    liblinux_pal_remap_pa_range_batch;
+    liblinux_pal_remap_pa_range_batch_sp;
+    liblinux_pal_remap_pa_range_batch_mm;
+    liblinux_pal_is_compat_client;
+    liblinux_pal_futex_wake_ex;
+    liblinux_pal_sysfs_rename_link;
+    liblinux_pal_sysfs_rename_link_ns;
+    liblinux_pal_cpu_topology;
+    liblinux_pal_thread_set_vip_prio;
+    liblinux_pal_proc_unlock_pid;
+    liblinux_pal_proc_lock_pid;
+    liblinux_pal_mpam_event_ctrl;
+    liblinux_pal_mpam_event_bind;
+    liblinux_pal_mpam_event_unbind;
+    liblinux_pal_mpam_event_wait;
+    liblinux_pal_mpam_event_read;
+    liblinux_pal_cooling_freq_limit;
+    liblinux_pal_set_thermal_intelligent_enable;
+    liblinux_pal_get_thermal_intelligent_enable;
+    liblinux_pal_set_sched_key_process;
+
+    /* file vfs apis */
+    liblinux_pal_ksys_access;
+    liblinux_pal_vfs_open;
+    liblinux_pal_vfs_read;
+    liblinux_pal_vfs_fstat;
+    liblinux_pal_ksys_pwrite;
+    liblinux_pal_ksys_pwritev;
+    liblinux_pal_ksys_pread;
+    liblinux_pal_ksys_preadv;
+    liblinux_pal_vfs_close;
+    liblinux_pal_vfs_ioctl;
+    liblinux_pal_ksys_fstat;
+    liblinux_pal_ksys_fstat_nocheck;
+    liblinux_pal_ksys_rename;
+    liblinux_pal_ksys_readlinkat;
+    liblinux_pal_ksys_mkdir;
+    liblinux_pal_ksys_rmdir;
+    liblinux_pal_ksys_unlink;
+    liblinux_pal_ksys_fchown;
+    liblinux_pal_ksys_fstatat;
+    liblinux_pal_ksys_open;
+    liblinux_pal_ksys_openat;
+    liblinux_pal_ksys_close;
+    liblinux_pal_ksys_ioctl;
+    liblinux_pal_ksys_lseek;
+    liblinux_pal_ksys_write;
+    liblinux_pal_ksys_read;
+    liblinux_pal_ksys_symlink;
+    liblinux_pal_ksys_readdir;
+    liblinux_pal_ksys_statfs;
+    liblinux_pal_ksys_fsync;
+    liblinux_pal_ksys_sync;
+
+    /* proxy apis */
+    liblinux_pal_rpc_invoke;
+
+    /* vmap apis */
+    vmap_tree_foreach;
+    vmap_tree_foreach_trylock;
+
+    /* fpu syscall */
+    liblinux_pal_fpu_save;
+    liblinux_pal_fpu_restore;
+
+    /* for fileguard */
+    liblinux_pal_sec_fileguard_cfg;
+
+    /* for itrustee tzdriver */
+    liblinux_pal_get_processname_by_tid;
+
+    /* cma */
+    liblinux_pal_cma_area_init;
+    liblinux_pal_cma_alloc;
+    liblinux_pal_cma_release;
+
+    /* dmabuf_swap */
+    liblinux_pal_mem_swap_space_init;
+    liblinux_pal_mem_swap_alloc_extentid;
+    liblinux_pal_mem_swap_free_extentid;
+    liblinux_pal_mem_swap_in_range;
+    liblinux_pal_mem_swap_out_range;
+
+    /* sd */
+    liblinux_pal_sd_ida_alloc;
+    liblinux_pal_sd_ida_free;
+
+    /* mm */
+    liblinux_pal_get_user_pages;
+    liblinux_pal_put_user_pages;
+    liblinux_pal_mem_enable_rsv_mem;
+    liblinux_pal_charge_mlock;
+    liblinux_pal_uncharge_mlock;
+
+    liblinux_pal_vm_unpopulate;
+
+    liblinux_pal_get_current_signals;
+    liblinux_pal_get_pending_signals;
+    liblinux_pal_get_task_sched_time;
+    liblinux_pal_get_cpu_total_inst;
+    liblinux_pal_suspend_cnt_read;
+    liblinux_pal_get_max_capacity_cpu;
+    liblinux_pal_set_max_cpufreq;
+
+    liblinux_pal_change_secpage_range;
+    liblinux_pal_thread_set_power_group;
+    liblinux_pal_thread_set_task_boost;
+    liblinux_pal_thread_get_priority;
+    liblinux_pal_thread_set_pin_preempted;
+
+    /* cpufreq */
+    liblinux_pal_cpufreq_quick_get;
+    liblinux_pal_cpufreq_quick_get_max;
+    liblinux_pal_cpufreq_quick_get_hw_max;
+    liblinux_pal_get_cpu_idle_time;
+
+    liblinux_pal_thread_create_task_init;
+
+    liblinux_pal_hvc_call;
+    liblinux_pal_get_random_u64;
+
+    liblinux_pal_get_log_usertype;
+     /* ama */
+    liblinux_pal_mm_ama_ddr_intr;
+};
+
+LNXBASE_HACK_1.1 {
+  global:
+    /* seharmony */
+    liblinux_pal_sel_seharmony_pool_init;
+    liblinux_pal_sel_seharmony_prot_pool_init;
+    liblinux_pal_sel_verify_tampering;
+    liblinux_pal_sel_load_policy;
+    liblinux_pal_sel_init_ctx;
+    liblinux_pal_sel_update_enforce;
+    liblinux_pal_sel_avc_check;
+    liblinux_pal_sel_transition_sid;
+    liblinux_pal_sel_initialized;
+    liblinux_pal_sel_policycap_extsockclass;
+    liblinux_pal_sel_allow_unknown;
+    liblinux_pal_sync_wakeup_trad;
+    liblinux_pal_sync_wakeup;
+    liblinux_pal_sync_open;
+    liblinux_pal_sync_close;
+
+    /* prmem */
+    liblinux_pal_prmem_malloc;
+    liblinux_pal_prmem_calloc;
+    liblinux_pal_prmem_strdup;
+    liblinux_pal_prmem_protect_pool;
+    liblinux_pal_prmem_sec_region_protect;
+
+    /* cpa */
+    liblinux_pal_cpa_prepare_memory;
+};
+
+LNXBASE_EXT_1.1 {
+  global:
+    liblinux_ext_hvgr_mmu_cbit_config;
+    liblinux_ext_hvgr_mmu_irq_mask;
+    liblinux_ext_hvgr_mmu_irq_enable;
+    liblinux_ext_hvgr_mmu_irq_disable;
+    liblinux_ext_hvgr_mmu_clear_fault;
+    liblinux_ext_hvgr_mmu_unmask_fault;
+    liblinux_ext_hvgr_mmu_hal_unlock;
+    liblinux_ext_hvgr_mmu_hal_enable;
+    liblinux_ext_hvgr_mmu_hal_disable;
+    liblinux_ext_hvgr_mmu_hal_flush_pt;
+    liblinux_ext_hvgr_mmu_hal_flush_l2_caches;
+    liblinux_ext_hvgr_mmu_tbl_map;
+    liblinux_ext_hvgr_mmu_tbl_unmap;
+    liblinux_ext_hvgr_mmu_tbl_free_pgd;
+    liblinux_ext_hvgr_mmu_fault_clear_as;
+};

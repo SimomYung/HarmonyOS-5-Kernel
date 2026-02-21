@@ -1,0 +1,50 @@
+From 13ad4296ea8ba66f5620288b2fd06315852e73ae Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Marco=20Trevisan=20=28Trevi=C3=B1o=29?= <mail@3v1n0.net>
+Date: Tue, 6 Sep 2022 17:20:45 +0200
+Subject: [PATCH] gregex: Fix a potential PCRE2 code leak on reallocation
+ failures
+
+In case recalc_match_offsets() failed we were just returning, but in
+such case, per the documentation we should still set the match_info (if
+provided) and free the pcre2 code instance.
+
+So let's just break the loop we're in it, as if we we've no matches set.
+This also avoids re-allocating the offsets array and potentially
+accessing to unset data.
+---
+ glib/gregex.c | 12 +++++-------
+ 1 file changed, 5 insertions(+), 7 deletions(-)
+
+diff --git a/glib/gregex.c b/glib/gregex.c
+index f2a5b5fd1c..6f3ee88122 100644
+--- a/glib/gregex.c
++++ b/glib/gregex.c
+@@ -2337,13 +2337,6 @@ g_regex_match_all_full (const GRegex      *regex,
+                                        info->match_data,
+                                        info->match_context,
+                                        info->workspace, info->n_workspace);
+-
+-      if (!recalc_match_offsets (info, error))
+-        {
+-          g_match_info_free (info);
+-          return FALSE;
+-        }
+-
+       if (info->matches == PCRE2_ERROR_DFA_WSSIZE)
+         {
+           /* info->workspace is too small. */
+@@ -2370,6 +2363,11 @@ g_regex_match_all_full (const GRegex      *regex,
+                        _("Error while matching regular expression %s: %s"),
+                        regex->pattern, match_error (info->matches));
+         }
++      else if (info->matches > 0)
++        {
++          if (!recalc_match_offsets (info, error))
++            info->matches = PCRE2_ERROR_NOMATCH;
++        }
+     }
+ 
+   pcre2_code_free (pcre_re);
+-- 
+GitLab
+

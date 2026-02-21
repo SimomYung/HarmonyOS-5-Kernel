@@ -1,0 +1,8 @@
+config UKMD_ENABLE
+	bool "UKMD driver support"
+	default n
+	help
+	  This feature driver supports ukmd driver.
+
+source "drivers/video/fbdev/ukmd/cmdlist/Kconfig"
+source "drivers/video/fbdev/ukmd/uksm/Kconfig"

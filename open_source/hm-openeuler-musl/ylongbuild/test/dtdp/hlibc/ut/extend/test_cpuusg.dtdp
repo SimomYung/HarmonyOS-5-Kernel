@@ -1,0 +1,255 @@
+{
+    "root": {
+        "data": {
+            "id": "cig7f3ul1uo0",
+            "created": 1646917188946,
+            "text": "获取任务CPU占用"
+        },
+        "children": [
+            {
+                "data": {
+                    "id": "cigoilnr0200",
+                    "created": 1646965421676,
+                    "text": "HpePthreadGetCpuUsage",
+                    "layout_mind_offset": {
+                        "x": -2,
+                        "y": -66
+                    }
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "cigoj567abk0",
+                            "created": 1646965464150,
+                            "text": "线程参数",
+                            "usecase": 2
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "cigoow52dqo0",
+                                    "created": 1646965914676,
+                                    "text": "线程句柄为空",
+                                    "usecase": 4,
+                                    "author": "j00576234",
+                                    "showId": "00001"
+                                },
+                                "children": []
+                            },
+                            {
+                                "data": {
+                                    "id": "cigopb1uja80",
+                                    "created": 1646965947133,
+                                    "text": "线程句柄不存在",
+                                    "usecase": 4,
+                                    "author": "j00576234",
+                                    "showId": "00002"
+                                },
+                                "children": []
+                            },
+                            {
+                                "data": {
+                                    "id": "cigopixs46w0",
+                                    "created": 1646965964301,
+                                    "text": "正常线程句柄",
+                                    "usecase": 4,
+                                    "author": "j00576234",
+                                    "showId": "00003"
+                                },
+                                "children": []
+                            }
+                        ]
+                    },
+                    {
+                        "data": {
+                            "id": "cigojsdrxkg0",
+                            "created": 1646965514674,
+                            "text": "模式参数",
+                            "usecase": 2
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "cigopor53jk0",
+                                    "created": 1646965976960,
+                                    "text": "支持模式参数",
+                                    "usecase": 4,
+                                    "author": "j00576234",
+                                    "showId": "00004"
+                                },
+                                "children": []
+                            },
+                            {
+                                "data": {
+                                    "id": "cigopsek47s0",
+                                    "created": 1646965984907,
+                                    "text": "非法模式参数",
+                                    "usecase": 4,
+                                    "author": "j00576234",
+                                    "showId": "00005"
+                                },
+                                "children": []
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "data": {
+                    "id": "cigoipltdfs0",
+                    "created": 1646965430266,
+                    "text": "HpeProcessGetCpuUsage",
+                    "layout_mind_offset": {
+                        "x": 5,
+                        "y": -62
+                    }
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "cigok0nn4zk0",
+                            "created": 1646965532685,
+                            "text": "进程参数",
+                            "usecase": 2
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "cigopyzsrlc0",
+                                    "created": 1646965999252,
+                                    "text": "正常存在进程",
+                                    "usecase": 4,
+                                    "author": "j00576234",
+                                    "showId": "00006"
+                                },
+                                "children": []
+                            },
+                            {
+                                "data": {
+                                    "id": "cigoq2cbs6o0",
+                                    "created": 1646966006540,
+                                    "text": "进程号不存在",
+                                    "usecase": 4,
+                                    "author": "j00576234",
+                                    "showId": "00007"
+                                },
+                                "children": []
+                            }
+                        ]
+                    },
+                    {
+                        "data": {
+                            "id": "cigok3jtqhk0",
+                            "created": 1646965538985,
+                            "text": "模式参数",
+                            "usecase": 2
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "cigoqdm7qi80",
+                                    "created": 1646966031082,
+                                    "text": "支持模式",
+                                    "usecase": 4,
+                                    "author": "j00576234",
+                                    "showId": "00008"
+                                },
+                                "children": []
+                            },
+                            {
+                                "data": {
+                                    "id": "cigoqggso080",
+                                    "created": 1646966037285,
+                                    "text": "非法模式",
+                                    "usecase": 4,
+                                    "author": "j00576234",
+                                    "showId": "00009"
+                                },
+                                "children": []
+                            }
+                        ]
+                    },
+                    {
+                        "data": {
+                            "id": "cijlxkzuxio0",
+                            "created": 1647262812234,
+                            "text": "DE确认：核数*100%"
+                        },
+                        "children": []
+                    }
+                ]
+            },
+            {
+                "data": {
+                    "id": "cigoivaoia00",
+                    "created": 1646965442653,
+                    "text": "HpePthreadGetRunningTime",
+                    "layout_mind_offset": {
+                        "x": 1049,
+                        "y": 362
+                    }
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "cigoosxe9480",
+                            "created": 1646965907681,
+                            "text": "线程参数",
+                            "usecase": 2
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "cigoqnprm2o0",
+                                    "created": 1646966053065,
+                                    "text": "句柄为空",
+                                    "usecase": 4,
+                                    "author": "j00576234",
+                                    "showId": "00010"
+                                },
+                                "children": []
+                            },
+                            {
+                                "data": {
+                                    "id": "cigoqqehc8w0",
+                                    "created": 1646966058913,
+                                    "text": "句柄不存在",
+                                    "usecase": 4,
+                                    "author": "j00576234",
+                                    "showId": "00011"
+                                },
+                                "children": []
+                            },
+                            {
+                                "data": {
+                                    "id": "cigoqswd3y80",
+                                    "created": 1646966064347,
+                                    "text": "正常句柄",
+                                    "usecase": 4,
+                                    "author": "j00576234",
+                                    "showId": "00012"
+                                },
+                                "children": []
+                            }
+                        ]
+                    },
+                    {
+                        "data": {
+                            "id": "cijlyx8texs0",
+                            "created": 1647262917261,
+                            "text": "系统时间改变不影响计数",
+                            "usecase": 2
+                        },
+                        "children": []
+                    }
+                ]
+            }
+        ]
+    },
+    "templatePath": null,
+    "singleTemplatePath": null,
+    "testcaseFilePath": "",
+    "template": "default",
+    "theme": "fresh-blue",
+    "version": "1.4.43"
+}

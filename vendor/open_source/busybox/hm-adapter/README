@@ -1,0 +1,15 @@
+## About
+This repo support executable for many common UNIX utilities based on opensource busybox with
+the base version is 1.30.1
+
+## Directories
+[hm-src] contains build framework and some cmd implementation on hongmeng.
+[hm-test] contains cmd just for CI or performance test for hongmeng.
+
+Others are from busybox code source.
+
+## Build with local sdk
+./hm-src/build.sh [-m dynamic/static] <armeb/arm/aarch64> <SDK_PATH>
+
+1. The default link mode is dynamic if no -m options is specified
+2. The output is in ./build dir: busyboxhm.elf[stripped] & busyboxhm_unstripped.elf[for debug]

@@ -1,0 +1,164 @@
+/*
+ * Copyright (C) Huawei Technologies Co., Ltd. 2019-2020. All rights reserved.
+ * Description: Header file for socket sysif api
+ * Author: Huawei OS Kernel Lab
+ * Create: Sat Oct 05 08:54:19 2019
+ */
+
+#ifdef SYSIF_EXPORT_API
+
+#define NETTEST_BUF_LEN		64
+struct sysif_nettest {
+	char buf[NETTEST_BUF_LEN];
+};
+struct ux_socket;
+#endif
+
+/*
+ * To support the mixed data model which means the client and the server
+ * may use different data model. See the comment for limitation of data type
+ * used in the sysif interfaces in <libsysif/base/api.h>.
+ */
+/* please make sure revoke is 1st, and fork is 2nd */
+DEFINE_MANAGER(socket, 51,
+	DEFINE_SIMPLE_METHOD(socket, revoke,
+			     ARG_NO,
+			     RET_NO,
+			     SLOWDATA)
+	DEFINE_SIMPLE_METHOD(socket, fork,
+			     ARG_NO,
+			     RET_NO,
+			     SLOWDATA)
+	DEFINE_LSYSCALL_METHOD(socket, SYS_socket,
+			     ARG(3, int, domain, int, type, int, protocol))
+	DEFINE_LSYSCALL_METHOD(socketpair, SYS_socketpair,
+			     ARG(4, int, domain, int, type, int, protocol, int *, fd))
+	DEFINE_LSYSCALL_METHOD(close, NATIVE, SYS_close,
+			     ARG(2, long long, sock, int, fd))
+	DEFINE_LSYSCALL_METHOD(shutdown, SYS_shutdown,
+			     ARG(2, long long, socket, int, how))
+	DEFINE_LSYSCALL_METHOD(bind, NATIVE, SYS_bind,
+			     ARG(3, long long, socket, const void *, addr, socklen_t, len))
+	DEFINE_LSYSCALL_METHOD(listen, NATIVE, SYS_listen,
+			     ARG(2, long long, socket, int, backlog))
+	DEFINE_LSYSCALL_METHOD(accept, SYS_accept,
+			     ARG(3, long long, socket, void *, addr, void *, addrlen))
+	DEFINE_LSYSCALL_METHOD(accept4, SYS_accept4,
+			     ARG(4, long long, socket, void *, addr, void *, addrlen, int, flags))
+	DEFINE_LSYSCALL_METHOD(connect, SYS_connect,
+			     ARG(3, long long, socket, const void *, addr, socklen_t, addrlen))
+	DEFINE_LSYSCALL_METHOD_LONG(send, SYS_send,
+			     ARG(4, long long, socket, const void *, buf, size_t, len, int, flags),
+			     ARCH(__arm__))
+	DEFINE_LSYSCALL_METHOD_LONG(recv, SYS_recv,
+			     ARG(4, long long, socket, void *, buf, size_t, len, int, flags),
+			     ARCH(__arm__))
+	DEFINE_LSYSCALL_METHOD(sendmmsg, SYS_sendmmsg,
+			     ARG(4, long long, socket, const void *, msgvec, size_t, vlen, int, flags))
+	DEFINE_LSYSCALL_METHOD(recvmmsg, SYS_recvmmsg,
+			     ARG(5, long long, socket, const void *, msgvec, size_t, vlen, int, flags, void *, timeout))
+	DEFINE_LSYSCALL_METHOD_LONG(read, SYS_read,
+			     ARG(3, long long, socket, void *, buf, size_t, len))
+	DEFINE_LSYSCALL_METHOD_LONG(write, SYS_write,
+			     ARG(3, long long, socket, const void *, buf, size_t, len))
+	DEFINE_LSYSCALL_METHOD_LONG(sendmsg, SYS_sendmsg,
+			     ARG(3, long long, socket, const void *, msg, int, flags))
+	DEFINE_LSYSCALL_METHOD_LONG(recvmsg, SYS_recvmsg,
+			     ARG(3, long long, socket, void *, msg, int, flags))
+	DEFINE_LSYSCALL_METHOD_LONG(sendto, SYS_sendto,
+			     ARG(6, long long, socket, const void *, buf, size_t, len, int, flags, const void *, addr, socklen_t, addrlen))
+	DEFINE_LSYSCALL_METHOD_LONG(recvfrom, SYS_recvfrom,
+			     ARG(6, long long, socket, void *, buf, size_t, len, int, flags, void *, addr, void *, addrlen))
+	DEFINE_LSYSCALL_METHOD_LONG(readv, SYS_readv,
+			     ARG(3, long long, socket, const void *, iovs, int, iovcnt))
+	DEFINE_LSYSCALL_METHOD_LONG(writev, SYS_writev,
+			     ARG(3, long long, socket, const void *, iovs, int, iovcnt))
+	DEFINE_LSYSCALL_METHOD(getsockopt, SYS_getsockopt,
+			     ARG(5, long long, socket, int, level, int, optname,
+				    void *, optval, socklen_t *, optlen))
+	DEFINE_LSYSCALL_METHOD(setsockopt, SYS_setsockopt,
+			     ARG(5, long long, socket, int, level, int, optname,
+				    const void *, optval, socklen_t, optlen))
+	DEFINE_LSYSCALL_METHOD(getsockname, SYS_getsockname,
+			     ARG(3, long long, socket, void *, addr, void *, addrlen))
+	DEFINE_LSYSCALL_METHOD(getpeername, SYS_getpeername,
+			     ARG(3, long long, socket, void *, addr, void *, addrlen))
+	DEFINE_LSYSCALL_METHOD(ioctl, SYS_ioctl,
+			     ARG(3, long long, socket, int, request, unsigned long, args))
+	DEFINE_LSYSCALL_METHOD(fcntl, NATIVE, SYS_fcntl,
+			     ARG(4, long long, socket, int, cmd, unsigned long, val, int, newfd))
+	DEFINE_LSYSCALL_METHOD(fcntl64, NATIVE, SYS_fcntl64,
+			     ARG(4, long long, socket, int, cmd, unsigned long, val, int, newfd),
+			     ARCH(__arm__))
+	DEFINE_LSYSCALL_METHOD(fchown, SYS_fchown,
+			     ARG(3, long long, socket, unsigned int, uid, unsigned int, gid))
+	DEFINE_LSYSCALL_METHOD(fchown32, SYS_fchown32,
+			     ARG(3, long long, socket, unsigned int, uid, unsigned int, gid),
+			     ARCH(__arm__))
+	DEFINE_LSYSCALL_METHOD(dup, SYS_dup,
+			     ARG(2, long long, socket, int, newfd))
+	DEFINE_LSYSCALL_METHOD(dup2, SYS_dup2,
+			     ARG(3, long long, socket, int, newfd, int, oldfd),
+			     ARCH(__arm__))
+	DEFINE_LSYSCALL_METHOD(dup3, SYS_dup3,
+			     ARG(4, long long, socket, int, newfd, int, flags, int, oldfd))
+	DEFINE_LSYSCALL_METHOD(fstat, SYS_fstat,
+			     ARG(2, long long, socket, void *, buf))
+	DEFINE_LSYSCALL_METHOD(fstat64, SYS_fstat64,
+			     ARG(2, long long, socket, void *, buf),
+			     ARCH(__arm__))
+	DEFINE_SIMPLE_METHOD(socket, dev_ioctl,
+			     ARG(2, int, cmd, void *, args),
+			     RET_NO,
+			     SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(socket, send_fd,
+			     ARG(1, unsigned long, argu_info),
+			     RET(1, int, recv_fd),
+			     SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(socket, put_send_fd,
+			     ARG(1, uintptr_t, argu_info),
+			     RET_NO,
+			     SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(socket, proc_unauthoried_files,
+			     ARG(1, int, sel_null_fd),
+			     RET_NO,
+			     SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(socket, query_info,
+			     ARG(3, int, fd, uint32_t, cnode, void *, info),
+			     RET_NO,
+			     SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD_LONG(socket, sys_read,
+			     ARG(5, uint32_t, cnode, int, fd,
+				    void *, buf, size_t, len, int, flags),
+			     RET_NO,
+			     SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD_LONG(socket, sys_write,
+			     ARG(5, uint32_t, cnode, int, fd,
+				    const void *, buf, size_t, len, int, flags),
+			     RET_NO,
+			     SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD_LONG(socket, sys_ioctl,
+			     ARG(4, uint32_t, cnode, int, fd,
+				    int, request, unsigned long, arg),
+			     RET_NO,
+			     SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(socket, mmap,
+			     ARG(7, int, fd,
+				    unsigned int, vs_cnode_idx, uintptr_t, vaddr,
+				    size_t, aligned_len, unsigned int, prot,
+				    unsigned int, flags, long long, offset),
+			     RET(1, uintptr_t, rvaddr),
+			     SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(socket, attach,
+			     ARG(3, struct ux_socket *, sock, unsigned int, cnode, int, fd),
+			     RET_NO,
+			     SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(socket, get,
+			     ARG(2, unsigned int, cnode, int, fd),
+			     RET(1, void *, sock),
+			     SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(socket, put,
+			     ARG(1, struct ux_socket *, sock),
+			     RET_NO,
+			     SLOWDATA_NO)
+)

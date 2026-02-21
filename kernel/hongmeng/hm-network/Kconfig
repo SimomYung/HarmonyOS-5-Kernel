@@ -1,0 +1,199 @@
+menu "Network Options"
+
+config DEBUG_BUILD
+  bool "Enable debug build"
+  default n
+
+choice
+  prompt "select tcp/ip stack"
+  default LWIP
+config LWIP
+  bool "lwip stack"
+config VISP
+  bool "visp stack"
+config LDK_INET
+  bool "ldk inet stack"
+config NO_STACK
+  bool "no stack"
+endchoice
+
+config LDK_QIPCRTR
+  bool "ldk qipcrtr stack"
+  default n
+
+config LDK
+  bool "ldk stack"
+  depends on LDK_INET || LDK_QIPCRTR
+  default y
+
+config UXNET_CAN
+  bool "Enable socket can"
+  default n
+
+config UXNET_NETLINK
+  bool "Enable netlink"
+  default y
+
+config UXNET_PACKET
+  bool "Enable PACKET"
+  default y
+
+config UXNET_NETFILTER
+  depends on LWIP
+  bool "Enable netfilter"
+  default n
+
+config UXNET_CTRACK
+  depends on UXNET_NETFILTER
+  bool "Enable ctrack"
+  default n
+
+config UXNET_TUN
+  bool "Enable tun"
+  default n
+
+config UXNET_VISP_PPP
+  depends on VISP
+  bool "Enable ppp"
+  default n
+
+config UXNET_PPPOX
+  bool "Enable pppox"
+  default n
+
+config UXNET_UNIX
+  bool "Enable unix socket"
+  default y
+
+config SCM_RIGHTS
+  bool "Enable scm_rights"
+  default y
+
+config POSIX_CAPS
+  bool "Enable POSIX_CAPS"
+  default y
+
+config VIRTIO_VSOCK
+  bool "Enable virtio vsock"
+  default n
+
+config VSOCK_HOST
+  bool "Enable vsock host"
+  default n
+
+config VHOST
+  bool "Enable vhost mode"
+  default n
+
+config VHOST_VNET
+  bool "Enable vhost-user backend for virtio-net"
+  depends on VHOST
+  default n
+
+config AUDIT
+  bool "Enable audit"
+  default n
+
+config UEV_TRACE
+  bool "Enable UEV trace support"
+  default n
+
+config UXNET_BPF
+  bool "Enable BPF"
+  default y
+
+config UXNET_BONDING
+  bool "Enable BONDING"
+  default y
+
+config NETWORK_TEST
+  bool "Enbale network test"
+  default y
+
+config SOCKET_LIMIT_PER_PROC
+  int "Maximum sockets a process can create"
+  default 512
+
+config COMPAT
+    bool "Support for 32-bit applications at EL0"
+    default n
+config NO_COMPAT
+    def_bool !COMPAT
+
+config ARCH_LIB32MODE
+    bool "Support for 32-bit libs"
+    default n
+
+config ILP32
+    bool "Support for aarch64ilp32 applications at EL0"
+    default n
+config NO_ILP32
+    def_bool !ILP32
+
+config NET_FUSION
+    bool "Enable hmnetd fusion mode"
+    default n
+
+config NETFS_FUSION
+    bool "Enable hmnet and fs into fusion mode"
+    default n
+
+config NETFS_FUSION_PROCFS
+    bool "Enable hmnet and fs into fusion mode in nosysk"
+    default n
+
+config NET_STANDALONE
+    def_bool !NET_FUSION
+
+config LSYSCALL_ENABLED
+  bool "Enable lsyscall"
+  default y
+
+config FD_FLAG_INSTALL
+  bool "Config flag for fd of domain socket"
+  default n
+
+config OFFLOAD_RECV_QUEUE
+  bool "Offload the recvqueue into microkernel"
+  default y
+
+config SEHARMONY
+  bool "Enable seharmony"
+  select SEC_SERVICE
+  default n
+
+config SEC_SERVICE
+  bool "Enable security service response"
+  default n
+
+config SECURITY_DSL
+  bool "Enable security dsl generated headers"
+  default n
+
+config HMSD_TREND
+  string "Security description generation trend"
+  default "performance"
+
+config NET_NS
+  bool "Support network namespace"
+  default n
+
+config SECCOMP
+  bool "Enable the secure computing feature"
+  default n
+
+config DISABLE_FPU
+    bool "The netd services disable FPU"
+    default n
+    help
+      Say Y to enable the netd services use FPU
+
+config WORKQUEUE
+  bool "Enable net workqueue"
+  default y
+
+config UNIX_FASTPATH
+  bool "Enable unix fastpath"
+  default n
+
+endmenu

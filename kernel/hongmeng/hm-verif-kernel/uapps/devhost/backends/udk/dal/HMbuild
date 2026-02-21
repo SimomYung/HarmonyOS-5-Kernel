@@ -1,0 +1,26 @@
+# Copyright (c) Huawei Technologies Co., Ltd. 2022. All rights reserved.
+# Description: HMbuild for udk
+# Author: Huawei OS Kernel Lab
+# Create: Wed Feb 09 11:51:30 2022
+
+src-y: udk_char.c
+src-y: udk_power.c
+src-y: udk_uart.c
+
+src-CONFIG_UDK_MDIO: udk_mdio.c
+src-CONFIG_UDK_MAILBOX: udk_mbox.c
+src-CONFIG_UDK_GPIO: udk_gpio.c
+src-CONFIG_UDK_FIRMWARE: udk_fw.c
+src-CONFIG_UDK_EXT: udk_ext.c
+
+subdir-y: block
+subdir-y: irq
+subdir-y: net
+subdir-y: uio
+
+subdir-y: i2c
+subdir-CONFIG_UDK_TTY: tty
+subdir-CONFIG_UDK_SPI: spi
+subdir-CONFIG_UDK_CLOCK: clock
+subdir-CONFIG_UDK_PCI: pci
+subdir-CONFIG_UDK_PHY: phy

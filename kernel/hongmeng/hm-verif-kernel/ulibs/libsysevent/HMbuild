@@ -1,0 +1,6 @@
+# Copyright (c) Huawei Technologies Co., Ltd. 2023-2023. All rights reserved.
+# Description: HMbuild
+# Author: Huawei OS Kernel Lab
+# Create: Thu Oct 26 08:07:17 PM 2023
+
+src-y: sysevent.c

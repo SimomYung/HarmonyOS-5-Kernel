@@ -1,0 +1,63 @@
+menu "Related Thread Group"
+
+config SCHED_RTG
+	bool "Related Thread Group"
+	depends on SCHED_WALT
+	default n
+	help
+	  Set related threads into a group.
+
+config SCHED_RTG_DEBUG
+	bool "Related Thread Group DebugFS"
+	depends on SCHED_RTG
+	default n
+	help
+	  If set, debug node will show rtg threads
+
+config SCHED_RTG_CGROUP
+	bool "enable DEFAULT_CGROUP_COLOC RTG"
+	depends on SCHED_RTG
+	default n
+	help
+	  If set, support for adding the tasks which belong to
+	  co-located cgroup to DEFAULT_CGROUP_COLOC RTG.
+
+config SCHED_RTG_FRAME
+	bool "Frame-based Related Thread Group"
+	depends on SCHED_RTG
+	default n
+	help
+	 Support frame-based related thread group scheduling.
+	 If set, you can set the task to RTG and kernel will
+	 statistic the load per frame.
+
+config SCHED_RTG_TRANS
+	bool "Frame-based Related Thread Group support trans"
+	depends on SCHED_RTG_FRAME
+	default n
+	help
+	 Support frame-based related thread group inherit.
+	 If set, thread will be added to FrameRTG when it become
+	 the blocker.
+
+config SCHED_RTG_RT_THREAD_LIMIT
+	bool "Limit the number of RT threads in groups"
+	depends on SCHED_RTG_FRAME
+	default n
+	help
+	  If set, limit the number of RT threads in frame RTG.
+
+config RTG_RT_AUTO_SET
+	bool "auto set threads policy when joining RTG"
+	depends on SCHED_RTG_FRAME
+	default n
+	help
+	  If set, auto set threads policy when joining RTG.
+
+config RTG_RT_ACCOUNT
+	bool "limit the number of new RT threads in signal frame RTG"
+	depends on RTG_RT_AUTO_SET
+	default n
+	help
+	  If set, limit the number of new RT threads in signal frame RTG.
+endmenu

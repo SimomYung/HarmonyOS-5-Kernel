@@ -1,0 +1,709 @@
+{
+    "root": {
+        "data": {
+            "id": "cghk7jql0280",
+            "created": 1639742514126,
+            "text": "HLIBC",
+            "usecase": 99,
+            "expandState": "expand"
+        },
+        "children": [
+            {
+                "data": {
+                    "id": "cghkcnvo8ao0",
+                    "created": 1639742914960,
+                    "text": "HpeApollCreate",
+                    "usecase": 1,
+                    "expandState": "expand",
+                    "layout_mind_offset": {
+                        "x": 163,
+                        "y": -217
+                    }
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "cghke9nqvc00",
+                            "created": 1639743040734,
+                            "text": "功能分析",
+                            "layout_right_offset": {
+                                "x": 30,
+                                "y": -5
+                            }
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "cghkmem3k6w0",
+                                    "created": 1639743678432,
+                                    "text": "创建的apoll能否正常工作",
+                                    "usecase": 2,
+                                    "layout_right_offset": {
+                                        "x": 5,
+                                        "y": -30
+                                    }
+                                },
+                                "children": []
+                            },
+                            {
+                                "data": {
+                                    "id": "ci42her04540",
+                                    "created": 1645684544373,
+                                    "text": "同一个线程创建多个apoll",
+                                    "usecase": 2
+                                },
+                                "children": []
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "data": {
+                    "id": "ci2h4n4xn340",
+                    "created": 1645522740631,
+                    "text": "HpeApollRemove",
+                    "layout_mind_offset": {
+                        "x": 171,
+                        "y": -53
+                    },
+                    "expandState": "expand",
+                    "usecase": 1
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "ci2h4pr9q1k0",
+                            "created": 1645522746335,
+                            "text": "入参分析",
+                            "layout_right_offset": {
+                                "x": 0,
+                                "y": -15
+                            }
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "ci2iegy38080",
+                                    "created": 1645526331908,
+                                    "text": "ap",
+                                    "layout_right_offset": {
+                                        "x": 0,
+                                        "y": -7
+                                    }
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "ci2ierdu5mg0",
+                                            "created": 1645526354628,
+                                            "text": "是否为空",
+                                            "usecase": 2,
+                                            "layout_right_offset": {
+                                                "x": 3,
+                                                "y": -12
+                                            }
+                                        },
+                                        "children": [
+                                            {
+                                                "data": {
+                                                    "id": "ci2if1l4m4g0",
+                                                    "created": 1645526376836,
+                                                    "text": "传入空指针，预期返回-1",
+                                                    "usecase": 4,
+                                                    "author": "w00634677",
+                                                    "showId": "00030"
+                                                },
+                                                "children": []
+                                            }
+                                        ]
+                                    }
+                                ]
+                            },
+                            {
+                                "data": {
+                                    "id": "ci2iem112og0",
+                                    "created": 1645526342969,
+                                    "text": "Evt"
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "ci2ifxrhso80",
+                                            "created": 1645526446878,
+                                            "text": "是否满足0-255限制条件",
+                                            "usecase": 2
+                                        },
+                                        "children": [
+                                            {
+                                                "data": {
+                                                    "id": "ci2ig8etxgo0",
+                                                    "created": 1645526470057,
+                                                    "text": "传入256，预期返回-1",
+                                                    "usecase": 4,
+                                                    "author": "w00634677",
+                                                    "showId": "00032"
+                                                },
+                                                "children": []
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "data": {
+                            "id": "ci2h4zyujjk0",
+                            "created": 1645522768561,
+                            "text": "功能分析"
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "ci2igxl4et40",
+                                    "created": 1645526524857,
+                                    "text": "是否能正确将Evt从ap中删除",
+                                    "usecase": 2,
+                                    "layout_right_offset": {
+                                        "x": 5,
+                                        "y": 13
+                                    }
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "ci2iobtnjig0",
+                                            "created": 1645527104397,
+                                            "text": "将一个已经在ap里的Evt连续删除两次， 预期第一次返回0， 第二次返回-1",
+                                            "usecase": 4,
+                                            "author": "w00634677",
+                                            "showId": "00036"
+                                        },
+                                        "children": []
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "data": {
+                    "id": "ci2h574maao0",
+                    "created": 1645522784147,
+                    "text": "HpeApollWriteEvt",
+                    "layout_mind_offset": {
+                        "x": 169,
+                        "y": 435
+                    },
+                    "usecase": 1
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "ci2h8t82krk0",
+                            "created": 1645523067338,
+                            "text": "入参分析",
+                            "layout_right_offset": {
+                                "x": 5,
+                                "y": -12
+                            }
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "ci2iw2zw0yo0",
+                                    "created": 1645527712096,
+                                    "text": "Evt"
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "ci2iw9b6jso0",
+                                            "created": 1645527725840,
+                                            "text": "是否满足0-255限制条件",
+                                            "usecase": 2,
+                                            "layout_right_offset": {
+                                                "x": -2,
+                                                "y": 0
+                                            }
+                                        },
+                                        "children": [
+                                            {
+                                                "data": {
+                                                    "id": "ci2izoc2yds0",
+                                                    "created": 1645527993639,
+                                                    "text": "传入256， 预期返回-1",
+                                                    "usecase": 4,
+                                                    "author": "w00634677",
+                                                    "showId": "00040"
+                                                },
+                                                "children": []
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "data": {
+                            "id": "ci2h90brv2g0",
+                            "created": 1645523082799,
+                            "text": "功能分析"
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "ci2j3x6ezds0",
+                                    "created": 1645528326344,
+                                    "text": "能否正确唤醒apoll",
+                                    "usecase": 2
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "ci2j7hnw4ew0",
+                                            "created": 1645528606029,
+                                            "text": "起两个线程，一个线程堵塞在一个apoll上，另一个线程写apoll中的事件，通过堵塞线程是否能被唤醒验证功能是否正确，预测返回1",
+                                            "usecase": 4,
+                                            "author": "w00634677",
+                                            "showId": "00043"
+                                        },
+                                        "children": []
+                                    },
+                                    {
+                                        "data": {
+                                            "id": "ci2j7pa409c0",
+                                            "created": 1645528622610,
+                                            "text": "写一个没有被加入任何apoll的事件，预测返回-1",
+                                            "usecase": 4,
+                                            "author": "w00634677",
+                                            "showId": "00044"
+                                        },
+                                        "children": []
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "data": {
+                    "id": "ci2h6xr322w0",
+                    "created": 1645522920466,
+                    "text": "HpeApollwait",
+                    "layout_mind_offset": {
+                        "x": 594,
+                        "y": 288
+                    },
+                    "usecase": 1
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "ci2h8mik2ow0",
+                            "created": 1645523052734,
+                            "text": "入参分析",
+                            "layout_right_offset": {
+                                "x": 312,
+                                "y": -11
+                            }
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "ci2iph58ewo0",
+                                    "created": 1645527194345,
+                                    "text": "ap",
+                                    "layout_right_offset": {
+                                        "x": 139,
+                                        "y": 3
+                                    }
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "ci2iqs0e34g0",
+                                            "created": 1645527296361,
+                                            "text": "是否为空",
+                                            "usecase": 2,
+                                            "layout_right_offset": {
+                                                "x": 207,
+                                                "y": -8
+                                            }
+                                        },
+                                        "children": [
+                                            {
+                                                "data": {
+                                                    "id": "ci2irbythg00",
+                                                    "created": 1645527339802,
+                                                    "text": "传入空指针， 预期返回-1",
+                                                    "usecase": 4,
+                                                    "author": "w00634677",
+                                                    "showId": "00037",
+                                                    "layout_right_offset": {
+                                                        "x": 427,
+                                                        "y": 0
+                                                    }
+                                                },
+                                                "children": []
+                                            }
+                                        ]
+                                    }
+                                ]
+                            },
+                            {
+                                "data": {
+                                    "id": "ci2ipm0ny6g0",
+                                    "created": 1645527204953,
+                                    "text": "rd",
+                                    "layout_right_offset": {
+                                        "x": 135,
+                                        "y": 10
+                                    }
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "ci2ir0v83gw0",
+                                            "created": 1645527315640,
+                                            "text": "是否为空",
+                                            "usecase": 2,
+                                            "layout_right_offset": {
+                                                "x": 209,
+                                                "y": 0
+                                            }
+                                        },
+                                        "children": [
+                                            {
+                                                "data": {
+                                                    "id": "ci2is8paetk0",
+                                                    "created": 1645527411060,
+                                                    "text": "传入空指针， 预期返回-1",
+                                                    "usecase": 4,
+                                                    "author": "w00634677",
+                                                    "showId": "00038",
+                                                    "layout_right_offset": {
+                                                        "x": 429,
+                                                        "y": 0
+                                                    }
+                                                },
+                                                "children": []
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "data": {
+                            "id": "ci2h8pwkqe80",
+                            "created": 1645523060112,
+                            "text": "功能分析",
+                            "layout_right_offset": {
+                                "x": 314,
+                                "y": -8
+                            }
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "ci2j11cjtko0",
+                                    "created": 1645528100329,
+                                    "text": "超时唤醒",
+                                    "layout_right_offset": {
+                                        "x": 278,
+                                        "y": 13
+                                    },
+                                    "usecase": 2
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "ci2j1hg26aw0",
+                                            "created": 1645528135370,
+                                            "text": "对于一个没有任何事件apoll实例， 设置100ms超时，通过此apoll能否在超时后唤醒判断功能是否正确",
+                                            "layout_right_offset": {
+                                                "x": 883,
+                                                "y": 15
+                                            },
+                                            "usecase": 4,
+                                            "author": "w00634677",
+                                            "showId": "00041"
+                                        },
+                                        "children": []
+                                    }
+                                ]
+                            },
+                            {
+                                "data": {
+                                    "id": "ci2j5hlli000",
+                                    "created": 1645528449161,
+                                    "text": "被事件唤醒",
+                                    "layout_right_offset": {
+                                        "x": 318,
+                                        "y": 36
+                                    },
+                                    "usecase": 2
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "ci2j5x80lsw0",
+                                            "created": 1645528483169,
+                                            "text": "起两个线程，一个线程堵塞在一个apoll上，另一个线程写apoll中的事件，通过堵塞线程是否能被唤醒验证功能是否正确",
+                                            "usecase": 4,
+                                            "author": "w00634677",
+                                            "showId": "00042",
+                                            "layout_right_offset": {
+                                                "x": 948,
+                                                "y": 0
+                                            }
+                                        },
+                                        "children": []
+                                    }
+                                ]
+                            },
+                            {
+                                "data": {
+                                    "id": "ci42ic1ongw0",
+                                    "created": 1645684616853,
+                                    "text": "唤醒中remove事件， remove唤醒我的evt",
+                                    "layout_right_offset": {
+                                        "x": 496,
+                                        "y": 66
+                                    },
+                                    "usecase": 2
+                                },
+                                "children": []
+                            },
+                            {
+                                "data": {
+                                    "id": "ci42jd1rme80",
+                                    "created": 1645684697398,
+                                    "text": "同一个evt唤醒多次",
+                                    "layout_right_offset": {
+                                        "x": 376,
+                                        "y": 86
+                                    },
+                                    "usecase": 2
+                                },
+                                "children": []
+                            }
+                        ]
+                    },
+                    {
+                        "data": {
+                            "id": "ci42mpbcy680",
+                            "created": 1645684959192,
+                            "text": "压力测试，多个事件， 64 个事件， 每个事件，唤醒1m次",
+                            "usecase": 2,
+                            "layout_right_offset": {
+                                "x": 827,
+                                "y": 92
+                            }
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "ci42oksju140",
+                                    "created": 1645685106076,
+                                    "text": "线程比事件多",
+                                    "usecase": 4,
+                                    "author": "w00634677",
+                                    "showId": "00045",
+                                    "layout_right_offset": {
+                                        "x": 806,
+                                        "y": -38
+                                    }
+                                },
+                                "children": []
+                            },
+                            {
+                                "data": {
+                                    "id": "ci42p30x1cw0",
+                                    "created": 1645685145764,
+                                    "text": "线程比事件少",
+                                    "usecase": 4,
+                                    "author": "w00634677",
+                                    "showId": "00046",
+                                    "layout_right_offset": {
+                                        "x": 805,
+                                        "y": -2
+                                    }
+                                },
+                                "children": []
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "data": {
+                    "id": "ci2iihjr1080",
+                    "created": 1645526646674,
+                    "text": "HpeApollAdd",
+                    "usecase": 1,
+                    "layout_mind_offset": {
+                        "x": 573.5000004842874,
+                        "y": -258.7499995715916
+                    },
+                    "expandState": "expand"
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "ci2iiompbd40",
+                            "created": 1645526662090,
+                            "text": "入参分析",
+                            "layout_right_offset": {
+                                "x": 310,
+                                "y": -39
+                            }
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "ci2ij2amlgw0",
+                                    "created": 1645526691835,
+                                    "text": "ap",
+                                    "layout_right_offset": {
+                                        "x": 136,
+                                        "y": -9
+                                    }
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "ci2ilzq1nnc0",
+                                            "created": 1645526921329,
+                                            "text": "是否为空",
+                                            "layout_right_offset": {
+                                                "x": 216,
+                                                "y": -5
+                                            },
+                                            "usecase": 2
+                                        },
+                                        "children": [
+                                            {
+                                                "data": {
+                                                    "id": "ci2imd8xm0w0",
+                                                    "created": 1645526950769,
+                                                    "text": "传入空指针，预期返回-1",
+                                                    "usecase": 4,
+                                                    "author": "w00634677",
+                                                    "showId": "00034",
+                                                    "layout_right_offset": {
+                                                        "x": 413,
+                                                        "y": 0
+                                                    }
+                                                },
+                                                "children": []
+                                            }
+                                        ]
+                                    }
+                                ]
+                            },
+                            {
+                                "data": {
+                                    "id": "ci2ij5k97s00",
+                                    "created": 1645526698947,
+                                    "text": "Evt",
+                                    "layout_right_offset": {
+                                        "x": 139,
+                                        "y": -1
+                                    }
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "ci2imuxsmaw0",
+                                            "created": 1645526989278,
+                                            "text": "是否满足0-255限制条件",
+                                            "layout_right_offset": {
+                                                "x": 367,
+                                                "y": -4
+                                            },
+                                            "usecase": 2
+                                        },
+                                        "children": [
+                                            {
+                                                "data": {
+                                                    "id": "ci2in9izdgw0",
+                                                    "created": 1645527021034,
+                                                    "text": "传入256， 预期返回-1",
+                                                    "usecase": 4,
+                                                    "author": "w00634677",
+                                                    "showId": "00035",
+                                                    "layout_right_offset": {
+                                                        "x": 491,
+                                                        "y": 0
+                                                    }
+                                                },
+                                                "children": []
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "data": {
+                            "id": "ci2iis484rc0",
+                            "created": 1645526669680,
+                            "text": "功能分析",
+                            "layout_right_offset": {
+                                "x": 324,
+                                "y": -32
+                            },
+                            "expandState": "expand"
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "ci2ijabgdr40",
+                                    "created": 1645526709299,
+                                    "text": "是否能正确将Evt加入ap",
+                                    "usecase": 2,
+                                    "layout_right_offset": {
+                                        "x": 336,
+                                        "y": -4
+                                    },
+                                    "expandState": "expand"
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "ci2ikademqg0",
+                                            "created": 1645526787781,
+                                            "text": "将同一个Evt连续加入ap两次，预期第一次返回0， 第二次返回-1",
+                                            "usecase": 4,
+                                            "author": "w00634677",
+                                            "showId": "00033",
+                                            "layout_right_offset": {
+                                                "x": 724,
+                                                "y": 0
+                                            }
+                                        },
+                                        "children": []
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    "templatePath": null,
+    "singleTemplatePath": null,
+    "testcaseFilePath": "",
+    "template": "default",
+    "theme": "fresh-blue-compat",
+    "version": "1.4.43"
+}

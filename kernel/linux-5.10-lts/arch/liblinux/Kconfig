@@ -1,0 +1,229 @@
+# SPDX-License-Identifier: GPL-2.0-only
+if "$(USE_HM_KERNEL)" = "true"
+menuconfig LIBLINUX
+	bool "Enable liblinux support"
+	depends on ARM || ARM64 || UML
+	default n
+	select SET_FS
+	select ARCH_NO_PREEMPT
+	select ARCH_NO_SWAP
+	select VENDOR_HOOKS
+	select PREEMPT_COUNT
+	select GENERIC_ALLOCATOR
+	select GENERIC_STRNCPY_FROM_USER
+	select GENERIC_STRNLEN_USER
+	# spinlock
+	select ARCH_USE_QUEUED_SPINLOCKS
+	select LIBLINUX_USE_NATIVE_SPINLOCK
+	# arch related
+	select ARCH_HAS_GCOV_PROFILE_ALL
+	select ARCH_HAS_PTE_SPECIAL
+	select ARCH_HAS_SYSCALL_WRAPPER
+	select ARCH_HAS_STRICT_MODULE_RWX
+	select ARCH_HAS_SET_MEMORY
+	select HAVE_PCI
+	select GENERIC_CPU_AUTOPROBE
+	select IPA_THERMAL
+	select SECURITY
+	select LIBLINUX_HVGR_POLL_OPT
+	select LIBLINUX_DMA_CMA
+	select LIBLINUX_HVGR_BATCH_SYNC_OPT
+
+if LIBLINUX
+
+config LIBLINUX_LOGLEVEL_DEFAULT
+	int "default liblinux loglevel (1-8)"
+	range 1 8
+	default "7"
+	help
+	  Default liblinux loglevel. Only print logs with a loglevel lesser
+	  than this value.
+
+config LOG_ENCRYPT
+  bool "encrypt panic log"
+  default n
+
+config LIBLINUX_VMEMMAP_IOFAST
+	bool "Enable liblinux vmemmap using iofast memory"
+	default y
+
+config LIBLINUX_VMEMMAP_DEBUG
+	bool "Enable liblinux vmemmap debug info"
+	default n
+
+config HM_HKIP_PRMEM
+	bool "Enable hkip prmem"
+	default n
+	help
+	  Hkip prmem interfaces of the HarmonyOS.
+
+config HM_HKIP_SEHARMONY_PROT
+	bool "Enable protection for SEHARMONY policy DB"
+	depends on HM_HKIP_PRMEM
+	help
+	  Replace LDK protection interface with HarmonyOS interface.
+
+config LIBLINUX_HMTRACE
+	bool "Enable liblinux hmtrace support"
+	default y
+
+config GENERIC_CSUM
+	def_bool y
+
+config SMP
+	def_bool y
+
+config ARCH_SPARSEMEM_ENABLE
+	def_bool y
+	select SPARSEMEM_VMEMMAP_ENABLE
+
+config HAVE_ARCH_PFN_VALID
+	def_bool y
+
+config LIBLINUX_OVERRIDE
+    def_bool y
+
+config LIBLINUX_HVGR_POLL_OPT
+    def_bool n
+
+config LIBLINUX_HVGR_BATCH_SYNC_OPT
+    def_bool n
+
+config HMKIP
+	bool "Enable hm kernel integrity protect feature"
+	depends on ARM64
+	default n
+
+config LIBLINUX_ASYNC_SYSFS
+	bool "Enable asynchronous creation of sysfs nodes"
+	depends on SYSFS
+	default n
+
+config LIBLINUX_KMAP_BITS
+	int "Kernel mapping size"
+	default 37 if 64BIT && !KASAN
+	default 36 if 64BIT && KASAN
+	default 27
+	help
+	  This option allows you to set the maximum physical memory support
+	  by liblinux, 128MB for default.
+
+config LIBLINUX_MODULES_RSVD_BITS
+	int "Reserved modules size"
+	default 27 if 64BIT
+	default 25
+
+config LIBLINUX_USE_NATIVE_SPINLOCK
+	def_bool n
+
+config LIBLINUX_DMA_CMA
+	def_bool n
+
+config LIBLINUX_HIBERNATE
+	bool "Hibernation support"
+	select HIBERNATION
+	default n
+
+# select GFP Allocator to use
+choice
+	prompt "GFP Allocator"
+	default LIBLINUX_NATIVE_BUDDY
+
+config LIBLINUX_SIMPLE_GFP
+	bool "Simple GFP"
+	help
+	  This option use liblinux_page_allocator PAL APIs to allocate
+	  pages from buddy.
+
+config LIBLINUX_NATIVE_BUDDY
+	bool "Linux-native Buddy"
+	select MEMORY_HOTPLUG
+	help
+	  This option use linux-native buddy allocator for GFP.
+endchoice
+
+config LIBLINUX_UNIMPL_DFX_COUNT
+	bool "Count unimpl functions"
+	default n
+
+config LIBLINUX_KERNEL_MODE_SIMD
+	def_bool n
+	select KERNEL_MODE_NEON if ARM || ARM64
+
+config LIBLINUX_NET_STACK
+	bool "Enable net stack support"
+	default y
+	select INET
+	select NETFILTER
+	select NF_CONNTRACK_LABELS
+	select LIBLINUX_KERNEL_MODE_SIMD
+
+config LIBLINUX_NO_HZ
+	bool "Disable ticks on all CPUs except CPU 0"
+	depends on NO_HZ_FULL
+	default n
+
+config LIBLINUX_PCP_FREE_FACTOR
+	bool "Scale the number of pages that are batch freed from pcp to buddy"
+	default n
+
+config LIBLINUX_USER_INVAL_CACHE
+	bool "Use flush cache at el0 instead of invalid cache at el1"
+	default n
+
+config OPT_TIMER_ENERGY_EFFICIENCY
+	bool "Optimize timer users to be friendly for fcm idle (LIBLINUX version)"
+	default n
+
+config LIBLINUX_THREAD_BLOCK
+	bool "Utilize thread block/unblock calls instead of futex"
+	default n
+
+config LIBLINUX_HAVE_ULSR
+	bool "Enable liblinux ulsr support"
+	default n
+
+config LIBLINUX_MIPS_MEM_DEV_NUM
+	int "mips mem device number"
+	depends on LIBLINUX_MIPSMEM_FREQ
+	default 6
+
+config LIBLINUX_C_ASYNC_PROBE
+	bool "Asynchronous probing for predefined drivers"
+	default n
+
+config LIBLINUX_ASYNC_END_IO
+	bool "Asynchronous notification of fs io end"
+	default y
+
+config LIBLINUX_HVC_CALL
+	bool "Enable hm kernel hvc call"
+	depends on ARM64
+	default n
+
+config LIBLINUX_SKIP_TIMESYNC
+	bool "Skip the first time sync to accelerate boot"
+	default n
+
+if !NAMESPACES
+# NET_NS in linux depends on NAMESPACES, but now need enable NET_NS alone
+config NET_NS
+	bool "Enable net namespace"
+	default n
+endif # NAMESPACES
+
+config DFX_LIBLINUX
+        bool "dfx config for hm kernel build"
+        default n
+        help
+          Say 'Y' in ohos kernel
+
+config LIBLINUX_SYS_UNION_SHRINKER
+	bool "Enable liblinux and sys union shrinker"
+	default n
+	help
+	  Say 'Y' in ohos ldk
+
+endif
+endif
+source "arch/liblinux/security/code_decrypt_hm/Kconfig"

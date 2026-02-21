@@ -1,0 +1,314 @@
+/*
+ * Copyright (c) Huawei Technologies Co., Ltd. 2018-2022. All rights reserved.
+ * Description: Sysmgr test
+ * Author: Huawei OS Kernel Lab
+ * Create: Fri Nov 16 10:27:57 2018
+ */
+
+#ifdef SYSIF_EXPORT_API
+#include <stdint.h>
+#include <lib/hmpsf/hmpsf_def.h>
+
+struct sysif_data {
+	/* 64: sysif data name buf len */
+	char name[64];
+};
+
+#endif
+
+/*
+ * To support the mixed data model which means the client and the server
+ * may use different data model. See the document for limitation of data type
+ * used in the sysif interfaces in <Documentation/sysif_compat.md>.
+ */
+DEFINE_MANAGER(test, 128,
+	DEFINE_SIMPLE_METHOD(test, m1,
+			     ARG(10, const void *, send_buf, unsigned long, buf_len,
+				     struct hm_actv_buf, buf1,
+				     struct hm_actv_buf, buf2,
+				     const void *, a, int, b, unsigned long, c,
+				     unsigned long long, x,
+				     unsigned int, d,
+				     struct hm_actv_buf, buf3),
+			     RET(1, int, v1),
+			     SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD_ULONG(test, m2,
+			     ARG(1, int, z),
+			     RET(2, unsigned long long, actvpool_rref_simple,
+				    unsigned long long, actvpool_rref_full),
+			     SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(test, m3,
+			     ARG(3, int, v1, const void *, send_buf, unsigned long, buf_len),
+			     RET_NO,
+			     SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(test, m4,
+			     ARG(2, int, v1, struct sysif_data, v2),
+			     RET_NO,
+			     SLOWDATA_NO,
+			     NO_STK_CHECK)
+	DEFINE_SIMPLE_METHOD(test, m5,
+			     ARG_NO,
+			     RET(1, int, v1),
+			     SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(test, m6,
+			     ARG_NO,
+			     RET(2, int, v1, struct sysif_data, v2),
+			     SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(test, m7,
+			     ARG(2, const void *, send_buf, unsigned long, buf_len),
+			     RET_NO,
+			     SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(test, m8,
+			     ARG_NO,
+			     RET_NO,
+			     SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(test, m9,
+		      ARG_NO,
+		      RET_NO,
+		      SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(test, m10,
+		      ARG(2, int, a, unsigned long, b),
+		      RET_NO,
+		      SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(test, m11,
+		      ARG(1, struct sysif_data, data),
+		      RET_NO,
+		      SLOWDATA_NO,
+		      NO_STK_CHECK)
+	DEFINE_SIMPLE_METHOD(test, m12,
+			     ARG(10, int, a1, unsigned long long, a2, int, a3, int, a4, int, a5, int, a6, int, a7,
+				 int, a8, int, a9, struct sysif_data, data),
+			     RET_NO,
+			     SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(test, m13,
+			     ARG(2, void *, addr, unsigned long, size),
+			     RET_NO,
+			     SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(test, linear_mem,
+				ARG(2, unsigned long, test_id, unsigned long, rand_num),
+				RET(1, uint64_t, mem_addr),
+				SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(test, m14,
+			     ARG_NO,
+			     RET_NO,
+			     SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(test, m15,
+		      ARG_NO,
+		      RET(1, unsigned long long, actvpool_rref_nobind),
+		      SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(test, m16,
+		      ARG_NO,
+		      RET_NO,
+		      SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(test, m17,
+		      ARG(4,
+			  int, a1,
+			  struct sysif_data, data,
+			  unsigned long long, a2,
+			  int, a3),
+		      RET_NO,
+		      SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(test, m18,
+			     ARG(4, void *, addr1, unsigned long, size1,
+				 void *, addr2, unsigned long, size2),
+			     RET_NO,
+			     SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(test, m19,
+		      ARG_NO,
+		      RET(1, struct sysif_data, data),
+		      SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(test, m20,
+		      ARG(2, const void *, send_buf, unsigned long, buf_len),
+		      RET_NO,
+		      SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(test, m21,
+		      ARG(2, const void *, send_buf, unsigned long, buf_len),
+		      RET(1, struct sysif_data, data),
+		      SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(test, m22,
+		      ARG(2,
+			  const void *, caller_send_buf,
+			  unsigned long, len),
+		      RET_NO,
+		      SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(test, m23,
+		      ARG(2,
+			  void *, caller_recv_buf,
+			  unsigned long, len),
+		      RET_NO,
+		      SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(test, m24,
+		      ARG(3,
+			  const void *, caller_send_buf,
+			  void *, caller_recv_buf,
+			  unsigned long, len),
+		      RET_NO,
+		      SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(test, m25,
+			     ARG(2, void *, addr1, unsigned long, size1),
+			     RET_NO,
+			     SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(test, m26,
+		      ARG(1, const int *, data),
+		      RET_NO,
+		      SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(test, m27,
+		      ARG_NO,
+		      RET_NO,
+		      SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(test, m28,
+		      ARG_NO,
+		      RET_NO,
+		      SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(test, m29,
+		      ARG(2, unsigned long, pc, unsigned long, sp),
+		      RET_NO,
+		      SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(test, m30,
+		      ARG_NO,
+		      RET_NO,
+		      SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(test, m31,
+		      ARG(1, struct sysif_data, data),
+		      RET_NO,
+		      SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(test, m32,
+		      ARG(2, void *, addr, unsigned long, size),
+		      RET_NO,
+		      SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(test, m33,
+		      ARG(2, void *, addr1, unsigned long, size1),
+		      RET_NO,
+		      SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(test, m34,
+		      ARG(3, void *, addr1, void *, addr2, unsigned long, size),
+		      RET_NO,
+		      SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(test, m35,
+		      ARG(5, unsigned long, cmd, void *, args, unsigned long, args_size, void *, result, unsigned long, result_size),
+		      RET_NO,
+		      SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(test, m36,
+		      ARG(5, unsigned long, cmd, void *, args, unsigned long, args_size, void *, result, unsigned long, result_size),
+		      RET_NO,
+		      SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(test, mcall,
+			     ARG(7, const char *, name, unsigned long, name_size, unsigned long, cmd,
+				 void *, args, unsigned long, args_size, void *, result, unsigned long, result_size),
+			     RET_NO,
+			     SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(test, m37,
+		      ARG(1, int *, data),
+		      RET_NO,
+		      SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(test, m38,
+		      ARG_NO,
+		      RET_NO,
+		      SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(test, hkip,
+		      ARG(1, int *, data),
+		      RET_NO,
+		      SLOWDATA_NO)
+	DEFINE_LSYSCALL_METHOD(lsyscall0,
+			NATIVE, SELFCALL,
+			__LSYSCALL_TEST_SYSMGR_ARG0_CALLNO,
+			ARG_NO)
+	DEFINE_LSYSCALL_METHOD(lsyscall1,
+			NATIVE, SELFCALL,
+			__LSYSCALL_TEST_SYSMGR_ARG1_CALLNO,
+			ARG(1, unsigned long, p1))
+	DEFINE_LSYSCALL_METHOD_UINT(lsyscall2,
+			NATIVE, SELFCALL,
+			__LSYSCALL_TEST_SYSMGR_ARG2_CALLNO,
+			ARG(2, unsigned long, p1, unsigned long, p2))
+	DEFINE_LSYSCALL_METHOD_LONG(lsyscall3,
+			NATIVE, SELFCALL,
+			__LSYSCALL_TEST_SYSMGR_ARG3_CALLNO,
+			ARG(3, unsigned long, p1, unsigned long, p2, unsigned long, p3))
+	DEFINE_LSYSCALL_METHOD_LONG(lsyscall4,
+			NATIVE,
+			__LSYSCALL_TEST_SYSMGR_ARG4_CALLNO,
+			ARG(4, unsigned long, p1, unsigned long, p2,
+				unsigned long, p3, unsigned long, p4))
+	DEFINE_LSYSCALL_METHOD_LONG(lsyscall5,
+			NATIVE, SELFCALL,
+			__LSYSCALL_TEST_SYSMGR_ARG5_CALLNO,
+			ARG(5, unsigned long, p1, unsigned long, p2,
+				unsigned long, p3, unsigned long, p4, unsigned long, p5))
+	DEFINE_LSYSCALL_METHOD_LONG(lsyscall6,
+			__LSYSCALL_TEST_SYSMGR_ARG6_CALLNO,
+			ARG(6, unsigned long, p1, unsigned long, p2,
+				unsigned long, p3, unsigned long, p4,
+				unsigned long, p5, unsigned long, p6))
+	DEFINE_LSYSCALL_METHOD_LONG(lsyscall7,
+			NATIVE, SELFCALL,
+			__LSYSCALL_TEST_SYSMGR_ARG7_CALLNO,
+			ARG(7, unsigned long, p1, unsigned long, p2,
+				unsigned long, p3, unsigned long, p4,
+				unsigned long, p5, unsigned long, p6, unsigned long, p7))
+	DEFINE_SIMPLE_METHOD(test, hkip_protection,
+			ARG(1, unsigned long, test_id),
+			RET_NO,
+			SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(test, hkip_mac_shm_prot,
+			ARG_NO,
+			RET_NO,
+			SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(test, hkip_seharmony_shm_prot,
+			ARG_NO,
+			RET_NO,
+			SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(test, hkip_seharmony_prot_policydb,
+			ARG_NO,
+			RET_NO,
+			SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(test, devhost_hkip_seharmony_prot_policydb,
+			ARG_NO,
+			RET_NO,
+			SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(test, hkip_seccomp_prot_filter,
+			ARG_NO,
+			RET_NO,
+			SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(test, hkip_seccomp_prot_fast_access_mode,
+			ARG_NO,
+			RET_NO,
+			SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(test, hkip_roafter_prot,
+			ARG_NO,
+			RET_NO,
+			SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(test, hkip_write_evil_data,
+			ARG(2, const void *, vaddr, int, data),
+			RET_NO,
+			SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(test, hmpsf_attach,
+			     ARG(1, unsigned int, id),
+			     RET_NO,
+			     SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(test, hmpsf_detach,
+			     ARG(2, unsigned int, id,
+			     bool, force_invalidate),
+			     RET_NO,
+			     SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(test, hmpsf_exec,
+			     ARG(1, struct hmpsf_test_config_s *, config),
+			     RET_NO,
+			     SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(test, ptr_to_hashval,
+				ARG_NO,
+				RET_NO,
+				SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(test, slab_redzone_overwritten,
+			ARG_NO,
+			RET_NO,
+			SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(test, slab_redzone_double_free,
+			ARG_NO,
+			RET_NO,
+			SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(test, hangtask_exit,
+			ARG_NO,
+			RET_NO,
+			SLOWDATA_NO)
+)

@@ -1,0 +1,42 @@
+# Copyright (c) Huawei Technologies Co., Ltd. 2023. All rights reserved.
+# Description: Kconfig for modules
+# Author: Huawei OS Kernel Lab
+# Create: Fri Mar 10 17:32:14 2023
+
+config DEVHOST_FS_TRANSFS
+  bool "trans layer support"
+  default n
+
+config DEVHOST_TTY
+  bool "use tty uart driver"
+  default n
+
+config DEVHOST_TTY_STREAM
+  bool "use tty stream driver"
+  default n
+
+config MDC_GODEL_HACK
+  bool "For mdc Godel hacking"
+  default n
+
+config SERIAL_KSHORTCUT_SYS_PAUSE
+  bool "Kernel handle ctrl-x input and system pause"
+  help
+    Some hardware platform need to be restarted in some cases.
+    Kernel handle ctrl-x could ensure it be shutdown definitely.
+  default n
+
+config SERIAL_KSHORTCUT_TRIGGER_SNAPSHOT
+  bool "Kernel handle ctrl-b to trigger snapshot"
+  help
+    Some platforms need to trigger snapshot logs for problem location.
+    Kernel handle ctrl-b could trigger snapshot manually.
+  default n
+
+config UBIFS_CTRL
+  bool "ubifs ctrl support"
+  default n
+
+config HISI_INLINE_ENCRYPTION
+  bool "Enable hisi inline encrypt"
+  default n

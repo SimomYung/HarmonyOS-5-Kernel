@@ -1,0 +1,31 @@
+From 8543b6f2f4a3a15a5ece7dd1b320b477ce36a8d5 Mon Sep 17 00:00:00 2001
+From: Phil Sutter <phil@nwl.cc>
+Date: Wed, 16 Nov 2022 13:03:05 +0100
+Subject: [PATCH] extensions: libebt_redirect: Fix xlate return code
+
+The callback is supposed to return 1 on success, not 0.
+
+Conflict: NA
+Reference: https://git.netfilter.org/iptables/commit?id=8543b6f2f4a3a15a5ece7dd1b320b477ce36a8d5
+
+Fixes: 24ce7465056ae ("ebtables-compat: add redirect match extension")
+Signed-off-by: Phil Sutter <phil@nwl.cc>
+---
+ extensions/libebt_redirect.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/extensions/libebt_redirect.c b/extensions/libebt_redirect.c
+index 6e653997..4d4c7a02 100644
+--- a/extensions/libebt_redirect.c
++++ b/extensions/libebt_redirect.c
+@@ -86,7 +86,7 @@ static int brredir_xlate(struct xt_xlate *xl,
+ 	xt_xlate_add(xl, "meta set pkttype host");
+ 	if (red->target != EBT_ACCEPT)
+ 		xt_xlate_add(xl, " %s ", brredir_verdict(red->target));
+-	return 0;
++	return 1;
+ }
+ 
+ static struct xtables_target brredirect_target = {
+-- 
+2.23.0

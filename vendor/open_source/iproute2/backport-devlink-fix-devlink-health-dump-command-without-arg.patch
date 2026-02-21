@@ -1,0 +1,68 @@
+From e81fd551a1a0ffa7983d25f5e756a5c5b6cb4a9a Mon Sep 17 00:00:00 2001
+From: Jiri Pirko <jiri@nvidia.com>
+Date: Tue, 19 Apr 2022 19:15:11 +0200
+Subject: [PATCH] devlink: fix "devlink health dump" command without arg
+
+Fix bug when user calls "devlink health dump" without "show" or "clear":
+$ devlink health dump
+Command "(null)" not found
+
+Put the dump command into a separate helper as it is usual in the rest
+of the code. Also, treat no cmd as "show", as it is common for other
+devlink objects.
+
+Fixes: 041e6e651a8e ("devlink: Add devlink health dump show command")
+Signed-off-by: Jiri Pirko <jiri@nvidia.com>
+Signed-off-by: Stephen Hemminger <stephen@networkplumber.org>
+Conflict: NA
+Reference: https://git.kernel.org/pub/scm/network/iproute2/iproute2.git/commit?id=e81fd551a1a
+---
+ devlink/devlink.c | 25 ++++++++++++++++++-------
+ 1 file changed, 18 insertions(+), 7 deletions(-)
+
+diff --git a/devlink/devlink.c b/devlink/devlink.c
+index da9f9778..aab739f7 100644
+--- a/devlink/devlink.c
++++ b/devlink/devlink.c
+@@ -8526,6 +8526,23 @@ static void cmd_health_help(void)
+ 	pr_err("                          [ auto_dump    { true | false } ]\n");
+ }
+ 
++static int cmd_health_dump(struct dl *dl)
++{
++	if (dl_argv_match(dl, "help")) {
++		cmd_health_help();
++		return 0;
++	} else if (dl_argv_match(dl, "show") ||
++		   dl_argv_match(dl, "list") || dl_no_arg(dl)) {
++		dl_arg_inc(dl);
++		return cmd_health_dump_show(dl);
++	} else if (dl_argv_match(dl, "clear")) {
++		dl_arg_inc(dl);
++		return cmd_health_dump_clear(dl);
++	}
++	pr_err("Command \"%s\" not found\n", dl_argv(dl));
++	return -ENOENT;
++}
++
+ static int cmd_health(struct dl *dl)
+ {
+ 	if (dl_argv_match(dl, "help")) {
+@@ -8546,13 +8563,7 @@ static int cmd_health(struct dl *dl)
+ 		return cmd_health_test(dl);
+ 	} else if (dl_argv_match(dl, "dump")) {
+ 		dl_arg_inc(dl);
+-		if (dl_argv_match(dl, "show")) {
+-			dl_arg_inc(dl);
+-			return cmd_health_dump_show(dl);
+-		} else if (dl_argv_match(dl, "clear")) {
+-			dl_arg_inc(dl);
+-			return cmd_health_dump_clear(dl);
+-		}
++		return cmd_health_dump(dl);
+ 	} else if (dl_argv_match(dl, "set")) {
+ 		dl_arg_inc(dl);
+ 		return cmd_health_set_params(dl);
+-- 
+2.23.0
+

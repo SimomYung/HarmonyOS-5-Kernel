@@ -1,0 +1,7 @@
+if KERNEL_CAMERA_LED
+
+menu "Camera pvled driver support"
+
+endmenu
+
+endif

@@ -1,0 +1,72 @@
+From 404a6e20d09d04526081febab56104989bd01438 Mon Sep 17 00:00:00 2001
+From: w30063796 <w30063796@notesmail.huawei.com/>
+Date: Sat, 2 Nov 2024 16:28:12 +0800
+Subject: [PATCH] TicketNo:DTS2024101019820 Description:fix iptables
+ Team:OTHERS Feature or Bugfix:Feature Binary Source:No PrivateCode(Yes/No):No
+
+Change-Id: If36d2f113e8fe7e4ea14bb6301b9be956e14d8d2
+---
+ src/_updown/_updown.in                   | 10 ++++++++++
+ src/libcharon/plugins/vici/vici_config.c | 12 +++++++++++-
+ 2 files changed, 21 insertions(+), 1 deletion(-)
+
+diff --git a/src/_updown/_updown.in b/src/_updown/_updown.in
+index afe20e9..0b274de 100644
+--- a/src/_updown/_updown.in
++++ b/src/_updown/_updown.in
+@@ -348,6 +348,11 @@ up-client:iptables)
+ 	      "+ $PLUTO_PEER_ID $PLUTO_PEER_CLIENT == $PLUTO_PEER -- $PLUTO_ME == $PLUTO_MY_CLIENT"
+ 	  fi
+ 	fi
++	if command -v ip >/dev/null 2>&1; then
++		ip route add table 97 default dev ipsec0
++		ip rule add from $PLUTO_PEER_CLIENT lookup 97
++		ip rule add to $PLUTO_PEER_CLIENT lookup 97
++	fi
+ 	;;
+ down-client:iptables)
+ 	# connection to client subnet, with (left/right)firewall=yes, going down
+@@ -398,6 +403,11 @@ down-client:iptables)
+ 	      "- $PLUTO_PEER_ID $PLUTO_PEER_CLIENT == $PLUTO_PEER -- $PLUTO_ME == $PLUTO_MY_CLIENT"
+ 	  fi
+ 	fi
++	if command -v ip >/dev/null 2>&1; then
++		ip rule delete from $PLUTO_PEER_CLIENT lookup 97
++		ip rule delete to $PLUTO_PEER_CLIENT lookup 97
++		ip route delete table 97 default dev ipsec0
++	fi
+ 	;;
+ #
+ # IPv6
+diff --git a/src/libcharon/plugins/vici/vici_config.c b/src/libcharon/plugins/vici/vici_config.c
+index 989939f..dd1a5fc 100644
+--- a/src/libcharon/plugins/vici/vici_config.c
++++ b/src/libcharon/plugins/vici/vici_config.c
+@@ -86,6 +86,11 @@
+ 
+ typedef struct private_vici_config_t private_vici_config_t;
+ 
++#ifdef SUPPORT_SYSVPN
++static const char* updown_default = IPSEC_DIR "/_updown iptables";
++static const char* child_home = "home";
++#endif // SUPPORT_SYSVPN
++
+ /**
+  * Private data of an vici_config_t object.
+  */
+@@ -2115,7 +2120,12 @@ CALLBACK(children_sn, bool,
+ 	}
+ 
+ 	check_lifetimes(&child.cfg.lifetime);
+-
++#ifdef SUPPORT_SYSVPN
++	if (strcmp(name, child_home) == 0 && !child.cfg.updown) {
++		DBG2(DBG_CFG, "updown script not specified, using default");
++		child.cfg.updown = strdup(updown_default);
++	}
++#endif // SUPPORT_SYSVPN
+ 	log_child_data(&child, name);
+ 
+ 	cfg = child_cfg_create(name, &child.cfg);
+-- 
+2.7.4

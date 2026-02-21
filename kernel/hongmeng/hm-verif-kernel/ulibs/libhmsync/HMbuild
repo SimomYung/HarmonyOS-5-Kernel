@@ -1,0 +1,33 @@
+# Copyright (c) Huawei Technologies Co., Ltd. 2022-2022. All rights reserved.
+# Description: HMbuild
+# Author: Huawei OS Kernel Lab
+# Create: Thu May 26 15:35:06 2022
+
+src-y: raw_mutex.c
+src-y: raw_rwlock.c
+src-y: thread.c
+src-y: raw_thread_attr.c
+src-y: raw_tls.c
+src-y: raw_tls_internal.c
+src-y: raw_thread_create.c
+src-y: raw_thread_specific.c
+src-y: raw_thread_cond.c
+src-y: raw_prioqueue.c
+src-y: raw_threadpool.c
+src-y: raw_workqueue.c
+src-y: raw_timedwait.c
+src-y: raw_sem.c
+src-y: raw_counter.c
+src-y: raw_completion.c
+src-y: raw_bitlock.c
+src-y: current_tid.c
+src-y: thread_tid2cref.c
+src-y: thread_module_sched_ref.c
+src-y: raw_thread_unmapself.c
+src-y: atomic.c
+src-y: uspinlock.c
+src-y: uev_helper.c
+src-y: lockdep.c
+
+cflags-raw_thread_create.c-y: -D_GNU_SOURCE
+cflags-raw_thread_create.c-y: -Wno-strict-prototypes

@@ -1,0 +1,217 @@
+From 8625b843ab9e1327dcb83b025951f97c971175e0 Mon Sep 17 00:00:00 2001
+From: Wenchao Hao <haowenchao@huawei.com>
+Date: Fri, 11 Nov 2022 12:22:08 +0800
+Subject: [PATCH] unix_io.c: fix deadlock problem in unix_write_blk64
+
+We will release CACHE_MTX lock, when enter e2fsck_handle_write_error.
+
+stack:
+(gdb) bt
+0  0x0000ffffa740bc34 in ?? () from /usr/lib64/libc.so.6
+1  0x0000ffffa7412024 in pthread_mutex_lock () from /usr/lib64/libc.so.6
+2  0x0000ffffa7654e54 in mutex_lock (kind=CACHE_MTX, data=0xaaaaf5c98f30) at unix_io.c:151
+3  unix_write_blk64 (channel=0xaaaaf5c98e60, block=2, count=4, buf=0xaaaaf5c9d170) at unix_io.c:1092
+4  0x0000ffffa762e610 in ext2fs_flush2 (flags=0, fs=0xaaaaf5c98cc0) at closefs.c:401
+5  ext2fs_flush2 (fs=0xaaaaf5c98cc0, flags=0) at closefs.c:279
+6  0x0000ffffa762eb14 in ext2fs_close2 (fs=fs@entry=0xaaaaf5c98cc0, flags=flags@entry=0) at closefs.c:510
+7  0x0000ffffa762eba4 in ext2fs_close_free (fs_ptr=fs_ptr@entry=0xffffc8cbab30) at closefs.c:472
+8  0x0000aaaadcc39bd8 in preenhalt (ctx=ctx@entry=0xaaaaf5c98460) at util.c:365
+9  0x0000aaaadcc3bc5c in e2fsck_handle_write_error (channel=<optimized out>, block=262152, count=<optimized out>, data=<optimized out>, size=<optimized out>, actual=<optimized out>, error=5)
+   at ehandler.c:114
+10 0x0000ffffa7655044 in reuse_cache (block=262206, cache=0xaaaaf5c98f80, data=0xaaaaf5c98f30, channel=0xaaaaf5c98e60) at unix_io.c:583
+11 unix_write_blk64 (channel=0xaaaaf5c98e60, block=262206, count=<optimized out>, buf=<optimized out>) at unix_io.c:1097
+12 0x0000aaaadcc3702c in ll_rw_block (rw=rw@entry=1, op_flags=op_flags@entry=0, nr=<optimized out>, nr@entry=1, bhp=0xffffc8cbac60, bhp@entry=0xffffc8cbac58) at journal.c:184
+13 0x0000aaaadcc375e8 in brelse (bh=<optimized out>, bh@entry=0xaaaaf5cac4a0) at journal.c:217
+14 0x0000aaaadcc3ebe0 in do_one_pass (journal=journal@entry=0xaaaaf5c9f590, info=info@entry=0xffffc8cbad60, pass=pass@entry=PASS_REPLAY) at recovery.c:693
+15 0x0000aaaadcc3ee74 in jbd2_journal_recover (journal=0xaaaaf5c9f590) at recovery.c:310
+16 0x0000aaaadcc386a8 in recover_ext3_journal (ctx=0xaaaaf5c98460) at journal.c:1653
+17 e2fsck_run_ext3_journal (ctx=0xaaaaf5c98460) at journal.c:1706
+18 0x0000aaaadcc207e0 in main (argc=<optimized out>, argv=<optimized out>) at unix.c:1791
+
+Signed-off-by: zhanchengbin <zhanchengbin1@huawei.com>
+Signed-off-by: Zhiqiang Liu <liuzhiqiang26@huawei.com>
+---
+ lib/ext2fs/unix_io.c | 63 +++++++++++++++++++++++++++++++++++++---------------
+ 1 file changed, 45 insertions(+), 18 deletions(-)
+
+diff --git a/lib/ext2fs/unix_io.c b/lib/ext2fs/unix_io.c
+index c326f57..a7ab772 100644
+--- a/lib/ext2fs/unix_io.c
++++ b/lib/ext2fs/unix_io.c
+@@ -210,7 +210,8 @@ static char *safe_getenv(const char *arg)
+ static errcode_t raw_read_blk(io_channel channel,
+ 			      struct unix_private_data *data,
+ 			      unsigned long long block,
+-			      int count, void *bufv)
++			      int count, void *bufv,
++			      int cache_lock)
+ {
+ 	errcode_t	retval;
+ 	ssize_t		size;
+@@ -331,16 +332,22 @@ error_unlock:
+ 	mutex_unlock(data, BOUNCE_MTX);
+ 	if (actual >= 0 && actual < size)
+ 		memset((char *) buf+actual, 0, size-actual);
+-	if (channel->read_error)
++	if (channel->read_error) {
++		if (cache_lock)
++			mutex_unlock(data, CACHE_MTX);
+ 		retval = (channel->read_error)(channel, block, count, buf,
+ 					       size, actual, retval);
++		if (cache_lock)
++			mutex_lock(data, CACHE_MTX);
++	}
+ 	return retval;
+ }
+ 
+ static errcode_t raw_write_blk(io_channel channel,
+ 			       struct unix_private_data *data,
+ 			       unsigned long long block,
+-			       int count, const void *bufv)
++			       int count, const void *bufv,
++			       int cache_lock)
+ {
+ 	ssize_t		size;
+ 	ext2_loff_t	location;
+@@ -482,9 +489,14 @@ bounce_write:
+ error_unlock:
+ 	mutex_unlock(data, BOUNCE_MTX);
+ error_out:
+-	if (channel->write_error)
++	if (channel->write_error) {
++		if (cache_lock)
++			mutex_unlock(data, CACHE_MTX);
+ 		retval = (channel->write_error)(channel, block, count, buf,
+ 						size, actual, retval);
++		if (cache_lock)
++			mutex_lock(data, CACHE_MTX);
++	}
+ 	return retval;
+ }
+ 
+@@ -576,16 +588,22 @@ static struct unix_cache *find_cached_block(struct unix_private_data *data,
+ /*
+  * Reuse a particular cache entry for another block.
+  */
+-static void reuse_cache(io_channel channel, struct unix_private_data *data,
++static errcode_t reuse_cache(io_channel channel, struct unix_private_data *data,
+ 		 struct unix_cache *cache, unsigned long long block)
+ {
+-	if (cache->dirty && cache->in_use)
+-		raw_write_blk(channel, data, cache->block, 1, cache->buf);
++	errcode_t               retval = 0;
++	if (cache->dirty && cache->in_use) {
++		retval = raw_write_blk(channel, data, cache->block, 1, cache->buf, 1);
++		if (retval)
++			return retval;
++	}
+ 
+ 	cache->in_use = 1;
+ 	cache->dirty = 0;
+ 	cache->block = block;
+ 	cache->access_time = ++data->access_time;
++
++	return retval;
+ }
+ 
+ #define FLUSH_INVALIDATE	0x01
+@@ -616,7 +634,8 @@ static errcode_t flush_cached_blocks(io_channel channel,
+ 			continue;
+ 
+ 		retval = raw_write_blk(channel, data,
+-				       cache->block, 1, cache->buf);
++				       cache->block, 1, cache->buf,
++				       !(flags & FLUSH_NOLOCK));
+ 		if (retval)
+ 			retval2 = retval;
+ 		else
+@@ -984,10 +1003,10 @@ static errcode_t unix_read_blk64(io_channel channel, unsigned long long block,
+ 	EXT2_CHECK_MAGIC(data, EXT2_ET_MAGIC_UNIX_IO_CHANNEL);
+ 
+ #ifdef NO_IO_CACHE
+-	return raw_read_blk(channel, data, block, count, buf);
++	return raw_read_blk(channel, data, block, count, buf, 0);
+ #else
+ 	if (data->flags & IO_FLAG_NOCACHE)
+-		return raw_read_blk(channel, data, block, count, buf);
++		return raw_read_blk(channel, data, block, count, buf, 0);
+ 	/*
+ 	 * If we're doing an odd-sized read or a very large read,
+ 	 * flush out the cache and then do a direct read.
+@@ -995,7 +1014,7 @@ static errcode_t unix_read_blk64(io_channel channel, unsigned long long block,
+ 	if (count < 0 || count > WRITE_DIRECT_SIZE) {
+ 		if ((retval = flush_cached_blocks(channel, data, 0)))
+ 			return retval;
+-		return raw_read_blk(channel, data, block, count, buf);
++		return raw_read_blk(channel, data, block, count, buf, 0);
+ 	}
+ 
+ 	cp = buf;
+@@ -1024,14 +1043,18 @@ static errcode_t unix_read_blk64(io_channel channel, unsigned long long block,
+ 		printf("Reading %d blocks starting at %lu\n", i, block);
+ #endif
+ 		mutex_unlock(data, CACHE_MTX);
+-		if ((retval = raw_read_blk(channel, data, block, i, cp)))
++		if ((retval = raw_read_blk(channel, data, block, i, cp, 0)))
+ 			return retval;
+ 		mutex_lock(data, CACHE_MTX);
+ 
+ 		/* Save the results in the cache */
+ 		for (j=0; j < i; j++) {
+ 			if (!find_cached_block(data, block, &cache)) {
+-				reuse_cache(channel, data, cache, block);
++				retval = reuse_cache(channel, data, cache, block);
++				if (retval) {
++					mutex_unlock(data, CACHE_MTX);
++					return retval;
++				}
+ 				memcpy(cache->buf, cp, channel->block_size);
+ 			}
+ 			count--;
+@@ -1064,10 +1087,10 @@ static errcode_t unix_write_blk64(io_channel channel, unsigned long long block,
+ 	EXT2_CHECK_MAGIC(data, EXT2_ET_MAGIC_UNIX_IO_CHANNEL);
+ 
+ #ifdef NO_IO_CACHE
+-	return raw_write_blk(channel, data, block, count, buf);
++	return raw_write_blk(channel, data, block, count, buf, 0);
+ #else
+ 	if (data->flags & IO_FLAG_NOCACHE)
+-		return raw_write_blk(channel, data, block, count, buf);
++		return raw_write_blk(channel, data, block, count, buf, 0);
+ 	/*
+ 	 * If we're doing an odd-sized write or a very large write,
+ 	 * flush out the cache completely and then do a direct write.
+@@ -1076,7 +1099,7 @@ static errcode_t unix_write_blk64(io_channel channel, unsigned long long block,
+ 		if ((retval = flush_cached_blocks(channel, data,
+ 						  FLUSH_INVALIDATE)))
+ 			return retval;
+-		return raw_write_blk(channel, data, block, count, buf);
++		return raw_write_blk(channel, data, block, count, buf, 0);
+ 	}
+ 
+ 	/*
+@@ -1086,7 +1109,7 @@ static errcode_t unix_write_blk64(io_channel channel, unsigned long long block,
+ 	 */
+ 	writethrough = channel->flags & CHANNEL_FLAGS_WRITETHROUGH;
+ 	if (writethrough)
+-		retval = raw_write_blk(channel, data, block, count, buf);
++		retval = raw_write_blk(channel, data, block, count, buf, 0);
+ 
+ 	cp = buf;
+ 	mutex_lock(data, CACHE_MTX);
+@@ -1094,7 +1117,11 @@ static errcode_t unix_write_blk64(io_channel channel, unsigned long long block,
+ 		cache = find_cached_block(data, block, &reuse);
+ 		if (!cache) {
+ 			cache = reuse;
+-			reuse_cache(channel, data, cache, block);
++			retval = reuse_cache(channel, data, cache, block);
++			if (retval) {
++				mutex_unlock(data, CACHE_MTX);
++				return retval;
++			}
+ 		}
+ 		if (cache->buf != cp)
+ 			memcpy(cache->buf, cp, channel->block_size);
+-- 
+1.8.3.1
+

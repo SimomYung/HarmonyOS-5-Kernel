@@ -1,0 +1,45 @@
+config HISI_BL31_HIBERNATE
+	bool "Hisilicon BL31 S4 Hibernate feature support"
+	default n
+	depends on HIBERNATION
+	help
+	---help---
+	  This module supports the safe configuration or saving and recovery of
+	  data for bl31 modules. Bl31 implements the saving and recovery
+	  mechanism of S4 state, which is used by bl31 module.
+	  If unsure, say N.
+config BL31_HIBERNATE_V2
+	bool "Hisilicon BL31 S4 Hibernate feature support for future"
+	default n
+	depends on HIBERNATION
+	help
+	---help---
+	  This module is improved based on past module of HISI_BL31_HIBERNATE. 
+	  Bl31 implements the saving and recovery mechanism of S4 state, 
+	  which is used by bl31 module.
+	  If unsure, say N.
+config HISI_BL31_HIBERNATE_TEST
+	bool "Hisilicon BL31 S4 Hibernate test support"
+	default n
+	depends on HISI_BL31_HIBERNATE
+	help
+	---help---
+	  This module is designed to test bl31 hibernate feature.
+	  If unsure, say N.
+config BL31_HIBERNATE_RPMB_STORE
+	bool "Hisilicon BL31 S4 Hibernate RPMB support"
+	default n
+	depends on HISI_BL31_HIBERNATE
+	help
+	---help---
+	  This module is designed to store key with rpmb.
+	  If unsure, say N.
+config HIBERNATE_FORGERY_ATTACK_TEST
+	bool "Hisilicon BL31 S4 Hibernate Forgery Attack test support"
+	default n
+	depends on BL31_HIBERNATE_V2
+	help
+	---help---
+	  This module is designed to test bl31 hibernate feature for forgery attack.
+	  If unsure, say N.
+

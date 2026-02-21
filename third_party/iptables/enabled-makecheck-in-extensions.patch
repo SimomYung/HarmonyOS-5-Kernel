@@ -1,0 +1,35 @@
+From 54c670ada541aa61ab9ab7907ab245718137efb8 Mon Sep 17 00:00:00 2001
+From: huangyu <huangyu106@huawei.com>
+Date: Sat, 26 Nov 2022 18:08:31 +0800
+Subject: [PATCH] enable makecheck in extensions
+
+Signed-off-by: huangyu <huangyu106@huawei.com>
+---
+ extensions/GNUmakefile.in | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/extensions/GNUmakefile.in b/extensions/GNUmakefile.in
+index 956ccb3..70515c4 100644
+--- a/extensions/GNUmakefile.in
++++ b/extensions/GNUmakefile.in
+@@ -79,7 +79,7 @@ targets_install :=
+ 
+ .SECONDARY:
+ 
+-.PHONY: all install uninstall clean distclean FORCE
++.PHONY: all install uninstall check clean distclean FORCE
+ 
+ all: ${targets}
+ 
+@@ -105,6 +105,8 @@ uninstall:
+ 		rmdir -p --ignore-fail-on-non-empty "$$dir"; \
+ 	}
+ 
++check:
++
+ clean:
+ 	rm -f *.o *.oo *.so *.a {matches,targets}.man initext.c initext4.c initext6.c initextb.c initexta.c;
+ 	rm -f .*.d .*.dd;
+-- 
+2.23.0
+

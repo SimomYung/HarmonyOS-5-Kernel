@@ -1,0 +1,5 @@
+config HW_FEM_VOL_CONTROL
+    tristate "kernel huawei wifi fem control voltage value"
+    default n
+    help
+    This module adds control wifi fem voltage value

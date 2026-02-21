@@ -1,0 +1,29 @@
+# Copyright (c) Huawei Technologies Co., Ltd. 2021-2021. All rights reserved.
+# Description: HMbuild
+# Author: Huawei OS Kernel Lab
+# Create: Tue Aug 31 15:15:50 2021
+
+subdir-y: libhmsrv_fs
+subdir-y: libhmsrv_kernfs
+subdir-y: libhmsrv_ldso
+
+cflags-.-CONFIG_FSLIB_DEBUG: -DCONFIG_COVERITY_CHECK_TAINT
+cflags-.-CONFIG_FSLIB_DEBUG: -DCONFIG_DEBUG_BUILD
+
+cflags-.-y: -DCONFIG_STRICT_UNUSED
+cflags-.-y: -Wno-unused-parameter
+cflags-.-y: -Os
+cflags-.-y: -std=gnu99
+cflags-.-y: -funwind-tables
+
+installfindmodule: FindHMFSLibs.cmake
+installfindmodule: FindHMFSLibs_sysk.cmake
+installinc: include/kconfig_fslibs.h
+
+inclib: HMUlibs::HMUlibs_sysif_sysmgr_include
+inclib: HMUlibs::HMUlibs_sysif_fs_include
+inclib: HMUlibs::HMUlibs_sysif_devhost_include
+inclib: HMUlibs::HMUlibs_sysif_devmgr_include
+inclib: HMUlibs::HMUlibs_sysif_fs_server_include
+
+# vim:ts=4:sw=4:expandtab

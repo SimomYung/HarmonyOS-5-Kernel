@@ -1,0 +1,72 @@
+config INPUTHUB_30
+	bool "INPUTHUB_30"
+	depends on  CONTEXTHUB
+	help
+	support INPUTHUB_30.
+
+config SMART_WATCHDOG_V500
+	bool "SMART WATCHDOG V500 support"
+	depends on CONTEXTHUB
+	default n
+	help
+	Enable support for watchdog v500 driver
+
+config IPC_V5
+	bool "IPC_V5"
+	depends on  INPUTHUB_30
+	help
+	support IPC_V5.
+
+config RISCV_DUMP_ADAPT
+	bool "RISCV_DUMP_ADAPT"
+	depends on  INPUTHUB_30
+	default n
+	help
+	RISCV dump adapt
+
+config BOX_RECOVERY
+	bool "BOX_RECOVERY"
+	depends on  INPUTHUB_30
+	default n
+	help
+	support box recovery
+
+config USER_DUMP_BUFFER
+	bool "USER_DUMP_BUFFER"
+	depends on  INPUTHUB_30
+	default n
+	help
+	Use Dump Buffer
+
+config CONTEXTHUB_LOAD_IOMCU_IMAGE
+	bool "LOAD IOMCU IMAGE"
+	depends on  INPUTHUB_30
+	default n
+	help
+	support kernel load iomcu iamge
+
+config CONTEXTHUB_MNTN_STATUS_SAVELOG
+	bool "CONTEXTHUB_MNTN_STATUS_SAVELOG support"
+	depends on INPUTHUB_30
+	default n
+	help
+	Enable support for CONTEXTHUB_MNTN_STATUS_SAVELOG load
+
+config CONTEXTHUB_LPMCU_DUMP_LOG
+	bool "CONTEXTHUB_LPMCU_DUMP_LOG"
+	default n
+	help
+	save sensorhub log via lpmcu
+
+config CONTEXTHUB_EXTRACT_DUMP_LOG
+	bool "CONTEXTHUB_EXTRACT_DUMP_LOG"
+	default n
+	help
+	extract sensorhub log and save
+
+config CONFIG_CONTEXTHUB_LOG_LEVEL_INFO
+	bool "CONFIG_CONTEXTHUB_LOG_LEVEL_INFO"
+	default n
+	help
+	set contexthub log level to info when boot
+

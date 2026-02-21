@@ -1,0 +1,20 @@
+{
+    "template": "hook",
+    "server": "net",
+    "manager": "net_stack_init",
+    "hooks": {
+        "net_stack_init": {
+            "generation": {
+                "performance_compatibility": true
+            },
+            "scheme": "security check/inner constraint",
+            "module_relation": "{all:buckle}",
+            "ac": {
+                "buckle": {
+                    "alias": "sec_chk_ability_net_stack_init",
+                    "permission": "ab_net_stack_init"
+                }
+            }
+        }
+    }
+}

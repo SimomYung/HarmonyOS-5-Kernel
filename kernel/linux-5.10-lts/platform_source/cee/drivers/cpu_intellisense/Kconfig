@@ -1,0 +1,13 @@
+config CPU_INTELLISENSE
+        bool "cpu_intellisense"
+        depends on PHASE
+        depends on PHASE_PERF
+        default n
+        help
+          Note that use pmu informance to change cpu uarch configuration
+config CPU_INTELLISENSE_DEBUG
+        bool "cpu_intellisense_debug"
+        depends on CPU_INTELLISENSE
+        default n
+        help
+          Note that use pmu informance to change cpu uarch configuration debug

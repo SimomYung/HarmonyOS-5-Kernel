@@ -1,0 +1,166 @@
+# Copyright (c) 2021-2022 Huawei Device Co., Ltd.
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+import("//build/ohos.gni")
+
+config("pulsecommon_config") {
+  visibility = [ ":*" ]
+
+  include_dirs = [
+    "../../src",
+    "../../include",
+    "../../",
+    "../src",
+    "../include",
+    "../../src/pulse",
+  ]
+
+  cflags = [
+    "-Wall",
+    "-Werror",
+    "-Wno-implicit-function-declaration",
+    "-Wno-unused-function",
+    "-Wno-unused-but-set-variable",
+    "-DHAVE_CONFIG_H",
+    "-D_GNU_SOURCE",
+  ]
+}
+
+ohos_source_set("pulsecommon_sources") {
+  sources = [
+    "../../src/pulse/channelmap.c",
+    "../../src/pulse/client-conf.c",
+    "../../src/pulse/error.c",
+    "../../src/pulse/fork-detect.c",
+    "../../src/pulse/format.c",
+    "../../src/pulse/mainloop-api.c",
+    "../../src/pulse/ohos_pa_volume.c",
+    "../../src/pulse/proplist.c",
+    "../../src/pulse/rtclock.c",
+    "../../src/pulse/sample.c",
+    "../../src/pulse/timeval.c",
+    "../../src/pulse/utf8.c",
+    "../../src/pulse/util.c",
+    "../../src/pulse/xmalloc.c",
+    "../../src/pulsecore/arpa-inet.c",
+    "../../src/pulsecore/aupdate.c",
+    "../../src/pulsecore/authkey.c",
+    "../../src/pulsecore/bitset.c",
+    "../../src/pulsecore/conf-parser.c",
+    "../../src/pulsecore/core-error.c",
+    "../../src/pulsecore/core-format.c",
+    "../../src/pulsecore/core-rtclock.c",
+    "../../src/pulsecore/core-util.c",
+    "../../src/pulsecore/dynarray.c",
+    "../../src/pulsecore/fdsem.c",
+    "../../src/pulsecore/flist.c",
+    "../../src/pulsecore/g711.c",
+    "../../src/pulsecore/hashmap.c",
+    "../../src/pulsecore/i18n.c",
+    "../../src/pulsecore/idxset.c",
+    "../../src/pulsecore/iochannel.c",
+    "../../src/pulsecore/ioline.c",
+    "../../src/pulsecore/ipacl.c",
+    "../../src/pulsecore/json.c",
+    "../../src/pulsecore/lock-autospawn.c",
+    "../../src/pulsecore/log.c",
+    "../../src/pulsecore/mcalign.c",
+    "../../src/pulsecore/memblock.c",
+    "../../src/pulsecore/memblockq.c",
+    "../../src/pulsecore/memchunk.c",
+    "../../src/pulsecore/memtrap.c",
+    "../../src/pulsecore/mutex-posix.c",
+    "../../src/pulsecore/native-common.c",
+    "../../src/pulsecore/ohos_socket-server.c",
+    "../../src/pulsecore/once.c",
+    "../../src/pulsecore/packet.c",
+    "../../src/pulsecore/parseaddr.c",
+    "../../src/pulsecore/pdispatch.c",
+    "../../src/pulsecore/pid.c",
+    "../../src/pulsecore/pipe.c",
+    "../../src/pulsecore/proplist-util.c",
+    "../../src/pulsecore/pstream-util.c",
+    "../../src/pulsecore/pstream.c",
+    "../../src/pulsecore/queue.c",
+    "../../src/pulsecore/random.c",
+    "../../src/pulsecore/ratelimit.c",
+    "../../src/pulsecore/sample-util.c",
+    "../../src/pulsecore/semaphore-posix.c",
+    "../../src/pulsecore/shm.c",
+    "../../src/pulsecore/socket-client.c",
+    "../../src/pulsecore/socket-util.c",
+    "../../src/pulsecore/srbchannel.c",
+    "../../src/pulsecore/strbuf.c",
+    "../../src/pulsecore/strlist.c",
+    "../../src/pulsecore/tagstruct.c",
+    "../../src/pulsecore/thread-posix.c",
+    "../../src/pulsecore/time-smoother.c",
+    "../../src/pulsecore/tokenizer.c",
+    "../../src/pulsecore/usergroup.c",
+  ]
+
+  configs = [ ":pulsecommon_config" ]
+
+  external_deps = [
+    "hilog:libhilog",
+    "init:libbegetutil",
+  ]
+
+  defines = []
+  if (defined(global_parts_info) &&
+      defined(global_parts_info.hiviewdfx_hitrace)) {
+    defines += [ "FEATURE_HITRACE_METER" ]
+    external_deps += [ "hitrace:hitrace_meter" ]
+  }
+
+  subsystem_name = "thirdparty"
+  part_name = "pulseaudio"
+}
+
+ohos_shared_library("pulsecommon") {
+  branch_protector_ret = "pac_ret"
+  deps = [ ":pulsecommon_sources" ]
+
+  external_deps = [
+    "hilog:libhilog",
+    "init:libbegetutil",
+  ]
+
+  subsystem_name = "thirdparty"
+  innerapi_tags = [
+    "chipsetsdk_indirect",
+    "platformsdk_indirect",
+  ]
+  part_name = "pulseaudio"
+}
+ohos_prebuilt_etc("pa_daemon_config") {
+  source = "../../conf/daemon.conf"
+
+  subsystem_name = "thirdparty"
+  module_install_dir = "etc/pulse"
+  part_name = "pulseaudio"
+}
+
+ohos_prebuilt_etc("pa_default_config") {
+  source = "../../conf/default.pa"
+  subsystem_name = "thirdparty"
+  module_install_dir = "etc/pulse"
+  part_name = "pulseaudio"
+}
+
+ohos_prebuilt_etc("pa_client_config") {
+  source = "../../conf/client.conf"
+  subsystem_name = "thirdparty"
+  module_install_dir = "etc/pulse"
+  part_name = "pulseaudio"
+}

@@ -1,0 +1,6 @@
+config HW_QOS_SCHED
+    bool "qos sched thread"
+    default n
+    help
+      if set, qos thread is propagated by lock&binder, and picked first in lock's waitlist.
+      The thread priority and min util can be set with the change of qos values.

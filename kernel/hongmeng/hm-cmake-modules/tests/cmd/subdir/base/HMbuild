@@ -1,0 +1,10 @@
+# Copyright (c) Huawei Technologies Co., Ltd. 2021-2021. All rights reserved.
+# Description: HMbuild for subdir_base_test
+# Author: Huawei OS Kernel Lab
+# Create: Tue Nov 23 12:01:49 2021
+
+exec-dynamic-y: test.elf
+src-test.elf-y: main.c
+subdir-y: subdir
+
+# vim:ts=4:sw=4:expandtab

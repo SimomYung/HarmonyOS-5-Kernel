@@ -1,0 +1,69 @@
+/*
+ * Copyright (C) Huawei Technologies Co., Ltd. 2019-2020. All rights reserved.
+ * Description: Kbox sysif interfaces
+ * Author: Huawei OS Kernel Lab
+ * Create: Thu Nov 21 22:04:36 2019
+ */
+
+/*
+ * To support the mixed data model which means the client and the server
+ * may use different data model. See the document for limitation of data type
+ * used in the sysif interfaces in <Documentation/sysif_compat.md>.
+ */
+#ifdef SYSIF_EXPORT_API
+
+#include <libkbox/param.h>
+
+struct kbox_region_name {
+	char value[KBOX_REGION_NAME_SIZE];
+};
+
+#endif
+
+DEFINE_MANAGER(kbox, 8,
+	DEFINE_SIMPLE_METHOD(kbox, query_device,
+			     ARG_NO,
+			     RET(5,
+				 unsigned short, version,
+				 unsigned long long, paddr,
+				 unsigned long long, total_size,
+				 unsigned long long, free_size,
+				 unsigned long long, region_count),
+			     SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(kbox, query_region,
+			     ARG(1, unsigned int, index),
+			     RET(4,
+				 struct kbox_region_name, name,
+				 unsigned long long, total_size,
+				 unsigned long long, contained_data_size,
+				 bool, dynamic),
+			     SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(kbox, open_region,
+			     ARG(1, struct kbox_region_name, name),
+			     RET(2,
+				 unsigned long long, vaddr,
+				 unsigned long long, size),
+			     SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(kbox, close_region,
+			     ARG(3,
+				 struct kbox_region_name, name,
+				 unsigned long long, vaddr,
+				 unsigned long long, size),
+			     RET_NO,
+			     SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(kbox, create_region,
+			     ARG(2,
+				 struct kbox_region_name, name,
+				 unsigned long long, size),
+			     RET_NO,
+			     SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(kbox, delete_region,
+			     ARG(1, struct kbox_region_name, name),
+			     RET_NO,
+			     SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(kbox, check_region_dynamic,
+			     ARG(1, struct kbox_region_name, name),
+			     RET(1,
+                 bool, is_dynamic),
+			     SLOWDATA_NO)
+)

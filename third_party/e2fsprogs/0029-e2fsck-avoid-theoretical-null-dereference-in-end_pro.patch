@@ -1,0 +1,42 @@
+From fdec633fd661e79b7b81e848b5699775328d70ae Mon Sep 17 00:00:00 2001
+From: zhanchengbin <zhanchengbin1@huawei.com>
+Date: Fri, 31 Dec 2021 15:43:10 +0800
+Subject: e2fsck: avoid theoretical null dereference in end_problem_latch()
+
+This should only happen if there is a programming bug, but better safe
+than sorry.
+
+Link: https://lore.kernel.org/r/9a9c6658-a8b3-794a-85df-c3bdf0470111@huawei.com
+Signed-off-by: zhanchengbin <zhanchengbin1@huawei.com>
+Signed-off-by: Theodore Ts'o <tytso@mit.edu>
+---
+ e2fsck/problem.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
+
+diff --git a/e2fsck/problem.c b/e2fsck/problem.c
+index 46a74273..95f0ace8 100644
+--- a/e2fsck/problem.c
++++ b/e2fsck/problem.c
+@@ -2321,6 +2321,8 @@ int end_problem_latch(e2fsck_t ctx, int mask)
+ 	int answer = -1;
+ 
+ 	ldesc = find_latch(mask);
++	if (!ldesc)
++		return answer;
+ 	if (ldesc->end_message && (ldesc->flags & PRL_LATCHED)) {
+ 		clear_problem_context(&pctx);
+ 		answer = fix_problem(ctx, ldesc->end_message, &pctx);
+@@ -2467,8 +2469,8 @@ int fix_problem(e2fsck_t ctx, problem_t code, struct problem_context *pctx)
+ 	 * Do special latch processing.  This is where we ask the
+ 	 * latch question, if it exists
+ 	 */
+-	if (ptr->flags & PR_LATCH_MASK) {
+-		ldesc = find_latch(ptr->flags & PR_LATCH_MASK);
++	if (ptr->flags & PR_LATCH_MASK &&
++	    (ldesc = find_latch(ptr->flags & PR_LATCH_MASK)) != NULL) {
+ 		if (ldesc->question && !(ldesc->flags & PRL_LATCHED)) {
+ 			ans = fix_problem(ctx, ldesc->question, pctx);
+ 			if (ans == 1)
+-- 
+cgit 
+

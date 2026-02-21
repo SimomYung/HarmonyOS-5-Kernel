@@ -1,0 +1,9 @@
+# Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights reserved.
+# Description: HMbuild for libhmencaps
+# Author: Huawei OS Kernel Lab
+# Create: Wed May 1 10:54:23 2024
+
+cflags-.-y: -Wno-missing-field-initializers
+src-y: dec.c
+
+# vim:ts=4:sw=4:expandtab

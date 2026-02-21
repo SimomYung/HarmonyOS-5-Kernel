@@ -1,0 +1,6 @@
+# SPDX-License-Identifier: GPL-2.0
+
+obj-y += sysbunch.o zrhung_config.o
+
+USER_OBJS := sysbunch.o
+include arch/liblinux/scripts/Makefile.rules

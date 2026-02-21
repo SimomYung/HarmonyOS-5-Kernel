@@ -1,0 +1,46 @@
+{
+    "template": "hook",
+    "server": "net",
+    "manager": "reserved_port_range",
+    "generation": {
+        "header": {
+            "include" : {
+                "hook" : "#include <libpolicy_api.h>\n"
+            }
+        }
+    },
+    "hooks": {
+        "reserved_port_range": {
+            "generation": {
+                "performance_compatibility": true
+            },
+            "scheme": "security check/object access",
+            "arguments": [
+                {
+                    "name": "port_range",
+                    "type": "sec_plc_port_range_t *"
+                }
+            ],
+            "object": {
+                "type": "port_range"
+            },
+            "module_relation": "{all:dac,ability,overlay{first:seharmony,mac}}",
+            "ac": {
+                "mac": {
+                    "enabled": false
+                },
+                "dac": {
+                    "enabled": false
+                },
+                "seharmony": {
+                    "enabled": false
+                },
+                "ability": {
+                    "enabled": true,
+                    "alias": "ability_reserved_port_range",
+                    "permission": "ability_reserved_port_range"
+                }
+            }
+        }
+    }
+}

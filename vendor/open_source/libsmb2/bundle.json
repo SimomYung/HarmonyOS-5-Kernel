@@ -1,0 +1,38 @@
+{
+    "name": "@ohos/libsmb2",
+    "description": "",
+    "version": "libsmb2-6.2",
+    "license": "",
+    "publishAs": "code-segment",
+    "segment": {
+        "destPath": "vendor/open_source/libsmb2"
+    },
+    "dirs": {},
+    "scripts": {},
+    "component": {
+        "name": "libsmb2",
+        "subsystem": "open_source",
+        "syscap": [],
+        "features": [],
+        "adapted_system_type": ["standard", "mini", "small"],
+        "rom": "",
+        "ram": "",
+        "deps": {
+            "components": []
+        },
+        "build": {
+            "sub_component": [
+                "//vendor/open_source/libsmb2:libsmb2_shared"
+            ],
+            "inner_kits": [
+                {
+                "name": "//vendor/open_source/libsmb2:libsmb2_shared",
+                "header": {
+                    "header_files": [ ],
+                    "header_base": "${root_gen_dir}/vendor/open_source/libsmb2/"
+                }
+            }],
+            "test": []
+        }
+    }
+}

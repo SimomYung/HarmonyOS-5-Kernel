@@ -1,0 +1,10 @@
+# SPDX-License-Identifier: GPL-2.0-only
+config LIBLINUX_DEBUGFS_BINDER
+	bool "Enable debugfs binder"
+	default n
+config LIBLINUX_DEBUGFS_XPM
+	bool "Enable debugfs xpm"
+	default n
+config LIBLINUX_DEBUGFS_COMPACTION
+	bool "Enable hongmeng debugfs compaction"
+	default n

@@ -1,0 +1,396 @@
+{
+    "root": {
+        "data": {
+            "id": "ci26txcan080",
+            "created": 1645493689739,
+            "text": "HLIBC",
+            "usecase": 99
+        },
+        "children": [
+            {
+                "data": {
+                    "id": "ci26yfp7p400",
+                    "created": 1645494043159,
+                    "text": "字符串赋值-字符串赋值memmove",
+                    "usecase": 1,
+                    "layout_mind_offset": {
+                        "x": -40,
+                        "y": -4
+                    },
+                    "layout": null
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "ci270vepp9k0",
+                            "created": 1645494234080,
+                            "text": "功能分析",
+                            "usecase": null,
+                            "expandState": "expand",
+                            "layout": null
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "ci27e5wi46o0",
+                                    "created": 1645495275658,
+                                    "text": "字符串赋值",
+                                    "usecase": 2,
+                                    "layout": null
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "ci27etyv5f40",
+                                            "created": 1645495328044,
+                                            "text": "赋值全0",
+                                            "usecase": 4,
+                                            "author": "x50021790",
+                                            "showId": "00003",
+                                            "layout": null
+                                        },
+                                        "children": []
+                                    },
+                                    {
+                                        "data": {
+                                            "id": "ci29ebtdxnc0",
+                                            "created": 1645500930750,
+                                            "text": "赋值'a'",
+                                            "usecase": 4,
+                                            "author": "x50021790",
+                                            "showId": "00010",
+                                            "layout": null
+                                        },
+                                        "children": []
+                                    }
+                                ]
+                            },
+                            {
+                                "data": {
+                                    "id": "ci2bvbjthbc0",
+                                    "created": 1645507904582,
+                                    "text": "重叠区域字符串赋值",
+                                    "usecase": 2,
+                                    "expandState": "expand",
+                                    "layout": null
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "ci2bvn41x5k0",
+                                            "created": 1645507929750,
+                                            "text": "将字符串从src字符数组赋值到dest字符数组，数组间有重叠区域",
+                                            "usecase": 4,
+                                            "author": "x50021790",
+                                            "showId": "00011",
+                                            "layout": null
+                                        },
+                                        "children": []
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "data": {
+                            "id": "ci2710l2v6g0",
+                            "created": 1645494245349,
+                            "text": "可靠性分析",
+                            "usecase": null,
+                            "layout": null
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "ci292y6b5ug0",
+                                    "created": 1645500039051,
+                                    "text": "赋值长度需要小于等于dest数组长度",
+                                    "usecase": 2,
+                                    "layout": null
+                                },
+                                "children": []
+                            },
+                            {
+                                "data": {
+                                    "id": "ci534rmmjaw0",
+                                    "created": 1645787934739,
+                                    "text": "空指针",
+                                    "usecase": 2,
+                                    "layout": null
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "ci534rmmu8g0",
+                                            "created": 1645787934739,
+                                            "text": "传入空指针，函数错误",
+                                            "usecase": 4,
+                                            "author": "x50021790",
+                                            "showId": "00022",
+                                            "priority": null,
+                                            "layout": null
+                                        },
+                                        "children": []
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "data": {
+                    "id": "ci2j8fv61nc0",
+                    "created": 1645528680479,
+                    "text": "字符串赋值-字符串赋值memset",
+                    "usecase": 1,
+                    "layout_mind_offset": {
+                        "x": -43,
+                        "y": 70
+                    },
+                    "layout": null
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "ci2j8fv66ds0",
+                            "created": 1645528680479,
+                            "text": "功能分析",
+                            "usecase": null,
+                            "expandState": "expand",
+                            "layout": null
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "ci2j8fv68qw0",
+                                    "created": 1645528680479,
+                                    "text": "字符串赋值",
+                                    "usecase": 2,
+                                    "layout": null
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "ci2j8fv5s080",
+                                            "created": 1645528680479,
+                                            "text": "赋值全0",
+                                            "usecase": 4,
+                                            "author": "x50021790",
+                                            "showId": "00012",
+                                            "layout": null
+                                        },
+                                        "children": []
+                                    },
+                                    {
+                                        "data": {
+                                            "id": "ci2j8fv630w0",
+                                            "created": 1645528680479,
+                                            "text": "赋值'a'",
+                                            "usecase": 4,
+                                            "author": "x50021790",
+                                            "showId": "00013",
+                                            "layout": null
+                                        },
+                                        "children": []
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "data": {
+                            "id": "ci2j8fv61ig0",
+                            "created": 1645528680479,
+                            "text": "可靠性分析",
+                            "usecase": null,
+                            "expandState": "expand",
+                            "layout": null
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "ci2j8fv5yuw0",
+                                    "created": 1645528680479,
+                                    "text": "赋值长度需要小于等于dest数组长度",
+                                    "usecase": 2,
+                                    "layout": null
+                                },
+                                "children": []
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "data": {
+                    "id": "ci530awecqw0",
+                    "created": 1645787584868,
+                    "text": "字符串赋值-字符串拷贝memcpy、strncpy",
+                    "usecase": 1,
+                    "layout_mind_offset": {
+                        "x": -40,
+                        "y": -4
+                    },
+                    "layout": null
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "ci530nvr32o0",
+                            "created": 1645787613127,
+                            "text": "入参分析",
+                            "layout": null
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "ci530nvrf8g0",
+                                    "created": 1645787613127,
+                                    "text": "空字符串",
+                                    "usecase": 2,
+                                    "layout": null
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "ci530nvrd3c0",
+                                            "created": 1645787613127,
+                                            "text": "拷贝空字符串，长度0，拷贝成功",
+                                            "usecase": 4,
+                                            "author": "x50021790",
+                                            "showId": "00018",
+                                            "priority": null,
+                                            "layout": null
+                                        },
+                                        "children": []
+                                    },
+                                    {
+                                        "data": {
+                                            "id": "ci530nvrau80",
+                                            "created": 1645787613127,
+                                            "text": "比较空字符串和非空字符串，长度1，返回负数",
+                                            "usecase": 4,
+                                            "author": "x50021790",
+                                            "showId": "00019",
+                                            "layout": null
+                                        },
+                                        "children": []
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "data": {
+                            "id": "ci530awehr40",
+                            "created": 1645787584868,
+                            "text": "功能分析",
+                            "usecase": null,
+                            "expandState": "expand",
+                            "layout": null
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "ci530awejhs0",
+                                    "created": 1645787584868,
+                                    "text": "字符串拷贝",
+                                    "usecase": 2,
+                                    "layout": null
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "ci530awemp40",
+                                            "created": 1645787584868,
+                                            "text": "拷贝长度小于src，成功拷贝",
+                                            "usecase": 4,
+                                            "author": "x50021790",
+                                            "showId": "00016",
+                                            "layout": null
+                                        },
+                                        "children": []
+                                    },
+                                    {
+                                        "data": {
+                                            "id": "ci530awe9hk0",
+                                            "created": 1645787584868,
+                                            "text": "拷贝长度等于src，成功拷贝",
+                                            "usecase": 4,
+                                            "author": "x50021790",
+                                            "showId": "00017",
+                                            "layout": null
+                                        },
+                                        "children": []
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "data": {
+                            "id": "ci530awef8w0",
+                            "created": 1645787584868,
+                            "text": "可靠性分析",
+                            "usecase": null,
+                            "layout": null
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "ci530awebvs0",
+                                    "created": 1645787584868,
+                                    "text": "dest和src不能有内存重叠",
+                                    "usecase": 2,
+                                    "layout": null
+                                },
+                                "children": []
+                            },
+                            {
+                                "data": {
+                                    "id": "ci530awfc8o0",
+                                    "created": 1645787584869,
+                                    "text": "memcpy拷贝长度长度需要小于等于dest数组长度",
+                                    "usecase": 2,
+                                    "layout": null
+                                },
+                                "children": []
+                            },
+                            {
+                                "data": {
+                                    "id": "ci5313lfhiw0",
+                                    "created": 1645787647331,
+                                    "text": "空指针",
+                                    "usecase": 2,
+                                    "layout": null
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "ci5313lfbq00",
+                                            "created": 1645787647331,
+                                            "text": "传入空指针，函数错误",
+                                            "usecase": 4,
+                                            "author": "x50021790",
+                                            "showId": "00021",
+                                            "priority": null,
+                                            "layout": null
+                                        },
+                                        "children": []
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    "templatePath": null,
+    "singleTemplatePath": null,
+    "testcaseFilePath": "",
+    "template": "right",
+    "theme": "fresh-blue",
+    "version": "1.4.43"
+}

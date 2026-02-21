@@ -1,0 +1,5 @@
+config DICE
+	bool "Support dice"
+	default n
+	help
+	dice support

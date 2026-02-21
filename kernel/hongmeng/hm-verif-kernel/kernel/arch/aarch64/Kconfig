@@ -1,0 +1,802 @@
+
+menu "AARCH64 Options"
+  depends on AARCH64
+
+config CPU_CORTEX_A53
+  bool
+  default n
+
+config CPU_CORTEX_A55
+  bool
+  default n
+
+config CPU_CORTEX_A57
+  bool
+  default n
+
+config CPU_CORTEX_A510
+  bool
+  default n
+
+config CPU_CORTEX_A73
+  bool
+  select ARCH_NEED_SPECV2_MITIGATION
+  default n
+
+config CPU_CORTEX_A75
+  bool
+  select ARCH_NEED_SPECV2_MITIGATION
+  default n
+
+config CPU_CORTEX_R52
+  bool
+  default n
+
+config ENABLE_NONMASKABLE_SERROR
+  bool "Enable SError exception in kernel"
+  default y if DEBUG_BUILD
+
+# Platform config
+source "arch/aarch64/Kconfig.plat"
+
+# Platform specific errata
+source "arch/aarch64/Kconfig.errata"
+
+# arch dependent config
+menu "AARCH64 build options"
+
+  config FRAME_POINTER
+  bool "Stack frame compliant with AAPCS"
+  default y
+  help
+    Stack frame compliant with AAPCS
+
+  choice
+    prompt "Virtual address space size"
+    default AARCH64_VA_BITS_39 if AARCH64_PAGE_4K
+    default AARCH64_VA_BITS_47 if AARCH64_PAGE_16K
+    default AARCH64_VA_BITS_48 if AARCH64_PAGE_64K
+
+    config AARCH64_VA_BITS_48
+      bool "48-bit"
+      depends on !SYSMGR_KASAN
+    config AARCH64_VA_BITS_47
+      bool "47-bit"
+      depends on !SYSMGR_KASAN
+    config AARCH64_VA_BITS_39
+      bool "39-bit"
+  endchoice
+
+  config ARCH_SUPPORT_SUPERVS
+    bool
+    depends on AARCH64_VA_BITS_39
+    default y
+
+  config AARCH64_SUPERVS_VA_BITS
+    int
+    depends on ARCH_SUPPORT_SUPERVS
+    default 48
+
+  choice
+    prompt "Page size"
+    default AARCH64_PAGE_4K
+
+    config AARCH64_PAGE_4K
+      bool "4K page"
+    config AARCH64_PAGE_16K
+      bool "16K page"
+      depends on !SYSMGR_KASAN
+    config AARCH64_PAGE_64K
+      bool "64K page"
+      depends on !SYSMGR_KASAN
+  endchoice
+
+  config AARCH64_VA_BITS
+  int
+  default 48 if AARCH64_VA_BITS_48
+  default 47 if AARCH64_VA_BITS_47
+  default 39 if AARCH64_VA_BITS_39
+
+  config AARCH64_PRIV_VS_SIZE
+    hex "Privilege service vspace size"
+    default 0x400000000
+    range 0x100000000 0x500000000
+    help
+      Set the range to 4G ~ 20G, it can be smaller
+
+  config AARCH64_PRIV_VS_SIZE_SYSMGR
+    hex "Privilege service vspace size for the sysmgr"
+    default 0x500000000
+    range 0x100000000 0x1000000000
+    help
+      Set the range to 4G ~ 64G, it can be smaller
+
+  config AARCH64_ADDR_TAGGING
+  bool "Enable address tagging in AArch64"
+  depends on AARCH64_TBI0
+  default y
+  help
+    Set to n unless you understand address tagging
+
+  config AARCH64_TBI0
+  bool "Enable TCR_TBI0"
+  default n
+  help
+    Set to n unless you understand TCR_TBI0
+
+  config PAC
+    bool "Enable PAC key register management in kernel"
+    depends on AARCH64_PAUTH
+    default n
+    help
+      Pointer authentication to protect pointers and data to implement CFI and DFI.
+
+  config PAC_SAME_KEY
+    bool "privileged services have the same keys as the kernel"
+    depends on PAC
+    default y
+    help
+      Not include the IB key
+
+  config PAC_ALWAYS_ENABLE
+    bool "privileged services have the same keys as the kernel"
+    depends on PAC
+    default y
+    help
+      All processes always enables all keys
+
+  choice
+    prompt "PAC BWCFI Key"
+    default PAC_BWCFI_IB_KEY
+    config PAC_BWCFI_IA_KEY
+      bool "Use IA key (pacia and retaa)"
+    config PAC_BWCFI_IB_KEY
+      bool "Use IB key (pacib and retab)"
+  endchoice
+
+  config ARM64_BTI_USER
+    bool "Branch Target Identification support for user app"
+    depends on AARCH64
+    default n
+
+  config SMT
+    bool "Enable SMT topology support"
+    default n
+    help
+        Enable SMT topology
+
+  config SCHED_SMT_HIDE
+    bool "Enable SMT hide for uapps"
+    default n
+    depends on SMT
+
+  config CPU_HISI_MIDR_HIDE
+    bool "Enable HISI Chip MIDR Hide"
+    default n
+
+  config NR_CPUS
+    int "Maximum number of CPUs supported by the kernel"
+    range 1 32 if SMP
+    default 8 if SMP
+    range 1 1 if !SMP
+    default 1 if !SMP
+    help
+      The maximum available range for NR_CPUS is limited by
+      the sizeof `__cpuset_t`.
+
+  config CPU_CAPACITY_LEVEL
+    bool "Use `capacity-level` to measure the CPU capacity"
+    depends on SMP
+    default n
+    help
+      The `capacity-level` is an optional cpu node property in dts. It roughly
+      classifies the performance of CPUs into three levels: 1 - LITTLE, 2 - MIDDLE
+      and 3 - BIG. The CPU capacity of CPUs unregistered or not specify the
+      `capacity-level` would fallback to 0 - INVALID by default.
+
+  config KERNEL_BOOT_STACK
+    hex "kernel boot stack"
+    default 0x400000
+
+  config VSPACE_MAX_VLIMIT_32
+    hex "Max vspace limit in 32-bits"
+    default 0xFFFFFFFF
+
+  config AARCH64_SVE
+    bool "Enable ARMv8.2-SVE"
+    default n
+    depends on AARCH64_V8_2
+    depends on KOBJ_THREAD
+    depends on SUPPORT_SPIN_FPU
+    help
+      Enable ARMv8.2-SVE
+
+  config AARCH64_LSE
+    bool "Enable ARMv8.1-LSE"
+    default y
+    depends on AARCH64_V8_1
+    help
+      Enable ARMv8.1-LSE
+
+  config HYPERVISOR
+    bool "Enable the HongMeng hypervisor"
+    default n
+    depends on !BIG_ENDIAN
+    select CAP_VM_ENABLE
+    help
+      Enable the HongMeng hypervisor support.
+
+  config A64_HYP_FWB
+    bool "Enable fwb feature on hypervisor"
+    default n
+    depends on HYPERVISOR
+    help
+      Enable fwb feature on hypervisor
+
+   config CAP_VM_ENABLE
+    bool "Enable vm capability"
+    default n
+    help
+      Enable vm capability
+
+   config IOT_CMEM
+    bool "Enable cross-os-memory for IOT scenario"
+    default n
+
+if CAP_VM_ENABLE
+  choice
+    prompt "VM Mode"
+    default VM_MODE_HYPER
+
+  config VM_MODE_HYPER
+    bool "Enable vm with hypervisor mode"
+    depends on HYPERVISOR
+    help
+        Virtual machine has two different modes, this one is the
+        traditional mode, the guest os is running with hypervisor.
+
+  config VM_MODE_BM
+    bool "Enable vm with bare metal mode"
+    select IOT_CMEM
+    help
+        This is another mode of virtual machine, in this mode, the guest
+        os is running on a bare metal core without hypervisor.
+
+  endchoice
+endif
+
+  config VM_MODE_UM
+    bool "Enable virtual machine with user mode"
+    default n
+    select IOT_CMEM
+
+  config VM_DYNAMIC_MEMORY
+    bool "Enable VM dynamic memory registration"
+    default n
+    depends on VM_MODE_HYPER
+    depends on !PERF_VPERFCTX
+    depends on !VM_SMMU
+    help
+      Allow mapping dynamically allocated memory to a guest VM region
+      and handling VM pagefaults of these regions.
+
+  config VHE
+    bool "Run the HongMeng kernel in EL2"
+    default y
+    depends on HYPERVISOR
+    depends on AARCH64_V8_1
+    help
+      Run the HongMeng kernel in EL2 instead of EL1, which offers improved
+      VM context switch performance when the HM hypervisor is used.
+
+  config HKIP
+    bool "Enable Huawei Kernel Integrity Protection"
+    default n
+    depends on HYPERVISOR
+    depends on VHE
+
+  config VCPU_TIMEOUT_MONITOR
+    bool "Enable vcpu timeout monitor"
+    default n
+    depends on HYPERVISOR
+    help
+      Enable vcpu timeout monitor, to monitor whether an operation will time out.
+
+  config HYPERVISOR_EMULATOR_DEBUG
+    bool "Enable hypervisor emulator"
+    default n
+    depends on HYPERVISOR
+    help
+      Print the load address of hmvirt.elf. The address in the elf is not
+      the real virtual address in the kernel. There is an offset between
+      the address in the elf and the virtual address, which equals to the
+      load address of the elf. The hardware emulator uses this offset to
+      translate the address in the elf to virtual address.
+
+  config STEAL_TIME
+    bool "Enable guest get steal time"
+    default n
+    depends on HYPERVISOR
+    help
+      HongMeng hypervisor support guest to get steal time from host
+      1. When the vCPU and listener threads are ready to work but the host is doing other tasks
+
+  config STEAL_TIME_ON_TRAP
+    bool "Enable guest get steal time on trap"
+    default n
+    depends on STEAL_TIME
+    help
+      HongMeng hypervisor support guest to get steal time from host
+      1. When the vCPU thread trap to host
+
+  config VM_GDB_DEBUG
+    bool "Enable HongMeng vm gdb debug"
+    default n
+    depends on HYPERVISOR
+    help
+      HongMeng hypervisor support debug guest world from host.
+
+  config VIRT_PMU
+    bool "Enable HongMeng vm performance monitors"
+    default n
+    depends on HYPERVISOR
+    help
+      HongMeng hypervisor support virtual performance monitors
+
+  config PERF_VPERFCTX
+    bool "Enable HongMeng perf for vm"
+    default n
+    depends on HYPERVISOR
+    help
+      HongMeng hypervisor support virtual performance monitors
+
+  config PERF_KERNEL
+    bool "Enable perf sampling in kernel space"
+    default n
+    depends on PERF
+    select ENABLE_KERN_HANDLE_IRQ
+    help
+      Enable perf sampling in kernel space
+
+  config EVENTPOLL_MEMCACHE_ENABLE
+    bool "Enable memory cache for select/poll/epoll"
+    default y
+    help
+      Enable memory cache for select/poll/epoll
+
+  config HYPERVISOR_GIC_PASSTHROUGH
+    bool "Enable the gic-passthrough mode support"
+    default n
+    depends on HYPERVISOR
+    help
+      Enable the gic-passthrough mode support.
+
+  config VNOTIFY_DRIVER_EXTENSION
+    bool "Enable vnotify driver in kernel"
+    default n
+    depends on CAP_VM_ENABLE
+    help
+      Vnotify driver is designed to build the notification between host APP and VM.
+      It provides VM channels to provide P2P level notification.
+      And kernel provides extcall to userspace.
+
+  config MMIO_DISPATCHER_KICK_TYPE
+  bool "Enable kick type mmio region dispatcher"
+  default n
+  depends on MMIO_DISPATCHER && VNOTIFY_DRIVER_EXTENSION
+  help
+    Enable kick type mmio region dispatcher.
+
+  config HYPERVISOR_TRAP_WFX
+    bool "Enable trapping of WFI instructions"
+    default n
+    depends on HYPERVISOR
+    help
+      Trap WFI instructions so that the kernel can schedule other tasks until
+      wakeup events occurs.
+
+  config VM_SET_TRAP_WFI
+    bool "Set whether to trap wfi instruction or not when guest running"
+    default n
+    depends on HYPERVISOR_TRAP_WFX
+    help
+      HongMeng hypervisor support to set trapwfi state.
+
+  config VM_SET_TRAP_WFE
+    bool "Set whether to trap wfe instruction or not when guest running"
+    default n
+    depends on HYPERVISOR_TRAP_WFX
+    help
+      HongMeng hypervisor support to set trapwfe state.
+
+  config HYPERVISOR_WFI_DELTA_TIME
+    bool "Enable delta time feature for WFI suspended VCPUs"
+    default n
+    depends on HYPERVISOR_TRAP_WFX
+    help
+      Attempt to approximate how much time the kernel/hypervisor needs in order
+      to wake up (and enter/run) a vcpu that is suspended due to a trapped WFI
+      instruction. We call this time "delta time" and it adjusts the duration
+      of vcpu suspension due to a WFI (vtimer timeout - delta_time). This option
+      can potentially lower the latency of waking up a VCPU at the expense of
+      the host (due to busy looping if the approximation is too aggresive).
+
+  config VM_EVENT_CHANNEL_SUPPORT
+    bool "Allow vm to use event channel feature"
+    default n
+    depends on EVENT_CHANNEL
+    depends on HYPERVISOR
+
+  config VM_EVENT_CHANNEL_ENDPOINTS_MAX_NUM
+    int "Max number of event chanel endpoints per vm"
+    default 1024
+    depends on VM_EVENT_CHANNEL_SUPPORT
+
+  config DABRT_ROLLBACK_FIXUP
+    bool "Rollback to a preset point when data abort happens"
+    default n
+
+  config HW_UNALIGN_ACCESS
+    bool "Hardware unalign access support"
+    default y
+
+  config MPAM
+    bool "Enable Memory System Resource Partitioning and Monitoring support (MPAM)"
+    default n
+    help
+      Enable MPAM
+
+  config AARCH64_V8_1
+    def_bool n
+    select HAVE_ARM_DEBUG_V8_1
+
+  config AARCH64_V8_2
+    def_bool n
+    select AARCH64_V8_1
+    select HAVE_ARM_DEBUG_V8_2
+    select HAVE_ARM_REV_INSN
+
+  config AARCH64_V8_3
+    def_bool n
+    select AARCH64_V8_1
+    select AARCH64_V8_2
+
+  config AARCH64_V8_4
+    def_bool n
+    select AARCH64_V8_1
+    select AARCH64_V8_2
+    select AARCH64_V8_3
+    select HAVE_ARM_DEBUG_V8_4
+
+  config AARCH64_ASID_USER_SETABLE_BOUNDARY
+    int "User setable ASID boundary (from 1 - 254, default is 127)"
+    default 127
+    range 1 254
+
+  config BOOT_MEM_SIZE
+    int "Memory size for boot memory allocator"
+    default 32
+    range 1 256
+
+  config WXN
+    bool "Enable WXN bit preventing executable memory to be writable"
+    default n
+    help
+        Setting WXN bit in SCTLR system register prevents executable memory to
+        be also writable.
+
+if AARCH64_V8_1
+  menu "ARMv8.1 architectural features"
+    config AARCH64_PAN
+      bool "Enable support for Privileged Access Never (PAN)"
+      default y
+      help
+        Privileged Access Never (PAN) is part of the ARMv8.1 Extensions Feature.
+        Enable PAN will prevent any unprotected accessing user-space (EL0) memory
+        from the kernel or hypervisor, and fail with a permission fault.
+
+    config PGTBL_PTE_SUPPORT_ACCESS_FLAG
+      depends on AARCH64_V8_1
+      bool
+      default y
+      help
+        Hardware management of the pte access flag is part of ARMv8.1 Extensions
+        Feature. If hardware management of the access flag is enabled, the hardware
+        performs an atomic read-modify-write of the appropriate pte to update access
+        flag from 0 to 1.
+  endmenu
+endif
+
+if AARCH64_V8_2
+  menu "ARMv8.2 architectural features"
+    config AARCH64_UAO
+      depends on !PRIVILEGED_SERVICE
+      bool "Enable User Access Override (UAO)"
+      default y
+      help
+        User Access Override (UAO) is part of the ARMv8.2 Extensions Feature.
+        Enable UAO will make LDTR/STTR(Unprivilege) running in current execption
+        level.
+  endmenu
+endif
+
+if AARCH64_V8_3
+  menu "ARMv8.3 architectural features"
+  config AARCH64_PAUTH
+    def_bool y
+    help
+      Set to n unless you understand pointer authentication
+  endmenu
+endif
+
+if AARCH64_V8_4
+  menu "ARMv8.4 architectural features"
+  config AARCH64_CPUFEATURE_TTL
+    bool
+    default n
+  endmenu
+endif
+
+  config MDC_GODEL_HACK
+    depends on !BIG_ENDIAN
+    bool "For mdc Godel hacking"
+    default n
+
+  config PGTBL_PTE_ENABLE_ACCESS_FLAG
+    depends on PGTBL_PTE_SUPPORT_ACCESS_FLAG
+    bool "Enable hardware management of pgtbl pte access flag"
+    default n
+
+endmenu
+
+config HAVE_ARM_DEBUG_V8
+  def_bool y
+
+config HAVE_ARM_DEBUG_V8_1
+  def_bool n
+
+config HAVE_ARM_DEBUG_V8_2
+  def_bool n
+
+config HAVE_ARM_DEBUG_V8_4
+  def_bool n
+
+config HAVE_ARM_REV_INSN
+  def_bool n
+
+config SYSPROC_64BIT
+  bool
+  default y
+
+menu "CPU Caches"
+
+config AARCH64_USER_FLUSH_CACHE
+  bool "AARCH64 user flush cache support"
+  depends on AARCH64
+  default y
+
+config AARCH64_ICACHE_ALIASING_NON_UNIFORM
+  bool
+  default n
+  help
+    This defines the L1 I-cache aliasing is non-uniform
+
+config AARCH64_ICACHE_ALIASING_ON
+  bool
+  depends on !AARCH64_ICACHE_ALIASING_NON_UNIFORM
+  default n
+  help
+    This defines the L1 I-cache is aliasing
+
+# These should be choice type but Kconfig does't support selecting a choice!
+# "All cores have IDC"
+config AARCH64_CACHE_HAS_IDC
+  bool
+  default n
+# "All cores no IDC"
+config AARCH64_CACHE_NO_IDC
+  bool
+  depends on !AARCH64_CACHE_HAS_IDC
+  default n
+
+# "All cores have DIC"
+config AARCH64_CACHE_HAS_DIC
+  bool
+  default n
+# "All cores no DIC"
+config AARCH64_CACHE_NO_DIC
+  bool
+  depends on !AARCH64_CACHE_HAS_DIC
+  default n
+
+endmenu
+
+config COMPAT
+  bool "Support for 32-bit applications at EL0"
+  depends on AARCH64
+  default n
+  help
+    This option enables support for the 32-bit EL0 apps running
+    under 64-bit kernel and 64-bit servers.
+
+config ILP32
+  bool "Support for aarch64ilp32 applications at EL0"
+  depends on AARCH64
+  default n
+  help
+    This option enables support for the aarch64ilp32 EL0 apps running
+    under 64-bit kernel and 64-bit servers.
+
+config ARCH_NEED_SPECV2_MITIGATION
+  bool
+  default n
+  help
+    This spectre v2 mitigation is only used for Cortex-A73 and Cortex-A75.
+    Cortex-A35, Cortex-A53, Cortex-A55, and Cortex-A32 are not affected.
+    Cortex-A57 and Cortex-A72 should disable MMU for spectre v2.
+
+config ARCH_LASP_WP
+  bool "LASP watchpoints-based implementation support"
+  depends on HW_DEBUG
+  default y
+  help
+    Lightweight Address Space Protection(Using hardware watchpoint)
+
+config AARCH64_DISABLE_XOM
+  bool "Disable eXecute-Only Memory (XOM) setting"
+  default y
+  help
+    For ARMv8 processors prior to v8.7, the Privileged Access Never (PAN) feature would be
+    mistakenly bypassed on memory addresses that are execute-only on EL0. In order to keep
+    PAN feature effective, transform execute-only permission setting into read + execute
+    for user space.
+
+config ARM64_PBHA_REQUIRED
+  bool
+  depends on AARCH64
+  default n
+  help
+    For ARMv8 mmu page table support pbha
+
+config MAY_BOOTING_FROM_EL2
+  bool "Kernel may be booted from el2"
+  default y
+
+menu "Floating point support"
+
+  config FPSIMD
+    bool "The Advanced SIMD and Floating-point support"
+    default y
+    help
+      Say Y to indicate that the AArch64 processor includes the Advanced SIMD
+      and Floating-point support. Otherwise Say N.
+
+  config FPU
+    bool "Enable kernel FPU support"
+    depends on FPSIMD
+    default y
+    help
+      Say Y to enable the FPU support in kernel, such as handling the FPU
+      exception and saving/restoring th FPU registers when switching context
+
+  config LAZY_FPU
+    bool "Enable lazy FPU support"
+    depends on FPU
+    default y
+    help
+      Say Y to enable the lazy FPU scheme in kernel. The lazy FPU scheme can
+      enhance system performance by reducing the frequency of saving/restoring
+      the FPU registers.
+
+  config KOBJ_THREAD
+    bool "enable kobject thread"
+    default n
+
+  config MISCDATA_ON_KOBJ
+    bool "enable miscdata kobject thread"
+    depends on KOBJ_THREAD
+    default n
+
+  config TCB_STAT_ON_KOBJ
+    bool "enable TCB stat kobject thread"
+    depends on KOBJ_THREAD
+    default n
+
+  config TCB_EXT_SCHED_ON_KOBJ
+    bool "enable TCB extra sched kobject thread"
+    depends on KOBJ_THREAD
+    default n
+
+  config KOBJ_THREAD_BOOT
+    bool "enable kobject thread at boot time"
+    depends on KOBJ_THREAD
+    default y if SUPPORT_SPIN_FPU
+    default n
+
+  config VCPU_FPSIMD_LAZY
+    bool "Enable vcpu lazy FPSIMD support"
+    depends on FPU && HYPERVISOR
+    default n
+    help
+      Say Y to enable the vcpu lazy FPSIMD support in kernel. Add per-cpu variable to indicate
+      state of which thread (incl. threads on behalf of vcpu) is loaded into FPSIMD registers.
+      When vcpu enters, if vcpu is the `owner` of the current state - do not restore FPSIMD state.
+      Otherwise, FPSIMD state will be restored. The vcpu lazy FPSIMD scheme can enhance the
+      performance of vcpu restore.
+
+  config SUPPORT_SPIN_FPU
+    bool "The system services support use FPU"
+    depends on FPU
+    default y
+    help
+      Say Y to enable the system services use FPU
+
+  config VIRTUAL_SMMU_INTERFACE
+    bool "Enable virtual smmu device interface"
+    depends on HYPERVISOR
+    default n
+    help
+      Say Y to enable virtual smmu interface for hypervisor and/or user space smmu
+      driver. It will redirect user space and guests' access of smmu to the physical
+      smmu, and has stage 2 page table force configured.
+
+  config SMMUS_NR
+    int "Maximum number of SMMUs supported"
+    depends on VIRTUAL_SMMU_INTERFACE
+    default 9
+
+  config HYPERVISOR_VIRTUAL_SMMU
+    bool "Enable virtual smmu interface for guest"
+    depends on HYPERVISOR && VIRTUAL_SMMU_INTERFACE
+    select MMIO_REGION
+    default n
+    help
+      Say Y to enable the hypervisor virtual smmu interface for guests. Virtual
+      smmu will redirect guest stream table entry to physical smmu and add stage
+      2 page table to physical smmu, which deny guest device accessing of host's
+      or other guests' memory.
+
+  config VM_SMMU
+    bool "Enable the smmu stage2 pagetable for vm"
+    depends on VM_MODE_HYPER
+    help
+      Enable the smmu stage2 pagetable for vm, and support the function
+      of create/map/unmap/shrink/ipa_to_pa.
+
+endmenu
+
+# Have a software available bit assigned for fragile mapping
+config ARCH_SUPPORT_FRAGILE_MAPPING
+  bool
+  default y
+
+config ACTV_SWITCH_PERF_HOOK
+  bool "Control perf sampling behavior in actv switching context"
+  default n
+  help
+    Control perf sampling behavior in actv switching context, for example:
+    enabling this option causes the kernel to write the activation PID to
+    the CONTEXTIDR register for spe sample, at the expense of some additional
+    instructions during activation switch. Say Y here if you are planning
+    to use hardware trace tools with this kernel.
+
+config USE_LIBOPT
+  bool 'Use optimized ARM libraries'
+  depends on AARCH64
+  depends on !CONFIG_ILP32
+  default y
+
+config DUMP_LARGE_REGS_MEM_REGION
+  bool "Dump large regs mem region"
+  default n
+  help
+    Say y to dump more information around the regs. For example:
+    set the DEFAULT_REGS_MEM_REGION_LEFT/RIGHT be -256/256, by which 4K memory
+    [reg - 2k, reg + 2k) can be dumped around each reg.
+
+config EXAGEAR
+  bool "support 32bits APP on 64bits machine which not support 32bits"
+  select COMPAT
+  default n
+
+endmenu # AARCH64

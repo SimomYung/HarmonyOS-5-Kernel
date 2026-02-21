@@ -1,0 +1,18 @@
+# Copyright (c) Huawei Technologies Co., Ltd. 2022-2022. All rights reserved.
+# Description: HMbuild
+# Author: Huawei OS Kernel Lab
+# Create: Thu May 26 15:33:39 2022
+
+findpkg: HMCryptLib
+findpkg: HWSecureC
+
+src-y: hmelog.c
+
+inclib: HWSecureC::HWSecureC_include
+
+lib-static-y: hmelog
+install-hmelog-y: LIBDIR
+
+lib-dynamic-y: hmelog_shared
+install-hmelog_shared-y: LIBDIR
+output-hmelog_shared: hmelog

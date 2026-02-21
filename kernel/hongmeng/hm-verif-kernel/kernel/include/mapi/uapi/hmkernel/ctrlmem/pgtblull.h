@@ -1,0 +1,27 @@
+/*
+ * Copyright (c) Huawei Technologies Co., Ltd. 2022. All rights reserved.
+ * Description: pgtblull ctrl memory - uapi
+ * Author: Huawei OS Kernel Lab
+ * Create: Thu Nov 17 12:03:31 2022
+ */
+
+#ifndef MAPI_UAPI_HMKERNEL_CTRLMEM_PGTBLULL_H
+#define MAPI_UAPI_HMKERNEL_CTRLMEM_PGTBLULL_H
+
+#define __CTRLMEM_SYSCALL_PGTBLULL_VAL_OP_MASK		0x3u
+#define __CTRLMEM_SYSCALL_PGTBLULL_VAL_OP_UNMAP		0x0u
+#define __CTRLMEM_SYSCALL_PGTBLULL_VAL_OP_MAPPGVA	0x1u
+#define __CTRLMEM_SYSCALL_PGTBLULL_VAL_OP_MAPPGSTRVA	0x2u
+#define __CTRLMEM_SYSCALL_PGTBLULL_VAL_OP_REPROTECT	0x3u
+
+/*
+ * For __CTRLMEM_SYSCALL_PGTBLULL_VAL_OP_REPROTECT, other bits are split into groups.
+ * Each group has two bits for specific commands on PTE.
+ */
+#define __CTRLMEM_SYSCALL_PGTBLULL_VAL_CMD_REPROTECT_MASK	0xFFFFFFFC
+#define __CTRLMEM_SYSCALL_PGTBLULL_VAL_CMD_ACCESS_FLAG_MASK	0xC0000000
+
+#define __CTRLMEM_SYSCALL_PGTBLULL_VAL_CMD_ACCESS_FLAG_UNSET	0x80000000
+#define __CTRLMEM_SYSCALL_PGTBLULL_VAL_CMD_ACCESS_FLAG_SET	0x40000000
+
+#endif

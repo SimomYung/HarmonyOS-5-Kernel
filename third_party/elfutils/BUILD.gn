@@ -1,0 +1,80 @@
+# Copyright (c) 2023 Huawei Device Co., Ltd.
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+import("//build/ohos.gni")
+import("//third_party/elfutils/elfutils_config.gni")
+
+config("elfutils_defaults") {
+  defines = [
+    "HAVE_CONFIG_H",
+    "_GNU_SOURCE",
+    "NMNES=1000",
+  ]
+
+  cflags = [ "-std=gnu99" ]
+}
+
+config("elfutils_public_config") {
+  include_dirs = [ "include" ]
+}
+
+# Build libelf
+ohos_static_library("libelf_static") {
+  configs = [ ":elfutils_defaults" ]
+
+  sources = sources_libelf
+
+  include_dirs = [
+    "//third_party/elfutils",
+    "//third_party/elfutils/lib",
+    "//third_party/elfutils/libelf",
+  ]
+
+  deps = [ "//third_party/zlib:libz" ]
+
+  license_file = "COPYING-LGPLV3"
+  subsystem_name = "thirdparty"
+  part_name = "elfutils"
+}
+
+# Build libdw
+ohos_static_library("libdw_static") {
+  configs = [ ":elfutils_defaults" ]
+
+  sources = sources_backends
+  sources += sources_libcpu
+  sources += sources_libdw
+  sources += sources_libdwelf
+  sources += sources_libdwfl
+  sources += sources_libebl
+
+  include_dirs = [
+    "//third_party/elfutils",
+    "//third_party/elfutils/lib",
+    "//third_party/elfutils/libasm",
+    "//third_party/elfutils/libelf",
+    "//third_party/elfutils/libcpu",
+    "//third_party/elfutils/libdw",
+    "//third_party/elfutils/libdwelf",
+    "//third_party/elfutils/libdwfl",
+    "//third_party/elfutils/libebl",
+  ]
+
+  public_configs = [ ":elfutils_public_config" ]
+
+  deps = [ ":libelf_static" ]
+
+  license_file = "COPYING-LGPLV3"
+  subsystem_name = "thirdparty"
+  part_name = "elfutils"
+}

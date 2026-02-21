@@ -1,0 +1,404 @@
+{
+    "template": "hook",
+    "server": "devhost",
+    "manager": "net_socket",
+    "generation": {
+        "header": {
+            "embedded_code": {
+                "hook": ""
+            }
+        }
+    },
+    "hooks": {
+        "net_socket_register": {
+            "scheme": "security check/inner constraint",
+            "credential": {
+                "transaction": true
+            },
+            "arguments": [],
+            "ac": {
+                "buckle": {
+                    "alias": "sec_chk_ability_net_socket",
+                    "permission": "ab_devhost_net_socket"
+                }
+            }
+        },
+        "net_socket_close": {
+            "scheme": "security check/inner constraint",
+            "credential": {
+                "transaction": true
+            },
+            "arguments": [],
+            "ac": {
+                "buckle": {
+                    "alias": "sec_chk_ability_net_socket",
+                    "permission": "ab_devhost_net_socket"
+                }
+            }
+        },
+        "net_socket_connect": {
+            "scheme": "security check/inner constraint",
+            "credential": {
+                "transaction": true
+            },
+            "arguments": [],
+            "ac": {
+                "buckle": {
+                    "alias": "sec_chk_ability_net_socket",
+                    "permission": "ab_devhost_net_socket"
+                }
+            }
+        },
+        "net_socket_bind": {
+            "scheme": "security check/inner constraint",
+            "credential": {
+                "transaction": true
+            },
+            "arguments": [],
+            "ac": {
+                "buckle": {
+                    "alias": "sec_chk_ability_net_socket",
+                    "permission": "ab_devhost_net_socket"
+                }
+            }
+        },
+        "net_socket_listen": {
+            "scheme": "security check/inner constraint",
+            "credential": {
+                "transaction": true
+            },
+            "arguments": [],
+            "ac": {
+                "buckle": {
+                    "alias": "sec_chk_ability_net_socket",
+                    "permission": "ab_devhost_net_socket"
+                }
+            }
+        },
+        "net_socket_accept": {
+            "scheme": "security check/inner constraint",
+            "credential": {
+                "transaction": true
+            },
+            "arguments": [],
+            "ac": {
+                "buckle": {
+                    "alias": "sec_chk_ability_net_socket",
+                    "permission": "ab_devhost_net_socket"
+                }
+            }
+        },
+        "net_socket_shutdown": {
+            "scheme": "security check/inner constraint",
+            "credential": {
+                "transaction": true
+            },
+            "arguments": [],
+            "ac": {
+                "buckle": {
+                    "alias": "sec_chk_ability_net_socket",
+                    "permission": "ab_devhost_net_socket"
+                }
+            }
+        },
+        "net_socket_ioctl": {
+            "scheme": "security check/inner constraint",
+            "credential": {
+                "transaction": true
+            },
+            "arguments": [],
+            "ac": {
+                "buckle": {
+                    "alias": "sec_chk_ability_net_socket",
+                    "permission": "ab_devhost_net_socket"
+                }
+            }
+        },
+        "net_socket_dev_ioctl": {
+            "scheme": "security check/inner constraint",
+            "credential": {
+                "transaction": true
+            },
+            "arguments": [],
+            "ac": {
+                "buckle": {
+                    "alias": "sec_chk_ability_net_socket",
+                    "permission": "ab_devhost_net_socket"
+                }
+            }
+        },
+        "net_socket_fcntl": {
+            "scheme": "security check/inner constraint",
+            "credential": {
+                "transaction": true
+            },
+            "arguments": [],
+            "ac": {
+                "buckle": {
+                    "alias": "sec_chk_ability_net_socket",
+                    "permission": "ab_devhost_net_socket"
+                }
+            }
+        },
+        "net_socket_send": {
+            "scheme": "security check/inner constraint",
+            "credential": {
+                "transaction": true
+            },
+            "arguments": [],
+            "ac": {
+                "buckle": {
+                    "alias": "sec_chk_ability_net_socket",
+                    "permission": "ab_devhost_net_socket"
+                }
+            }
+        },
+        "net_socket_recv": {
+            "scheme": "security check/inner constraint",
+            "credential": {
+                "transaction": true
+            },
+            "arguments": [],
+            "ac": {
+                "buckle": {
+                    "alias": "sec_chk_ability_net_socket",
+                    "permission": "ab_devhost_net_socket"
+                }
+            }
+        },
+        "net_socket_sendmmsg": {
+            "scheme": "security check/inner constraint",
+            "credential": {
+                "transaction": true
+            },
+            "arguments": [],
+            "ac": {
+                "buckle": {
+                    "alias": "sec_chk_ability_net_socket",
+                    "permission": "ab_devhost_net_socket"
+                }
+            }
+        },
+        "net_socket_recvmmsg": {
+            "scheme": "security check/inner constraint",
+            "credential": {
+                "transaction": true
+            },
+            "arguments": [],
+            "ac": {
+                "buckle": {
+                    "alias": "sec_chk_ability_net_socket",
+                    "permission": "ab_devhost_net_socket"
+                }
+            }
+        },
+        "net_socket_sendmsg": {
+            "scheme": "security check/inner constraint",
+            "credential": {
+                "transaction": true
+            },
+            "arguments": [],
+            "ac": {
+                "buckle": {
+                    "alias": "sec_chk_ability_net_socket",
+                    "permission": "ab_devhost_net_socket"
+                }
+            }
+        },
+        "net_socket_recvmsg": {
+            "scheme": "security check/inner constraint",
+            "credential": {
+                "transaction": true
+            },
+            "arguments": [],
+            "ac": {
+                "buckle": {
+                    "alias": "sec_chk_ability_net_socket",
+                    "permission": "ab_devhost_net_socket"
+                }
+            }
+        },
+        "net_socket_sendto": {
+            "scheme": "security check/inner constraint",
+            "credential": {
+                "transaction": true
+            },
+            "arguments": [],
+            "ac": {
+                "buckle": {
+                    "alias": "sec_chk_ability_net_socket",
+                    "permission": "ab_devhost_net_socket"
+                }
+            }
+        },
+        "net_socket_recvfrom": {
+            "scheme": "security check/inner constraint",
+            "credential": {
+                "transaction": true
+            },
+            "arguments": [],
+            "ac": {
+                "buckle": {
+                    "alias": "sec_chk_ability_net_socket",
+                    "permission": "ab_devhost_net_socket"
+                }
+            }
+        },
+        "net_socket_readv": {
+            "scheme": "security check/inner constraint",
+            "credential": {
+                "transaction": true
+            },
+            "arguments": [],
+            "ac": {
+                "buckle": {
+                    "alias": "sec_chk_ability_net_socket",
+                    "permission": "ab_devhost_net_socket"
+                }
+            }
+        },
+        "net_socket_writev": {
+            "scheme": "security check/inner constraint",
+            "credential": {
+                "transaction": true
+            },
+            "arguments": [],
+            "ac": {
+                "buckle": {
+                    "alias": "sec_chk_ability_net_socket",
+                    "permission": "ab_devhost_net_socket"
+                }
+            }
+        },
+        "net_socket_getsockopt": {
+            "scheme": "security check/inner constraint",
+            "credential": {
+                "transaction": true
+            },
+            "arguments": [],
+            "ac": {
+                "buckle": {
+                    "alias": "sec_chk_ability_net_socket",
+                    "permission": "ab_devhost_net_socket"
+                }
+            }
+        },
+        "net_socket_setsockopt": {
+            "scheme": "security check/inner constraint",
+            "credential": {
+                "transaction": true
+            },
+            "arguments": [],
+            "ac": {
+                "buckle": {
+                    "alias": "sec_chk_ability_net_socket",
+                    "permission": "ab_devhost_net_socket"
+                }
+            }
+        },
+        "net_socket_getsockname": {
+            "scheme": "security check/inner constraint",
+            "credential": {
+                "transaction": true
+            },
+            "arguments": [],
+            "ac": {
+                "buckle": {
+                    "alias": "sec_chk_ability_net_socket",
+                    "permission": "ab_devhost_net_socket"
+                }
+            }
+        },
+        "net_socket_getpeername": {
+            "scheme": "security check/inner constraint",
+            "credential": {
+                "transaction": true
+            },
+            "arguments": [],
+            "ac": {
+                "buckle": {
+                    "alias": "sec_chk_ability_net_socket",
+                    "permission": "ab_devhost_net_socket"
+                }
+            }
+        },
+        "net_socket_fchown": {
+            "scheme": "security check/inner constraint",
+            "credential": {
+                "transaction": true
+            },
+            "arguments": [],
+            "ac": {
+                "buckle": {
+                    "alias": "sec_chk_ability_net_socket",
+                    "permission": "ab_devhost_net_socket"
+                }
+            }
+        },
+        "net_socket_fstat": {
+            "scheme": "security check/inner constraint",
+            "credential": {
+                "transaction": true
+            },
+            "arguments": [],
+            "ac": {
+                "buckle": {
+                    "alias": "sec_chk_ability_net_socket",
+                    "permission": "ab_devhost_net_socket"
+                }
+            }
+        },
+        "net_socket_socket": {
+            "scheme": "security check/inner constraint",
+            "credential": {
+                "transaction": true
+            },
+            "arguments": [],
+            "ac": {
+                "buckle": {
+                    "alias": "sec_chk_ability_net_socket",
+                    "permission": "ab_devhost_net_socket"
+                }
+            }
+        },
+        "net_socket_alloc_new_ns": {
+            "scheme": "security check/inner constraint",
+            "credential": {
+                "transaction": true
+            },
+            "arguments": [],
+            "ac": {
+                "buckle": {
+                    "alias": "sec_chk_ability_net_socket",
+                    "permission": "ab_devhost_net_socket"
+                }
+            }
+        },
+        "net_socket_destroy_ns": {
+            "scheme": "security check/inner constraint",
+            "credential": {
+                "transaction": true
+            },
+            "arguments": [],
+            "ac": {
+                "buckle": {
+                    "alias": "sec_chk_ability_net_socket",
+                    "permission": "ab_devhost_net_socket"
+                }
+            }
+        },
+        "net_socket_bpf": {
+            "scheme": "security check/inner constraint",
+            "credential": {
+                "transaction": true
+            },
+            "arguments": [],
+            "ac": {
+                "buckle": {
+                    "alias": "sec_chk_ability_net_socket",
+                    "permission": "ab_devhost_net_socket"
+                }
+            }
+        }
+    }
+}

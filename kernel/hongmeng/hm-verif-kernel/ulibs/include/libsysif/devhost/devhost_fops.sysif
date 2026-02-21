@@ -1,0 +1,210 @@
+/*
+ * Copyright (C) Huawei Technologies Co., Ltd. 2019-2020. All rights reserved.
+ * Description: devhost device file operation sysif APIs
+ * Author: Huawei OS Kernel Lab
+ * Create: Fri Feb 13 16:05:44 2019
+ */
+
+#ifdef SYSIF_EXPORT_API
+
+#define DEV_PIO 1U
+
+#endif
+
+/*
+ * To support the mixed data model which means the client and the server
+ * may use different data model. See the document for limitation of data type
+ * used in the sysif interfaces in <Documentation/sysif_compat.md>.
+ */
+DEFINE_MANAGER(fops, 23,
+	DEFINE_SIMPLE_METHOD(fops, open,
+		      ARG(4,
+			  unsigned int, u_cidx,
+			  int, devid,	/* devmgr allocated uniq dev id */
+			  rref_t, tgt_rref,
+			  unsigned int, vfs_flags),
+		      RET(4, unsigned long long, filp,
+		             unsigned long long, kshm_key,
+			     unsigned long, kobj_offset,
+			     unsigned int, dev_fops_flags),
+		      SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(fops, close,
+		      ARG(2,
+			  unsigned int, fastpath,
+			  unsigned long long, file_id),
+		      RET_NO,
+		      SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(fops, read,
+		      ARG(6,
+			  unsigned int, fastpath,
+			  unsigned long, buf,
+			  unsigned long long, filep,
+			  unsigned long long, offset,
+			  unsigned long, count,
+			  unsigned int, flags),
+		      RET(2, unsigned long long, nread,
+			     unsigned long long, pos),
+		      SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(fops, write,
+		      ARG(6,
+			  unsigned int, fastpath,
+			  unsigned long, buf,
+			  unsigned long long, file_id,
+			  unsigned long long, offset,
+			  unsigned long, count,
+			  unsigned int, flags),
+		      RET(2, unsigned long long, nwrite,
+			     unsigned long long, pos),
+		      SLOWDATA_NO)
+	DEFINE_METHOD(fops, read_iter,
+		      ARG(7,
+			  unsigned int, fastpath,
+			  unsigned long long, file_id,
+			  unsigned long long, offset,
+			  const void *, vec,
+			  int, nr_segs,
+			  size_t, count,
+			  unsigned int, flag),
+		      RET(2, unsigned long long, nread,
+			     unsigned long long, pos),
+                      SLOWDATA)
+	DEFINE_METHOD(fops, write_iter,
+		      ARG(7,
+			  unsigned int, fastpath,
+			  unsigned long long, file_id,
+			  unsigned long long, offset,
+			  const void *, vec,
+			  int, nr_segs,
+			  size_t, count,
+			  unsigned int, flags),
+		      RET(2, unsigned long long, nwrite,
+			     unsigned long long, pos),
+                      SLOWDATA)
+	DEFINE_SIMPLE_METHOD(fops, ioctl,
+		      ARG(4,
+			  unsigned int, fastpath,
+			  int, request,
+			  unsigned long long, file_id,
+			  unsigned long, arg),
+		      RET_NO,
+		      SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(fops, flush,
+		      ARG(2,
+			  unsigned int, fastpath,
+			  unsigned long long, file_id),
+		      RET_NO,
+		      SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(fops, fcntl,
+		      ARG(4,
+			  unsigned int, fastpath,
+			  int, request,
+			  unsigned long long, file_id,
+			  unsigned long, arg),
+		      RET_NO,
+		      SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(fops, llseek,
+		      ARG(4,
+			  unsigned int, fastpath,
+			  int, whence,
+			  unsigned long long, file_id,
+			  long long, offset),
+		      RET(1, long long, pos),
+		      SLOWDATA_NO)
+	DEFINE_METHOD(fops, mmap,
+		      ARG(8,
+			  unsigned int, fastpath,
+			  unsigned long, addr,
+			  unsigned long long, file_id,
+			  unsigned long, length,
+			  unsigned long, prot,
+			  unsigned int, flags,
+			  unsigned long, offset,
+			  bool, iomap_prepare_ahead),
+		      RET(2, unsigned long long, rvaddr,
+			     unsigned int, iomem_id),
+		      SLOWDATA_NO)
+	DEFINE_METHOD(fops, munmap,
+		      ARG(4,
+			  unsigned int, key,
+			  unsigned long, start,
+			  unsigned long, len,
+			  int, vs_is_releasing),
+		      RET_NO,
+		      SLOWDATA_NO)
+	DEFINE_METHOD(fops, do_page_fault,
+		      ARG(5,
+			  unsigned int, vma_key,
+			  unsigned long long, vr_key,
+			  unsigned long long, addr,
+			  unsigned int, flags,
+			  unsigned long long, offset),
+		      RET_NO,
+		      SLOWDATA_NO)
+	DEFINE_METHOD(fops, mm_release,
+		      ARG(1,
+			  unsigned long long, vspace_key),
+		      RET_NO,
+		      SLOWDATA_NO)
+
+	DEFINE_METHOD(fops, sysfs_read,
+		      ARG_NO,
+		      RET_NO,
+		      SLOWDATA)
+	DEFINE_METHOD(fops, sysfs_write,
+		      ARG_NO,
+		      RET_NO,
+		      SLOWDATA)
+	DEFINE_SIMPLE_METHOD(fops, poll,
+		      ARG(8,
+			  unsigned int, fastpath,
+			  unsigned long long, file_id,
+			  unsigned long long, tcb_key,
+			  rref_t, fdtable_rref,
+			  unsigned int, events,
+			  int, idx,
+			  int, fd,
+			  int, need_add),
+		      RET(1, unsigned int, revents),
+		      SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(fops, poll_remove,
+		      ARG(4,
+			  unsigned int, fastpath,
+			  unsigned long long, file_id,
+			  int, fd,
+			  cref_t, tcb_cref),
+		      RET_NO,
+		      SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(fops, epoll_ctl,
+		      ARG(3,
+			  unsigned int, fastpath,
+			  unsigned long long, file_id,
+			  const void *, ep_arg),
+		      RET_NO,
+		      SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(fops, epoll_remove,
+		      ARG(3,
+			  unsigned int, fastpath,
+			  unsigned long long, file_id,
+			  cref_t, ep_cref),
+		      RET_NO,
+		      SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(fops, epoll_recheck,
+		      ARG(3,
+			  unsigned int, fastpath,
+			  unsigned long long, file_id,
+			  unsigned int, events),
+		      RET(1, unsigned int, revents),
+		      SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(fops, sync_ctrlmem_polllist,
+		      ARG(2,
+			  unsigned int, fastpath,
+			  unsigned long long, file_id),
+		      RET_NO,
+		      SLOWDATA_NO)
+	DEFINE_METHOD(fops, file_get,
+		      ARG(2,
+			  unsigned int, fastpath,
+			  unsigned long long, file_id),
+		      RET_NO,
+		      SLOWDATA_NO)
+)

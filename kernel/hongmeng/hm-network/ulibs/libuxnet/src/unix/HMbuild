@@ -1,0 +1,15 @@
+# Copyright (C) Huawei Technologies Co., Ltd. 2021. All rights reserved.
+# Description: HMbuild
+# Author: Huawei OS Kernel Lab
+# Create: Wed Nov 03 15:32:33 2021
+
+src-y: ux_unix_util.c
+src-y: ux_unix_stat.c
+src-y: ux_unix_scm.c
+src-y: ux_unix_socket.c
+src-y: ux_unix_buff.c
+src-y: ux_unix_procfs.c
+src-CONFIG_UNIX_FASTPATH: ux_unix_fastpath.c
+src-CONFIG_NET_FUSION: ux_mempool.c
+
+cflags-ux_unix_scm.c-y: -Wno-unused-parameter

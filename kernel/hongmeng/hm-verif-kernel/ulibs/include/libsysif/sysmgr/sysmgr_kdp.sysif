@@ -1,0 +1,25 @@
+/*
+ * Copyright (c) Huawei Technologies Co., Ltd. 2024. All rights reserved.
+ * Description: Definition of sysmgr kdp
+ * Author: Huawei OS Kernel Lab
+ * Create: Fri Apri 12 15:27:57 2024
+ */
+
+#ifdef SYSIF_EXPORT_API
+#include <stdint.h>
+#endif
+
+DEFINE_MANAGER(kdp, 2,
+	DEFINE_SIMPLE_METHOD(kdp, test_layout,
+			     ARG_NO,
+			     RET_NO,
+			     SLOWDATA_NO)
+	DEFINE_SIMPLE_METHOD(kdp, test_verity_hash,
+			     ARG(5, int, option,
+				    int, fd,
+				    unsigned long, arg1,
+				    unsigned long, arg2,
+				    unsigned long, pow),
+			     RET_NO,
+			     SLOWDATA_NO)
+)

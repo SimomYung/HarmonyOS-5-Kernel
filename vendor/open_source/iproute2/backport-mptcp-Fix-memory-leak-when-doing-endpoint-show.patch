@@ -1,0 +1,49 @@
+From afdbb0204a5872f1f76058a0db5a529b1f0c8de7 Mon Sep 17 00:00:00 2001
+From: Benjamin Poirier <bpoirier@nvidia.com>
+Date: Mon, 11 Jul 2022 08:52:52 +0900
+Subject: [PATCH] mptcp: Fix memory leak when doing 'endpoint show'
+
+With the following command sequence:
+
+ip mptcp endpoint add 127.0.0.1 id 1
+ip mptcp endpoint show id 1
+
+when running the last command under valgrind, it reports
+
+32,768 bytes in 1 blocks are definitely lost in loss record 2 of 2
+at 0x483F7B5: malloc (vg_replace_malloc.c:381)
+by 0x17A0AC: rtnl_recvmsg (libnetlink.c:838)
+by 0x17A391: __rtnl_talk_iov.constprop.0 (libnetlink.c:1040)
+by 0x17B854: __rtnl_talk (libnetlink.c:1141)
+by 0x17B854: rtnl_talk (libnetlink.c:1147)
+by 0x168A56: mptcp_addr_show (ipmptcp.c:334)
+by 0x1174CB: do_cmd (ip.c:136)
+by 0x116F7C: main (ip.c:324)
+
+Free the answer obtained from rtnl_talk().
+
+Fixes: 7e0767cd862b ("add support for mptcp netlink interface")
+Suggested-by: Ido Schimmel <idosch@nvidia.com>
+Reviewed-by: Ido Schimmel <idosch@nvidia.com>
+Signed-off-by: Benjamin Poirier <bpoirier@nvidia.com>
+Signed-off-by: Stephen Hemminger <stephen@networkplumber.org>
+Conflict: adapt patch due to json_xxx conflict
+Reference: https://git.kernel.org/pub/scm/network/iproute2/iproute2.git/commit?id=afdbb020
+---
+ip/ipmptcp.c | 1 +
+1 file changed, 1 insertion(+)
+diff --git a/ip/ipmptcp.c b/ip/ipmptcp.c
+index fd042da..763908f 100644
+--- a/ip/ipmptcp.c
++++ b/ip/ipmptcp.c
+@@ -299,7 +299,9 @@ static int mptcp_addr_show(int argc, char **argv)
+ 	if (rtnl_talk(&genl_rth, &req.n, &answer) < 0)
+ 		return -2;
+ 
+-	return print_mptcp_addr(answer, stdout);
++	ret = print_mptcp_addr(answer, stdout);
++	free(answer);
++	return ret;
+ }
+ 
+ static int mptcp_addr_flush(int argc, char **argv)

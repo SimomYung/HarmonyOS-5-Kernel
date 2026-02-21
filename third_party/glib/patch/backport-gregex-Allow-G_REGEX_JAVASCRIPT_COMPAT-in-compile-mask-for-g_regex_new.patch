@@ -1,0 +1,57 @@
+From a164b49532957359c781ab56c3e1690f65f40788 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Guido=20G=C3=BCnther?= <agx@sigxcpu.org>
+Date: Fri, 23 Sep 2022 14:48:07 +0200
+Subject: [PATCH] gregex: Allow G_REGEX_JAVASCRIPT_COMPAT in compile mask for
+ g_regex_new
+
+The flag is still ignored but this way we properly deprecate
+at compile time without raising an unexpected criticals at runtime:
+
+   g_regex_new: assertion '(compile_options & ~G_REGEX_COMPILE_MASK) == 0' failed
+
+and then failing to create the regex completely.
+
+Fixes 8d5a44dc8 ("replace pcre1 with pcre2")
+
+Conflict:NA
+Reference:https://gitlab.gnome.org/GNOME/glib/-/commit/a164b49532957359c781ab56c3e1690f65f40788
+
+---
+ glib/gregex.c      | 5 ++++-
+ glib/tests/regex.c | 4 ++++
+ 2 files changed, 8 insertions(+), 1 deletion(-)
+
+diff --git a/glib/gregex.c b/glib/gregex.c
+index 220a1a11ac..6b22f1f151 100644
+--- a/glib/gregex.c
++++ b/glib/gregex.c
+@@ -1684,7 +1684,10 @@ g_regex_new (const gchar         *pattern,
+ 
+   g_return_val_if_fail (pattern != NULL, NULL);
+   g_return_val_if_fail (error == NULL || *error == NULL, NULL);
+-  g_return_val_if_fail ((compile_options & ~G_REGEX_COMPILE_MASK) == 0, NULL);
++G_GNUC_BEGIN_IGNORE_DEPRECATIONS
++  g_return_val_if_fail ((compile_options & ~(G_REGEX_COMPILE_MASK |
++                                             G_REGEX_JAVASCRIPT_COMPAT)) == 0, NULL);
++G_GNUC_END_IGNORE_DEPRECATIONS
+   g_return_val_if_fail ((match_options & ~G_REGEX_MATCH_MASK) == 0, NULL);
+ 
+   if (g_once_init_enter (&initialised))
+diff --git a/glib/tests/regex.c b/glib/tests/regex.c
+index 9803d49659..f2e1a04ada 100644
+--- a/glib/tests/regex.c
++++ b/glib/tests/regex.c
+@@ -2542,6 +2542,10 @@ main (int argc, char *argv[])
+   TEST_NEW_CHECK_FLAGS ("(*BSR_ANYCRLF)a", 0, 0, G_REGEX_BSR_ANYCRLF, 0);
+   TEST_NEW_CHECK_FLAGS ("(*BSR_UNICODE)a", 0, 0, 0 /* this is the default in GRegex */, 0);
+   TEST_NEW_CHECK_FLAGS ("(*NO_START_OPT)a", 0, 0, 0 /* not exposed in GRegex */, 0);
++  /* Make sure we ignore deprecated G_REGEX_JAVASCRIPT_COMPAT */
++G_GNUC_BEGIN_IGNORE_DEPRECATIONS
++  TEST_NEW_CHECK_FLAGS ("a", G_REGEX_JAVASCRIPT_COMPAT, 0, 0, 0);
++G_GNUC_END_IGNORE_DEPRECATIONS
+ 
+   /* TEST_NEW_FAIL(pattern, compile_opts, expected_error) */
+   TEST_NEW_FAIL("(", 0, G_REGEX_ERROR_UNMATCHED_PARENTHESIS);
+-- 
+GitLab
+

@@ -1,0 +1,465 @@
+{
+    "root": {
+        "data": {
+            "id": "ci27yb8tsh40",
+            "created": 1645496854570,
+            "text": "shm族函数",
+            "usecase": 99
+        },
+        "children": [
+            {
+                "data": {
+                    "id": "ci2853vu3c80",
+                    "created": 1645497387097,
+                    "text": "shmget",
+                    "usecase": 1
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "ci28enrxblk0",
+                            "created": 1645498135673,
+                            "text": "入参分析"
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "ci28lcvd5tk0",
+                                    "created": 1645498660486,
+                                    "text": "key + flag",
+                                    "usecase": 2
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "ci2945bz87s0",
+                                            "created": 1645500132995,
+                                            "text": "key已经存在，flag包含IPC_CREAT | IPC_EXCL，创建失败",
+                                            "usecase": 4,
+                                            "showId": "00002"
+                                        },
+                                        "children": []
+                                    },
+                                    {
+                                        "data": {
+                                            "id": "ci2954kw4dc0",
+                                            "created": 1645500209722,
+                                            "text": "key不存在，flag不包含IPC_CREAT，失败",
+                                            "usecase": 4,
+                                            "showId": "00003"
+                                        },
+                                        "children": []
+                                    }
+                                ]
+                            },
+                            {
+                                "data": {
+                                    "id": "ci28lec7faw0",
+                                    "created": 1645498663681,
+                                    "text": "size",
+                                    "usecase": 2
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "ci295p6yc4g0",
+                                            "created": 1645500254591,
+                                            "text": "size值为0，失败",
+                                            "usecase": 4,
+                                            "showId": "00004"
+                                        },
+                                        "children": []
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "data": {
+                            "id": "ci28llogy540",
+                            "created": 1645498679660,
+                            "text": "功能分析"
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "ci296n0kf1k0",
+                                    "created": 1645500328216,
+                                    "text": "key已经存在，flag不包含IPC_EXCL，返回shmid > 0",
+                                    "usecase": 4,
+                                    "showId": "00005"
+                                },
+                                "children": []
+                            },
+                            {
+                                "data": {
+                                    "id": "ci298f7avqw0",
+                                    "created": 1645500467937,
+                                    "text": "key不存在，flag包含IPC_CREAT，返回shmid > 0",
+                                    "usecase": 4,
+                                    "showId": "00006"
+                                },
+                                "children": []
+                            },
+                            {
+                                "data": {
+                                    "id": "ci2993enrso0",
+                                    "created": 1645500520625,
+                                    "text": "多线程并发，创建两个线程，shmget相同key，返回shmid相同",
+                                    "usecase": 4,
+                                    "showId": "00007"
+                                },
+                                "children": []
+                            },
+                            {
+                                "data": {
+                                    "id": "ci3yn8a86zc0",
+                                    "created": 1645673716043,
+                                    "text": "shmget，shmctl IPC_RMID，压力测试1000000次，正常",
+                                    "usecase": 4,
+                                    "showId": "00029",
+                                    "priority": null
+                                },
+                                "children": []
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "data": {
+                    "id": "ci289hcdle00",
+                    "created": 1645497729852,
+                    "text": "shmat",
+                    "usecase": 1
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "ci28mk8b00w0",
+                            "created": 1645498754870,
+                            "text": "入参分析"
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "ci29d0d993c0",
+                                    "created": 1645500827466,
+                                    "text": "shmid",
+                                    "usecase": 2
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "ci29fdm6uyo0",
+                                            "created": 1645501013033,
+                                            "text": "传入没有创建的shmid，失败",
+                                            "usecase": 4,
+                                            "showId": "00008"
+                                        },
+                                        "children": []
+                                    }
+                                ]
+                            },
+                            {
+                                "data": {
+                                    "id": "ci29d1ctlbc0",
+                                    "created": 1645500829617,
+                                    "text": "shmaddr",
+                                    "usecase": 2
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "ci29fr7g14w0",
+                                            "created": 1645501042616,
+                                            "text": "传入非法addr，失败",
+                                            "usecase": 4,
+                                            "showId": "00009"
+                                        },
+                                        "children": []
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "data": {
+                            "id": "ci28mmwusgg0",
+                            "created": 1645498760708,
+                            "text": "功能分析"
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "ci29g3xskrk0",
+                                    "created": 1645501070331,
+                                    "text": "申请到的内存，可以读写，读写到最大长度",
+                                    "usecase": 4,
+                                    "showId": "00010",
+                                    "priority": null
+                                },
+                                "children": []
+                            },
+                            {
+                                "data": {
+                                    "id": "ci2d0xye8pc0",
+                                    "created": 1645511166284,
+                                    "text": "shmat到一个已经存在的shmid，内存内容正确",
+                                    "usecase": 4,
+                                    "showId": "00011"
+                                },
+                                "children": []
+                            },
+                            {
+                                "data": {
+                                    "id": "ci337huroaw0",
+                                    "created": 1645585028642,
+                                    "text": "shmat到一个固定地址，成功，能正常读写",
+                                    "usecase": 4,
+                                    "showId": "00025"
+                                },
+                                "children": []
+                            },
+                            {
+                                "data": {
+                                    "id": "ci2d4jzg6qo0",
+                                    "created": 1645511449329,
+                                    "text": "多线程并发，创建两个线程，shmat同一个shmid，内容访问正常",
+                                    "usecase": 4,
+                                    "showId": "00012"
+                                },
+                                "children": []
+                            },
+                            {
+                                "data": {
+                                    "id": "ci3yh3022q00",
+                                    "created": 1645673234359,
+                                    "text": "增加多进程",
+                                    "usecase": 4,
+                                    "showId": "00026",
+                                    "priority": null
+                                },
+                                "children": []
+                            }
+                        ]
+                    },
+                    {
+                        "data": {
+                            "id": "ci28mpupb2o0",
+                            "created": 1645498767108,
+                            "text": "可靠性分析"
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "ci32nztal9c0",
+                                    "created": 1645583500452,
+                                    "text": "shmget size超大，shmat失败",
+                                    "usecase": 4,
+                                    "showId": "00024"
+                                },
+                                "children": []
+                            },
+                            {
+                                "data": {
+                                    "id": "ci3ylmxwz0o0",
+                                    "created": 1645673591222,
+                                    "text": "测10M/20M,shmget",
+                                    "usecase": 4,
+                                    "showId": "00027",
+                                    "priority": null
+                                },
+                                "children": []
+                            },
+                            {
+                                "data": {
+                                    "id": "ci3ymbnjs0w0",
+                                    "created": 1645673645015,
+                                    "text": "shmat流程异常，shmat可重入",
+                                    "usecase": 4,
+                                    "showId": "00028",
+                                    "priority": null
+                                },
+                                "children": []
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "data": {
+                    "id": "ci289imk3s80",
+                    "created": 1645497732644,
+                    "text": "shmdt",
+                    "usecase": 1
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "ci28mw5xthk0",
+                            "created": 1645498780848,
+                            "text": "入参分析"
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "ci2dcrryx6o0",
+                                    "created": 1645512093204,
+                                    "text": "shmaddr",
+                                    "usecase": 2
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "ci2dcwt0znc0",
+                                            "created": 1645512104152,
+                                            "text": "shmaddr是一个非法值，失败",
+                                            "usecase": 4,
+                                            "showId": "00015"
+                                        },
+                                        "children": []
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "data": {
+                            "id": "ci28myes9k00",
+                            "created": 1645498785738,
+                            "text": "功能分析"
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "ci2de0u5ru80",
+                                    "created": 1645512191292,
+                                    "text": "传入一个shmat返回的地址，shmdt成功",
+                                    "usecase": 4,
+                                    "showId": "00016"
+                                },
+                                "children": []
+                            },
+                            {
+                                "data": {
+                                    "id": "ci2dih9owgo0",
+                                    "created": 1645512540516,
+                                    "text": "多线程并发，shmdt成功",
+                                    "usecase": 4,
+                                    "showId": "00017"
+                                },
+                                "children": []
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "data": {
+                    "id": "ci289jei3880",
+                    "created": 1645497734334,
+                    "text": "shmctl",
+                    "usecase": 1
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "ci28n7czyao0",
+                            "created": 1645498805220,
+                            "text": "入参分析"
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "ci2dkgo1ha80",
+                                    "created": 1645512695935,
+                                    "text": "shmid",
+                                    "usecase": 2
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "ci2dlq6hz940",
+                                            "created": 1645512795007,
+                                            "text": "传入非法shmid，失败",
+                                            "usecase": 4,
+                                            "showId": "00019"
+                                        },
+                                        "children": []
+                                    }
+                                ]
+                            },
+                            {
+                                "data": {
+                                    "id": "ci2dkodvg740",
+                                    "created": 1645512712735,
+                                    "text": "cmd + buf",
+                                    "usecase": 2
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "ci2dm816kdc0",
+                                            "created": 1645512833867,
+                                            "text": "cmd = IPC_STAT, buf 为 NULL时，返回失败",
+                                            "usecase": 4,
+                                            "showId": "00021"
+                                        },
+                                        "children": []
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "data": {
+                            "id": "ci28n9moheo0",
+                            "created": 1645498810159,
+                            "text": "功能分析"
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "ci2dmpqonns0",
+                                    "created": 1645512872415,
+                                    "text": "cmd = IPC_RMID，shmctl后，shmget(shmid, size, 0)返回失败",
+                                    "usecase": 4,
+                                    "showId": "00022"
+                                },
+                                "children": []
+                            },
+                            {
+                                "data": {
+                                    "id": "ci2do2iwuf40",
+                                    "created": 1645512978607,
+                                    "text": "cmd = IPC_STAT, buf不为空，shmctl可以获取到该shmid的信息。",
+                                    "usecase": 4,
+                                    "showId": "00023"
+                                },
+                                "children": []
+                            },
+                            {
+                                "data": {
+                                    "id": "ci9x26gkr2o0",
+                                    "created": 1646278605056,
+                                    "text": "shmat ->shmctl IPC_RMID后，行为和posix保持一致。",
+                                    "usecase": 4,
+                                    "author": "",
+                                    "showId": "00030"
+                                },
+                                "children": []
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    "templatePath": null,
+    "singleTemplatePath": null,
+    "testcaseFilePath": "",
+    "template": "right",
+    "theme": "fresh-blue-compat",
+    "version": "1.4.43"
+}

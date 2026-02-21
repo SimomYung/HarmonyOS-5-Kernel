@@ -1,0 +1,778 @@
+{
+    "template": "hook",
+    "server": "net",
+    "manager": "seharmony",
+    "generation": {
+        "header": {
+            "include": {
+                "hook": "#include \"ux_socket.h\"\n"
+            }
+        }
+    },
+    "hooks": {
+        "sk_alloc_security": {
+            "generation": {
+                "performance_compatibility": true
+            },
+            "scheme":  "security context/initialization",
+            "credential": {
+              "enabled": false
+            },
+            "arguments": [
+                {
+                    "name": "sk",
+                    "type": "ux_sock_t *"
+                }
+            ],
+            "object": {
+              "type": "sk"
+            },
+            "rollback": "",
+            "ac": {
+                "mac": {
+                    "enabled": false
+                },
+                "dac": {
+                    "enabled": false
+                },
+                "seharmony": {
+                    "alias": "sel_sk_alloc_security",
+                    "description": "Initializes the sk_security struct for sk."
+                }
+            }
+        },
+        "socket_post_accept": {
+            "generation": {
+                "performance_compatibility": true
+            },
+            "scheme":  "security context/initialization",
+            "credential": {
+              "enabled": false
+            },
+            "arguments": [
+                {
+                    "name": "sock",
+                    "type": "ux_socket_t *"
+                },
+                {
+                    "name": "nsock",
+                    "type": "ux_socket_t *"
+                }
+            ],
+            "object": {
+              "type": "sock nsock"
+            },
+            "rollback": "",
+            "ac": {
+                "mac": {
+                    "enabled": false
+                },
+                "dac": {
+                    "enabled": false
+                },
+                "seharmony": {
+                    "alias": "sel_socket_post_accept",
+                    "description": "socket post accept"
+                }
+            }
+        },
+        "sk_free_security": {
+            "generation": {
+                "performance_compatibility": true
+            },
+            "scheme": "security context/finalization",
+            "credential": {
+                "enabled": false
+            },
+            "arguments": [
+                {
+                    "name": "sk",
+                    "type": "ux_sock_t *"
+                }
+            ],
+            "object": {
+                "type": "sk"
+            },
+            "ac": {
+                "mac": {
+                    "enabled": false
+                },
+                "dac": {
+                    "enabled": false
+                },
+                "seharmony": {
+                    "alias": "sel_sk_free_security",
+                    "description": "Free the sk_security struct for sk."
+                }
+            }
+        },
+        "socket_create": {
+            "generation": {
+                "performance_compatibility": true
+            },
+            "scheme": "security check/object access",
+            "arguments": [
+                {
+                    "name": "domain",
+                    "type": "int"
+                },
+                {
+                    "name": "type",
+                    "type": "int"
+                },
+                {
+                    "name": "protocol",
+                    "type": "int"
+                }
+            ],
+            "object": {
+                "type": "sock"
+            },
+            "ac": {
+                "mac": {
+                    "enabled": false
+                },
+                "dac": {
+                    "enabled": false
+                },
+                "seharmony": {
+                    "alias": "sel_socket_create",
+                    "permission": "SOCKET__CREATE"
+                }
+            }
+        },
+        "socket_post_create": {
+            "generation": {
+                "performance_compatibility": true
+            },
+            "scheme": "security check/object access",
+            "arguments": [
+                {
+                    "name": "sock",
+                    "type": "ux_socket_t *"
+                },
+                {
+                    "name": "domain",
+                    "type": "int"
+                },
+                {
+                    "name": "type",
+                    "type": "int"
+                },
+                {
+                    "name": "protocol",
+                    "type": "int"
+                }
+            ],
+            "object": {
+                "type": "sock"
+            },
+            "ac": {
+                "mac": {
+                    "enabled": false
+                },
+                "dac": {
+                    "enabled": false
+                },
+                "seharmony": {
+                    "alias": "sel_socket_post_create",
+                    "description": "Seharmony socket post create."
+                }
+            }
+        },
+        "socket_socketpair": {
+            "generation": {
+                "performance_compatibility": true
+            },
+            "scheme": "security context/initialization",
+            "credential": {
+                "enabled": false
+            },
+            "arguments": [
+                {
+                    "name": "socka",
+                    "type": "ux_socket_t *"
+                },
+                {
+                    "name": "sockb",
+                    "type": "ux_socket_t *"
+                }
+            ],
+            "object": {
+                "type": "socka sockb"
+            },
+            "rollback": "",
+            "ac": {
+                "mac": {
+                    "enabled": false
+                },
+                "dac": {
+                    "enabled": false
+                },
+                "seharmony": {
+                    "alias": "sel_socket_socketpair",
+                    "description": "Initializes the peer sid for socka and sockb."
+                }
+            }
+        },
+        "socket_bind": {
+            "generation": {
+                "performance_compatibility": true
+            },
+            "scheme": "security check/object access",
+            "arguments": [
+                {
+                    "name": "sock",
+                    "type": "ux_socket_t *"
+                },
+                {
+                    "name": "address",
+                    "type": "const struct sockaddr *"
+                },
+                {
+                    "name": "addrlen",
+                    "type": "socklen_t"
+                }
+            ],
+            "object": {
+                "type": "sock"
+            },
+            "ac": {
+                "mac": {
+                    "enabled": false
+                },
+                "dac": {
+                    "enabled": false
+                },
+                "seharmony": {
+                    "alias": "sel_socket_bind",
+                    "permission": "SOCKET__NAME_BIND"
+                }
+            }
+        },
+        "socket_connect": {
+            "generation": {
+                "performance_compatibility": true
+            },
+            "scheme": "security check/object access",
+            "arguments": [
+                {
+                    "name": "sock",
+                    "type": "ux_socket_t *"
+                },
+                {
+                    "name": "address",
+                    "type": "const struct sockaddr *"
+                },
+                {
+                    "name": "addrlen",
+                    "type": "socklen_t"
+                }
+            ],
+            "object": {
+                "type": "sock"
+            },
+            "ac": {
+                "mac": {
+                    "enabled": false
+                },
+                "dac": {
+                    "enabled": false
+                },
+                "seharmony": {
+                    "alias": "sel_socket_connect",
+                    "permission": [
+                        "TCP_SOCKET__NAME_CONNECT",
+                        "DCCP_SOCKET__NAME_CONNECT",
+                        "SCTP_SOCKET__NAME_CONNECT"
+                    ]
+                }
+            }
+        },
+        "socket_listen": {
+            "generation": {
+                "performance_compatibility": true
+            },
+            "scheme": "security check/object access",
+            "arguments": [
+                {
+                    "name": "sock",
+                    "type": "ux_socket_t *"
+                }
+            ],
+            "object": {
+                "type": "sock"
+            },
+            "ac": {
+                "mac": {
+                    "enabled": false
+                },
+                "dac": {
+                    "enabled": false
+                },
+                "seharmony": {
+                    "alias": "sel_socket_listen",
+                    "permission": "SOCKET__LISTEN"
+                }
+            }
+        },
+        "socket_accept": {
+            "generation": {
+                "performance_compatibility": true
+            },
+            "scheme": "security check/object access",
+            "arguments": [
+                {
+                    "name": "sock",
+                    "type": "ux_socket_t *"
+                }
+            ],
+            "object": {
+                "type": "sock"
+            },
+            "ac": {
+                "mac": {
+                    "enabled": false
+                },
+                "dac": {
+                    "enabled": false
+                },
+                "seharmony": {
+                    "alias": "sel_socket_accept",
+                    "permission": "SOCKET__ACCEPT"
+                }
+            }
+        },
+        "socket_sendmsg": {
+            "generation": {
+                "performance_compatibility": true
+            },
+            "cred_init_simple": {
+                "enabled": true
+            },
+            "scheme": "security check/object access",
+            "arguments": [
+                {
+                    "name": "sock",
+                    "type": "ux_socket_t *"
+                }
+            ],
+            "object": {
+                "type": "sock"
+            },
+            "ac": {
+                "mac": {
+                    "enabled": false
+                },
+                "dac": {
+                    "enabled": false
+                },
+                "seharmony": {
+                    "alias": "sel_socket_sendmsg",
+                    "permission": "SOCKET__WRITE"
+                }
+            }
+        },
+        "socket_recvmsg": {
+            "generation": {
+                "performance_compatibility": true
+            },
+            "cred_init_simple": {
+                "enabled": true
+            },
+            "scheme": "security check/object access",
+            "arguments": [
+                {
+                    "name": "sock",
+                    "type": "ux_socket_t *"
+                }
+            ],
+            "object": {
+                "type": "sock"
+            },
+            "ac": {
+                "mac": {
+                    "enabled": false
+                },
+                "dac": {
+                    "enabled": false
+                },
+                "seharmony": {
+                    "alias": "sel_socket_recvmsg",
+                    "permission": "SOCKET__READ"
+                }
+            }
+        },
+        "socket_getsockname": {
+            "generation": {
+                "performance_compatibility": true
+            },
+            "scheme": "security check/object access",
+            "arguments": [
+                {
+                    "name": "sock",
+                    "type": "ux_socket_t *"
+                }
+            ],
+            "object": {
+                "type": "sock"
+            },
+            "ac": {
+                "mac": {
+                    "enabled": false
+                },
+                "dac": {
+                    "enabled": false
+                },
+                "seharmony": {
+                    "alias": "sel_socket_getsockname",
+                    "permission": "SOCKET__GETATTR"
+                }
+            }
+        },
+        "socket_getpeername": {
+            "generation": {
+                "performance_compatibility": true
+            },
+            "scheme": "security check/object access",
+            "arguments": [
+                {
+                    "name": "sock",
+                    "type": "ux_socket_t *"
+                }
+            ],
+            "object": {
+                "type": "sock"
+            },
+            "ac": {
+                "mac": {
+                    "enabled": false
+                },
+                "dac": {
+                    "enabled": false
+                },
+                "seharmony": {
+                    "alias": "sel_socket_getpeername",
+                    "permission": "SOCKET__GETATTR"
+                }
+            }
+        },
+        "socket_setsockopt": {
+            "generation": {
+                "performance_compatibility": true
+            },
+            "scheme": "security check/object access",
+            "arguments": [
+                {
+                    "name": "sock",
+                    "type": "ux_socket_t *"
+                }
+            ],
+            "object": {
+                "type": "sock"
+            },
+            "ac": {
+                "mac": {
+                    "enabled": false
+                },
+                "dac": {
+                    "enabled": false
+                },
+                "seharmony": {
+                    "alias": "sel_socket_setsockopt",
+                    "permission": "SOCKET__SETOPT"
+                }
+            }
+        },
+        "socket_getsockopt": {
+            "generation": {
+                "performance_compatibility": true
+            },
+            "scheme": "security check/object access",
+            "arguments": [
+                {
+                    "name": "sock",
+                    "type": "ux_socket_t *"
+                }
+            ],
+            "object": {
+                "type": "sock"
+            },
+            "ac": {
+                "mac": {
+                    "enabled": false
+                },
+                "dac": {
+                    "enabled": false
+                },
+                "seharmony": {
+                    "alias": "sel_socket_getsockopt",
+                    "permission": "SOCKET__GETOPT"
+                }
+            }
+        },
+        "socket_shutdown": {
+            "generation": {
+                "performance_compatibility": true
+            },
+            "scheme": "security check/object access",
+            "arguments": [
+                {
+                    "name": "sock",
+                    "type": "ux_socket_t *"
+                }
+            ],
+            "object": {
+                "type": "sock"
+            },
+            "ac": {
+                "mac": {
+                    "enabled": false
+                },
+                "dac": {
+                    "enabled": false
+                },
+                "seharmony": {
+                    "alias": "sel_socket_shutdown",
+                    "permission": "SOCKET__SHUTDOWN"
+                }
+            }
+        },
+        "unix_stream_connect": {
+            "generation": {
+                "performance_compatibility": true
+            },
+            "scheme": "security check/object access",
+            "credential": {
+                "enabled": false
+            },
+            "arguments": [
+                {
+                    "name": "sock",
+                    "type": "ux_sock_t *"
+                },
+                {
+                    "name": "other",
+                    "type": "ux_sock_t *"
+                },
+                {
+                    "name": "newsk",
+                    "type": "ux_sock_t *"
+                }
+            ],
+            "object": {
+                "type": "other"
+            },
+            "ac": {
+                "mac": {
+                    "enabled": false
+                },
+                "dac": {
+                    "enabled": false
+                },
+                "seharmony": {
+                    "alias": "sel_socket_unix_stream_connect",
+                    "permission": "UNIX_STREAM_SOCKET__CONNECTTO"
+                }
+            }
+        },
+        "unix_may_send": {
+            "generation": {
+                "performance_compatibility": true
+            },
+            "scheme": "security check/object access",
+            "credential": {
+                "enabled": false
+            },
+            "arguments": [
+                {
+                    "name": "sock",
+                    "type": "ux_sock_t *"
+                },
+                {
+                    "name": "other",
+                    "type": "ux_sock_t *"
+                }
+            ],
+            "object": {
+                "type": "other"
+            },
+            "ac": {
+                "mac": {
+                    "enabled": false
+                },
+                "dac": {
+                    "enabled": false
+                },
+                "seharmony": {
+                    "alias": "sel_socket_unix_may_send",
+                    "permission": "SOCKET__SENDTO"
+                }
+            }
+        },
+        "socket_ioctl": {
+            "generation": {
+                "performance_compatibility": true
+            },
+            "scheme": "security check/object access",
+            "arguments": [
+                {
+                    "name": "sock",
+                    "type": "ux_socket_t *"
+                },
+                {
+                    "name": "cmd",
+                    "type": "int"
+                }
+            ],
+            "object": {
+                "type": "sock"
+            },
+            "ac": {
+                "mac": {
+                    "enabled": false
+                },
+                "dac": {
+                    "enabled": false
+                },
+                "seharmony": {
+                    "alias": "sel_socket_ioctl",
+                    "permission": [
+                        "FILE__GETATTR",
+                        "FILE__IOCTL"
+                    ]
+                }
+            }
+        },
+        "socket_fchown": {
+            "generation": {
+                "performance_compatibility": true
+            },
+            "scheme": "security check/object access",
+            "arguments": [
+                {
+                    "name": "sock",
+                    "type": "ux_socket_t *"
+                }
+            ],
+            "object": {
+                "type": "sock"
+            },
+            "module_relation": "{all:dac,capability,overlay{first:seharmony,mac}}",
+            "ac": {
+                "mac": {
+                    "enabled": false
+                },
+                "dac": {
+                    "enabled": false
+                },
+                "capability": {
+                    "alias": "sec_chk_posix_cap_socket_fchown",
+                    "enabled": true,
+                    "permission": [
+                        "CHOWN"
+                    ]
+                },
+                "seharmony": {
+                    "alias": "sel_socket_fchown",
+                    "permission": [
+                        "FILE__SETATTR"
+                    ]
+                }
+            }
+        },
+        "socket_fcntl": {
+            "generation": {
+                "performance_compatibility": true
+            },
+            "scheme": "security check/object access",
+            "arguments": [
+                {
+                    "name": "sock",
+                    "type": "ux_socket_t *"
+                },
+                {
+                    "name": "cmd",
+                    "type": "int"
+                }
+            ],
+            "object": {
+                "type": "sock"
+            },
+            "module_relation": "{all:dac,capability,overlay{first:seharmony,mac}}",
+            "ac": {
+                "mac": {
+                    "enabled": false
+                },
+                "dac": {
+                    "enabled": false
+                },
+                "seharmony": {
+                    "alias": "sel_socket_fcntl"
+                }
+            }
+        },
+        "socket_fstat": {
+            "generation": {
+                "performance_compatibility": true
+            },
+            "scheme": "security check/object access",
+            "arguments": [
+                {
+                    "name": "sock",
+                    "type": "ux_socket_t *"
+                }
+            ],
+            "object": {
+                "type": "sock"
+            },
+            "module_relation": "{all:dac,capability,overlay{first:seharmony,mac}}",
+            "ac": {
+                "mac": {
+                    "enabled": false
+                },
+                "dac": {
+                    "enabled": false
+                },
+                "seharmony": {
+                    "alias": "sel_socket_fstat",
+                    "permission": [
+                        "FILE__GETATTR"
+                    ]
+                }
+            }
+        },
+        "socket_getpeersec_stream": {
+            "generation": {
+                "performance_compatibility": true
+            },
+            "module_relation": "{all:seharmony}",
+            "scheme": "security context/update",
+            "credential": {
+                "enabled": false
+            },
+            "arguments": [
+                {
+                    "name": "sock",
+                    "type": "ux_socket_t *"
+                },
+                {
+                    "name": "optval",
+                    "type": "void *"
+                },
+                {
+                    "name": "optlen",
+                    "type": "socklen_t"
+                }
+            ],
+            "object": {
+                "type": "sock"
+            },
+            "ac": {
+                "seharmony": {
+                    "alias": "sel_socket_getpeersec_stream"
+                }
+            }
+        }
+    }
+}

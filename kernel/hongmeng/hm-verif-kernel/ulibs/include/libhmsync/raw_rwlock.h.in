@@ -1,0 +1,101 @@
+/*
+ * Copyright (C) Huawei Technologies Co., Ltd. 2019-2020. All rights reserved.
+ * Description: Interfaces of raw_rwlock
+ * Author: Huawei OS Kernel Lab
+ * Create: Sun May 05 11:32:50 2019
+ */
+#ifndef LIBHMSYNC_RAW_RWLOCK_H
+#define LIBHMSYNC_RAW_RWLOCK_H
+
+#include <hmkernel/capability.h>
+#include <hmkernel/futex.h>
+#include <hongmeng/types.h>
+#include <vsync/atomic.h>
+
+#define RAW_RWLOCK_MAX_HOLDER_CREFS   FUTEX_MAX_HOLDER_CREFS
+#define RAW_RWLOCK_HOLDER_HASH_MASK   (RAW_RWLOCK_MAX_HOLDER_CREFS - 1U)
+#define RAW_RWLOCK_HOLDER_BOOSTING    (1ULL << 63) /* boosting barrier */
+
+/*
+ * Only shared attribute is supported for now,
+ * may be extended with bit-field.
+ */
+struct raw_rwlock_attr {
+	unsigned int wrhold   : 1;
+	unsigned int shared   : 1;
+	unsigned int pip      : 1;
+	unsigned int reserved : 29;
+};
+
+#define RAW_MUTEX_IMPL_WITH_LOCKID 1
+#define RAW_MUTEX_IMPL_NO_LOCKID 2
+#define RAW_MUTEX_IMPL @RAW_MUTEX_IMPL@
+
+#define RAW_MUTEX_WITH_LOCKTRACE 1
+#define RAW_MUTEX_NO_LOCKTRACE 2
+#define RAW_MUTEX_LOCKTRACE @RAW_MUTEX_LOCKTRACE@
+
+/*
+ * lock records the number of rwlock callers:
+ * lock = 0 means rwlock unlock.
+ * positive lock values read lock callers.
+ * waiters means there is a write lock occupied.
+ * attr: rwlock attributes:
+ *	shared(1bit):
+ *		0 ==> private rwlock (default)
+ *		1 ==> shared rwlock
+ */
+struct raw_rwlock {
+	vatomic32_t lock;
+	vatomic32_t waiters;
+	struct raw_rwlock_attr attr;
+#if RAW_MUTEX_IMPL == RAW_MUTEX_IMPL_WITH_LOCKID
+	vatomic32_t lock_id;
+#endif
+};
+
+struct raw_rwlock_pip {
+	struct raw_rwlock rwlock;
+	vatomic64_t holders_bm;
+	cref_t holders[RAW_RWLOCK_MAX_HOLDER_CREFS];
+	uint8_t recursive_locks[RAW_RWLOCK_MAX_HOLDER_CREFS];
+};
+
+#if RAW_MUTEX_IMPL == RAW_MUTEX_IMPL_WITH_LOCKID
+#define RAW_RDLOCK_INITIALIZER {.lock = VATOMIC_INIT(0), \
+				.waiters = VATOMIC_INIT(0), .attr = {.wrhold = 0U, .shared = 0U, .pip = 0U, .reserved = 0U}, \
+				.lock_id = VATOMIC_INIT(0)}
+#define RAW_RDLOCK_INITIALIZER_NOTRACE {.lock = VATOMIC_INIT(0), \
+				.waiters = VATOMIC_INIT(0), .attr = {.wrhold = 0U, .shared = 0U, .pip = 0U, .reserved = 0U}, \
+				.lock_id = VATOMIC_INIT(~0U)}
+#else
+#define RAW_RDLOCK_INITIALIZER {.lock = VATOMIC_INIT(0), \
+				.waiters = VATOMIC_INIT(0), .attr = {.wrhold = 0U, .shared = 0U, .pip = 0U, .reserved = 0U}}
+#define RAW_RDLOCK_INITIALIZER_NOTRACE RAW_RDLOCK_INITIALIZER
+#endif
+
+#undef RAW_MUTEX_IMPL
+
+void raw_rwlock_init(struct raw_rwlock *rwlock, struct raw_rwlock_attr *attr);
+int raw_rwlock_tryrdlock(struct raw_rwlock *rwlock);
+int raw_rwlock_rdlock(struct raw_rwlock *rwlock);
+int raw_rwlock_wrlock(struct raw_rwlock *rwlock);
+int raw_rwlock_trywrlock(struct raw_rwlock *rwlock);
+int raw_rwlock_unlock(struct raw_rwlock *rwlock);
+void raw_rwlock_destroy(struct raw_rwlock *rwlock);
+int raw_rwlock_getwaiter(struct raw_rwlock *rwlock);
+
+void disable_raw_rwlock(void);
+void enable_raw_rwlock(void);
+_Bool is_raw_rwlock_disabled(void);
+
+void raw_rwlock_attr_setshared(struct raw_rwlock_attr *attr, int shared);
+void raw_rwlock_attr_set_wrhold(struct raw_rwlock_attr *attr, int wrhold);
+void raw_rwlock_attr_set_pip(struct raw_rwlock_attr *attr, int pip);
+void raw_rwlock_init_shared(struct raw_rwlock *rwlock);
+void raw_rwlock_init_pip(struct raw_rwlock_pip *rwlock_pip);
+
+#define raw_rwlock_castto_rwlockpip(rwlock)     ptr_to_type(rwlock, struct raw_rwlock_pip *)
+#define raw_rwlockpip_castto_rwlock(rwlockpip)  ptr_to_type(rwlockpip, struct raw_rwlock *)
+
+#endif

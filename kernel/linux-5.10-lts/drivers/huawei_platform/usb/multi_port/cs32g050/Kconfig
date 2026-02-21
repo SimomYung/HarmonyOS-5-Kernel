@@ -1,0 +1,7 @@
+#
+# Cs32g050 Multi Port Driver
+#
+config CS32G050_MULTI_PORT
+	bool "Cs32g050 Multi Port Driver"
+	help
+	  Say Y to enable Cs32g050 Multi Port Driver

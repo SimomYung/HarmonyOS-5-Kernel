@@ -1,0 +1,13 @@
+/*
+ * Copyright (c) Huawei Technologies Co., Ltd. 2021-2021. All rights reserved.
+ * Description: Generate keymgr sysif api
+ * Author: Huawei OS Kernel Lab
+ * Create: Tue Mar 09 16:40:15 2021
+ */
+INCLUDE_C_HEADER(libhmsrv_key/keymgr.h)
+
+USE_CALL_PREFIX(keycall)
+USE_HANDLER_PREFIX(keyhandler)
+USE_SERVER_NAME(keymgr)
+
+INCLUDE_SUBSYSTEM(libsysif/keymgr/keymgr.sysif)

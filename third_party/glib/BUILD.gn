@@ -1,0 +1,405 @@
+# Copyright (c) Huawei Technologies Co., Ltd. 2021. All rights reserved.
+
+import("//build/ohos.gni")
+import("config.gni")
+
+glib_path = rebase_path("//third_party/glib")
+exec_script("install.sh", [ "$glib_path" ])
+
+PCRE2_LIB_DIR = "//third_party/pcre2/pcre2"
+
+ohos_shared_library("glibpcre") {
+  branch_protector_ret = "pac_ret"
+  md5_check_script = rebase_path("$PCRE2_LIB_DIR/check_md5.sh")
+  _arguments_config = [
+    rebase_path("$PCRE2_LIB_DIR/src/config.h.generic"),
+    rebase_path("$PCRE2_LIB_DIR/src/config.h"),
+  ]
+
+  check_config_result =
+      exec_script(md5_check_script, _arguments_config, "string")
+  if (check_config_result == "") {
+    exec_script("/usr/bin/env",
+                [
+                  "cp",
+                  rebase_path("$PCRE2_LIB_DIR/src/config.h.generic"),
+                  rebase_path("$PCRE2_LIB_DIR/src/config.h"),
+                ])
+  }
+
+  _arguments_pcre2 = [
+    rebase_path("$PCRE2_LIB_DIR/src/pcre2.h.generic"),
+    rebase_path("$PCRE2_LIB_DIR/src/pcre2.h"),
+  ]
+
+  check_pcre2_result = exec_script(md5_check_script, _arguments_pcre2, "string")
+  if (check_pcre2_result == "") {
+    exec_script("/usr/bin/env",
+                [
+                  "cp",
+                  rebase_path("$PCRE2_LIB_DIR/src/pcre2.h.generic"),
+                  rebase_path("$PCRE2_LIB_DIR/src/pcre2.h"),
+                ])
+  }
+
+  _arguments_pcre2_chartables = [
+    rebase_path("$PCRE2_LIB_DIR/src/pcre2_chartables.c.dist"),
+    rebase_path("$PCRE2_LIB_DIR/src/pcre2_chartables.c"),
+  ]
+
+  check_pcre2_chartables_result =
+      exec_script(md5_check_script, _arguments_pcre2_chartables, "string")
+  if (check_pcre2_chartables_result == "") {
+    exec_script("/usr/bin/env",
+                [
+                  "cp",
+                  rebase_path("$PCRE2_LIB_DIR/src/pcre2_chartables.c.dist"),
+                  rebase_path("$PCRE2_LIB_DIR/src/pcre2_chartables.c"),
+                ])
+  }
+  sources = [
+    "$PCRE2_LIB_DIR/src/pcre2_auto_possess.c",
+    "$PCRE2_LIB_DIR/src/pcre2_chartables.c",
+    "$PCRE2_LIB_DIR/src/pcre2_compile.c",
+    "$PCRE2_LIB_DIR/src/pcre2_config.c",
+    "$PCRE2_LIB_DIR/src/pcre2_context.c",
+    "$PCRE2_LIB_DIR/src/pcre2_convert.c",
+    "$PCRE2_LIB_DIR/src/pcre2_dfa_match.c",
+    "$PCRE2_LIB_DIR/src/pcre2_error.c",
+    "$PCRE2_LIB_DIR/src/pcre2_extuni.c",
+    "$PCRE2_LIB_DIR/src/pcre2_find_bracket.c",
+    "$PCRE2_LIB_DIR/src/pcre2_jit_compile.c",
+    "$PCRE2_LIB_DIR/src/pcre2_maketables.c",
+    "$PCRE2_LIB_DIR/src/pcre2_match.c",
+    "$PCRE2_LIB_DIR/src/pcre2_match_data.c",
+    "$PCRE2_LIB_DIR/src/pcre2_newline.c",
+    "$PCRE2_LIB_DIR/src/pcre2_ord2utf.c",
+    "$PCRE2_LIB_DIR/src/pcre2_pattern_info.c",
+    "$PCRE2_LIB_DIR/src/pcre2_script_run.c",
+    "$PCRE2_LIB_DIR/src/pcre2_serialize.c",
+    "$PCRE2_LIB_DIR/src/pcre2_string_utils.c",
+    "$PCRE2_LIB_DIR/src/pcre2_study.c",
+    "$PCRE2_LIB_DIR/src/pcre2_substitute.c",
+    "$PCRE2_LIB_DIR/src/pcre2_substring.c",
+    "$PCRE2_LIB_DIR/src/pcre2_tables.c",
+    "$PCRE2_LIB_DIR/src/pcre2_ucd.c",
+    "$PCRE2_LIB_DIR/src/pcre2_valid_utf.c",
+    "$PCRE2_LIB_DIR/src/pcre2_xclass.c",
+  ]
+  include_dirs = [ "$PCRE2_LIB_DIR/src" ]
+  cflags = [
+    "-D_GNU_SOURCE",
+    "-DHAVE_CONFIG_H",
+    "-DSUPPORT_PCRE2_8=1",
+    "-DSUPPORT_UNICODE=1",
+    "-DPCRE2_CODE_UNIT_WIDTH=8",
+    "-w",
+  ]
+  part_name = "glib"
+  subsystem_name = "thirdparty"
+}
+
+group("glib_packages") {
+  deps = [
+    ":glib",
+    ":gmodule",
+    ":gobject",
+  ]
+}
+
+config("glib_config") {
+  visibility = [ ":*" ]
+  include_dirs = [
+    ".",
+    "glib/libcharset",
+    "glib",
+    "glib/deprecated",
+    "//third_party/pcre2/pcre2/src",
+    "//foundation/multimedia/media_standard/services/utils",
+    "glibmemdfx",
+  ]
+  cflags = [
+    "-DG_LOG_DOMAIN=\"GLib\"",
+    "-DGLIB_CHARSETALIAS_DIR=\"system/lib64\"",
+    "-DHAVE_MEMMOVE",
+    "-DSUPPORT_UCP",
+    "-DSUPPORT_UTF",
+    "-DSUPPORT_UTF8",
+    "-DNEWLINE=-1",
+    "-DMATCH_LIMIT=10000000",
+    "-DMATCH_LIMIT_RECURSION=8192",
+    "-DMAX_NAME_SIZE=32",
+    "-DMAX_NAME_COUNT=10000",
+    "-DMAX_DUPLENGTH=30000",
+    "-DLINK_SIZE=2",
+    "-DPOSIX_MALLOC_THRESHOLD=10",
+    "-DOHOS_OPT_COMPAT",
+    "-UBSR_ANYCRLF",
+    "-UEBCDIC",
+    "-DGLIB_COMPILATION",
+    "-Wno-sign-compare",
+    "-Wno-unused-value",
+    "-Wno-unused-function",
+    "-Wno-int-conversion",
+  ]
+  if (is_standard_system) {
+    cflags += [
+      "-DG_MEM_DFX",
+      "-DOHOS_OPT_PERFORMANCE",
+    ]
+  }
+}
+
+ohos_source_set("glib_source") {
+  branch_protector_ret = "pac_ret"
+  sources = [
+    "glib/deprecated/gallocator.c",
+    "glib/deprecated/gcache.c",
+    "glib/deprecated/gcompletion.c",
+    "glib/deprecated/grel.c",
+    "glib/deprecated/gthread-deprecated.c",
+    "glib/garcbox.c",
+    "glib/garray.c",
+    "glib/gasyncqueue.c",
+    "glib/gatomic.c",
+    "glib/gbacktrace.c",
+    "glib/gbase64.c",
+    "glib/gbitlock.c",
+    "glib/gbookmarkfile.c",
+    "glib/gbytes.c",
+    "glib/gcharset.c",
+    "glib/gchecksum.c",
+    "glib/gconvert.c",
+    "glib/gdataset.c",
+    "glib/gdate.c",
+    "glib/gdatetime.c",
+    "glib/gdir.c",
+    "glib/genviron.c",
+    "glib/gerror.c",
+    "glib/gfileutils.c",
+    "glib/ggettext.c",
+    "glib/ghash.c",
+    "glib/ghmac.c",
+    "glib/ghook.c",
+    "glib/ghostutils.c",
+    "glib/giochannel.c",
+    "glib/giounix.c",
+    "glib/gkeyfile.c",
+    "glib/glib-init.c",
+    "glib/glib-private.c",
+    "glib/glib-unix.c",
+    "glib/glist.c",
+    "glib/gmain.c",
+    "glib/gmappedfile.c",
+    "glib/gmarkup.c",
+    "glib/gmem.c",
+    "glib/gmessages.c",
+    "glib/gnode.c",
+    "glib/goption.c",
+    "glib/gpattern.c",
+    "glib/gpoll.c",
+    "glib/gprimes.c",
+    "glib/gprintf.c",
+    "glib/gqsort.c",
+    "glib/gquark.c",
+    "glib/gqueue.c",
+    "glib/grand.c",
+    "glib/grcbox.c",
+    "glib/grefcount.c",
+    "glib/grefstring.c",
+    "glib/gregex.c",
+    "glib/gscanner.c",
+    "glib/gsequence.c",
+    "glib/gshell.c",
+    "glib/gslice.c",
+    "glib/gslist.c",
+    "glib/gspawn.c",
+    "glib/gstdio.c",
+    "glib/gstrfuncs.c",
+    "glib/gstring.c",
+    "glib/gstringchunk.c",
+    "glib/gtestutils.c",
+    "glib/gthread-posix.c",
+    "glib/gthread.c",
+    "glib/gthreadpool.c",
+    "glib/gtimer.c",
+    "glib/gtimezone.c",
+    "glib/gtrace.c",
+    "glib/gtranslit.c",
+    "glib/gtrashstack.c",
+    "glib/gtree.c",
+    "glib/gunibreak.c",
+    "glib/gunicollate.c",
+    "glib/gunidecomp.c",
+    "glib/guniprop.c",
+    "glib/guri.c",
+    "glib/gutf8.c",
+    "glib/gutils.c",
+    "glib/gutilsprivate.h",
+    "glib/guuid.c",
+    "glib/gvariant-core.c",
+    "glib/gvariant-parser.c",
+    "glib/gvariant-serialiser.c",
+    "glib/gvariant.c",
+    "glib/gvarianttype.c",
+    "glib/gvarianttypeinfo.c",
+    "glib/gversion.c",
+    "glib/gwakeup.c",
+    "glib/libcharset/localcharset.c",
+  ]
+
+  configs = [ ":glib_config" ]
+}
+
+config("public_header_config") {
+  include_dirs = [
+    ".",
+    "glib",
+  ]
+}
+
+ohos_shared_library("glib") {
+  branch_protector_ret = "pac_ret"
+  deps = [
+    ":glib_source",
+    "//third_party/glib:glibpcre",
+  ]
+  public_configs = [ ":public_header_config" ]
+  if (is_standard_system) {
+    deps += [ ":g_mem_dfx" ]
+  }
+  part_name = "glib"
+  subsystem_name = "thirdparty"
+}
+
+config("gmodule_config") {
+  visibility = [ ":*" ]
+  include_dirs = [
+    ".",
+    "gmodule",
+    "glib",
+  ]
+  cflags = [ "-DG_LOG_DOMAIN=\"GModule\"" ]
+}
+
+ohos_source_set("gmodule_source") {
+  sources = [ "gmodule/gmodule.c" ]
+
+  configs = [ ":gmodule_config" ]
+}
+ohos_shared_library("gmodule") {
+  deps = [
+    ":glib",
+    ":gmodule_source",
+  ]
+  part_name = "glib"
+  subsystem_name = "thirdparty"
+}
+
+config("gobject_config") {
+  visibility = [ ":*" ]
+  include_dirs = [
+    ".",
+    "gobject",
+    "glib",
+  ]
+  cflags = [
+    "-DG_LOG_DOMAIN=\"GObject\"",
+    "-DGOBJECT_COMPILATION",
+    "-Wno-sign-compare",
+    "-Wno-unused-function",
+    "-Wno-int-conversion",
+  ]
+}
+
+ohos_source_set("gobject_source") {
+  sources = [
+    "gobject/gatomicarray.c",
+    "gobject/gbinding.c",
+    "gobject/gboxed.c",
+    "gobject/gclosure.c",
+    "gobject/genums.c",
+    "gobject/gmarshal.c",
+    "gobject/gobject.c",
+    "gobject/gparam.c",
+    "gobject/gparamspecs.c",
+    "gobject/gsignal.c",
+    "gobject/gsourceclosure.c",
+    "gobject/gtype.c",
+    "gobject/gtypemodule.c",
+    "gobject/gtypeplugin.c",
+    "gobject/gvalue.c",
+    "gobject/gvaluearray.c",
+    "gobject/gvaluetransform.c",
+    "gobject/gvaluetypes.c",
+  ]
+
+  configs = [ ":gobject_config" ]
+
+  external_deps = [ "libffi:ffi" ]
+  part_name = "glib"
+  subsystem_name = "thirdparty"
+}
+
+ohos_shared_library("gobject") {
+  deps = [
+    ":glib",
+    ":gobject_source",
+  ]
+
+  external_deps = [ "libffi:ffi" ]
+  part_name = "glib"
+  subsystem_name = "thirdparty"
+}
+
+#############################################################################
+#############################################################################
+#############################################################################
+
+config("g_mem_dfx_config") {
+  include_dirs = [
+    "glibmemdfx",
+    "//commonlibrary/c_utils/base/include",
+    "//foundation/multimedia/media_standard/interfaces/inner_api/native",
+    "//base/hiviewdfx/hisysevent/interfaces/native/innerkits/hisysevent/include",
+  ]
+}
+
+ohos_shared_library("g_mem_dfx") {
+  branch_protector_ret = "pac_ret"
+  sources = [ "glibmemdfx/gmemdfx.cpp" ]
+
+  include_dirs = [ "//commonlibrary/c_utils/base/include" ]
+
+  cflags = [
+    "-std=c++17",
+    "-fno-rtti",
+    "-fno-exceptions",
+    "-Wall",
+    "-fno-common",
+    "-fstack-protector-strong",
+    "-Wshadow",
+    "-FPIC",
+    "-FS",
+    "-O2",
+    "-D_FORTIFY_SOURCE=2",
+    "-fvisibility=hidden",
+    "-Wformat=2",
+    "-Wfloat-equal",
+    "-Wdate-time",
+  ]
+
+  configs = [ ":g_mem_dfx_config" ]
+
+  external_deps = [
+    "c_utils:utils",
+    "faultloggerd:libdfx_dumpcatcher",
+    "hilog:libhilog",
+    "hisysevent:libhisysevent",
+    "hitrace:hitrace_meter",
+    "init:libbegetutil",
+  ]
+
+  subsystem_name = "thirdparty"
+  part_name = "glib"
+}

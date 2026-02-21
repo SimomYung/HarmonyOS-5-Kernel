@@ -1,0 +1,37 @@
+{
+    "name": "@ohos/bftpd",
+    "description": "all-in-one Linux command line",
+    "version": "3.1",
+    "license": "Public Domain",
+    "publishAs": "code-segment",
+    "segment": {
+        "destPath": "vendor/open_source/bftpd/bftpd"
+    },
+    "dirs": {},
+    "scripts": {},
+    "licensePath": "",
+    "readmePath": {
+        "en": ""
+    },
+    "component": {
+        "name": "bftpd",
+        "subsystem": "open_source",
+        "syscap": [],
+        "features": [],
+        "adapted_system_type": [
+            "standard"
+        ],
+        "rom": "73KB",
+        "ram": "146KB",
+        "deps": {
+            "components": []
+        },
+        "build": {
+            "sub_component": [
+                "//vendor/open_source/bftpd/bftpd:bftpd_files"
+            ],
+            "inner_kits": [],
+            "test": []
+        }
+    }
+}

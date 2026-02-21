@@ -1,0 +1,69 @@
+From f43cf341511dd684a58c09e104e28c11987cbff1 Mon Sep 17 00:00:00 2001
+From: Rozhuk Ivan <rozhuk.im@gmail.com>
+Date: Sat, 25 Jun 2022 18:46:08 +0300
+Subject: [PATCH] [PATCH] Add lock in _g_get_unix_mount_points() around
+ *fsent() functions
+
+Conflict:NA
+Reference:https://gitlab.gnome.org/GNOME/glib/-/commit/f43cf341511dd684a58c09e104e28c11987cbff1
+
+---
+ gio/gunixmounts.c | 22 +++++++++++++---------
+ 1 file changed, 13 insertions(+), 9 deletions(-)
+
+diff --git a/gio/gunixmounts.c b/gio/gunixmounts.c
+index 563bdba3b2..3005aa7af3 100644
+--- a/gio/gunixmounts.c
++++ b/gio/gunixmounts.c
+@@ -1410,17 +1410,13 @@ _g_get_unix_mount_points (void)
+ {
+   struct fstab *fstab = NULL;
+   GUnixMountPoint *mount_point;
+-  GList *return_list;
++  GList *return_list = NULL;
++  G_LOCK_DEFINE_STATIC (fsent);
+ #ifdef HAVE_SYS_SYSCTL_H
+   int usermnt = 0;
+   struct stat sb;
+ #endif
+-  
+-  if (!setfsent ())
+-    return NULL;
+ 
+-  return_list = NULL;
+-  
+ #ifdef HAVE_SYS_SYSCTL_H
+ #if defined(HAVE_SYSCTLBYNAME)
+   {
+@@ -1448,7 +1444,14 @@ _g_get_unix_mount_points (void)
+   }
+ #endif
+ #endif
+-  
++
++  G_LOCK (fsent);
++  if (!setfsent ())
++    {
++      G_UNLOCK (fsent);
++      return NULL;
++    }
++
+   while ((fstab = getfsent ()) != NULL)
+     {
+       gboolean is_read_only = FALSE;
+@@ -1482,9 +1485,10 @@ _g_get_unix_mount_points (void)
+ 
+       return_list = g_list_prepend (return_list, mount_point);
+     }
+-  
++
+   endfsent ();
+-  
++  G_UNLOCK (fsent);
++
+   return g_list_reverse (return_list);
+ }
+ /* Interix {{{2 */
+-- 
+GitLab
+

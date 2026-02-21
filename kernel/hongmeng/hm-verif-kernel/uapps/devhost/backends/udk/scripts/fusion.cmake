@@ -1,0 +1,28 @@
+# static lib store function and data section
+# remove unused functions when linking udk.o
+file(GLOB_RECURSE builtin_targets RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} HMbuild)
+foreach(target ${builtin_targets})
+    get_filename_component(dir ${target} DIRECTORY)
+    hmbuild_builtin_target_name(targetname SUBDIR ${dir})
+    set(real_target ${targetname}.dev)
+    if (TARGET ${real_target})
+        target_compile_options(${real_target} PRIVATE -ffunction-sections -fdata-sections)
+        target_compile_options(${real_target} PRIVATE -DUDK_FUSION)
+        # keep consistent with sysmgr
+        if (CONFIG_UDK_FUSION_KCFI)
+            target_compile_options(${real_target} PRIVATE ${CONFIG_UDK_FUSION_KCFI_CFLAGS})
+        endif()
+        set(KASAN_CFLAGS_LIST ${CONFIG_UDK_FUSION_KASAN_CFLAGS})
+        separate_arguments(KASAN_CFLAGS_LIST)
+        while(KASAN_CFLAGS_LIST)
+            list(POP_FRONT KASAN_CFLAGS_LIST out_first)
+            if((out_first STREQUAL "-mllvm") OR (out_first STREQUAL "--param"))
+                list(POP_FRONT KASAN_CFLAGS_LIST out_second)
+                target_compile_options(${real_target} PRIVATE "SHELL:${out_first} ${out_second}")
+            else()
+                target_compile_options(${real_target} PRIVATE "${out_first}")
+            endif()
+        endwhile()
+    endif()
+endforeach()
+# vim:ts=4:sw=4:expandtab

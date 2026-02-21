@@ -1,0 +1,18 @@
+# Copyright (c) Huawei Technologies Co., Ltd. 2022. All rights reserved.
+# Description: HMbuild for testcase isystem_src_regex
+# Author: Huawei OS Kernel Lab
+# Create: Sun Jul 24 22:56:27 2022
+
+findpkg: HMLibC
+
+exec-dynamic-y: test_dynamic
+output-test_dynamic: test.elf
+
+src-test_dynamic-y: src_main.c
+
+cflags-.-y: -nostdinc
+
+inclib-test_dynamic-isystem: HMLibC::HMUserLibC_include
+inclib-test_dynamic-isystem: CompilerLibs::CompilerLibs_include
+
+# vim:ts=4:sw=4:expandtab

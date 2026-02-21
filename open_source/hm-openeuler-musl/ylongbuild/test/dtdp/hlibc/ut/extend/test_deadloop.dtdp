@@ -1,0 +1,219 @@
+{
+    "root": {
+        "data": {
+            "id": "cj93bmqd4go0",
+            "created": 1649850870897,
+            "text": "用户线程死循环检测"
+        },
+        "children": [
+            {
+                "data": {
+                    "id": "cj93jjgq4qo0",
+                    "created": 1649851490697,
+                    "text": "监控参数设置合法性校验",
+                    "layout_mind_offset": {
+                        "x": -15,
+                        "y": -156
+                    },
+                    "usecase": 2
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "cj93sk3ap200",
+                            "created": 1649852197339,
+                            "text": "不同级别的死循环阈值递增"
+                        },
+                        "children": []
+                    }
+                ]
+            },
+            {
+                "data": {
+                    "id": "cj93jtsdw9c0",
+                    "created": 1649851513170,
+                    "text": "监控参数设置",
+                    "layout_mind_offset": {
+                        "x": -30,
+                        "y": -134
+                    },
+                    "usecase": 3
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "cj93kd4vog00",
+                            "created": 1649851555284,
+                            "text": "监控启动",
+                            "layout_right_offset": {
+                                "x": 36,
+                                "y": -14
+                            },
+                            "usecase": 4,
+                            "author": "j00576234",
+                            "showId": "00001"
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "cj93l1kpxe80",
+                                    "created": 1649851608485,
+                                    "text": "重复启动",
+                                    "usecase": 2
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "cj93mcjein40",
+                                            "created": 1649851710714,
+                                            "text": "重新计算时间",
+                                            "usecase": 5
+                                        },
+                                        "children": []
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "data": {
+                            "id": "cj93mpyqkuo0",
+                            "created": 1649851739939,
+                            "text": "前置条件未执行，启动失败",
+                            "usecase": 5,
+                            "layout_right_offset": {
+                                "x": 16,
+                                "y": 9
+                            }
+                        },
+                        "children": []
+                    },
+                    {
+                        "data": {
+                            "id": "cj93p31n5ds0",
+                            "created": 1649851925141,
+                            "text": "参数设置自定义策略",
+                            "layout_right_offset": {
+                                "x": 18,
+                                "y": -1
+                            },
+                            "usecase": 2
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "cj93phf4da00",
+                                    "created": 1649851956431,
+                                    "text": "fatal级别触发后默认进程退出",
+                                    "usecase": 4,
+                                    "author": "j00576234",
+                                    "showId": "00003"
+                                },
+                                "children": []
+                            },
+                            {
+                                "data": {
+                                    "id": "cj93pufgw600",
+                                    "created": 1649851984751,
+                                    "text": "fatal级别触发后执行自定义策略",
+                                    "usecase": 4,
+                                    "author": "j00576234",
+                                    "showId": "00004"
+                                },
+                                "children": []
+                            },
+                            {
+                                "data": {
+                                    "id": "cj9rrb50p9k0",
+                                    "created": 1649919806126,
+                                    "text": "多个线程回调函数各不影响"
+                                },
+                                "children": []
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "data": {
+                    "id": "cj93ksqhvdk0",
+                    "created": 1649851589243,
+                    "text": "监控停止",
+                    "layout_mind_offset": {
+                        "x": -17,
+                        "y": -155
+                    },
+                    "usecase": 4,
+                    "author": "j00576234",
+                    "showId": "00002"
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "cj93m7kc5oo0",
+                            "created": 1649851699886,
+                            "text": "重复操作",
+                            "usecase": 2
+                        },
+                        "children": []
+                    }
+                ]
+            },
+            {
+                "data": {
+                    "id": "cj93lhb6vg00",
+                    "created": 1649851642737,
+                    "text": "死循环信息查询",
+                    "layout_mind_offset": {
+                        "x": 893,
+                        "y": 208
+                    }
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "cj93ls6p8pc0",
+                            "created": 1649851666410,
+                            "text": "查看日志"
+                        },
+                        "children": []
+                    },
+                    {
+                        "data": {
+                            "id": "cj93lw2vtpc0",
+                            "created": 1649851674887,
+                            "text": "命令行查询"
+                        },
+                        "children": []
+                    },
+                    {
+                        "data": {
+                            "id": "cj9rvw7uhlk0",
+                            "created": 1649920165466,
+                            "text": "测试观察点：对写日志动作打桩，构造栈层数足够满"
+                        },
+                        "children": []
+                    }
+                ]
+            },
+            {
+                "data": {
+                    "id": "cj93qpv8xeo0",
+                    "created": 1649852053185,
+                    "text": "进程内多线程同时进行监控操作并发场景",
+                    "layout_mind_offset": {
+                        "x": 714,
+                        "y": 212
+                    }
+                },
+                "children": []
+            }
+        ]
+    },
+    "templatePath": null,
+    "singleTemplatePath": null,
+    "testcaseFilePath": "",
+    "template": "default",
+    "theme": "fresh-blue",
+    "version": "1.4.43"
+}

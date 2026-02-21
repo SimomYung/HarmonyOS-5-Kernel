@@ -1,0 +1,41 @@
+# Copyright (c) Huawei Technologies Co., Ltd. 2022. All rights reserved.
+# Description: HMbuild for udk
+# Author: Huawei OS Kernel Lab
+# Create: Wed Feb 09 11:51:30 2022
+
+src-y: udk_atomic.c
+src-y: udk_cache.c
+src-y: udk_cpuset.c
+src-y: udk_crypt.c
+src-y: udk_delay.c
+src-y: udk_dtb.c
+src-y: udk_fifo.c
+src-y: udk_hz.c
+src-y: udk_io.c
+src-y: udk_kbox.c
+src-y: udk_kconsole.c
+src-y: udk_kvic.c
+src-y: udk_log.c
+src-y: udk_mempool.c
+src-y: udk_notifier.c
+src-y: udk_of.c
+src-y: udk_panic.c
+src-y: udk_poll.c
+src-y: udk_process.c
+src-y: udk_refcnt.c
+src-y: udk_slab.c
+src-y: udk_smc.c
+src-y: udk_stack.c
+src-y: udk_sysfs.c
+src-y: udk_thread.c
+src-y: udk_timer.c
+src-y: udk_wq.c
+src-y: udk_vfs.c
+src-y: udk_netlink.c
+src-y: udk_uevent.c
+src-y: udk_completion.c
+
+subdir-y: sync
+subdir-y: mm
+
+cflags-udk_thread.c-y: -D_GNU_SOURCE

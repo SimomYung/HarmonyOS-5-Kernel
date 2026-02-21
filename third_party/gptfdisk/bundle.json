@@ -1,0 +1,43 @@
+{
+    "name": "@ohos/gptfdisk",
+    "description": "GPT fdisk is a disk partitioning tool loosely modeled on Linux fdisk, but used for modifying GUID Partition Table (GPT) disks. The related FixParts utility fixes some common problems on Master Boot Re",
+    "version": "3.1",
+    "license": "GPL-2.0-or-later",
+    "publishAs": "code-segment",
+    "segment": {
+        "destPath": "third_party/gptfdisk"
+    },
+    "dirs": {},
+    "scripts": {},
+	"licensePath": "COPYING",
+	"readmePath": {
+        "en": "README"
+    },
+    "component": {
+        "name": "gptfdisk",
+        "subsystem": "thirdparty",
+        "syscap": [],
+        "features": [],
+        "adapted_system_type": [
+            "standard"
+        ],
+        "rom": "",
+        "ram": "",
+        "deps": {
+            "components": [],
+            "third_party": [
+                "e2fsprogs",
+                "popt"
+            ]
+        },
+        "build": {
+            "sub_component": [],
+            "inner_kits": [
+                {
+                    "name": "//third_party/gptfdisk:sgdisk"
+                }
+            ],
+            "test": []
+        }
+    }
+}

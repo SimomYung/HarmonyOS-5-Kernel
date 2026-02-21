@@ -1,0 +1,637 @@
+UDK_VERS_1.0 {
+  global:
+    # backend init
+    dh_backend_init;
+
+    # Module
+    udk_request_module;
+    udk_module_param_str_to_type;
+
+    # Device interfaces
+    udk_device_init;
+    udk_device_alloc;
+    udk_device_add;
+    udk_device_reset;
+    udk_device_destroy;
+    udk_device_add_resource;
+    udk_device_add_resource_with_name;
+    udk_device_add_property;
+    udk_device_get_prop;
+    udk_device_get_resource;
+    udk_device_get_irq;
+    udk_device_prop_read_u32;
+    udk_device_prop_read_string;
+    udk_device_priv_get;
+    udk_device_priv_set;
+    udk_device_capable_devfs;
+    udk_device_capable_devfs_ex;
+    udk_device_capable_blk;
+    udk_device_capable_pm;
+    udk_device_capable_net;
+    udk_device_set_autoload;
+    udk_device_set_isolate;
+    udk_device_set_probeable;
+    udk_device_devinfo_of;
+    udk_device_of;
+    udk_device_opener_inc;
+    udk_device_opener_dec;
+    udk_device_get_by_name;
+    udk_device_get_by_devt;
+    udk_device_put;
+
+    # UDK Comapt Interfaces
+    udk_compat_unflatten_tree;
+    udk_compat_get_device;
+    udk_register_driver;
+    udk_unregister_driver;
+    udk_is_compat_client;
+
+    # DTB Interfaces
+    udk_set_dtb;
+    udk_get_dtb;
+    udk_firmware_data;
+    udk_acquire_bootfdt;
+
+    # Char Device interfaces
+    udk_alloc_chrdev_region;
+    udk_register_chrdev_region;
+    udk_unregister_chrdev_region;
+    udk_create_chrdev_duplicated;
+    udk_chrdev_destroy_duplicated;
+    udk_chrdev_create;
+    udk_chrdev_destroy;
+    udk_chrdev_ctx_to_filectx;
+
+    # Block Device interfaces
+    udk_bio_alloc;
+    udk_bio_free;
+    udk_bio_end;
+    udk_blk_submit_bio;
+    udk_simple_submit_bio;
+    udk_simple_submit_cmd;
+    udk_blk_submit_cmd_sync;
+    udk_disk_set_logical_block_size;
+    udk_disk_set_max_discard_sectors;
+    udk_blk_mq_put_tag;
+    udk_blk_mq_init_queue_data;
+    udk_blk_mq_alloc_tag_set;
+    udk_bio_info_set_stage;
+    udk_request_info_set_stage;
+    udk_bio_register_hungtask_notifier;
+    udk_blk_register_hungtask_notifier;
+    udk_blk_mq_start_timer;
+
+    udk_disk_alloc;
+    udk_register_blkdev_region;
+    udk_unregister_blkdev_region;
+    udk_disk_add_with_sys_devpath;
+    udk_disk_add;
+    udk_disk_destroy;
+
+    # stdlib alternatives
+    udk_malloc;
+    udk_free;
+    udk_wctomb;
+
+    # Panic
+    udk_bug;
+
+    # Log
+    udk_printf;
+
+    # Synchronization
+    udk_mutex_init;
+    udk_mutex_init_recursive;
+    udk_mutex_lock;
+    udk_mutex_unlock;
+    udk_mutex_trylock;
+    udk_shared_mutex_init;
+    udk_shared_mutex_lock;
+    udk_shared_mutex_unlock;
+    udk_rwlock_alloc;
+    udk_rwlock_alloc_shared;
+    udk_rwlock_destroy;
+    udk_rwlock_rdlock;
+    udk_rwlock_tryrdlock;
+    udk_rwlock_wrlock;
+    udk_rwlock_trywrlock;
+    udk_rwlock_unlock;
+
+    # Condition variable
+    udk_thread_cond_init;
+    udk_thread_cond_wait;
+    udk_thread_cond_timedwait;
+    udk_thread_cond_signal;
+    udk_thread_cond_broadcast;
+    udk_sem_init;
+    udk_sem_wait;
+    udk_sem_post;
+    udk_sem_kill;
+    udk_sem_timedwait;
+
+    # Thread
+    udk_thread_create;
+    udk_thread_join;
+    udk_thread_terminate;
+    udk_thread_yield;
+    udk_thread_self;
+    udk_thread_setname;
+    udk_thread_setaffinity;
+    udk_thread_getaffinity;
+
+    # Memory Management
+    udk_copy_from_caller;
+    udk_copy_to_caller;
+    udk_iomem_mmap;
+    udk_iomem_munmap;
+    udk_ioremap;
+    udk_ioremap_cache;
+    udk_ioremap_nocache;
+    udk_iounmap;
+    udk_iounmap2;
+    udk_copy_from_user;
+    udk_copy_to_user;
+    udk_alloc_shm_anon;
+    udk_free_shm_anon;
+    udk_grant_shm_to_caller;
+    udk_dma_alloc_aligned;
+    udk_dma_alloc;
+    udk_dma_free;
+    udk_dma_va_to_pa;
+    udk_dma_pa_to_va;
+    udk_alloc_pages;
+    udk_free_pages;
+
+    # Delay
+    udk_udelay;
+    udk_mdelay;
+    udk_ndelay;
+
+    # FIFO
+    udk_fifo_init;
+    udk_fifo_free;
+    udk_fifo_in;
+    udk_fifo_out;
+    udk_fifo_len;
+
+    # IO
+    udk_write8;
+    udk_write16;
+    udk_write32;
+    udk_write64;
+    udk_read8;
+    udk_read16;
+    udk_read32;
+    udk_read64;
+    udk_write_be8;
+    udk_write_be16;
+    udk_write_be32;
+    udk_write_be64;
+    udk_read_be8;
+    udk_read_be16;
+    udk_read_be32;
+    udk_read_be64;
+
+    # IRQ
+    udk_irq_create_mapping;
+    udk_request_irq;
+    udk_free_irq;
+    udk_enable_irq;
+    udk_disable_irq;
+    udk_irq_setaffinity;
+    udk_local_irq_disable;
+    udk_local_irq_enable;
+    udk_local_irq_restore;
+    udk_local_irq_save;
+    udk_local_save_flags;
+
+    # IRQ EXT
+    udk_irq_ext_add;
+    udk_irq_ext_remove;
+    udk_irq_ext_uirq_map;
+    udk_irq_ext_uirq_alloc;
+    udk_irq_ext_uirq_free;
+    udk_irq_of_parent_name;
+    udk_irq_of_irq_info;
+
+    # WQ
+    udk_work_init;
+    udk_work_destroy;
+    udk_workqueue_alloc;
+    udk_workqueue_init;
+    udk_workqueue_reset;
+    udk_workqueue_flush;
+    udk_workqueue_destroy;
+    udk_workqueue_create;
+    udk_create_work;
+    udk_workqueue_add_work;
+    udk_workqueue_cancel_work;
+    udk_workqueue_add_work_default;
+    udk_workqueue_cancel_work_default;
+    udk_workqueue_flush_util;
+    udk_default_wq;
+
+    # CACHE
+    udk_flush_dcache_range;
+    udk_dma_sync_cpu_to_dev;
+    udk_dma_sync_dev_to_cpu;
+    udk_dma_sync_cpu_to_dev_by_pa;
+    udk_dma_sync_dev_to_cpu_by_pa;
+
+    # NET
+    udk_free_pbuf;
+    udk_dev_free_pbuf;
+    udk_dev_alloc_pbuf;
+    udk_netif_rx;
+    udk_netif_rx_batch;
+    udk_netif_tx;
+    udk_netdev_add;
+    udk_netdev_delete;
+    udk_netdev_alloc;
+    udk_netdev_free;
+    udk_netdev_default_setup;
+    udk_netdev_set_random_mac_addr;
+
+    # Slab
+    udk_slab_init;
+    udk_slab_destroy;
+    udk_slab_unit_alloc;
+    udk_slab_unit_free;
+    udk_slab_get_unit_free_num;
+
+    # Timer
+    udk_timer_init;
+    udk_timer_setflags;
+    udk_timer_setprecision;
+    udk_timer_add;
+    udk_timer_del;
+    udk_timer_del_sync;
+    udk_timer_mod;
+    udk_timer_is_pending;
+    udk_clock_gettime;
+    udk_nanosleep;
+
+    # POLL
+    udk_poll_notify;
+    udk_epoll_wakeup;
+    udk_epoll_clean_revents;
+    udk_poll_wqueue_init;
+    udk_poll_wqueue_add;
+    udk_poll_wqueue_wakeup;
+
+    #KVIC
+    udk_kvic_prepare_irq;
+    udk_kvic_create_mapping;
+
+    # kbox
+    udk_kbox_create;
+    udk_kbox_open;
+    udk_kbox_write;
+    udk_kbox_close;
+
+    # process
+    udk_kill_process_group;
+    udk_kill_process;
+    udk_mysid;
+    udk_getfgpgrp;
+    udk_setfgpgrp;
+    udk_current_pid;
+    udk_current_pgid;
+    udk_getsid;
+    udk_getpgid;
+
+    #POWER
+    udk_device_pm_register;
+    udk_device_pm_unregister;
+    udk_shutdown;
+    udk_snapshot;
+    udk_reboot_notifier_register;
+    udk_reboot_notifier_unregister;
+    udk_pm_notifier_register;
+    udk_pm_notifier_unregister;
+    udk_pm_notifier_call;
+    udk_pm_notifier_call_robust;
+
+    # SYSFS
+    udk_sysfs_register_device;
+    udk_sysfs_unregister_device;
+    udk_sysfs_create_dir;
+    udk_sysfs_create_file;
+    udk_sysfs_create_symlink;
+    udk_sysfs_delete;
+    udk_sysfs_device_dir_destroy;
+    udk_sysfs_device_dir_create;
+    udk_sysfs_module_dir_destroy;
+    udk_sysfs_module_dir_create;
+    udk_sysfs_file_destroy;
+    udk_sysfs_file_create;
+    udk_sysfs_dir_create;
+
+    # SFILE
+    udk_file_init;
+    udk_file_read;
+    udk_file_write;
+    udk_file_generic_llseek;
+    udk_file_noop_llseek;
+
+    # LOCKTASK
+    udk_lock_task;
+    udk_unlock_task;
+
+    # SYSCALL
+    udk_kconsole_print;
+    udk_kconsole_enable;
+    udk_kconsole_disable;
+
+    #SECURITY
+    udk_ability_of_tty;
+    udk_ability_of_serial_toggle;
+    udk_capability_of_admin;
+    udk_capability_of_tty_config;
+    udk_caller_has_capability;
+    udk_caller_has_ability;
+    udk_caller_has_ab_and_cap;
+    udk_capable;
+
+    # ATOMIC
+    udk_atomic_int_alloc;
+    udk_atomic_int_destroy;
+    udk_atomic_int_add;
+    udk_atomic_int_sub;
+    udk_atomic_int_inc;
+    udk_atomic_int_dec;
+    udk_atomic_int_set;
+    udk_atomic_int_read;
+    udk_atomic_int_swap;
+    udk_atomic_int_cas;
+    udk_atomic_int_try_cmpxchg;
+
+    # REFCNT
+    udk_refcnt_alloc;
+    udk_refcnt_owner_of;
+    udk_refcnt_counter;
+    udk_refcnt_get;
+    udk_refcnt_put;
+    udk_refcnt_release;
+
+    # NOTIFIER
+    udk_notifier_alloc;
+    udk_notifier_destroy;
+    udk_notifier_list_alloc;
+    udk_notifier_list_destroy;
+    udk_notifier_list_insert;
+    udk_notifier_list_delete;
+    udk_notifier_list_call;
+    udk_blocking_notifier_list_alloc;
+    udk_blocking_notifier_list_destroy;
+    udk_blocking_notifier_list_insert;
+    udk_blocking_notifier_list_delete;
+    udk_blocking_notifier_list_call;
+
+    # SMC
+    udk_smc_result_alloc;
+    udk_smc_result_destroy;
+    udk_smc_result_read;
+    udk_smc_call;
+
+    # CRYPTO
+    udk_get_random_bytes;
+
+    # MEMPOOL
+    udk_mempool_create;
+    udk_mempool_destroy;
+    udk_mempool_insert;
+    udk_mempool_remove;
+    udk_mempool_mem_alloc;
+    udk_mempool_mem_free;
+    udk_mempool_paddr_from_vaddr;
+
+    # MAILBOX
+    udk_mbox_register;
+    udk_mbox_unregister;
+    udk_mbox_request_channel;
+    udk_mbox_free_channel;
+    udk_mbox_send_message;
+    udk_mbox_receive_message;
+
+    # FIRMWARE
+    udk_fw_register;
+    udk_fw_unregister;
+    udk_fw_client_request;
+    udk_fw_client_free;
+    udk_fw_get_property;
+    udk_fw_set_property;
+
+    # GPIO
+    udk_gpio_register;
+    udk_gpio_unregister;
+    udk_gpio_request;
+    udk_gpio_free;
+    udk_gpio_get_direction;
+    udk_gpio_set_input;
+    udk_gpio_set_output;
+    udk_gpio_get_level;
+    udk_gpio_set_level;
+    udk_gpio_get_bias;
+    udk_gpio_set_bias;
+    udk_gpio_get_mux;
+    udk_gpio_set_mux;
+
+    # OF
+    udk_of_next_dt_property;
+    udk_of_next_dt_node;
+    udk_of_get_node_properties;
+    udk_of_get_node_child;
+    udk_of_get_node_sibling;
+    udk_of_get_node_name;
+    udk_of_get_node_phandle;
+    udk_of_get_prop_value;
+    udk_of_get_prop_length;
+    udk_of_init_soc_root;
+    udk_of_soc_root;
+    udk_of_find_node_by_name;
+    udk_of_find_node_by_fullname;
+    udk_of_find_node_by_phandle;
+    udk_of_find_property;
+    udk_of_prop_read_u64;
+    udk_of_prop_read_u32;
+    udk_of_prop_read_u32_array;
+    udk_of_prop_read_string_array;
+    udk_of_prop_read_string;
+    udk_of_find_device_by_node;
+    udk_of_find_node_by_compatible;
+    udk_of_match_node;
+
+    # uio
+    udk_uio_info_create;
+    udk_uio_info_destroy;
+    udk_uio_register;
+    udk_uio_unregister;
+
+    # CLOCK
+    udk_clock_register;
+    udk_clock_unregister;
+    udk_clock_lookup;
+    udk_clock_enable;
+    udk_clock_disable;
+    udk_clock_is_enabled;
+    udk_clock_get_parent;
+    udk_clock_set_parent;
+    udk_clock_get_rate;
+    udk_clock_set_rate;
+
+    udk_clock_of_register;
+    udk_clock_of_unregister;
+
+    # STACK
+    udk_stack_create;
+    udk_stack_destroy;
+    udk_stack_empty;
+    udk_stack_push;
+    udk_stack_pop;
+    udk_stack_top;
+
+    # PCI
+    udk_pci_host_register;
+    udk_pci_host_unregister;
+
+    # MDIO
+    udk_mdio_register;
+    udk_mdio_unregister;
+    udk_mdio_get;
+    udk_mdio_put;
+    udk_mdio_reset;
+    udk_mdio_read;
+    udk_mdio_write;
+
+    # PHY
+    udk_phy_register;
+    udk_phy_unregister;
+    udk_phy_init;
+    udk_phy_exit;
+    udk_phy_reset;
+    udk_phy_start;
+    udk_phy_stop;
+    udk_phy_read;
+    udk_phy_write;
+    udk_phy_set_mode;
+    udk_phy_get;
+    udk_phy_put;
+
+    # NETPHY
+    udk_netphy_register;
+    udk_netphy_unregister;
+    udk_netphy_connect;
+    udk_netphy_disconnect;
+    udk_netphy_is_linked;
+    udk_netphy_set_link_settings;
+    udk_netphy_get_link_settings;
+
+    # TTY_REGISTER
+    tty_struct_register;
+    tty_struct_unregister;
+    tty_struct_reset;
+    tty_struct_try_recycle;
+    tty_struct_set_removed;
+    tty_struct_device_reinit;
+    tty_struct_is_using;
+
+    # TTY_LINE_BUF_CONTROL
+    tty_line_buf_read;
+    tty_line_buf_write;
+    tty_line_buf_write_override;
+    tty_line_buf_write_extend;
+    tty_line_buf_write_maybe_swapout;
+    tty_line_buf_state;
+    tty_line_buf_space_used;
+
+    # TTY_SCHEDULE
+    tty_line_buf_wake_up_reader;
+    tty_line_buf_schedule_reader;
+    tty_line_buf_wake_up_writer;
+
+    # TTY_CHRDEV
+    tty_chrdrv_init;
+    tty_chrdrv_exit;
+    tty_chrdev_create;
+    tty_chrdev_destroy;
+
+    # TTY_IOCTL
+    tty_stream_master_ioctl;
+
+    # TTY_OTHERS
+    tty_echo;
+    tty_poll_notify;
+    tty_poll_wq_init;
+    tty_handle_shortcuts_key;
+    tty_irq_bottom_half_init;
+    tty_irq_bottom_half_schedule;
+
+    # I2C
+    udk_i2c_add_adapter;
+    udk_i2c_remove_adapter;
+    udk_i2c_add_client;
+    udk_i2c_remove_client;
+    udk_i2c_of_add_client;
+    udk_i2c_write;
+    udk_i2c_read;
+
+    # UART
+    udk_uart_register;
+    udk_uart_unregister;
+    udk_uart_get_description;
+    udk_uart_rx_write;
+    udk_uart_tx_read;
+    udk_uart_tx_wake_up;
+    udk_uart_tx_inc;
+    udk_uart_parity_inc;
+    udk_uart_frame_inc;
+
+    # PARAM
+    udk_hz;
+
+    # EXT
+    udk_ext_ctl;
+
+    # CPUSET
+    udk_cpuset_empty;
+    udk_cpuset_add;
+    udk_cpuset_equal;
+
+    # VFS
+    udk_vfs_open;
+    udk_vfs_close;
+    udk_vfs_pread;
+    udk_vfs_pwrite;
+    udk_vfs_fstat;
+    udk_ksys_fstat_nocheck;
+    udk_vfs_is_dev_mounted;
+    udk_vfs_fsync;
+    udk_vfs_transfer_fd;
+    udk_vfs_fd_get_path;
+
+    # SPI
+    udk_spi_add_adapter;
+    udk_spi_remove_adapter;
+    udk_spi_add_client;
+    udk_spi_remove_client;
+    udk_spi_open_client;
+    udk_spi_close_client;
+    udk_spi_write;
+    udk_spi_read;
+
+    # netlink
+    udk_netlink_kernel_create;
+    udk_netlink_kernel_release;
+    udk_netlink_kernel_unicast;
+
+    # uevent
+    udk_uevent_env_alloc;
+    udk_uevent_env_free;
+    udk_uevent_env_buf_read;
+    udk_uevent_env_add;
+    udk_uevent_net_broadcast;
+
+  local:
+    *;
+};

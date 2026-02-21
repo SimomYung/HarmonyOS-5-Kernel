@@ -1,0 +1,61 @@
+From 3dcbf460613413614684013a51279f1e65c32f9e Mon Sep 17 00:00:00 2001
+From: zhanchengbin <zhanchengbin1@huawei.com>
+Date: Wed, 18 May 2022 15:16:25 +0800
+Subject: [PATCH] e2fsck: do not clean up file acl if the inode is truncating
+ type
+
+We got issue as follows:
+    [root@localhost ~]# e2fsck -a img
+    img: recovering journal
+    img: Truncating orphaned inode 188 (uid=0, gid=0, mode=0100666, size=0)
+    img: Truncating orphaned inode 174 (uid=0, gid=0, mode=0100666, size=0)
+    img: clean, 484/128016 files, 118274/512000 blocks
+    [root@localhost ~]# e2fsck -fn img
+    e2fsck 1.46.5 (30-Dec-2021)
+    Pass 1: Checking inodes, blocks, and sizes
+    Inode 174, i_blocks is 2, should be 0.  Fix? no
+
+    Inode 188, i_blocks is 2, should be 0.  Fix? no
+
+    Pass 2: Checking directory structure
+    Pass 3: Checking directory connectivity
+    Pass 4: Checking reference counts
+    Pass 5: Checking group summary information
+
+    img: ********** WARNING: Filesystem still has errors **********
+
+    img: 484/128016 files (24.6% non-contiguous), 118274/512000 blocks
+
+File acl would be clean up in release_inode_blocks, whether the orphan
+node is truncating or clearing type. If the inode is truncating type,
+the file acl would be clean up, but the blocks count is not be
+subtract acl blocks, and the inode is not unmark in bitmap, which causes
+this issue.
+
+To slove this issue, do not clean up file acl if the inode is truncating
+type.
+
+Signed-off-by: LiJinlin <lijinlin3@huawei.com>
+Signed-off-by: zhanchengbin <zhanchengbin1@huawei.com>
+---
+ e2fsck/super.c | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/e2fsck/super.c b/e2fsck/super.c
+index 31e2ffb..ec28426 100644
+--- a/e2fsck/super.c
++++ b/e2fsck/super.c
+@@ -235,6 +235,10 @@ static int release_inode_blocks(e2fsck_t ctx, ext2_ino_t ino,
+ 	if (pb.truncated_blocks)
+ 		ext2fs_iblk_sub_blocks(fs, EXT2_INODE(inode),
+ 				pb.truncated_blocks);
++	
++	/* do not clean up file acl if the inode is truncating type */
++	if (inode->i_links_count)
++		return 0;
+ 
+ 	blk = ext2fs_file_acl_block(fs, EXT2_INODE(inode));
+ 	if (blk) {
+-- 
+1.8.3.1
+

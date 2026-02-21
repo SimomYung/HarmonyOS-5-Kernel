@@ -1,0 +1,20 @@
+config FLO
+	bool "Frame learning Optimization"
+	default n
+	help
+	 support flo device and enable driver
+
+config FLO_DEBUG
+	bool "flo debug"
+	depends on FLO
+	default n
+	help
+	 Enable flo debug
+
+config FLO_TEST
+	bool "flo test"
+	depends on FLO && FLO_DEBUG
+	default n
+	help
+	 Enable flo test
+

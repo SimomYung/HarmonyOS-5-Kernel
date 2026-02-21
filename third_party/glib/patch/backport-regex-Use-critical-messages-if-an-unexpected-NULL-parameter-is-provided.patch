@@ -1,0 +1,31 @@
+From 0f869ec5c6bc6cd37a6803cc2299a5845199e758 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Marco=20Trevisan=20=28Trevi=C3=B1o=29?= <mail@3v1n0.net>
+Date: Wed, 21 Sep 2022 11:33:14 +0200
+Subject: [PATCH] regex: Use critical messages if an unexpected NULL parameter
+ is provided
+
+As programmer error we should be consistent in using criticals.
+
+Conflict:NA
+Reference:https://gitlab.gnome.org/GNOME/glib/-/commit/06caf952e48dbed40b5dcff01a94f57ba079b526c
+
+---
+ glib/gregex.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/glib/gregex.c b/glib/gregex.c
+index fcc28d62f4..1baa4e2f18 100644
+--- a/glib/gregex.c
++++ b/glib/gregex.c
+@@ -483,7 +483,7 @@ translate_match_error (gint errcode)
+       break;
+     case PCRE2_ERROR_NULL:
+       /* NULL argument, this should not happen in GRegex */
+-      g_warning ("A NULL argument was passed to PCRE");
++      g_critical ("A NULL argument was passed to PCRE");
+       break;
+     case PCRE2_ERROR_BADOPTION:
+       return "bad options";
+-- 
+GitLab
+
